@@ -1,0 +1,253 @@
+WEBVTT
+
+1
+00:00:00.050 --> 00:00:00.635
+[JUNIOR] I need to
+
+2
+00:00:00.635 --> 00:00:01.293
+[JUNIOR] build an AI
+
+3
+00:00:01.293 --> 00:00:02.024
+[JUNIOR] agent for my
+
+4
+00:00:02.024 --> 00:00:02.609
+[JUNIOR] project,
+
+5
+00:00:02.609 --> 00:00:03.267
+[JUNIOR] but I only
+
+6
+00:00:03.267 --> 00:00:04.218
+[JUNIOR] have 10 dollars
+
+7
+00:00:04.218 --> 00:00:04.803
+[JUNIOR] in my bank
+
+8
+00:00:04.803 --> 00:00:05.388
+[JUNIOR] account.
+
+9
+00:00:05.748 --> 00:00:07.273
+[RIVAL] Good luck.
+
+10
+00:00:07.223 --> 00:00:08.423
+[RIVAL] You need Claude
+
+11
+00:00:08.423 --> 00:00:08.792
+[RIVAL] Pro,
+
+12
+00:00:08.792 --> 00:00:09.623
+[RIVAL] a $200 API
+
+13
+00:00:09.623 --> 00:00:10.085
+[RIVAL] tier,
+
+14
+00:00:10.085 --> 00:00:11.008
+[RIVAL] and at least
+
+15
+00:00:11.008 --> 00:00:12.208
+[RIVAL] three months of
+
+16
+00:00:12.208 --> 00:00:14.423
+[RIVAL] manual prompt engineering.
+
+17
+00:00:14.730 --> 00:00:15.148
+[BOT] Or...
+
+18
+00:00:15.148 --> 00:00:16.236
+[BOT] you could spend
+
+19
+00:00:16.236 --> 00:00:17.407
+[BOT] zero dollars and
+
+20
+00:00:17.407 --> 00:00:18.160
+[BOT] build it in
+
+21
+00:00:18.160 --> 00:00:19.080
+[BOT] ten minutes.
+
+22
+00:00:19.444 --> 00:00:21.307
+[RIVAL] Zero dollars?
+
+23
+00:00:21.257 --> 00:00:23.030
+[RIVAL] Nothing in modern
+
+24
+00:00:23.030 --> 00:00:24.094
+[RIVAL] AI is free.
+
+25
+00:00:24.094 --> 00:00:25.081
+[RIVAL] Claude is the
+
+26
+00:00:25.081 --> 00:00:26.607
+[RIVAL] industry standard.
+
+27
+00:00:26.914 --> 00:00:27.913
+[BOT] Let's check the
+
+28
+00:00:27.913 --> 00:00:28.527
+[BOT] numbers.
+
+29
+00:00:28.986 --> 00:00:30.077
+[BOT] Claude caps you
+
+30
+00:00:30.077 --> 00:00:31.083
+[BOT] at 200k tokens
+
+31
+00:00:31.083 --> 00:00:32.425
+[BOT] and costs hundreds
+
+32
+00:00:32.425 --> 00:00:33.348
+[BOT] every month.
+
+33
+00:00:33.348 --> 00:00:34.648
+[BOT] Google Gemini 2.5
+
+34
+00:00:34.648 --> 00:00:35.774
+[BOT] Flash gives you
+
+35
+00:00:35.774 --> 00:00:37.161
+[BOT] one million tokens
+
+36
+00:00:37.161 --> 00:00:37.941
+[BOT] on the free
+
+37
+00:00:37.941 --> 00:00:38.374
+[BOT] tier.
+
+38
+00:00:32.906 --> 00:00:33.358
+[JUNIOR] Wait,
+
+39
+00:00:33.358 --> 00:00:34.894
+[JUNIOR] one million tokens?
+
+40
+00:00:34.894 --> 00:00:35.781
+[JUNIOR] For free?!
+
+41
+00:00:36.132 --> 00:00:36.577
+[RIVAL] Okay,
+
+42
+00:00:36.577 --> 00:00:37.645
+[RIVAL] but Claude has
+
+43
+00:00:37.645 --> 00:00:39.246
+[RIVAL] better reasoning for
+
+44
+00:00:39.246 --> 00:00:39.869
+[RIVAL] agents!
+
+45
+00:00:40.122 --> 00:00:41.891
+[BOT] Antigravity CLI orchestrates
+
+46
+00:00:41.891 --> 00:00:43.387
+[BOT] multi-agent coding right
+
+47
+00:00:43.387 --> 00:00:44.680
+[BOT] inside your terminal,
+
+48
+00:00:44.680 --> 00:00:45.972
+[BOT] with auto-healing and
+
+49
+00:00:45.972 --> 00:00:47.197
+[BOT] local verification.
+
+50
+00:00:47.498 --> 00:00:48.036
+[JUNIOR] So I don't
+
+51
+00:00:48.036 --> 00:00:48.574
+[JUNIOR] need a 200
+
+52
+00:00:48.574 --> 00:00:49.710
+[JUNIOR] dollar subscription?
+
+53
+00:00:50.026 --> 00:00:51.074
+[BOT] Not a single
+
+54
+00:00:51.074 --> 00:00:51.551
+[BOT] cent.
+
+55
+00:00:51.551 --> 00:00:52.851
+[BOT] Just pip install
+
+56
+00:00:52.851 --> 00:00:55.080
+[BOT] antigravity-sdk and launch
+
+57
+00:00:55.080 --> 00:00:55.451
+[BOT] agy.
+
+58
+00:00:55.770 --> 00:00:56.459
+[JUNIOR] Sorry bro,
+
+59
+00:00:56.459 --> 00:00:57.378
+[JUNIOR] looks like I'm
+
+60
+00:00:57.378 --> 00:00:58.220
+[JUNIOR] keeping my 10
+
+61
+00:00:58.220 --> 00:00:59.445
+[JUNIOR] dollars for tacos!
+
+62
+00:00:59.762 --> 00:01:00.800
+[BOT] Wise choice.
+
+63
+00:01:00.799 --> 00:01:02.762
+[BOT] Tacos don't hallucinate.

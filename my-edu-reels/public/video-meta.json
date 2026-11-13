@@ -1,0 +1,17 @@
+{
+  "title": "Claude vs Google Antigravity: The 3D Developer Debate",
+  "language": "en",
+  "type": "dialogue",
+  "durationInSeconds": 62.904,
+  "durationInFrames": 1903,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "speakers": {
+    "human": "en-US-AndrewNeural",
+    "bot": "en-US-BrianNeural"
+  },
+  "turnsCount": 13,
+  "wordCount": 155,
+  "chunksCount": 63
+}
