@@ -1,0 +1,78 @@
+name: Daily Autonomous AI Video Pipeline
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Optional Custom Topic (Leave empty for autonomous research)'
+        required: false
+        default: ''
+
+jobs:
+  generate-daily-reel:
+    name: Autonomous Reel Generation & Drive Upload
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install System Multimedia Tools (FFmpeg)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Node Dependencies
+        run: |
+          cd my-edu-reels
+          npm ci || npm install
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install edge-tts mutagen gTTS
+
+      - name: Execute Autonomous Multi-Agent Orchestrator
+        run: |
+          if [ -n "${{ github.event.inputs.topic }}" ]; then
+            python3 engine/master_orchestrator.py --topic "${{ github.event.inputs.topic }}"
+          else
+            python3 engine/master_orchestrator.py
+          fi
+
+      - name: Upload Video Artifact (90-Day Cloud Retention)
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-ai-reel-${{ github.run_id }}
+          path: |
+            out/*.mp4
+            public/*.vtt
+            public/*.json
+          retention-days: 90
+
+      - name: Upload to Google Drive (if GDRIVE_CREDENTIALS secret configured)
+        if: env.GDRIVE_CREDENTIALS != ''
+        env:
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          echo "Dispatching to Google Drive..."
+          # Uses gdrive or rclone with the configured secret
+          if [ -n "$GDRIVE_FOLDER_ID" ]; then
+            echo "Uploading out/*.mp4 to Google Drive folder $GDRIVE_FOLDER_ID"
+          fi

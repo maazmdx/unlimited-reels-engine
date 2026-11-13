@@ -1,0 +1,23 @@
+# Environments & Dependencies
+.venv/
+node_modules/
+my-edu-reels/node_modules/
+my-edu-reels/.remotion/
+
+# Python Cache
+__pycache__/
+*/__pycache__/
+*.pyc
+
+# Rendered Media Outputs & Large Files
+*.zip
+out/
+public/*.mp3
+public/*.mp4
+public/sfx/*.mp3
+public/sfx/*.wav
+
+# OS & Temp
+.DS_Store
+Thumbs.db
+*.tmp

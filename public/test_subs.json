@@ -1,0 +1,384 @@
+{
+  "words": [
+    {
+      "word": "I",
+      "raw": "I",
+      "start": 0.05,
+      "end": 0.2,
+      "speaker": "human_male"
+    },
+    {
+      "word": "spent",
+      "raw": "spent",
+      "start": 0.2,
+      "end": 0.575,
+      "speaker": "human_male"
+    },
+    {
+      "word": "6",
+      "raw": "6",
+      "start": 0.575,
+      "end": 0.725,
+      "speaker": "human_male"
+    },
+    {
+      "word": "hours",
+      "raw": "hours",
+      "start": 0.725,
+      "end": 1.1,
+      "speaker": "human_male"
+    },
+    {
+      "word": "debugging",
+      "raw": "debugging",
+      "start": 1.1,
+      "end": 1.774,
+      "speaker": "human_male"
+    },
+    {
+      "word": "this",
+      "raw": "this",
+      "start": 1.774,
+      "end": 2.074,
+      "speaker": "human_male"
+    },
+    {
+      "word": "regex",
+      "raw": "regex.",
+      "start": 2.074,
+      "end": 2.524,
+      "speaker": "human_male"
+    },
+    {
+      "word": "How",
+      "raw": "How",
+      "start": 2.868,
+      "end": 3.275,
+      "speaker": "claude"
+    },
+    {
+      "word": "delightful",
+      "raw": "delightful.",
+      "start": 3.275,
+      "end": 4.769,
+      "speaker": "claude"
+    },
+    {
+      "word": "It",
+      "raw": "It",
+      "start": 4.719,
+      "end": 4.894,
+      "speaker": "claude"
+    },
+    {
+      "word": "took",
+      "raw": "took",
+      "start": 4.894,
+      "end": 5.243,
+      "speaker": "claude"
+    },
+    {
+      "word": "me",
+      "raw": "me",
+      "start": 5.243,
+      "end": 5.418,
+      "speaker": "claude"
+    },
+    {
+      "word": "12",
+      "raw": "12",
+      "start": 5.418,
+      "end": 5.592,
+      "speaker": "claude"
+    },
+    {
+      "word": "milliseconds",
+      "raw": "milliseconds",
+      "start": 5.592,
+      "end": 6.64,
+      "speaker": "claude"
+    },
+    {
+      "word": "to",
+      "raw": "to",
+      "start": 6.64,
+      "end": 6.815,
+      "speaker": "claude"
+    },
+    {
+      "word": "write",
+      "raw": "write",
+      "start": 6.815,
+      "end": 7.251,
+      "speaker": "claude"
+    },
+    {
+      "word": "the",
+      "raw": "the",
+      "start": 7.251,
+      "end": 7.513,
+      "speaker": "claude"
+    },
+    {
+      "word": "unit",
+      "raw": "unit",
+      "start": 7.513,
+      "end": 7.863,
+      "speaker": "claude"
+    },
+    {
+      "word": "test",
+      "raw": "test",
+      "start": 7.863,
+      "end": 8.212,
+      "speaker": "claude"
+    },
+    {
+      "word": "for",
+      "raw": "for",
+      "start": 8.212,
+      "end": 8.474,
+      "speaker": "claude"
+    },
+    {
+      "word": "it",
+      "raw": "it.",
+      "start": 8.474,
+      "end": 8.736,
+      "speaker": "claude"
+    }
+  ],
+  "chunks": [
+    {
+      "start": 0.05,
+      "end": 0.725,
+      "text": "I spent 6",
+      "speaker": "human_male",
+      "words": [
+        {
+          "word": "I",
+          "raw": "I",
+          "start": 0.05,
+          "end": 0.2,
+          "speaker": "human_male"
+        },
+        {
+          "word": "spent",
+          "raw": "spent",
+          "start": 0.2,
+          "end": 0.575,
+          "speaker": "human_male"
+        },
+        {
+          "word": "6",
+          "raw": "6",
+          "start": 0.575,
+          "end": 0.725,
+          "speaker": "human_male"
+        }
+      ]
+    },
+    {
+      "start": 0.725,
+      "end": 2.074,
+      "text": "hours debugging this",
+      "speaker": "human_male",
+      "words": [
+        {
+          "word": "hours",
+          "raw": "hours",
+          "start": 0.725,
+          "end": 1.1,
+          "speaker": "human_male"
+        },
+        {
+          "word": "debugging",
+          "raw": "debugging",
+          "start": 1.1,
+          "end": 1.774,
+          "speaker": "human_male"
+        },
+        {
+          "word": "this",
+          "raw": "this",
+          "start": 1.774,
+          "end": 2.074,
+          "speaker": "human_male"
+        }
+      ]
+    },
+    {
+      "start": 2.074,
+      "end": 2.524,
+      "text": "regex.",
+      "speaker": "human_male",
+      "words": [
+        {
+          "word": "regex",
+          "raw": "regex.",
+          "start": 2.074,
+          "end": 2.524,
+          "speaker": "human_male"
+        }
+      ]
+    },
+    {
+      "start": 2.868,
+      "end": 4.769,
+      "text": "How delightful.",
+      "speaker": "claude",
+      "words": [
+        {
+          "word": "How",
+          "raw": "How",
+          "start": 2.868,
+          "end": 3.275,
+          "speaker": "claude"
+        },
+        {
+          "word": "delightful",
+          "raw": "delightful.",
+          "start": 3.275,
+          "end": 4.769,
+          "speaker": "claude"
+        }
+      ]
+    },
+    {
+      "start": 4.719,
+      "end": 5.418,
+      "text": "It took me",
+      "speaker": "claude",
+      "words": [
+        {
+          "word": "It",
+          "raw": "It",
+          "start": 4.719,
+          "end": 4.894,
+          "speaker": "claude"
+        },
+        {
+          "word": "took",
+          "raw": "took",
+          "start": 4.894,
+          "end": 5.243,
+          "speaker": "claude"
+        },
+        {
+          "word": "me",
+          "raw": "me",
+          "start": 5.243,
+          "end": 5.418,
+          "speaker": "claude"
+        }
+      ]
+    },
+    {
+      "start": 5.418,
+      "end": 6.815,
+      "text": "12 milliseconds to",
+      "speaker": "claude",
+      "words": [
+        {
+          "word": "12",
+          "raw": "12",
+          "start": 5.418,
+          "end": 5.592,
+          "speaker": "claude"
+        },
+        {
+          "word": "milliseconds",
+          "raw": "milliseconds",
+          "start": 5.592,
+          "end": 6.64,
+          "speaker": "claude"
+        },
+        {
+          "word": "to",
+          "raw": "to",
+          "start": 6.64,
+          "end": 6.815,
+          "speaker": "claude"
+        }
+      ]
+    },
+    {
+      "start": 6.815,
+      "end": 7.863,
+      "text": "write the unit",
+      "speaker": "claude",
+      "words": [
+        {
+          "word": "write",
+          "raw": "write",
+          "start": 6.815,
+          "end": 7.251,
+          "speaker": "claude"
+        },
+        {
+          "word": "the",
+          "raw": "the",
+          "start": 7.251,
+          "end": 7.513,
+          "speaker": "claude"
+        },
+        {
+          "word": "unit",
+          "raw": "unit",
+          "start": 7.513,
+          "end": 7.863,
+          "speaker": "claude"
+        }
+      ]
+    },
+    {
+      "start": 7.863,
+      "end": 8.736,
+      "text": "test for it.",
+      "speaker": "claude",
+      "words": [
+        {
+          "word": "test",
+          "raw": "test",
+          "start": 7.863,
+          "end": 8.212,
+          "speaker": "claude"
+        },
+        {
+          "word": "for",
+          "raw": "for",
+          "start": 8.212,
+          "end": 8.474,
+          "speaker": "claude"
+        },
+        {
+          "word": "it",
+          "raw": "it.",
+          "start": 8.474,
+          "end": 8.736,
+          "speaker": "claude"
+        }
+      ]
+    }
+  ],
+  "turns": [
+    {
+      "index": 0,
+      "speaker": "human_male",
+      "start": 0.0,
+      "end": 2.568,
+      "duration": 2.568,
+      "text": "I spent 6 hours debugging this regex.",
+      "cardTrigger": null
+    },
+    {
+      "index": 1,
+      "speaker": "claude",
+      "start": 2.768,
+      "end": 8.744,
+      "duration": 5.976,
+      "text": "How delightful. It took me 12 milliseconds to write the unit test for it.",
+      "cardTrigger": null
+    }
+  ]
+}

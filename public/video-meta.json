@@ -1,0 +1,17 @@
+{
+  "title": "The 6-Hour Dev Blunder",
+  "language": "en",
+  "type": "dialogue",
+  "durationInSeconds": 41.544,
+  "durationInFrames": 1262,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "speakers": {
+    "human": "en-US-AndrewNeural",
+    "bot": "en-US-BrianNeural"
+  },
+  "turnsCount": 6,
+  "wordCount": 86,
+  "chunksCount": 35
+}
