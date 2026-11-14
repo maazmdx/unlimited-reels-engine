@@ -474,8 +474,12 @@ const DadCharacter3D: React.FC<{
 // =====================================================================
 // 7. Diner Table & 16:9 Scenic Background Projection Screen
 // =====================================================================
-const CafeEnvironment3D: React.FC<{ bgImage?: string }> = ({
+// =====================================================================
+// 7. Authentic 50s Late-Night Diner Environment (Checkerboard, Booth, Props & Lamp)
+// =====================================================================
+const CafeEnvironment3D: React.FC<{ bgImage?: string; frame?: number }> = ({
   bgImage = "backgrounds/bg_cyber_diner.jpg",
+  frame = 0,
 }) => {
   const bgTexture = useMemo(() => {
     let clean = bgImage;
@@ -485,33 +489,293 @@ const CafeEnvironment3D: React.FC<{ bgImage?: string }> = ({
     return new THREE.TextureLoader().load(staticFile(clean));
   }, [bgImage]);
 
+  // Procedural 8x8 Black & White Checkerboard Floor Tile Texture
+  const checkerTexture = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    const tileSize = 64;
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        ctx.fillStyle = (r + c) % 2 === 0 ? "#0B0F19" : "#E2E8F0";
+        ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
+        // Subtle grout outline
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(c * tileSize, r * tileSize, tileSize, tileSize);
+      }
+    }
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(5, 5);
+    return tex;
+  }, []);
+
+  const steamWobble = Math.sin(frame * 0.1) * 0.02;
+
   return (
     <group position={[0, -0.7, 0]}>
-      {/* Wooden Table Top */}
-      <mesh position={[0, -0.76, 0.6]}>
-        <boxGeometry args={[5.2, 0.14, 1.8]} />
-        <meshStandardMaterial color="#3B2314" roughness={0.3} metalness={0.2} />
-      </mesh>
-      {/* Front Chrome Trim */}
-      <mesh position={[0, -0.76, 1.51]}>
-        <boxGeometry args={[5.22, 0.15, 0.04]} />
-        <meshStandardMaterial color="#E2E8F0" metalness={0.9} roughness={0.1} />
-      </mesh>
+      {/* ----------------------------------------------------------- */}
+      {/* 1. 3D Checkerboard Diner Floor                              */}
+      {/* ----------------------------------------------------------- */}
+      {checkerTexture && (
+        <mesh position={[0, -1.1, 0.5]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[16, 16]} />
+          <meshStandardMaterial map={checkerTexture} roughness={0.35} metalness={0.15} />
+        </mesh>
+      )}
+
+      {/* ----------------------------------------------------------- */}
+      {/* 2. Classic Red Vinyl Diner Booth Backrest                   */}
+      {/* ----------------------------------------------------------- */}
+      <group position={[0, 0.0, -0.7]}>
+        {/* Main Red Vinyl Cushion Back */}
+        <mesh position={[0, 0.15, 0]}>
+          <boxGeometry args={[5.6, 1.4, 0.35]} />
+          <meshStandardMaterial color="#991B1B" roughness={0.4} metalness={0.1} />
+        </mesh>
+        {/* Vertical Fluted Piping / Tufting Lines */}
+        {[-2.2, -1.65, -1.1, -0.55, 0, 0.55, 1.1, 1.65, 2.2].map((x, i) => (
+          <mesh key={i} position={[x, 0.15, 0.18]}>
+            <cylinderGeometry args={[0.025, 0.025, 1.38, 8]} />
+            <meshStandardMaterial color="#7F1D1D" roughness={0.5} />
+          </mesh>
+        ))}
+        {/* Chrome Piping Trim on Top of Booth */}
+        <mesh position={[0, 0.86, 0]}>
+          <boxGeometry args={[5.64, 0.06, 0.38]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.92} roughness={0.12} />
+        </mesh>
+        {/* Left and Right Booth Wing Dividers */}
+        <mesh position={[-2.82, 0.15, 0.4]}>
+          <boxGeometry args={[0.08, 1.4, 1.1]} />
+          <meshStandardMaterial color="#7F1D1D" roughness={0.4} />
+        </mesh>
+        <mesh position={[2.82, 0.15, 0.4]}>
+          <boxGeometry args={[0.08, 1.4, 1.1]} />
+          <meshStandardMaterial color="#7F1D1D" roughness={0.4} />
+        </mesh>
+      </group>
+
+      {/* ----------------------------------------------------------- */}
+      {/* 3. White Formica Diner Table with Heavy Chrome Bevel        */}
+      {/* ----------------------------------------------------------- */}
+      <group position={[0, -0.76, 0.65]}>
+        {/* Glossy White Formica Tabletop */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[5.2, 0.12, 1.85]} />
+          <meshStandardMaterial color="#F8FAFC" roughness={0.2} metalness={0.08} />
+        </mesh>
+        {/* Front & Side Chrome Beveled Trim */}
+        <mesh position={[0, 0, 0.93]}>
+          <boxGeometry args={[5.22, 0.14, 0.04]} />
+          <meshStandardMaterial color="#E2E8F0" metalness={0.95} roughness={0.08} />
+        </mesh>
+        <mesh position={[-2.61, 0, 0]}>
+          <boxGeometry args={[0.04, 0.14, 1.86]} />
+          <meshStandardMaterial color="#E2E8F0" metalness={0.95} roughness={0.08} />
+        </mesh>
+        <mesh position={[2.61, 0, 0]}>
+          <boxGeometry args={[0.04, 0.14, 1.86]} />
+          <meshStandardMaterial color="#E2E8F0" metalness={0.95} roughness={0.08} />
+        </mesh>
+        {/* Chrome Central Table Pedestal Base */}
+        <mesh position={[0, -0.5, 0]}>
+          <cylinderGeometry args={[0.12, 0.14, 0.9, 16]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.9} roughness={0.15} />
+        </mesh>
+      </group>
+
+      {/* ----------------------------------------------------------- */}
+      {/* 4. Realistic 3D Diner Table Props                           */}
+      {/* ----------------------------------------------------------- */}
+      {/* A. Ceramic Coffee Mug 1 (Left / Developer side) */}
+      <group position={[-0.8, -0.66, 0.95]}>
+        {/* Ceramic Mug Outer Body */}
+        <mesh position={[0, 0.11, 0]}>
+          <cylinderGeometry args={[0.12, 0.10, 0.22, 16]} />
+          <meshStandardMaterial color="#FEF3C7" roughness={0.25} />
+        </mesh>
+        {/* Steaming Coffee Liquid */}
+        <mesh position={[0, 0.20, 0]}>
+          <cylinderGeometry args={[0.11, 0.11, 0.02, 16]} />
+          <meshStandardMaterial color="#2E1805" roughness={0.1} />
+        </mesh>
+        {/* Mug Handle */}
+        <mesh position={[0.12, 0.11, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <torusGeometry args={[0.07, 0.02, 8, 16]} />
+          <meshStandardMaterial color="#FEF3C7" roughness={0.25} />
+        </mesh>
+        {/* Coffee Steam Wisps */}
+        <mesh position={[steamWobble, 0.32, 0]}>
+          <cylinderGeometry args={[0.02, 0.06, 0.16, 8]} />
+          <meshBasicMaterial color="#FFFFFF" transparent opacity={0.25} />
+        </mesh>
+      </group>
+
+      {/* B. Ceramic Coffee Mug 2 (Right / AI Bot side) */}
+      <group position={[0.85, -0.66, 0.95]}>
+        <mesh position={[0, 0.11, 0]}>
+          <cylinderGeometry args={[0.12, 0.10, 0.22, 16]} />
+          <meshStandardMaterial color="#FEF3C7" roughness={0.25} />
+        </mesh>
+        <mesh position={[0, 0.20, 0]}>
+          <cylinderGeometry args={[0.11, 0.11, 0.02, 16]} />
+          <meshStandardMaterial color="#2E1805" roughness={0.1} />
+        </mesh>
+        <mesh position={[-0.12, 0.11, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <torusGeometry args={[0.07, 0.02, 8, 16]} />
+          <meshStandardMaterial color="#FEF3C7" roughness={0.25} />
+        </mesh>
+      </group>
+
+      {/* C. Stack of 3 Golden Diner Pancakes with Melting Butter */}
+      <group position={[-0.15, -0.68, 1.05]}>
+        {/* Plate */}
+        <mesh position={[0, 0.02, 0]}>
+          <cylinderGeometry args={[0.36, 0.30, 0.04, 24]} />
+          <meshStandardMaterial color="#FFFFFF" roughness={0.15} />
+        </mesh>
+        {/* Pancake 1 (Bottom) */}
+        <mesh position={[0, 0.06, 0]}>
+          <cylinderGeometry args={[0.26, 0.26, 0.04, 20]} />
+          <meshStandardMaterial color="#D97706" roughness={0.7} />
+        </mesh>
+        {/* Pancake 2 (Middle) */}
+        <mesh position={[0, 0.10, 0]}>
+          <cylinderGeometry args={[0.25, 0.25, 0.04, 20]} />
+          <meshStandardMaterial color="#D97706" roughness={0.7} />
+        </mesh>
+        {/* Pancake 3 (Top) */}
+        <mesh position={[0, 0.14, 0]}>
+          <cylinderGeometry args={[0.24, 0.24, 0.04, 20]} />
+          <meshStandardMaterial color="#B45309" roughness={0.65} />
+        </mesh>
+        {/* Melting Golden Butter Cube */}
+        <mesh position={[0.02, 0.18, 0.02]} rotation={[0.1, 0.2, 0]}>
+          <boxGeometry args={[0.07, 0.05, 0.07]} />
+          <meshStandardMaterial color="#FDE047" roughness={0.2} />
+        </mesh>
+      </group>
+
+      {/* D. Retro Chrome Napkin Dispenser */}
+      <group position={[0.38, -0.66, 0.82]}>
+        <mesh position={[0, 0.12, 0]}>
+          <boxGeometry args={[0.18, 0.22, 0.15]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.92} roughness={0.12} />
+        </mesh>
+        {/* Folded Paper Napkins Peeking Out */}
+        <mesh position={[0, 0.14, 0.076]}>
+          <boxGeometry args={[0.12, 0.14, 0.01]} />
+          <meshStandardMaterial color="#FFFFFF" roughness={0.9} />
+        </mesh>
+      </group>
+
+      {/* E. Classic Diner Salt & Pepper Shakers */}
+      <group position={[0.58, -0.66, 0.82]}>
+        {/* Salt Shaker */}
+        <mesh position={[-0.06, 0.09, 0]}>
+          <cylinderGeometry args={[0.04, 0.045, 0.16, 12]} />
+          <meshStandardMaterial color="#FFFFFF" roughness={0.1} transparent opacity={0.8} />
+        </mesh>
+        <mesh position={[-0.06, 0.18, 0]}>
+          <cylinderGeometry args={[0.038, 0.04, 0.03, 12]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.9} roughness={0.1} />
+        </mesh>
+        {/* Pepper Shaker */}
+        <mesh position={[0.06, 0.09, 0]}>
+          <cylinderGeometry args={[0.04, 0.045, 0.16, 12]} />
+          <meshStandardMaterial color="#1E293B" roughness={0.1} transparent opacity={0.8} />
+        </mesh>
+        <mesh position={[0.06, 0.18, 0]}>
+          <cylinderGeometry args={[0.038, 0.04, 0.03, 12]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.9} roughness={0.1} />
+        </mesh>
+      </group>
+
+      {/* ----------------------------------------------------------- */}
+      {/* 5. Overhead Vintage Green Enamel Pendant Hanging Lamp        */}
+      {/* ----------------------------------------------------------- */}
+      <group position={[0, 2.7, 0.7]}>
+        {/* Hanging Black Cord */}
+        <mesh position={[0, 0.6, 0]}>
+          <cylinderGeometry args={[0.015, 0.015, 1.6, 8]} />
+          <meshStandardMaterial color="#0F172A" roughness={0.8} />
+        </mesh>
+        {/* Conical Enamel Lampshade (Dark Forest Green) */}
+        <mesh position={[0, -0.2, 0]}>
+          <cylinderGeometry args={[0.18, 0.65, 0.42, 24, 1, true]} />
+          <meshStandardMaterial color="#14532D" roughness={0.3} metalness={0.2} side={THREE.DoubleSide} />
+        </mesh>
+        {/* Chrome Lamp Fixture Top Cap */}
+        <mesh position={[0, 0.03, 0]}>
+          <cylinderGeometry args={[0.19, 0.20, 0.08, 16]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.92} roughness={0.1} />
+        </mesh>
+        {/* Glowing Warm Light Bulb */}
+        <mesh position={[0, -0.22, 0]}>
+          <sphereGeometry args={[0.10, 16, 16]} />
+          <meshStandardMaterial color="#FEF08A" emissive="#FEF08A" emissiveIntensity={2.5} />
+        </mesh>
+        {/* Conical Warm Spotlight Casting Down on the Diner Table */}
+        <spotLight
+          position={[0, -0.1, 0]}
+          target-position={[0, -3.0, 0]}
+          color="#FEF3C7"
+          intensity={3.8}
+          angle={0.72}
+          penumbra={0.65}
+          distance={8.0}
+        />
+      </group>
+
+      {/* ----------------------------------------------------------- */}
+      {/* 6. Background Window & Glowing Neon "DINER" Sign           */}
+      {/* ----------------------------------------------------------- */}
       {/* 16:9 Scenic Environment Billboard Projection */}
       <mesh position={[0, 1.8, -3.2]}>
         <planeGeometry args={[14.2, 8.0]} />
         <meshBasicMaterial map={bgTexture} toneMapped={false} />
       </mesh>
-      {/* Contrast Vignette Layer */}
+      {/* Contrast Darkening / Rain Atmosphere Vignette */}
       <mesh position={[0, 1.8, -3.18]}>
         <planeGeometry args={[14.3, 8.1]} />
-        <meshBasicMaterial color="#070B14" transparent opacity={0.32} />
+        <meshBasicMaterial color="#070B14" transparent opacity={0.36} />
       </mesh>
-      {/* Top Neon Ambient Light Bar */}
-      <mesh position={[0, 2.8, -3.15]}>
-        <boxGeometry args={[10, 0.08, 0.04]} />
-        <meshStandardMaterial color="#00F0FF" emissive="#00F0FF" emissiveIntensity={1.8} />
-      </mesh>
+
+      {/* Retro Glowing Neon "DINER" Sign Outside Window */}
+      <group position={[0, 2.7, -3.12]}>
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[4.2, 0.62, 0.04]} />
+          <meshStandardMaterial color="#0B0F19" roughness={0.8} />
+        </mesh>
+        {/* Neon Outline Border */}
+        <mesh position={[0, 0, 0.03]}>
+          <boxGeometry args={[4.05, 0.50, 0.02]} />
+          <meshStandardMaterial
+            color="#FF1493"
+            emissive="#FF1493"
+            emissiveIntensity={2.2}
+            roughness={0.1}
+          />
+        </mesh>
+        {/* Neon Letter Bar Glowing in Pink / Cyan */}
+        <mesh position={[0, 0, 0.05]}>
+          <boxGeometry args={[3.6, 0.24, 0.02]} />
+          <meshStandardMaterial
+            color="#00F0FF"
+            emissive="#00F0FF"
+            emissiveIntensity={2.6}
+            roughness={0.1}
+          />
+        </mesh>
+        <pointLight position={[0, 0, 0.3]} color="#FF1493" intensity={2.0} distance={5.0} />
+      </group>
     </group>
   );
 };
@@ -674,7 +938,7 @@ export const ThreeDinerScene: React.FC<ThreeDinerSceneProps> = ({
         <pointLight position={[0, 3.2, -2.5]} intensity={2.6} color="#38BDF8" distance={12} />
 
         {/* 3D Diner Table Environment with 16:9 Scenic Projection */}
-        <CafeEnvironment3D bgImage={bgImage} />
+        <CafeEnvironment3D bgImage={bgImage} frame={frame} />
 
         {/* Left Seat: Junior Dev or Claude (in 3-AI Showdown) */}
         {claudeOnLeft ? (

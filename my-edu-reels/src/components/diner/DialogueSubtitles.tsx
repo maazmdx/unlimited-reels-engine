@@ -154,16 +154,24 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
         <span>{badgeLabel}</span>
       </div>
 
-      {/* Main Subtitle Box (Anti-Flicker Solid Translucency) */}
+      {/* Main Subtitle Container (Cinematic Minimal Serif with Anti-Flicker) */}
       <div
         style={{
-          backgroundColor: "rgba(11, 15, 25, 0.94)",
-          border: "1px solid rgba(255, 255, 255, 0.12)",
-          borderRadius: 20,
-          padding: "16px 28px",
-          maxWidth: 960,
+          backgroundColor:
+            styleMode === "serif_gold"
+              ? "rgba(11, 15, 25, 0.65)"
+              : "rgba(11, 15, 25, 0.94)",
+          backdropFilter: styleMode === "serif_gold" ? "blur(10px)" : "none",
+          WebkitBackdropFilter: styleMode === "serif_gold" ? "blur(10px)" : "none",
+          border:
+            styleMode === "serif_gold"
+              ? "1px solid rgba(255, 255, 255, 0.10)"
+              : "1px solid rgba(255, 255, 255, 0.12)",
+          borderRadius: 24,
+          padding: "14px 32px",
+          maxWidth: 980,
           textAlign: "center",
-          boxShadow: "0 16px 40px rgba(0,0,0,0.8)",
+          boxShadow: "0 12px 32px rgba(0,0,0,0.85)",
           backfaceVisibility: "hidden",
         }}
       >
@@ -173,7 +181,7 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
               display: "flex",
               flexWrap: "wrap",
               justifyContent: "center",
-              gap: "8px 12px",
+              gap: "8px 14px",
               fontFamily:
                 styleMode === "serif_gold"
                   ? "Georgia, 'Times New Roman', serif"
@@ -187,18 +195,18 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
                 <span
                   key={idx}
                   style={{
-                    fontSize: 32,
+                    fontSize: 36,
                     fontWeight: 700,
-                    lineHeight: 1.3,
+                    lineHeight: 1.35,
                     color: isActive
                       ? "#FFDF00"
                       : isPast
-                      ? "#F8FAFC"
-                      : "rgba(248, 250, 252, 0.65)",
+                      ? "#FFFFFF"
+                      : "rgba(255, 255, 255, 0.60)",
                     textShadow: isActive
-                      ? "0 0 16px rgba(255, 223, 0, 0.8), 0 2px 8px rgba(0,0,0,0.9)"
-                      : "0 2px 6px rgba(0,0,0,0.8)",
-                    transform: isActive ? "scale(1.08)" : "scale(1.0)",
+                      ? "0 0 18px rgba(255, 223, 0, 0.85), 0 3px 10px rgba(0,0,0,0.95)"
+                      : "0 3px 8px rgba(0,0,0,0.9)",
+                    transform: isActive ? "scale(1.06)" : "scale(1.0)",
                     display: "inline-block",
                     transition: "transform 0.05s ease-out",
                   }}
@@ -211,15 +219,15 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
         ) : (
           <span
             style={{
-              fontSize: 32,
+              fontSize: 36,
               fontWeight: 700,
-              color: "#F8FAFC",
-              lineHeight: 1.3,
+              color: "#FFFFFF",
+              lineHeight: 1.35,
               fontFamily:
                 styleMode === "serif_gold"
                   ? "Georgia, 'Times New Roman', serif"
                   : "system-ui, -apple-system, sans-serif",
-              textShadow: "0 2px 8px rgba(0,0,0,0.9)",
+              textShadow: "0 3px 10px rgba(0,0,0,0.95)",
             }}
           >
             {activeChunk.text}

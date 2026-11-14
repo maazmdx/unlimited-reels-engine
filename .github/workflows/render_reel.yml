@@ -6,9 +6,15 @@ on:
       preset:
         description: 'Select Video Preset'
         required: true
-        default: 'compare_antigravity_vs_claude_en'
+        default: 'diner_fellow_3850_en'
         type: choice
         options:
+          - diner_fellow_3850_en
+          - diner_rejection_101_en
+          - diner_vibe_coder_en
+          - diner_retention_trap_en
+          - diner_aws_14k_bill_en
+          - diner_ai_clash_roast_en
           - compare_antigravity_vs_claude_en
           - compare_antigravity_vs_claude_hi
           - compare_antigravity_vs_claude_kn

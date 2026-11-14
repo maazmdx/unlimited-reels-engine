@@ -8,6 +8,7 @@ import {
 } from "remotion";
 import { ThreeDinerScene, ThreeDinerTurn } from "./components/three3d/ThreeDinerScene";
 import { ComparisonCard3D, ComparisonRow } from "./components/three3d/ComparisonCard3D";
+import { FloatingBrowserCard, CardContentType } from "./components/diner/FloatingBrowserCard";
 import { DialogueSubtitles, DialogueChunk } from "./components/diner/DialogueSubtitles";
 import { ViralHook } from "./components/ViralHook";
 import { ProgressBar } from "./components/ProgressBar";
@@ -40,6 +41,9 @@ export interface ThreeWayComparisonReelProps {
   hookTag?: string;
   explainerTitle?: string;
   comparisonRows?: ComparisonRow[];
+  cardType?: CardContentType;
+  cardUrl?: string;
+  cardData?: Record<string, any>;
   leftHeader?: string;
   rightHeader?: string;
   badge?: string;
@@ -74,9 +78,12 @@ export const ThreeWayComparisonReel: React.FC<ThreeWayComparisonReelProps> = ({
   hookTag = "⚠️ STOP WASTING MONEY",
   explainerTitle = "Tool Comparison • The Real Numbers",
   comparisonRows,
+  cardType = "job_posting",
+  cardUrl = "job-boards.greenhouse.io/anthropic/fellowship",
+  cardData = {},
   leftHeader = "Anthropic Claude",
   rightHeader = "Google Antigravity",
-  badge = "$0 VERIFIED",
+  badge = "EVIDENCE",
   winner = "Winner: Google Antigravity & Gemini 2.5 (100% Free Local Setup)",
   buttonText = "Run `agy` Free",
   cardStartFrame,
@@ -189,19 +196,32 @@ export const ThreeWayComparisonReel: React.FC<ThreeWayComparisonReelProps> = ({
         durationFrames={75}
       />
 
-      {/* 7. Floating 3D Comparison Card (Anti-Flicker Spring Entrance & Exit) */}
-      <ComparisonCard3D
-        isVisible={isCardVisible}
-        startFrame={defaultCardStart}
-        endFrame={defaultCardEnd}
-        title={explainerTitle}
-        leftHeader={leftHeader}
-        rightHeader={rightHeader}
-        badge={badge}
-        winner={winner}
-        buttonText={buttonText}
-        rows={comparisonRows}
-      />
+      {/* 7. Floating macOS Evidence Window (Anti-Flicker Spring Entrance & Exit) */}
+      {comparisonRows && comparisonRows.length > 0 ? (
+        <ComparisonCard3D
+          isVisible={isCardVisible}
+          startFrame={defaultCardStart}
+          endFrame={defaultCardEnd}
+          title={explainerTitle}
+          leftHeader={leftHeader}
+          rightHeader={rightHeader}
+          badge={badge}
+          winner={winner}
+          buttonText={buttonText}
+          rows={comparisonRows}
+        />
+      ) : (
+        <FloatingBrowserCard
+          isVisible={isCardVisible}
+          startFrame={defaultCardStart}
+          endFrame={defaultCardEnd}
+          contentType={cardType}
+          url={cardUrl}
+          badge={badge}
+          title={explainerTitle}
+          data={cardData}
+        />
+      )}
 
       {/* 8. Non-Blinking Lower-Third Subtitles (Multi-Character Badges) */}
       <DialogueSubtitles

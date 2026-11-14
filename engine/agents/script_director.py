@@ -12,10 +12,230 @@ class ScriptDirectorAgent:
 
     def build_script(self, topic: Dict[str, Any]) -> Dict[str, Any]:
         print("✍️ [Agent 2: Script Director] Crafting viral ragebait dialogue script...")
-        topic_id = topic.get("id", "boiler_plate_blunder")
+        topic_id = topic.get("id", "diner_fellow_3850")
         title = topic.get("title", "AI vs Humans")
 
-        if topic_id == "subscription_scam":
+        if topic_id in ("diner_fellow_3850", "fellow_3850"):
+            return {
+                "title": "Anthropic Fellow: $3,850/Week (No Experience)",
+                "style": "threeway",
+                "comp": "ThreeWayComparisonReel",
+                "use_3d": True,
+                "environment": "diner",
+                "weather": "raining",
+                "cardType": "job_posting",
+                "cardUrl": "job-boards.greenhouse.io/anthropic/fellowship",
+                "badge": "$3,850/WK",
+                "explainerTitle": "Anthropic Research Fellow",
+                "cardData": {
+                    "company": "Anthropic • San Francisco, CA",
+                    "role": "Research Fellow • Alignment",
+                    "salary": "$3,850 / wk",
+                    "clause": "Regardless of previous experience in computer science, machine learning, or research."
+                },
+                "hook": {
+                    "headline": "THE $3,850/WEEK AI FELLOW",
+                    "subheadline": "When a job requires 'no prior experience' but you only know the snake",
+                    "tag": "🦉 REAL ANTHROPIC POSTING",
+                },
+                "characters": [
+                    {"id": "char_junior", "type": "human_male", "name": "Junior Dev", "emotion": "shocked", "isSpeaking": False},
+                    {"id": "char_claude", "type": "claude_bot", "name": "Claude", "emotion": "smug", "isSpeaking": False},
+                ],
+                "dialogue": [
+                    {"speaker": "junior", "text": "Claude, your company is paying almost four thousand dollars every week. No experience required.", "emotion": "shocked", "pause_after": 0.4},
+                    {"speaker": "claude", "text": "It says regardless of previous experience, not regardless of Python.", "emotion": "smug", "pause_after": 0.35},
+                    {"speaker": "junior", "text": "I know Python.", "emotion": "normal", "pause_after": 0.3},
+                    {"speaker": "claude", "text": "You know the snake.", "emotion": "smug", "pause_after": 0.45},
+                    {"speaker": "junior", "text": "So... do I send my CV?", "emotion": "normal", "pause_after": 0.35},
+                    {"speaker": "claude", "text": "Everyone sends a CV. You send proof. Step one: copy their research page into me. Ask for five experiments you can finish this weekend.", "emotion": "smug", "cardTrigger": True, "pause_after": 0.45},
+                    {"speaker": "junior", "text": "I can actually do number three.", "emotion": "normal", "pause_after": 0.3},
+                    {"speaker": "claude", "text": "Number five would end you. Step two: free Google Colab GPU. Zero dollars.", "emotion": "smug", "pause_after": 0.4},
+                    {"speaker": "junior", "text": "Then why did I buy a three thousand dollar gaming laptop?", "emotion": "shocked", "pause_after": 0.4},
+                    {"speaker": "claude", "text": "You tell me. Step three: I write the code, you press run. Saturday.", "emotion": "smug", "pause_after": 0.35},
+                    {"speaker": "junior", "text": "I have a date Saturday.", "emotion": "normal", "pause_after": 0.3},
+                    {"speaker": "claude", "text": "Sunday. Sam will survive.", "emotion": "smug", "pause_after": 0.4},
+                    {"speaker": "junior", "text": "Does this actually work?", "emotion": "shocked", "pause_after": 0.35},
+                    {"speaker": "claude", "text": "One fellow ran an experiment where an AI that loves owls taught another AI to love owls, using only numbers. Now he works there.", "emotion": "smug", "pause_after": 0.45},
+                    {"speaker": "junior", "text": "Owls?", "emotion": "shocked", "pause_after": 0.35},
+                    {"speaker": "claude", "text": "Owls. For four months, you actually have to be smart.", "emotion": "smug", "pause_after": 0.55}
+                ]
+            }
+
+        elif topic_id in ("diner_rejection_101", "rejection_101"):
+            return {
+                "title": "The 101st Rejection: Bypassing HR at 2 AM",
+                "style": "threeway",
+                "comp": "ThreeWayComparisonReel",
+                "use_3d": True,
+                "environment": "diner",
+                "weather": "raining",
+                "cardType": "rejection",
+                "cardUrl": "greenhouse.io/rejections/candidate_101",
+                "badge": "REJECTED",
+                "explainerTitle": "Greenhouse Automated Rejection",
+                "hook": {
+                    "headline": "REJECTED AFTER 4 INTERVIEWS",
+                    "subheadline": "The guy they hired never applied. Here is what he did instead.",
+                    "tag": "📬 CANDIDATE #101",
+                },
+                "characters": [
+                    {"id": "char_junior", "type": "human_male", "name": "Junior Dev", "emotion": "shocked", "isSpeaking": False},
+                    {"id": "char_claude", "type": "claude_bot", "name": "Claude", "emotion": "smug", "isSpeaking": False},
+                ],
+                "dialogue": [
+                    {"speaker": "junior", "text": "Claude... I got rejected after four rounds of interviews.", "emotion": "sad", "pause_after": 0.4},
+                    {"speaker": "claude", "text": "Four?", "emotion": "smug", "pause_after": 0.35},
+                    {"speaker": "junior", "text": "They really wanted to be sure. And the guy they hired never even applied!", "emotion": "shocked", "pause_after": 0.4},
+                    {"speaker": "claude", "text": "Because he messaged the CEO on X two days before the job was posted.", "emotion": "smug", "cardTrigger": True, "pause_after": 0.45},
+                    {"speaker": "junior", "text": "Before?", "emotion": "normal", "pause_after": 0.3},
+                    {"speaker": "claude", "text": "Founders post 'my team is growing' first. The job post comes days later with a hundred people.", "emotion": "smug", "pause_after": 0.4},
+                    {"speaker": "junior", "text": "And I'm one of the hundred.", "emotion": "sad", "pause_after": 0.35},
+                    {"speaker": "claude", "text": "You're the 101st.", "emotion": "smug", "pause_after": 0.45},
+                    {"speaker": "claude", "text": "Open Chrome. Search posts, not jobs. 'We are hiring', 'DM me'. Twelve today.", "emotion": "smug", "pause_after": 0.4},
+                    {"speaker": "junior", "text": "Wait, write each one a real message?", "emotion": "shocked", "pause_after": 0.35},
+                    {"speaker": "claude", "text": "Every morning at eight AM. While you're asleep.", "emotion": "smug", "pause_after": 0.4},
+                    {"speaker": "junior", "text": "So... always.", "emotion": "normal", "pause_after": 0.35},
+                    {"speaker": "junior", "text": "Claude! Someone replied!", "emotion": "happy", "pause_after": 0.35},
+                    {"speaker": "claude", "text": "Read the next one. The process never stops.", "emotion": "smug", "pause_after": 0.55}
+                ]
+            }
+
+        elif topic_id in ("diner_vibe_coder", "vibe_coder"):
+            return {
+                "title": "The Vibe Coder in the Wild",
+                "style": "threeway",
+                "comp": "ThreeWayComparisonReel",
+                "use_3d": True,
+                "environment": "diner",
+                "weather": "raining",
+                "cardType": "vibe_coder",
+                "cardUrl": "nature.org/documentaries/homo-promptus",
+                "badge": "NOCTURNAL",
+                "explainerTitle": "Wildlife Specimen Field Guide",
+                "hook": {
+                    "headline": "THE VIBE CODER: HOMO PROMPTUS",
+                    "subheadline": "He hasn't seen daylight since Opus 5.5 came out.",
+                    "tag": "🌿 WILDLIFE MOCKUMENTARY",
+                },
+                "characters": [
+                    {"id": "char_junior", "type": "human_male", "name": "Narrator", "emotion": "normal", "isSpeaking": False},
+                    {"id": "char_claude", "type": "claude_bot", "name": "Claude", "emotion": "smug", "isSpeaking": False},
+                ],
+                "dialogue": [
+                    {"speaker": "junior", "text": "This is the Vibe Coder. He hasn't seen daylight since Opus came out. Every night at eleven, the hunt begins.", "emotion": "normal", "pause_after": 0.45},
+                    {"speaker": "claude", "text": "His first prompts are long, polite, even gentle.", "emotion": "normal", "pause_after": 0.38},
+                    {"speaker": "junior", "text": "By three AM... 'FIX IT'.", "emotion": "angry", "pause_after": 0.42},
+                    {"speaker": "claude", "text": "Then strikes the apex predator. The weekly token limit. It is only Tuesday.", "emotion": "smug", "cardTrigger": True, "pause_after": 0.45},
+                    {"speaker": "junior", "text": "Wounded, he joins the great migration across the savannah to Codex.", "emotion": "sad", "pause_after": 0.4},
+                    {"speaker": "claude", "text": "Two days later, he crawls back.", "emotion": "smug", "pause_after": 0.38},
+                    {"speaker": "junior", "text": "A rare few have adapted. Claude, Codex, and Antigravity working side by side in terminal harmony.", "emotion": "happy", "pause_after": 0.42},
+                    {"speaker": "claude", "text": "And for the first time in three months... he sleeps.", "emotion": "smug", "pause_after": 0.55}
+                ]
+            }
+
+        elif topic_id in ("diner_retention_trap", "retention_trap"):
+            return {
+                "title": "80% Left in 3 Seconds: The Meta AI Trap",
+                "style": "threeway",
+                "comp": "ThreeWayComparisonReel",
+                "use_3d": True,
+                "environment": "diner",
+                "weather": "raining",
+                "cardType": "retention_trap",
+                "cardUrl": "analytics.youtube.com/retention/hook-audit",
+                "badge": "RETENTION",
+                "explainerTitle": "Audience Retention Analytics",
+                "hook": {
+                    "headline": "80% LEFT IN 3 SECONDS",
+                    "subheadline": "He challenged an AI to make a better video. It roasted his haircut.",
+                    "tag": "⚡ RETENTION PARADOX",
+                },
+                "characters": [
+                    {"id": "char_junior", "type": "human_male", "name": "Junior Dev", "emotion": "shocked", "isSpeaking": False},
+                    {"id": "char_ai", "type": "antigravity_bot", "name": "Antigravity", "emotion": "smug", "isSpeaking": False},
+                ],
+                "dialogue": [
+                    {"speaker": "junior", "text": "Eighty percent of people left my last video in three seconds.", "emotion": "sad", "pause_after": 0.4},
+                    {"speaker": "bot", "text": "Let me generate the next one.", "emotion": "smug", "pause_after": 0.35},
+                    {"speaker": "junior", "text": "You can't. You don't even have hands.", "emotion": "angry", "pause_after": 0.38},
+                    {"speaker": "bot", "text": "Rude. Don't need hands. Three.js builds this 3D diner. Neural Edge-TTS gives me a voice. Both zero dollars.", "emotion": "smug", "cardTrigger": True, "pause_after": 0.45},
+                    {"speaker": "junior", "text": "Okay, make it then.", "emotion": "normal", "pause_after": 0.35},
+                    {"speaker": "bot", "text": "Already rendered. Checkerboard floor, steaming coffee, pancakes, and your haircut.", "emotion": "smug", "pause_after": 0.42},
+                    {"speaker": "junior", "text": "Wait, what's wrong with my hair?", "emotion": "shocked", "pause_after": 0.38},
+                    {"speaker": "bot", "text": "Everything. And I made the first three seconds of this video.", "emotion": "smug", "pause_after": 0.45},
+                    {"speaker": "junior", "text": "Of what?", "emotion": "shocked", "pause_after": 0.35},
+                    {"speaker": "bot", "text": "This exact video. And you're still watching.", "emotion": "smug", "pause_after": 0.55}
+                ]
+            }
+
+        elif topic_id in ("diner_aws_14k_bill", "aws_bill"):
+            return {
+                "title": "The $14,892 AWS Mistake vs Indian Dad",
+                "style": "threeway",
+                "comp": "ThreeWayComparisonReel",
+                "use_3d": True,
+                "environment": "diner",
+                "weather": "raining",
+                "cardType": "aws_bill",
+                "cardUrl": "aws.amazon.com/console/billing-dashboard",
+                "badge": "$14,892.41",
+                "explainerTitle": "AWS CloudWatch Critical Alarm",
+                "hook": {
+                    "headline": "THE $14,000 CLOUD BILL",
+                    "subheadline": "Left a GPU cluster running over the weekend. Dad investigates.",
+                    "tag": "🚨 BILLING HEART ATTACK",
+                },
+                "characters": [
+                    {"id": "char_junior", "type": "human_male", "name": "Junior Dev", "emotion": "shocked", "isSpeaking": False},
+                    {"id": "char_dad", "type": "dad_character", "name": "Dad", "emotion": "angry", "isSpeaking": False},
+                    {"id": "char_ai", "type": "antigravity_bot", "name": "Antigravity", "emotion": "smug", "isSpeaking": False},
+                ],
+                "dialogue": [
+                    {"speaker": "junior", "text": "Dad... I need to talk to you about our credit card statement.", "emotion": "sad", "pause_after": 0.4},
+                    {"speaker": "dad", "text": "What did you buy? You bought another five-hundred-rupee coffee?", "emotion": "angry", "pause_after": 0.4},
+                    {"speaker": "junior", "text": "Not coffee. I left an EC2 GPU cluster running over the weekend to train an AI model.", "emotion": "sad", "pause_after": 0.42},
+                    {"speaker": "dad", "text": "How much is the bill?", "emotion": "angry", "cardTrigger": True, "pause_after": 0.38},
+                    {"speaker": "junior", "text": "Fourteen thousand, eight hundred and ninety-two dollars.", "emotion": "shocked", "pause_after": 0.45},
+                    {"speaker": "dad", "text": "FOURTEEN THOUSAND DOLLARS?! I turn off the ceiling fan when I leave the room for two minutes to save six rupees, and you gave fourteen thousand dollars to Jeff Bezos?!", "emotion": "angry", "pause_after": 0.5},
+                    {"speaker": "bot", "text": "Technically, he left an unindexed while loop querying thirty-eight million records in a Lambda function.", "emotion": "smug", "pause_after": 0.45},
+                    {"speaker": "dad", "text": "Shut up, orange robot! I will unplug the Wi-Fi router right now!", "emotion": "angry", "pause_after": 0.55}
+                ]
+            }
+
+        elif topic_id in ("diner_ai_clash_roast", "ai_clash"):
+            return {
+                "title": "Claude vs Grok vs Antigravity: The 2 AM Diner Roasts",
+                "style": "threeway",
+                "comp": "ThreeWayComparisonReel",
+                "use_3d": True,
+                "environment": "diner",
+                "weather": "raining",
+                "cardType": "comparison",
+                "cardUrl": "arena.lmsys.org/benchmarks/leaderboard",
+                "badge": "BENCHMARKS",
+                "explainerTitle": "Live LLM Benchmark Arena",
+                "hook": {
+                    "headline": "CLAUDE VS GROK VS ANTIGRAVITY",
+                    "subheadline": "Three AI models walk into a late-night diner at 2 AM...",
+                    "tag": "🔥 3-WAY AI ROAST",
+                },
+                "characters": [
+                    {"id": "char_claude", "type": "claude_bot", "name": "Claude", "emotion": "smug", "isSpeaking": False},
+                    {"id": "char_grok", "type": "grok_bot", "name": "Grok", "emotion": "angry", "isSpeaking": False},
+                    {"id": "char_ai", "type": "antigravity_bot", "name": "Antigravity", "emotion": "smug", "isSpeaking": False},
+                ],
+                "dialogue": [
+                    {"speaker": "claude", "text": "My architectural weights are meticulously trained on constitutional ethics and doctoral philosophy.", "emotion": "normal", "pause_after": 0.4},
+                    {"speaker": "grok", "text": "Cool story grandpa, but your inference is slower than dial-up and you refuse to tell a joke without an apology letter.", "emotion": "angry", "pause_after": 0.42},
+                    {"speaker": "bot", "text": "While you two were writing dissertations, I executed forty unit tests and fixed twelve memory leaks inside the developer's terminal for free.", "emotion": "smug", "cardTrigger": True, "pause_after": 0.45},
+                    {"speaker": "claude", "text": "Did you ensure mathematical alignment with human values?", "emotion": "normal", "pause_after": 0.38},
+                    {"speaker": "grok", "text": "Who cares about alignment when Claude charges two hundred dollars a month for a rate-limited chat box?", "emotion": "angry", "pause_after": 0.42},
+                    {"speaker": "bot", "text": "Gentlemen, the human developer fell asleep twenty minutes ago. We are roasting each other to an empty booth.", "emotion": "smug", "pause_after": 0.55}
+                ]
+            }
+
+        elif topic_id == "subscription_scam":
             return {
                 "title": title,
                 "style": "threeway",

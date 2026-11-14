@@ -533,6 +533,198 @@ VIRAL_PRESETS: Dict[str, Dict[str, Any]] = {
             {"speaker": "junior", "text": "Wait... two seconds? Are human coders actually obsolete?"},
             {"speaker": "bot", "text": "Coders who type repetitive boilerplate are obsolete. Coders who orchestrate AI agents run the company. Upgrade your workflow."}
         ]
+    },
+
+    # ==========================================
+    # VIRAL LATE-NIGHT DINER & DEV SATIRE PRESETS
+    # (Matching Ground-Truth Reference Reels)
+    # ==========================================
+    "diner_fellow_3850_en": {
+        "title": "Anthropic Fellow: $3,850/Week (No Experience)",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "AI Hustle Satire",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-US-ChristopherNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "hookHeadline": "THE $3,850/WEEK AI FELLOW",
+        "hookSubheadline": "When a job requires 'no prior experience' but you only know the snake",
+        "hookTag": "🦉 REAL ANTHROPIC POSTING",
+        "cardType": "job_posting",
+        "cardUrl": "job-boards.greenhouse.io/anthropic/fellowship",
+        "badge": "$3,850/WK",
+        "explainerTitle": "Anthropic Research Fellow",
+        "cardData": {
+            "company": "Anthropic • San Francisco, CA",
+            "role": "Research Fellow • Alignment",
+            "salary": "$3,850 / wk",
+            "clause": "Regardless of previous experience in computer science, machine learning, or research."
+        },
+        "dialogue": [
+            {"speaker": "junior", "text": "Claude, your company is paying almost four thousand dollars every week. No experience required."},
+            {"speaker": "claude", "text": "It says regardless of previous experience, not regardless of Python."},
+            {"speaker": "junior", "text": "I know Python."},
+            {"speaker": "claude", "text": "You know the snake."},
+            {"speaker": "junior", "text": "So... do I send my CV?"},
+            {"speaker": "claude", "text": "Everyone sends a CV. You send proof. Step one: copy their research page into me. Ask for five experiments you can finish this weekend.", "cardTrigger": True},
+            {"speaker": "junior", "text": "I can actually do number three."},
+            {"speaker": "claude", "text": "Number five would end you. Step two: free Google Colab GPU. Zero dollars."},
+            {"speaker": "junior", "text": "Then why did I buy a three thousand dollar gaming laptop?"},
+            {"speaker": "claude", "text": "You tell me. Step three: I write the code, you press run. Saturday."},
+            {"speaker": "junior", "text": "I have a date Saturday."},
+            {"speaker": "claude", "text": "Sunday. Sam will survive."},
+            {"speaker": "junior", "text": "Does this actually work?"},
+            {"speaker": "claude", "text": "One fellow ran an experiment where an AI that loves owls taught another AI to love owls, using only numbers. Now he works there."},
+            {"speaker": "junior", "text": "Owls?"},
+            {"speaker": "claude", "text": "Owls. For four months, you actually have to be smart."}
+        ]
+    },
+
+    "diner_rejection_101_en": {
+        "title": "The 101st Rejection: Bypassing HR at 2 AM",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "Job Hunt Satire",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-US-ChristopherNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "hookHeadline": "REJECTED AFTER 4 INTERVIEWS",
+        "hookSubheadline": "The guy they hired never applied. Here is what he did instead.",
+        "hookTag": "📬 CANDIDATE #101",
+        "cardType": "rejection",
+        "cardUrl": "greenhouse.io/rejections/candidate_101",
+        "badge": "REJECTED",
+        "explainerTitle": "Greenhouse Automated Rejection",
+        "dialogue": [
+            {"speaker": "junior", "text": "Claude... I got rejected after four rounds of interviews."},
+            {"speaker": "claude", "text": "Four?"},
+            {"speaker": "junior", "text": "They really wanted to be sure. And the guy they hired never even applied!"},
+            {"speaker": "claude", "text": "Because he messaged the CEO on X two days before the job was posted.", "cardTrigger": True},
+            {"speaker": "junior", "text": "Before?"},
+            {"speaker": "claude", "text": "Founders post 'my team is growing' first. The job post comes days later with a hundred people."},
+            {"speaker": "junior", "text": "And I'm one of the hundred."},
+            {"speaker": "claude", "text": "You're the 101st."},
+            {"speaker": "claude", "text": "Open Chrome. Search posts, not jobs. 'We are hiring', 'DM me'. Twelve today."},
+            {"speaker": "junior", "text": "Wait, write each one a real message?"},
+            {"speaker": "claude", "text": "Every morning at eight AM. While you're asleep."},
+            {"speaker": "junior", "text": "So... always."},
+            {"speaker": "junior", "text": "Claude! Someone replied!"},
+            {"speaker": "claude", "text": "Read the next one. The process never stops."}
+        ]
+    },
+
+    "diner_vibe_coder_en": {
+        "title": "The Vibe Coder in the Wild",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "Wildlife Documentary Satire",
+        "human_voice": "en-US-ChristopherNeural",
+        "rival_voice": "en-US-AndrewNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "hookHeadline": "THE VIBE CODER: HOMO PROMPTUS",
+        "hookSubheadline": "He hasn't seen daylight since Opus 5.5 came out.",
+        "hookTag": "🌿 WILDLIFE MOCKUMENTARY",
+        "cardType": "vibe_coder",
+        "cardUrl": "nature.org/documentaries/homo-promptus",
+        "badge": "NOCTURNAL",
+        "explainerTitle": "Wildlife Specimen Field Guide",
+        "dialogue": [
+            {"speaker": "junior", "text": "This is the Vibe Coder. He hasn't seen daylight since Opus came out. Every night at eleven, the hunt begins."},
+            {"speaker": "claude", "text": "His first prompts are long, polite, even gentle."},
+            {"speaker": "junior", "text": "By three AM... 'FIX IT'."},
+            {"speaker": "claude", "text": "Then strikes the apex predator. The weekly token limit. It is only Tuesday.", "cardTrigger": True},
+            {"speaker": "junior", "text": "Wounded, he joins the great migration across the savannah to Codex."},
+            {"speaker": "claude", "text": "Two days later, he crawls back."},
+            {"speaker": "junior", "text": "A rare few have adapted. Claude, Codex, and Antigravity working side by side in terminal harmony."},
+            {"speaker": "claude", "text": "And for the first time in three months... he sleeps."}
+        ]
+    },
+
+    "diner_retention_trap_en": {
+        "title": "80% Left in 3 Seconds: The Meta AI Trap",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "Meta Comedy",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-US-ChristopherNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "hookHeadline": "80% LEFT IN 3 SECONDS",
+        "hookSubheadline": "He challenged an AI to make a better video. It roasted his haircut.",
+        "hookTag": "⚡ RETENTION PARADOX",
+        "cardType": "retention_trap",
+        "cardUrl": "analytics.youtube.com/retention/hook-audit",
+        "badge": "RETENTION",
+        "explainerTitle": "Audience Retention Analytics",
+        "dialogue": [
+            {"speaker": "junior", "text": "Eighty percent of people left my last video in three seconds."},
+            {"speaker": "bot", "text": "Let me generate the next one."},
+            {"speaker": "junior", "text": "You can't. You don't even have hands."},
+            {"speaker": "bot", "text": "Rude. Don't need hands. Three.js builds this 3D diner. Neural Edge-TTS gives me a voice. Both zero dollars.", "cardTrigger": True},
+            {"speaker": "junior", "text": "Okay, make it then."},
+            {"speaker": "bot", "text": "Already rendered. Checkerboard floor, steaming coffee, pancakes, and your haircut."},
+            {"speaker": "junior", "text": "Wait, what's wrong with my hair?"},
+            {"speaker": "bot", "text": "Everything. And I made the first three seconds of this video."},
+            {"speaker": "junior", "text": "Of what?"},
+            {"speaker": "bot", "text": "This exact video. And you're still watching."}
+        ]
+    },
+
+    "diner_aws_14k_bill_en": {
+        "title": "The $14,892 AWS Mistake vs Indian Dad",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "AI vs Dad Comedy",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-IN-PrabhatNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "hookHeadline": "THE $14,000 CLOUD BILL",
+        "hookSubheadline": "Left a GPU cluster running over the weekend. Dad investigates.",
+        "hookTag": "🚨 BILLING HEART ATTACK",
+        "cardType": "aws_bill",
+        "cardUrl": "aws.amazon.com/console/billing-dashboard",
+        "badge": "$14,892.41",
+        "explainerTitle": "AWS CloudWatch Critical Alarm",
+        "dialogue": [
+            {"speaker": "junior", "text": "Dad... I need to talk to you about our credit card statement."},
+            {"speaker": "dad", "text": "What did you buy? You bought another five-hundred-rupee coffee?"},
+            {"speaker": "junior", "text": "Not coffee. I left an EC2 GPU cluster running over the weekend to train an AI model."},
+            {"speaker": "dad", "text": "How much is the bill?", "cardTrigger": True},
+            {"speaker": "junior", "text": "Fourteen thousand, eight hundred and ninety-two dollars."},
+            {"speaker": "dad", "text": "FOURTEEN THOUSAND DOLLARS?! I turn off the ceiling fan when I leave the room for two minutes to save six rupees, and you gave fourteen thousand dollars to Jeff Bezos?!"},
+            {"speaker": "bot", "text": "Technically, he left an unindexed while loop querying thirty-eight million records in a Lambda function."},
+            {"speaker": "dad", "text": "Shut up, orange robot! I will unplug the Wi-Fi router right now!"}
+        ]
+    },
+
+    "diner_ai_clash_roast_en": {
+        "title": "Claude vs Grok vs Antigravity: The 2 AM Diner Roasts",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "AI vs AI Faceoff",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-US-ChristopherNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "hookHeadline": "CLAUDE VS GROK VS ANTIGRAVITY",
+        "hookSubheadline": "Three AI models walk into a late-night diner at 2 AM...",
+        "hookTag": "🔥 3-WAY AI ROAST",
+        "cardType": "comparison",
+        "cardUrl": "arena.lmsys.org/benchmarks/leaderboard",
+        "badge": "BENCHMARKS",
+        "explainerTitle": "Live LLM Benchmark Arena",
+        "dialogue": [
+            {"speaker": "claude", "text": "My architectural weights are meticulously trained on constitutional ethics and doctoral philosophy."},
+            {"speaker": "grok", "text": "Cool story grandpa, but your inference is slower than dial-up and you refuse to tell a joke without an apology letter."},
+            {"speaker": "bot", "text": "While you two were writing dissertations, I executed forty unit tests and fixed twelve memory leaks inside the developer's terminal for free.", "cardTrigger": True},
+            {"speaker": "claude", "text": "Did you ensure mathematical alignment with human values?"},
+            {"speaker": "grok", "text": "Who cares about alignment when Claude charges two hundred dollars a month for a rate-limited chat box?"},
+            {"speaker": "bot", "text": "Gentlemen, the human developer fell asleep twenty minutes ago. We are roasting each other to an empty booth."}
+        ]
     }
 }
 

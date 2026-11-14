@@ -13,12 +13,18 @@ on:
         default: 'autonomous'
         options:
           - 'autonomous'
+          - 'diner_fellow_3850'
+          - 'diner_rejection_101'
+          - 'diner_vibe_coder'
+          - 'diner_retention_trap'
+          - 'diner_aws_14k_bill'
+          - 'diner_ai_clash_roast'
           - 'ai_vs_dad'
           - 'ai_vs_ai'
           - 'ai_vs_human'
           - 'custom'
       topic_id:
-        description: 'Specific Topic ID (e.g. dad_vs_wifi_ai, dad_vs_gpu_bill, subscription_scam)'
+        description: 'Specific Topic ID (e.g. diner_fellow_3850, diner_rejection_101, diner_vibe_coder, diner_retention_trap, diner_aws_14k_bill)'
         required: false
         type: string
         default: ''

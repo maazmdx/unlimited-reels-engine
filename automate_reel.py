@@ -282,13 +282,23 @@ def main():
 
     # Write dedicated reel_props.json for Remotion CLI
     props_file = public_dir / "reel_props.json"
+    props_payload = {
+        "subtitles": subs_data,
+        "audioSrc": "voice.mp3",
+        "title": content["title"],
+        "audioEnvelope": envelope,
+        "hookHeadline": content.get("hookHeadline", content.get("title", "")),
+        "hookSubheadline": content.get("hookSubheadline", ""),
+        "hookTag": content.get("hookTag", "⚠️ RELATABLE DEV MOMENT"),
+        "cardType": content.get("cardType", "job_posting"),
+        "cardUrl": content.get("cardUrl", "job-boards.greenhouse.io/anthropic/fellowship"),
+        "cardData": content.get("cardData", {}),
+        "badge": content.get("badge", "EVIDENCE"),
+        "explainerTitle": content.get("explainerTitle", content["title"]),
+        "bgImage": content.get("bgImage", "backgrounds/bg_cyber_diner.jpg"),
+    }
     with open(props_file, "w", encoding="utf-8") as f:
-        json.dump({
-            "subtitles": subs_data,
-            "audioSrc": "voice.mp3",
-            "title": content["title"],
-            "audioEnvelope": envelope,
-        }, f, indent=2, ensure_ascii=False)
+        json.dump(props_payload, f, indent=2, ensure_ascii=False)
 
     # 3. Handle Live Studio Preview
     if args.preview:
