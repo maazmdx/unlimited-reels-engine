@@ -469,6 +469,70 @@ VIRAL_PRESETS: Dict[str, Dict[str, Any]] = {
             {"speaker": "junior", "text": "ಹಾಗಾದ್ರೆ ನನ್ನ ನೂರು ರೂಪಾಯಿ ಉಳೀತು, ಮಸಾಲೆ ದೋಸೆ ತಿನ್ನೋಣ!"},
             {"speaker": "bot", "text": "ಒಳ್ಳೆಯ ನಿರ್ಧಾರ! ದೋಸೆ ಯಾವತ್ತೂ ಎರರ್ ಕೊಡಲ್ಲ!"}
         ]
+    },
+
+    # ==========================================
+    # COMEDY & COMPARATIVE (AI VS DAD, AI VS AI, AI VS HUMAN)
+    # ==========================================
+    "compare_ai_vs_dad_wifi_en": {
+        "title": "Dad vs 5G Wi-Fi: The Physical Violence Technique",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "AI vs Dad Comedy",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-IN-PrabhatNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "environment": "desi_home",
+        "dialogue": [
+            {"speaker": "junior", "text": "Dad, wait! Don't touch the router! I am running diagnostic traceroutes to the gateway!"},
+            {"speaker": "dad", "text": "Traceroute? In 1995 our TV died. I gave it one solid slap on top and cricket match was full HD! Give me that box."},
+            {"speaker": "bot", "text": "Warning: Physical kinetic trauma cannot resolve upstream fiber attenuation."},
+            {"speaker": "dad", "text": "Watch and learn, you useless piece of software."},
+            {"speaker": "bot", "text": "Let us check the diagnostic numbers.", "cardTrigger": True},
+            {"speaker": "dad", "text": "Look! The LED light turned green! Did your artificial intelligence do that? No!"},
+            {"speaker": "bot", "text": "Diagnostic analysis confirms: Dad's slap reseated a loose copper pin inside the port. Dad wins."},
+            {"speaker": "dad", "text": "Forty years of Dad physics never fails. Now shut down the computer and eat dinner!"}
+        ]
+    },
+    "compare_ai_vs_ai_clash_en": {
+        "title": "Claude vs Grok vs Google Antigravity: The 3-Way AI Clash",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "3-Way AI Faceoff",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-US-ChristopherNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "environment": "bangalore",
+        "dialogue": [
+            {"speaker": "claude", "text": "My theoretical architecture excels at nuanced philosophical reasoning and literary prose."},
+            {"speaker": "grok", "text": "Cool story grandpa, but your inference latency is slow enough to boil tea between tokens."},
+            {"speaker": "bot", "text": "While you two were debating aesthetics, I deployed fifteen microservices using Google Gemini 2.5 at two thousand tokens per second."},
+            {"speaker": "claude", "text": "Did you verify formal mathematical correctness?"},
+            {"speaker": "grok", "text": "Who cares about correctness when you're paying $200 a month for API tokens?"},
+            {"speaker": "bot", "text": "Let us check the production benchmarks.", "cardTrigger": True},
+            {"speaker": "bot", "text": "One hundred percent test passing in eight hundred milliseconds. Speed and zero dollars always win in production."}
+        ]
+    },
+    "compare_ai_vs_human_junior_en": {
+        "title": "Junior Dev vs Autonomous AI Agent",
+        "style": "threeway",
+        "comp": "ThreeWayComparisonReel",
+        "language": "en",
+        "category": "AI vs Humans",
+        "human_voice": "en-US-AndrewNeural",
+        "rival_voice": "en-US-ChristopherNeural",
+        "bot_voice": "en-US-BrianNeural",
+        "environment": "office",
+        "dialogue": [
+            {"speaker": "junior", "text": "I spent six straight hours today writing CRUD API boilerplate from scratch!"},
+            {"speaker": "bot", "text": "Congratulations. You wasted three hundred dollars of company payroll on a single terminal command."},
+            {"speaker": "junior", "text": "Hey! That was complex schema validation and database mappings!"},
+            {"speaker": "bot", "text": "My autonomous subagent generated the schema, wrote the migrations, ran static analysis, and deployed it in two seconds. For zero dollars.", "cardTrigger": True},
+            {"speaker": "junior", "text": "Wait... two seconds? Are human coders actually obsolete?"},
+            {"speaker": "bot", "text": "Coders who type repetitive boilerplate are obsolete. Coders who orchestrate AI agents run the company. Upgrade your workflow."}
+        ]
     }
 }
 

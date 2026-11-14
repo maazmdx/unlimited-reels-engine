@@ -12,6 +12,9 @@ on:
           - compare_antigravity_vs_claude_en
           - compare_antigravity_vs_claude_hi
           - compare_antigravity_vs_claude_kn
+          - compare_ai_vs_dad_wifi_en
+          - compare_ai_vs_ai_clash_en
+          - compare_ai_vs_human_junior_en
           - diner_gemini_antigravity_en
           - diner_gemini_antigravity_hi
           - diner_gemini_antigravity_kn
