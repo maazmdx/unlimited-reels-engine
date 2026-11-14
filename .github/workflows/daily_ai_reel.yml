@@ -81,7 +81,7 @@ jobs:
           echo "✅ TypeScript verified with 0 errors."
 
       - name: 🤖 Step 2: Execute Multi-Agent Orchestrator
-        if: ${{ !inputs.test_only }}
+        if: github.event.inputs.test_only != 'true'
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.topic_id }}" ]; then
@@ -98,7 +98,7 @@ jobs:
           python3 engine/master_orchestrator.py $ARGS
 
       - name: 📊 Step 3: Publish GitHub Actions Run Summary
-        if: always() && !inputs.test_only
+        if: always() && github.event.inputs.test_only != 'true'
         run: |
           REPORT_FILE=$(find out/ -name "*_report.json" | head -n 1)
           if [ -f "$REPORT_FILE" ]; then
@@ -131,7 +131,7 @@ jobs:
           retention-days: 90
 
       - name: ☁️ Step 5: Upload to Google Drive (if GDRIVE_CREDENTIALS secret configured)
-        if: env.GDRIVE_CREDENTIALS != '' && !inputs.test_only
+        if: env.GDRIVE_CREDENTIALS != '' && github.event.inputs.test_only != 'true'
         env:
           GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
