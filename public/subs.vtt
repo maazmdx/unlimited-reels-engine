@@ -1,141 +1,253 @@
 WEBVTT
 
 1
-00:00:00.050 --> 00:00:01.019
-[HUMAN_MALE] Antigravity,
+00:00:00.050 --> 00:00:00.623
+[JUNIOR] I need to
 
 2
-00:00:01.019 --> 00:00:01.827
-[HUMAN_MALE] I worked so
+00:00:00.623 --> 00:00:01.268
+[JUNIOR] build an AI
 
 3
-00:00:01.827 --> 00:00:02.635
-[HUMAN_MALE] hard today!
+00:00:01.268 --> 00:00:01.985
+[JUNIOR] agent for my
 
 4
-00:00:02.635 --> 00:00:03.359
-[HUMAN_MALE] I spent six
+00:00:01.985 --> 00:00:02.558
+[JUNIOR] project,
 
 5
-00:00:03.359 --> 00:00:04.808
-[HUMAN_MALE] straight hours writing
+00:00:02.558 --> 00:00:03.204
+[JUNIOR] but I only
 
 6
-00:00:04.808 --> 00:00:06.112
-[HUMAN_MALE] API boilerplate from
+00:00:03.204 --> 00:00:04.135
+[JUNIOR] have 10 dollars
 
 7
-00:00:06.112 --> 00:00:06.691
-[HUMAN_MALE] scratch.
+00:00:04.135 --> 00:00:04.709
+[JUNIOR] in my bank
 
 8
-00:00:07.114 --> 00:00:08.671
-[ANTIGRAVITY_BOT] Congratulations.
+00:00:04.709 --> 00:00:05.282
+[JUNIOR] account.
 
 9
-00:00:08.671 --> 00:00:09.646
-[ANTIGRAVITY_BOT] You wasted three
+00:00:05.878 --> 00:00:07.403
+[RIVAL] Good luck.
 
 10
-00:00:09.646 --> 00:00:10.759
-[ANTIGRAVITY_BOT] hundred dollars of
+00:00:07.353 --> 00:00:08.553
+[RIVAL] You need Claude
 
 11
-00:00:10.759 --> 00:00:11.873
-[ANTIGRAVITY_BOT] company payroll on
+00:00:08.553 --> 00:00:08.922
+[RIVAL] Pro,
 
 12
-00:00:11.873 --> 00:00:12.987
-[ANTIGRAVITY_BOT] a single terminal
+00:00:08.922 --> 00:00:09.753
+[RIVAL] a $200 API
 
 13
-00:00:12.987 --> 00:00:13.544
-[ANTIGRAVITY_BOT] command.
+00:00:09.753 --> 00:00:10.215
+[RIVAL] tier,
 
 14
-00:00:13.962 --> 00:00:14.495
-[HUMAN_MALE] Hey!
+00:00:10.215 --> 00:00:11.138
+[RIVAL] and at least
 
 15
-00:00:14.495 --> 00:00:15.505
-[HUMAN_MALE] That was complex
+00:00:11.138 --> 00:00:12.338
+[RIVAL] three months of
 
 16
-00:00:15.505 --> 00:00:16.876
-[HUMAN_MALE] schema validation and
+00:00:12.338 --> 00:00:14.553
+[RIVAL] manual prompt engineering.
 
 17
-00:00:16.876 --> 00:00:18.102
-[HUMAN_MALE] database mappings!
+00:00:15.140 --> 00:00:15.567
+[BOT] Or...
 
 18
-00:00:18.530 --> 00:00:20.066
-[ANTIGRAVITY_BOT] My autonomous subagent
+00:00:15.567 --> 00:00:16.677
+[BOT] you could spend
 
 19
-00:00:20.066 --> 00:00:21.525
-[ANTIGRAVITY_BOT] generated the schema,
+00:00:16.677 --> 00:00:17.872
+[BOT] zero dollars and
 
 20
-00:00:21.525 --> 00:00:22.984
-[ANTIGRAVITY_BOT] wrote the migrations,
+00:00:17.872 --> 00:00:18.641
+[BOT] build it in
 
 21
-00:00:22.984 --> 00:00:24.366
-[ANTIGRAVITY_BOT] ran static analysis,
+00:00:18.641 --> 00:00:19.580
+[BOT] ten minutes.
 
 22
-00:00:24.366 --> 00:00:25.365
-[ANTIGRAVITY_BOT] and deployed it
+00:00:20.200 --> 00:00:21.971
+[RIVAL] Zero dollars?
 
 23
-00:00:25.365 --> 00:00:26.363
-[ANTIGRAVITY_BOT] in two seconds.
+00:00:21.921 --> 00:00:23.610
+[RIVAL] Nothing in modern
 
 24
-00:00:26.363 --> 00:00:27.919
-[ANTIGRAVITY_BOT] For zero dollars.
+00:00:23.610 --> 00:00:24.624
+[RIVAL] AI is free.
 
 25
-00:00:28.354 --> 00:00:28.948
-[HUMAN_MALE] Wait...
+00:00:24.624 --> 00:00:25.564
+[RIVAL] Claude is the
 
 26
-00:00:28.948 --> 00:00:29.881
-[HUMAN_MALE] two seconds?
+00:00:25.564 --> 00:00:27.017
+[RIVAL] industry standard.
 
 27
-00:00:29.881 --> 00:00:30.810
-[HUMAN_MALE] Are human coders
+00:00:27.530 --> 00:00:28.549
+[BOT] Let's check the
 
 28
-00:00:30.810 --> 00:00:31.937
-[HUMAN_MALE] actually obsolete?
+00:00:28.549 --> 00:00:29.176
+[BOT] numbers.
 
 29
-00:00:32.370 --> 00:00:33.419
-[ANTIGRAVITY_BOT] Coders who type
+00:00:29.782 --> 00:00:30.895
+[BOT] Claude caps you
 
 30
-00:00:33.419 --> 00:00:35.357
-[ANTIGRAVITY_BOT] repetitive boilerplate are
+00:00:30.895 --> 00:00:31.923
+[BOT] at 200k tokens
 
 31
-00:00:35.357 --> 00:00:36.083
-[ANTIGRAVITY_BOT] obsolete.
+00:00:31.923 --> 00:00:33.293
+[BOT] and costs hundreds
 
 32
-00:00:36.083 --> 00:00:37.838
-[ANTIGRAVITY_BOT] Coders who orchestrate
+00:00:33.293 --> 00:00:34.235
+[BOT] every month.
 
 33
-00:00:37.838 --> 00:00:38.804
-[ANTIGRAVITY_BOT] AI agents run
+00:00:34.235 --> 00:00:35.561
+[BOT] Google Gemini 2.5
 
 34
-00:00:38.804 --> 00:00:39.769
-[ANTIGRAVITY_BOT] the company.
+00:00:35.561 --> 00:00:36.710
+[BOT] Flash gives you
 
 35
-00:00:39.769 --> 00:00:41.452
-[ANTIGRAVITY_BOT] Upgrade your workflow.
+00:00:36.710 --> 00:00:38.124
+[BOT] one million tokens
+
+36
+00:00:38.124 --> 00:00:38.920
+[BOT] on the free
+
+37
+00:00:38.920 --> 00:00:39.362
+[BOT] tier.
+
+38
+00:00:39.998 --> 00:00:40.419
+[JUNIOR] Wait,
+
+39
+00:00:40.419 --> 00:00:41.852
+[JUNIOR] one million tokens?
+
+40
+00:00:41.852 --> 00:00:42.682
+[JUNIOR] For free?!
+
+41
+00:00:43.182 --> 00:00:43.605
+[RIVAL] Okay,
+
+42
+00:00:43.605 --> 00:00:44.622
+[RIVAL] but Claude has
+
+43
+00:00:44.622 --> 00:00:46.146
+[RIVAL] better reasoning for
+
+44
+00:00:46.146 --> 00:00:46.739
+[RIVAL] agents!
+
+45
+00:00:47.204 --> 00:00:49.009
+[BOT] Antigravity CLI orchestrates
+
+46
+00:00:49.009 --> 00:00:50.536
+[BOT] multi-agent coding right
+
+47
+00:00:50.536 --> 00:00:51.855
+[BOT] inside your terminal,
+
+48
+00:00:51.855 --> 00:00:53.174
+[BOT] with auto-healing and
+
+49
+00:00:53.174 --> 00:00:54.424
+[BOT] local verification.
+
+50
+00:00:55.004 --> 00:00:55.506
+[JUNIOR] So I don't
+
+51
+00:00:55.506 --> 00:00:56.008
+[JUNIOR] need a 200
+
+52
+00:00:56.008 --> 00:00:57.068
+[JUNIOR] dollar subscription?
+
+53
+00:00:57.484 --> 00:00:58.554
+[BOT] Not a single
+
+54
+00:00:58.554 --> 00:00:59.041
+[BOT] cent.
+
+55
+00:00:59.041 --> 00:01:00.368
+[BOT] Just pip install
+
+56
+00:01:00.368 --> 00:01:02.642
+[BOT] antigravity-sdk and launch
+
+57
+00:01:02.642 --> 00:01:03.021
+[BOT] agy.
+
+58
+00:01:03.574 --> 00:01:04.249
+[JUNIOR] Sorry bro,
+
+59
+00:01:04.249 --> 00:01:05.150
+[JUNIOR] looks like I'm
+
+60
+00:01:05.150 --> 00:01:05.975
+[JUNIOR] keeping my 10
+
+61
+00:01:05.975 --> 00:01:07.176
+[JUNIOR] dollars for tacos!
+
+62
+00:01:07.644 --> 00:01:08.704
+[BOT] Wise choice.
+
+63
+00:01:08.704 --> 00:01:10.706
+[BOT] Tacos don't hallucinate.

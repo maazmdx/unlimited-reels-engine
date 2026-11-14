@@ -107,6 +107,42 @@ AUTONOMOUS_TOPIC_BANK: List[Dict[str, Any]] = [
         "comparison": {"human": "3 Weeks of uncommitted chaos", "ai": "Instant continuous integration"},
         "suggested_env": "modern_office",
         "suggested_weather": "night_clear",
+    },
+    {
+        "id": "dad_vs_wifi_ai",
+        "category": "AI vs Dad",
+        "title": "Dad vs The 5G Wi-Fi Router",
+        "hook": "Why does every Dad believe slapping the router fixes the internet?",
+        "concept": "Dad scolds son for Wi-Fi disconnection and hits the router on the table. Antigravity AI calculates TCP packet loss and DNS socket routing, while Dad declares victory because the LED turned green.",
+        "ragebait_angle": "Unbeatable traditional Dad physics versus modern computational network engineering.",
+        "tools_mentioned": ["5G Fiber", "DNS Flush", "Antigravity Diagnostic CLI", "Dad's Right Hand"],
+        "comparison": {"dad_slap": "1 Physical Slap ($0, green light)", "ai_diagnostic": "3 Minutes of packet inspection"},
+        "suggested_env": "diner",
+        "suggested_weather": "raining",
+    },
+    {
+        "id": "dad_vs_gpu_bill",
+        "category": "AI vs Dad",
+        "title": "Dad Catches Son Running 4 GPUs Overnight",
+        "hook": "Are you running a steel factory in your bedroom?!",
+        "concept": "Son trains local AI agent with 4 GPUs humming at 100%. Dad enters with the electricity bill in hand: 'Back in my day we walked 15 kilometers to calculate square roots by hand!'",
+        "ragebait_angle": "Extreme generational clash between AI computing power and Dad's electricity meter trauma.",
+        "tools_mentioned": ["NVIDIA RTX 4090", "PyTorch", "Electricity Meter", "Dad's Anger"],
+        "comparison": {"ai_training": "4 GPUs (4,000 Watts)", "dad_compromise": "Use pen, paper, and shut off lights"},
+        "suggested_env": "diner",
+        "suggested_weather": "raining",
+    },
+    {
+        "id": "dad_vs_bargaining",
+        "category": "AI vs Dad",
+        "title": "Dad Teaches AI How To Bargain",
+        "hook": "Why AI will never survive an Indian vegetable market.",
+        "concept": "Son lets automated AI checkout groceries at MRP. Dad is offended to his core: 'You accepted retail price without asking for free coriander?!'",
+        "ragebait_angle": "AI optimization algorithms failing against world-champion Dad street negotiation.",
+        "tools_mentioned": ["Instacart API", "Stripe Checkout", "Dad's Bargaining Radar"],
+        "comparison": {"ai_retail": "Paid Full MRP ($18.00)", "dad_deal": "$7.00 + Free Green Chillies & Mint"},
+        "suggested_env": "diner",
+        "suggested_weather": "raining",
     }
 ]
 
@@ -114,8 +150,15 @@ AUTONOMOUS_TOPIC_BANK: List[Dict[str, Any]] = [
 class TrendResearcherAgent:
     """Agent 1: Researches and prioritizes viral ragebait topics for daily video generation."""
 
-    def __init__(self, topic_override: Optional[str] = None):
+    def __init__(
+        self,
+        topic_override: Optional[str] = None,
+        topic_id: Optional[str] = None,
+        category: Optional[str] = None
+    ):
         self.topic_override = topic_override
+        self.topic_id = topic_id
+        self.category = category
 
     def scan_live_tech_debates(self) -> Optional[Dict[str, Any]]:
         """Scans Hacker News top tech stories for breaking AI discussions (Zero API key needed)."""
@@ -156,10 +199,39 @@ class TrendResearcherAgent:
 
     def research_daily_topic(self) -> Dict[str, Any]:
         """Autonomous selection of daily topic prioritized for viral retention and human roasting."""
-        print("🔍 [Agent 1: Trend Researcher] Scanning tech discussions and AI benchmarks...")
+        print("🔍 [Agent 1: Trend Researcher] Scanning tech discussions, AI benchmarks, and comedic faceoffs...")
+
+        # 1. Exact topic id requested
+        if self.topic_id:
+            for item in AUTONOMOUS_TOPIC_BANK:
+                if item["id"].lower() == self.topic_id.lower():
+                    print(f"👉 Matched Topic ID: '{item['id']}' -> '{item['title']}'")
+                    return item
+
+        # 2. Specific category requested (e.g. "AI vs Dad", "AI vs AI", "AI vs Humans")
+        if self.category and self.category.lower() != "autonomous":
+            cat_lower = self.category.lower().replace("-", " ").replace("_", " ")
+            matching = [
+                item for item in AUTONOMOUS_TOPIC_BANK
+                if cat_lower in item.get("category", "").lower() or cat_lower in item.get("id", "").lower()
+            ]
+            if matching:
+                day_of_year = time.localtime().tm_yday
+                selected = matching[day_of_year % len(matching)]
+                print(f"👉 Matched Category '{self.category}' -> Selected: '{selected['title']}'")
+                return selected
 
         if self.topic_override:
             print(f"👉 Custom Topic Requested: '{self.topic_override}'")
+            # Match against curated bank items
+            for item in AUTONOMOUS_TOPIC_BANK:
+                if (
+                    item["id"] == self.topic_override
+                    or self.topic_override.lower() in item["id"].lower()
+                    or self.topic_override.lower() in item["title"].lower()
+                ):
+                    return item
+
             return {
                 "id": "custom_override",
                 "category": "Custom Research",

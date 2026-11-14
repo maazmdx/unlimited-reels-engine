@@ -4,1092 +4,1092 @@
       "word": "I",
       "raw": "I",
       "start": 0.05,
-      "end": 0.196,
+      "end": 0.193,
       "speaker": "junior"
     },
     {
       "word": "need",
       "raw": "need",
-      "start": 0.196,
-      "end": 0.489,
+      "start": 0.193,
+      "end": 0.48,
       "speaker": "junior"
     },
     {
       "word": "to",
       "raw": "to",
-      "start": 0.489,
-      "end": 0.635,
+      "start": 0.48,
+      "end": 0.623,
       "speaker": "junior"
     },
     {
       "word": "build",
       "raw": "build",
-      "start": 0.635,
-      "end": 1.001,
+      "start": 0.623,
+      "end": 0.982,
       "speaker": "junior"
     },
     {
       "word": "an",
       "raw": "an",
-      "start": 1.001,
-      "end": 1.147,
+      "start": 0.982,
+      "end": 1.125,
       "speaker": "junior"
     },
     {
       "word": "AI",
       "raw": "AI",
-      "start": 1.147,
-      "end": 1.293,
+      "start": 1.125,
+      "end": 1.268,
       "speaker": "junior"
     },
     {
       "word": "agent",
       "raw": "agent",
-      "start": 1.293,
-      "end": 1.659,
+      "start": 1.268,
+      "end": 1.627,
       "speaker": "junior"
     },
     {
       "word": "for",
       "raw": "for",
-      "start": 1.659,
-      "end": 1.878,
+      "start": 1.627,
+      "end": 1.842,
       "speaker": "junior"
     },
     {
       "word": "my",
       "raw": "my",
-      "start": 1.878,
-      "end": 2.024,
+      "start": 1.842,
+      "end": 1.985,
       "speaker": "junior"
     },
     {
       "word": "project",
       "raw": "project,",
-      "start": 2.024,
-      "end": 2.609,
+      "start": 1.985,
+      "end": 2.558,
       "speaker": "junior"
     },
     {
       "word": "but",
       "raw": "but",
-      "start": 2.609,
-      "end": 2.829,
+      "start": 2.558,
+      "end": 2.774,
       "speaker": "junior"
     },
     {
       "word": "I",
       "raw": "I",
-      "start": 2.829,
-      "end": 2.975,
+      "start": 2.774,
+      "end": 2.917,
       "speaker": "junior"
     },
     {
       "word": "only",
       "raw": "only",
-      "start": 2.975,
-      "end": 3.267,
+      "start": 2.917,
+      "end": 3.204,
       "speaker": "junior"
     },
     {
       "word": "have",
       "raw": "have",
-      "start": 3.267,
-      "end": 3.56,
+      "start": 3.204,
+      "end": 3.49,
       "speaker": "junior"
     },
     {
       "word": "10",
       "raw": "10",
-      "start": 3.56,
-      "end": 3.706,
+      "start": 3.49,
+      "end": 3.634,
       "speaker": "junior"
     },
     {
       "word": "dollars",
       "raw": "dollars",
-      "start": 3.706,
-      "end": 4.218,
+      "start": 3.634,
+      "end": 4.135,
       "speaker": "junior"
     },
     {
       "word": "in",
       "raw": "in",
-      "start": 4.218,
-      "end": 4.364,
+      "start": 4.135,
+      "end": 4.279,
       "speaker": "junior"
     },
     {
       "word": "my",
       "raw": "my",
-      "start": 4.364,
-      "end": 4.511,
+      "start": 4.279,
+      "end": 4.422,
       "speaker": "junior"
     },
     {
       "word": "bank",
       "raw": "bank",
-      "start": 4.511,
-      "end": 4.803,
+      "start": 4.422,
+      "end": 4.709,
       "speaker": "junior"
     },
     {
       "word": "account",
       "raw": "account.",
-      "start": 4.803,
-      "end": 5.388,
+      "start": 4.709,
+      "end": 5.282,
       "speaker": "junior"
     },
     {
       "word": "Good",
       "raw": "Good",
-      "start": 5.748,
-      "end": 6.426,
+      "start": 5.878,
+      "end": 6.556,
       "speaker": "rival"
     },
     {
       "word": "luck",
       "raw": "luck.",
-      "start": 6.426,
-      "end": 7.273,
+      "start": 6.556,
+      "end": 7.403,
       "speaker": "rival"
     },
     {
       "word": "You",
       "raw": "You",
-      "start": 7.223,
-      "end": 7.5,
+      "start": 7.353,
+      "end": 7.63,
       "speaker": "rival"
     },
     {
       "word": "need",
       "raw": "need",
-      "start": 7.5,
-      "end": 7.869,
+      "start": 7.63,
+      "end": 7.999,
       "speaker": "rival"
     },
     {
       "word": "Claude",
       "raw": "Claude",
-      "start": 7.869,
-      "end": 8.423,
+      "start": 7.999,
+      "end": 8.553,
       "speaker": "rival"
     },
     {
       "word": "Pro",
       "raw": "Pro,",
-      "start": 8.423,
-      "end": 8.792,
+      "start": 8.553,
+      "end": 8.922,
       "speaker": "rival"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 8.792,
-      "end": 8.977,
+      "start": 8.922,
+      "end": 9.107,
       "speaker": "rival"
     },
     {
       "word": "200",
       "raw": "$200",
-      "start": 8.977,
-      "end": 9.346,
+      "start": 9.107,
+      "end": 9.476,
       "speaker": "rival"
     },
     {
       "word": "API",
       "raw": "API",
-      "start": 9.346,
-      "end": 9.623,
+      "start": 9.476,
+      "end": 9.753,
       "speaker": "rival"
     },
     {
       "word": "tier",
       "raw": "tier,",
-      "start": 9.623,
-      "end": 10.085,
+      "start": 9.753,
+      "end": 10.215,
       "speaker": "rival"
     },
     {
       "word": "and",
       "raw": "and",
-      "start": 10.085,
-      "end": 10.361,
+      "start": 10.215,
+      "end": 10.491,
       "speaker": "rival"
     },
     {
       "word": "at",
       "raw": "at",
-      "start": 10.361,
-      "end": 10.546,
+      "start": 10.491,
+      "end": 10.676,
       "speaker": "rival"
     },
     {
       "word": "least",
       "raw": "least",
-      "start": 10.546,
-      "end": 11.008,
+      "start": 10.676,
+      "end": 11.138,
       "speaker": "rival"
     },
     {
       "word": "three",
       "raw": "three",
-      "start": 11.008,
-      "end": 11.469,
+      "start": 11.138,
+      "end": 11.599,
       "speaker": "rival"
     },
     {
       "word": "months",
       "raw": "months",
-      "start": 11.469,
-      "end": 12.023,
+      "start": 11.599,
+      "end": 12.153,
       "speaker": "rival"
     },
     {
       "word": "of",
       "raw": "of",
-      "start": 12.023,
-      "end": 12.208,
+      "start": 12.153,
+      "end": 12.338,
       "speaker": "rival"
     },
     {
       "word": "manual",
       "raw": "manual",
-      "start": 12.208,
-      "end": 12.761,
+      "start": 12.338,
+      "end": 12.891,
       "speaker": "rival"
     },
     {
       "word": "prompt",
       "raw": "prompt",
-      "start": 12.761,
-      "end": 13.315,
+      "start": 12.891,
+      "end": 13.445,
       "speaker": "rival"
     },
     {
       "word": "engineering",
       "raw": "engineering.",
-      "start": 13.315,
-      "end": 14.423,
+      "start": 13.445,
+      "end": 14.553,
       "speaker": "rival"
     },
     {
       "word": "Or",
       "raw": "Or...",
-      "start": 14.73,
-      "end": 15.148,
+      "start": 15.14,
+      "end": 15.567,
       "speaker": "bot"
     },
     {
       "word": "you",
       "raw": "you",
-      "start": 15.148,
-      "end": 15.399,
+      "start": 15.567,
+      "end": 15.823,
       "speaker": "bot"
     },
     {
       "word": "could",
       "raw": "could",
-      "start": 15.399,
-      "end": 15.818,
+      "start": 15.823,
+      "end": 16.25,
       "speaker": "bot"
     },
     {
       "word": "spend",
       "raw": "spend",
-      "start": 15.818,
-      "end": 16.236,
+      "start": 16.25,
+      "end": 16.677,
       "speaker": "bot"
     },
     {
       "word": "zero",
       "raw": "zero",
-      "start": 16.236,
-      "end": 16.57,
+      "start": 16.677,
+      "end": 17.018,
       "speaker": "bot"
     },
     {
       "word": "dollars",
       "raw": "dollars",
-      "start": 16.57,
-      "end": 17.156,
+      "start": 17.018,
+      "end": 17.616,
       "speaker": "bot"
     },
     {
       "word": "and",
       "raw": "and",
-      "start": 17.156,
-      "end": 17.407,
+      "start": 17.616,
+      "end": 17.872,
       "speaker": "bot"
     },
     {
       "word": "build",
       "raw": "build",
-      "start": 17.407,
-      "end": 17.825,
+      "start": 17.872,
+      "end": 18.299,
       "speaker": "bot"
     },
     {
       "word": "it",
       "raw": "it",
-      "start": 17.825,
-      "end": 17.993,
+      "start": 18.299,
+      "end": 18.47,
       "speaker": "bot"
     },
     {
       "word": "in",
       "raw": "in",
-      "start": 17.993,
-      "end": 18.16,
+      "start": 18.47,
+      "end": 18.641,
       "speaker": "bot"
     },
     {
       "word": "ten",
       "raw": "ten",
-      "start": 18.16,
-      "end": 18.411,
+      "start": 18.641,
+      "end": 18.897,
       "speaker": "bot"
     },
     {
       "word": "minutes",
       "raw": "minutes.",
-      "start": 18.411,
-      "end": 19.08,
+      "start": 18.897,
+      "end": 19.58,
       "speaker": "bot"
     },
     {
       "word": "Zero",
       "raw": "Zero",
-      "start": 19.444,
-      "end": 20.065,
+      "start": 20.2,
+      "end": 20.79,
       "speaker": "rival"
     },
     {
       "word": "dollars",
       "raw": "dollars?",
-      "start": 20.065,
-      "end": 21.307,
+      "start": 20.79,
+      "end": 21.971,
       "speaker": "rival"
     },
     {
       "word": "Nothing",
       "raw": "Nothing",
-      "start": 21.257,
-      "end": 22.084,
+      "start": 21.921,
+      "end": 22.709,
       "speaker": "rival"
     },
     {
       "word": "in",
       "raw": "in",
-      "start": 22.084,
-      "end": 22.321,
+      "start": 22.709,
+      "end": 22.935,
       "speaker": "rival"
     },
     {
       "word": "modern",
       "raw": "modern",
-      "start": 22.321,
-      "end": 23.03,
+      "start": 22.935,
+      "end": 23.61,
       "speaker": "rival"
     },
     {
       "word": "AI",
       "raw": "AI",
-      "start": 23.03,
-      "end": 23.267,
+      "start": 23.61,
+      "end": 23.836,
       "speaker": "rival"
     },
     {
       "word": "is",
       "raw": "is",
-      "start": 23.267,
-      "end": 23.503,
+      "start": 23.836,
+      "end": 24.061,
       "speaker": "rival"
     },
     {
       "word": "free",
       "raw": "free.",
-      "start": 23.503,
-      "end": 24.094,
+      "start": 24.061,
+      "end": 24.624,
       "speaker": "rival"
     },
     {
       "word": "Claude",
       "raw": "Claude",
-      "start": 24.094,
-      "end": 24.632,
+      "start": 24.624,
+      "end": 25.137,
       "speaker": "rival"
     },
     {
       "word": "is",
       "raw": "is",
-      "start": 24.632,
-      "end": 24.812,
+      "start": 25.137,
+      "end": 25.308,
       "speaker": "rival"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 24.812,
-      "end": 25.081,
+      "start": 25.308,
+      "end": 25.564,
       "speaker": "rival"
     },
     {
       "word": "industry",
       "raw": "industry",
-      "start": 25.081,
-      "end": 25.799,
+      "start": 25.564,
+      "end": 26.248,
       "speaker": "rival"
     },
     {
       "word": "standard",
       "raw": "standard.",
-      "start": 25.799,
-      "end": 26.607,
+      "start": 26.248,
+      "end": 27.017,
       "speaker": "rival"
     },
     {
       "word": "Let's",
       "raw": "Let's",
-      "start": 26.914,
-      "end": 27.298,
+      "start": 27.53,
+      "end": 27.922,
       "speaker": "bot"
     },
     {
       "word": "check",
       "raw": "check",
-      "start": 27.298,
-      "end": 27.682,
+      "start": 27.922,
+      "end": 28.314,
       "speaker": "bot"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 27.682,
-      "end": 27.913,
+      "start": 28.314,
+      "end": 28.549,
       "speaker": "bot"
     },
     {
       "word": "numbers",
       "raw": "numbers.",
-      "start": 27.913,
-      "end": 28.527,
+      "start": 28.549,
+      "end": 29.176,
       "speaker": "bot"
     },
     {
       "word": "Claude",
       "raw": "Claude",
-      "start": 28.986,
-      "end": 29.489,
+      "start": 29.782,
+      "end": 30.296,
       "speaker": "bot"
     },
     {
       "word": "caps",
       "raw": "caps",
-      "start": 29.489,
-      "end": 29.825,
+      "start": 30.296,
+      "end": 30.638,
       "speaker": "bot"
     },
     {
       "word": "you",
       "raw": "you",
-      "start": 29.825,
-      "end": 30.077,
+      "start": 30.638,
+      "end": 30.895,
       "speaker": "bot"
     },
     {
       "word": "at",
       "raw": "at",
-      "start": 30.077,
-      "end": 30.244,
+      "start": 30.895,
+      "end": 31.067,
       "speaker": "bot"
     },
     {
       "word": "200k",
       "raw": "200k",
-      "start": 30.244,
-      "end": 30.58,
+      "start": 31.067,
+      "end": 31.409,
       "speaker": "bot"
     },
     {
       "word": "tokens",
       "raw": "tokens",
-      "start": 30.58,
-      "end": 31.083,
+      "start": 31.409,
+      "end": 31.923,
       "speaker": "bot"
     },
     {
       "word": "and",
       "raw": "and",
-      "start": 31.083,
-      "end": 31.335,
+      "start": 31.923,
+      "end": 32.18,
       "speaker": "bot"
     },
     {
       "word": "costs",
       "raw": "costs",
-      "start": 31.335,
-      "end": 31.754,
+      "start": 32.18,
+      "end": 32.608,
       "speaker": "bot"
     },
     {
       "word": "hundreds",
       "raw": "hundreds",
-      "start": 31.754,
-      "end": 32.425,
+      "start": 32.608,
+      "end": 33.293,
       "speaker": "bot"
     },
     {
       "word": "every",
       "raw": "every",
-      "start": 32.425,
-      "end": 32.845,
+      "start": 33.293,
+      "end": 33.721,
       "speaker": "bot"
     },
     {
       "word": "month",
       "raw": "month.",
-      "start": 32.845,
-      "end": 33.348,
+      "start": 33.721,
+      "end": 34.235,
       "speaker": "bot"
     },
     {
       "word": "Google",
       "raw": "Google",
-      "start": 33.348,
-      "end": 33.868,
+      "start": 34.235,
+      "end": 34.765,
       "speaker": "bot"
     },
     {
       "word": "Gemini",
       "raw": "Gemini",
-      "start": 33.868,
-      "end": 34.388,
+      "start": 34.765,
+      "end": 35.296,
       "speaker": "bot"
     },
     {
       "word": "2.5",
       "raw": "2.5",
-      "start": 34.388,
-      "end": 34.648,
+      "start": 35.296,
+      "end": 35.561,
       "speaker": "bot"
     },
     {
       "word": "Flash",
       "raw": "Flash",
-      "start": 34.648,
-      "end": 35.081,
+      "start": 35.561,
+      "end": 36.003,
       "speaker": "bot"
     },
     {
       "word": "gives",
       "raw": "gives",
-      "start": 35.081,
-      "end": 35.514,
+      "start": 36.003,
+      "end": 36.445,
       "speaker": "bot"
     },
     {
       "word": "you",
       "raw": "you",
-      "start": 35.514,
-      "end": 35.774,
+      "start": 36.445,
+      "end": 36.71,
       "speaker": "bot"
     },
     {
       "word": "one",
       "raw": "one",
-      "start": 35.774,
-      "end": 36.034,
+      "start": 36.71,
+      "end": 36.975,
       "speaker": "bot"
     },
     {
       "word": "million",
       "raw": "million",
-      "start": 36.034,
-      "end": 36.641,
+      "start": 36.975,
+      "end": 37.594,
       "speaker": "bot"
     },
     {
       "word": "tokens",
       "raw": "tokens",
-      "start": 36.641,
-      "end": 37.161,
+      "start": 37.594,
+      "end": 38.124,
       "speaker": "bot"
     },
     {
       "word": "on",
       "raw": "on",
-      "start": 37.161,
-      "end": 37.334,
+      "start": 38.124,
+      "end": 38.301,
       "speaker": "bot"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 37.334,
-      "end": 37.594,
+      "start": 38.301,
+      "end": 38.566,
       "speaker": "bot"
     },
     {
       "word": "free",
       "raw": "free",
-      "start": 37.594,
-      "end": 37.941,
+      "start": 38.566,
+      "end": 38.92,
       "speaker": "bot"
     },
     {
       "word": "tier",
       "raw": "tier.",
-      "start": 37.941,
-      "end": 38.374,
+      "start": 38.92,
+      "end": 39.362,
       "speaker": "bot"
     },
     {
       "word": "Wait",
       "raw": "Wait,",
-      "start": 32.906,
-      "end": 33.358,
+      "start": 39.998,
+      "end": 40.419,
       "speaker": "junior"
     },
     {
       "word": "one",
       "raw": "one",
-      "start": 33.358,
-      "end": 33.629,
+      "start": 40.419,
+      "end": 40.672,
       "speaker": "junior"
     },
     {
       "word": "million",
       "raw": "million",
-      "start": 33.629,
-      "end": 34.261,
+      "start": 40.672,
+      "end": 41.262,
       "speaker": "junior"
     },
     {
       "word": "tokens",
       "raw": "tokens?",
-      "start": 34.261,
-      "end": 34.894,
+      "start": 41.262,
+      "end": 41.852,
       "speaker": "junior"
     },
     {
       "word": "For",
       "raw": "For",
-      "start": 34.894,
-      "end": 35.19,
+      "start": 41.852,
+      "end": 42.129,
       "speaker": "junior"
     },
     {
       "word": "free",
       "raw": "free?!",
-      "start": 35.19,
-      "end": 35.781,
+      "start": 42.129,
+      "end": 42.682,
       "speaker": "junior"
     },
     {
       "word": "Okay",
       "raw": "Okay,",
-      "start": 36.132,
-      "end": 36.577,
+      "start": 43.182,
+      "end": 43.605,
       "speaker": "rival"
     },
     {
       "word": "but",
       "raw": "but",
-      "start": 36.577,
-      "end": 36.844,
+      "start": 43.605,
+      "end": 43.86,
       "speaker": "rival"
     },
     {
       "word": "Claude",
       "raw": "Claude",
-      "start": 36.844,
-      "end": 37.378,
+      "start": 43.86,
+      "end": 44.368,
       "speaker": "rival"
     },
     {
       "word": "has",
       "raw": "has",
-      "start": 37.378,
-      "end": 37.645,
+      "start": 44.368,
+      "end": 44.622,
       "speaker": "rival"
     },
     {
       "word": "better",
       "raw": "better",
-      "start": 37.645,
-      "end": 38.178,
+      "start": 44.622,
+      "end": 45.13,
       "speaker": "rival"
     },
     {
       "word": "reasoning",
       "raw": "reasoning",
-      "start": 38.178,
-      "end": 38.979,
+      "start": 45.13,
+      "end": 45.892,
       "speaker": "rival"
     },
     {
       "word": "for",
       "raw": "for",
-      "start": 38.979,
-      "end": 39.246,
+      "start": 45.892,
+      "end": 46.146,
       "speaker": "rival"
     },
     {
       "word": "agents",
       "raw": "agents!",
-      "start": 39.246,
-      "end": 39.869,
+      "start": 46.146,
+      "end": 46.739,
       "speaker": "rival"
     },
     {
       "word": "Antigravity",
       "raw": "Antigravity",
-      "start": 40.122,
-      "end": 40.87,
+      "start": 47.204,
+      "end": 47.968,
       "speaker": "bot"
     },
     {
       "word": "CLI",
       "raw": "CLI",
-      "start": 40.87,
-      "end": 41.074,
+      "start": 47.968,
+      "end": 48.176,
       "speaker": "bot"
     },
     {
       "word": "orchestrates",
       "raw": "orchestrates",
-      "start": 41.074,
-      "end": 41.891,
+      "start": 48.176,
+      "end": 49.009,
       "speaker": "bot"
     },
     {
       "word": "multi-agent",
       "raw": "multi-agent",
-      "start": 41.891,
-      "end": 42.639,
+      "start": 49.009,
+      "end": 49.773,
       "speaker": "bot"
     },
     {
       "word": "coding",
       "raw": "coding",
-      "start": 42.639,
-      "end": 43.047,
+      "start": 49.773,
+      "end": 50.189,
       "speaker": "bot"
     },
     {
       "word": "right",
       "raw": "right",
-      "start": 43.047,
-      "end": 43.387,
+      "start": 50.189,
+      "end": 50.536,
       "speaker": "bot"
     },
     {
       "word": "inside",
       "raw": "inside",
-      "start": 43.387,
-      "end": 43.796,
+      "start": 50.536,
+      "end": 50.953,
       "speaker": "bot"
     },
     {
       "word": "your",
       "raw": "your",
-      "start": 43.796,
-      "end": 44.068,
+      "start": 50.953,
+      "end": 51.231,
       "speaker": "bot"
     },
     {
       "word": "terminal",
       "raw": "terminal,",
-      "start": 44.068,
-      "end": 44.68,
+      "start": 51.231,
+      "end": 51.855,
       "speaker": "bot"
     },
     {
       "word": "with",
       "raw": "with",
-      "start": 44.68,
-      "end": 44.952,
+      "start": 51.855,
+      "end": 52.133,
       "speaker": "bot"
     },
     {
       "word": "auto-healing",
       "raw": "auto-healing",
-      "start": 44.952,
-      "end": 45.768,
+      "start": 52.133,
+      "end": 52.966,
       "speaker": "bot"
     },
     {
       "word": "and",
       "raw": "and",
-      "start": 45.768,
-      "end": 45.972,
+      "start": 52.966,
+      "end": 53.174,
       "speaker": "bot"
     },
     {
       "word": "local",
       "raw": "local",
-      "start": 45.972,
-      "end": 46.313,
+      "start": 53.174,
+      "end": 53.522,
       "speaker": "bot"
     },
     {
       "word": "verification",
       "raw": "verification.",
-      "start": 46.313,
-      "end": 47.197,
+      "start": 53.522,
+      "end": 54.424,
       "speaker": "bot"
     },
     {
       "word": "So",
       "raw": "So",
-      "start": 47.498,
-      "end": 47.618,
+      "start": 55.004,
+      "end": 55.116,
       "speaker": "junior"
     },
     {
       "word": "I",
       "raw": "I",
-      "start": 47.618,
-      "end": 47.737,
+      "start": 55.116,
+      "end": 55.227,
       "speaker": "junior"
     },
     {
       "word": "don't",
       "raw": "don't",
-      "start": 47.737,
-      "end": 48.036,
+      "start": 55.227,
+      "end": 55.506,
       "speaker": "junior"
     },
     {
       "word": "need",
       "raw": "need",
-      "start": 48.036,
-      "end": 48.275,
+      "start": 55.506,
+      "end": 55.729,
       "speaker": "junior"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 48.275,
-      "end": 48.395,
+      "start": 55.729,
+      "end": 55.841,
       "speaker": "junior"
     },
     {
       "word": "200",
       "raw": "200",
-      "start": 48.395,
-      "end": 48.574,
+      "start": 55.841,
+      "end": 56.008,
       "speaker": "junior"
     },
     {
       "word": "dollar",
       "raw": "dollar",
-      "start": 48.574,
-      "end": 48.933,
+      "start": 56.008,
+      "end": 56.343,
       "speaker": "junior"
     },
     {
       "word": "subscription",
       "raw": "subscription?",
-      "start": 48.933,
-      "end": 49.71,
+      "start": 56.343,
+      "end": 57.068,
       "speaker": "junior"
     },
     {
       "word": "Not",
       "raw": "Not",
-      "start": 50.026,
-      "end": 50.312,
+      "start": 57.484,
+      "end": 57.776,
       "speaker": "bot"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 50.312,
-      "end": 50.503,
+      "start": 57.776,
+      "end": 57.971,
       "speaker": "bot"
     },
     {
       "word": "single",
       "raw": "single",
-      "start": 50.503,
-      "end": 51.074,
+      "start": 57.971,
+      "end": 58.554,
       "speaker": "bot"
     },
     {
       "word": "cent",
       "raw": "cent.",
-      "start": 51.074,
-      "end": 51.551,
+      "start": 58.554,
+      "end": 59.041,
       "speaker": "bot"
     },
     {
       "word": "Just",
       "raw": "Just",
-      "start": 51.551,
-      "end": 51.922,
+      "start": 59.041,
+      "end": 59.42,
       "speaker": "bot"
     },
     {
       "word": "pip",
       "raw": "pip",
-      "start": 51.922,
-      "end": 52.201,
+      "start": 59.42,
+      "end": 59.704,
       "speaker": "bot"
     },
     {
       "word": "install",
       "raw": "install",
-      "start": 52.201,
-      "end": 52.851,
+      "start": 59.704,
+      "end": 60.368,
       "speaker": "bot"
     },
     {
       "word": "antigravity-sdk",
       "raw": "antigravity-sdk",
-      "start": 52.851,
-      "end": 54.244,
+      "start": 60.368,
+      "end": 61.789,
       "speaker": "bot"
     },
     {
       "word": "and",
       "raw": "and",
-      "start": 54.244,
-      "end": 54.522,
+      "start": 61.789,
+      "end": 62.073,
       "speaker": "bot"
     },
     {
       "word": "launch",
       "raw": "launch",
-      "start": 54.522,
-      "end": 55.08,
+      "start": 62.073,
+      "end": 62.642,
       "speaker": "bot"
     },
     {
       "word": "agy",
       "raw": "agy.",
-      "start": 55.08,
-      "end": 55.451,
+      "start": 62.642,
+      "end": 63.021,
       "speaker": "bot"
     },
     {
       "word": "Sorry",
       "raw": "Sorry",
-      "start": 55.77,
-      "end": 56.153,
+      "start": 63.574,
+      "end": 63.949,
       "speaker": "junior"
     },
     {
       "word": "bro",
       "raw": "bro,",
-      "start": 56.153,
-      "end": 56.459,
+      "start": 63.949,
+      "end": 64.249,
       "speaker": "junior"
     },
     {
       "word": "looks",
       "raw": "looks",
-      "start": 56.459,
-      "end": 56.842,
+      "start": 64.249,
+      "end": 64.625,
       "speaker": "junior"
     },
     {
       "word": "like",
       "raw": "like",
-      "start": 56.842,
-      "end": 57.148,
+      "start": 64.625,
+      "end": 64.925,
       "speaker": "junior"
     },
     {
       "word": "I'm",
       "raw": "I'm",
-      "start": 57.148,
-      "end": 57.378,
+      "start": 64.925,
+      "end": 65.15,
       "speaker": "junior"
     },
     {
       "word": "keeping",
       "raw": "keeping",
-      "start": 57.378,
-      "end": 57.914,
+      "start": 65.15,
+      "end": 65.675,
       "speaker": "junior"
     },
     {
       "word": "my",
       "raw": "my",
-      "start": 57.914,
-      "end": 58.067,
+      "start": 65.675,
+      "end": 65.825,
       "speaker": "junior"
     },
     {
       "word": "10",
       "raw": "10",
-      "start": 58.067,
-      "end": 58.22,
+      "start": 65.825,
+      "end": 65.975,
       "speaker": "junior"
     },
     {
       "word": "dollars",
       "raw": "dollars",
-      "start": 58.22,
-      "end": 58.756,
+      "start": 65.975,
+      "end": 66.501,
       "speaker": "junior"
     },
     {
       "word": "for",
       "raw": "for",
-      "start": 58.756,
-      "end": 58.986,
+      "start": 66.501,
+      "end": 66.726,
       "speaker": "junior"
     },
     {
       "word": "tacos",
       "raw": "tacos!",
-      "start": 58.986,
-      "end": 59.445,
+      "start": 66.726,
+      "end": 67.176,
       "speaker": "junior"
     },
     {
       "word": "Wise",
       "raw": "Wise",
-      "start": 59.762,
-      "end": 60.139,
+      "start": 67.644,
+      "end": 68.029,
       "speaker": "bot"
     },
     {
       "word": "choice",
       "raw": "choice.",
-      "start": 60.139,
-      "end": 60.8,
+      "start": 68.029,
+      "end": 68.704,
       "speaker": "bot"
     },
     {
       "word": "Tacos",
       "raw": "Tacos",
-      "start": 60.799,
-      "end": 61.245,
+      "start": 68.704,
+      "end": 69.159,
       "speaker": "bot"
     },
     {
       "word": "don't",
       "raw": "don't",
-      "start": 61.245,
-      "end": 61.691,
+      "start": 69.159,
+      "end": 69.614,
       "speaker": "bot"
     },
     {
       "word": "hallucinate",
       "raw": "hallucinate.",
-      "start": 61.691,
-      "end": 62.762,
+      "start": 69.614,
+      "end": 70.706,
       "speaker": "bot"
     }
   ],
   "chunks": [
     {
       "start": 0.05,
-      "end": 0.635,
+      "end": 0.623,
       "text": "I need to",
       "speaker": "junior",
       "words": [
@@ -1097,1581 +1097,1581 @@
           "word": "I",
           "raw": "I",
           "start": 0.05,
-          "end": 0.196,
+          "end": 0.193,
           "speaker": "junior"
         },
         {
           "word": "need",
           "raw": "need",
-          "start": 0.196,
-          "end": 0.489,
+          "start": 0.193,
+          "end": 0.48,
           "speaker": "junior"
         },
         {
           "word": "to",
           "raw": "to",
-          "start": 0.489,
-          "end": 0.635,
+          "start": 0.48,
+          "end": 0.623,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 0.635,
-      "end": 1.293,
+      "start": 0.623,
+      "end": 1.268,
       "text": "build an AI",
       "speaker": "junior",
       "words": [
         {
           "word": "build",
           "raw": "build",
-          "start": 0.635,
-          "end": 1.001,
+          "start": 0.623,
+          "end": 0.982,
           "speaker": "junior"
         },
         {
           "word": "an",
           "raw": "an",
-          "start": 1.001,
-          "end": 1.147,
+          "start": 0.982,
+          "end": 1.125,
           "speaker": "junior"
         },
         {
           "word": "AI",
           "raw": "AI",
-          "start": 1.147,
-          "end": 1.293,
+          "start": 1.125,
+          "end": 1.268,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 1.293,
-      "end": 2.024,
+      "start": 1.268,
+      "end": 1.985,
       "text": "agent for my",
       "speaker": "junior",
       "words": [
         {
           "word": "agent",
           "raw": "agent",
-          "start": 1.293,
-          "end": 1.659,
+          "start": 1.268,
+          "end": 1.627,
           "speaker": "junior"
         },
         {
           "word": "for",
           "raw": "for",
-          "start": 1.659,
-          "end": 1.878,
+          "start": 1.627,
+          "end": 1.842,
           "speaker": "junior"
         },
         {
           "word": "my",
           "raw": "my",
-          "start": 1.878,
-          "end": 2.024,
+          "start": 1.842,
+          "end": 1.985,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 2.024,
-      "end": 2.609,
+      "start": 1.985,
+      "end": 2.558,
       "text": "project,",
       "speaker": "junior",
       "words": [
         {
           "word": "project",
           "raw": "project,",
-          "start": 2.024,
-          "end": 2.609,
+          "start": 1.985,
+          "end": 2.558,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 2.609,
-      "end": 3.267,
+      "start": 2.558,
+      "end": 3.204,
       "text": "but I only",
       "speaker": "junior",
       "words": [
         {
           "word": "but",
           "raw": "but",
-          "start": 2.609,
-          "end": 2.829,
+          "start": 2.558,
+          "end": 2.774,
           "speaker": "junior"
         },
         {
           "word": "I",
           "raw": "I",
-          "start": 2.829,
-          "end": 2.975,
+          "start": 2.774,
+          "end": 2.917,
           "speaker": "junior"
         },
         {
           "word": "only",
           "raw": "only",
-          "start": 2.975,
-          "end": 3.267,
+          "start": 2.917,
+          "end": 3.204,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 3.267,
-      "end": 4.218,
+      "start": 3.204,
+      "end": 4.135,
       "text": "have 10 dollars",
       "speaker": "junior",
       "words": [
         {
           "word": "have",
           "raw": "have",
-          "start": 3.267,
-          "end": 3.56,
+          "start": 3.204,
+          "end": 3.49,
           "speaker": "junior"
         },
         {
           "word": "10",
           "raw": "10",
-          "start": 3.56,
-          "end": 3.706,
+          "start": 3.49,
+          "end": 3.634,
           "speaker": "junior"
         },
         {
           "word": "dollars",
           "raw": "dollars",
-          "start": 3.706,
-          "end": 4.218,
+          "start": 3.634,
+          "end": 4.135,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 4.218,
-      "end": 4.803,
+      "start": 4.135,
+      "end": 4.709,
       "text": "in my bank",
       "speaker": "junior",
       "words": [
         {
           "word": "in",
           "raw": "in",
-          "start": 4.218,
-          "end": 4.364,
+          "start": 4.135,
+          "end": 4.279,
           "speaker": "junior"
         },
         {
           "word": "my",
           "raw": "my",
-          "start": 4.364,
-          "end": 4.511,
+          "start": 4.279,
+          "end": 4.422,
           "speaker": "junior"
         },
         {
           "word": "bank",
           "raw": "bank",
-          "start": 4.511,
-          "end": 4.803,
+          "start": 4.422,
+          "end": 4.709,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 4.803,
-      "end": 5.388,
+      "start": 4.709,
+      "end": 5.282,
       "text": "account.",
       "speaker": "junior",
       "words": [
         {
           "word": "account",
           "raw": "account.",
-          "start": 4.803,
-          "end": 5.388,
+          "start": 4.709,
+          "end": 5.282,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 5.748,
-      "end": 7.273,
+      "start": 5.878,
+      "end": 7.403,
       "text": "Good luck.",
       "speaker": "rival",
       "words": [
         {
           "word": "Good",
           "raw": "Good",
-          "start": 5.748,
-          "end": 6.426,
+          "start": 5.878,
+          "end": 6.556,
           "speaker": "rival"
         },
         {
           "word": "luck",
           "raw": "luck.",
-          "start": 6.426,
-          "end": 7.273,
+          "start": 6.556,
+          "end": 7.403,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 7.223,
-      "end": 8.423,
+      "start": 7.353,
+      "end": 8.553,
       "text": "You need Claude",
       "speaker": "rival",
       "words": [
         {
           "word": "You",
           "raw": "You",
-          "start": 7.223,
-          "end": 7.5,
+          "start": 7.353,
+          "end": 7.63,
           "speaker": "rival"
         },
         {
           "word": "need",
           "raw": "need",
-          "start": 7.5,
-          "end": 7.869,
+          "start": 7.63,
+          "end": 7.999,
           "speaker": "rival"
         },
         {
           "word": "Claude",
           "raw": "Claude",
-          "start": 7.869,
-          "end": 8.423,
+          "start": 7.999,
+          "end": 8.553,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 8.423,
-      "end": 8.792,
+      "start": 8.553,
+      "end": 8.922,
       "text": "Pro,",
       "speaker": "rival",
       "words": [
         {
           "word": "Pro",
           "raw": "Pro,",
-          "start": 8.423,
-          "end": 8.792,
+          "start": 8.553,
+          "end": 8.922,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 8.792,
-      "end": 9.623,
+      "start": 8.922,
+      "end": 9.753,
       "text": "a $200 API",
       "speaker": "rival",
       "words": [
         {
           "word": "a",
           "raw": "a",
-          "start": 8.792,
-          "end": 8.977,
+          "start": 8.922,
+          "end": 9.107,
           "speaker": "rival"
         },
         {
           "word": "200",
           "raw": "$200",
-          "start": 8.977,
-          "end": 9.346,
+          "start": 9.107,
+          "end": 9.476,
           "speaker": "rival"
         },
         {
           "word": "API",
           "raw": "API",
-          "start": 9.346,
-          "end": 9.623,
+          "start": 9.476,
+          "end": 9.753,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 9.623,
-      "end": 10.085,
+      "start": 9.753,
+      "end": 10.215,
       "text": "tier,",
       "speaker": "rival",
       "words": [
         {
           "word": "tier",
           "raw": "tier,",
-          "start": 9.623,
-          "end": 10.085,
+          "start": 9.753,
+          "end": 10.215,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 10.085,
-      "end": 11.008,
+      "start": 10.215,
+      "end": 11.138,
       "text": "and at least",
       "speaker": "rival",
       "words": [
         {
           "word": "and",
           "raw": "and",
-          "start": 10.085,
-          "end": 10.361,
+          "start": 10.215,
+          "end": 10.491,
           "speaker": "rival"
         },
         {
           "word": "at",
           "raw": "at",
-          "start": 10.361,
-          "end": 10.546,
+          "start": 10.491,
+          "end": 10.676,
           "speaker": "rival"
         },
         {
           "word": "least",
           "raw": "least",
-          "start": 10.546,
-          "end": 11.008,
+          "start": 10.676,
+          "end": 11.138,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 11.008,
-      "end": 12.208,
+      "start": 11.138,
+      "end": 12.338,
       "text": "three months of",
       "speaker": "rival",
       "words": [
         {
           "word": "three",
           "raw": "three",
-          "start": 11.008,
-          "end": 11.469,
+          "start": 11.138,
+          "end": 11.599,
           "speaker": "rival"
         },
         {
           "word": "months",
           "raw": "months",
-          "start": 11.469,
-          "end": 12.023,
+          "start": 11.599,
+          "end": 12.153,
           "speaker": "rival"
         },
         {
           "word": "of",
           "raw": "of",
-          "start": 12.023,
-          "end": 12.208,
+          "start": 12.153,
+          "end": 12.338,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 12.208,
-      "end": 14.423,
+      "start": 12.338,
+      "end": 14.553,
       "text": "manual prompt engineering.",
       "speaker": "rival",
       "words": [
         {
           "word": "manual",
           "raw": "manual",
-          "start": 12.208,
-          "end": 12.761,
+          "start": 12.338,
+          "end": 12.891,
           "speaker": "rival"
         },
         {
           "word": "prompt",
           "raw": "prompt",
-          "start": 12.761,
-          "end": 13.315,
+          "start": 12.891,
+          "end": 13.445,
           "speaker": "rival"
         },
         {
           "word": "engineering",
           "raw": "engineering.",
-          "start": 13.315,
-          "end": 14.423,
+          "start": 13.445,
+          "end": 14.553,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 14.73,
-      "end": 15.148,
+      "start": 15.14,
+      "end": 15.567,
       "text": "Or...",
       "speaker": "bot",
       "words": [
         {
           "word": "Or",
           "raw": "Or...",
-          "start": 14.73,
-          "end": 15.148,
+          "start": 15.14,
+          "end": 15.567,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 15.148,
-      "end": 16.236,
+      "start": 15.567,
+      "end": 16.677,
       "text": "you could spend",
       "speaker": "bot",
       "words": [
         {
           "word": "you",
           "raw": "you",
-          "start": 15.148,
-          "end": 15.399,
+          "start": 15.567,
+          "end": 15.823,
           "speaker": "bot"
         },
         {
           "word": "could",
           "raw": "could",
-          "start": 15.399,
-          "end": 15.818,
+          "start": 15.823,
+          "end": 16.25,
           "speaker": "bot"
         },
         {
           "word": "spend",
           "raw": "spend",
-          "start": 15.818,
-          "end": 16.236,
+          "start": 16.25,
+          "end": 16.677,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 16.236,
-      "end": 17.407,
+      "start": 16.677,
+      "end": 17.872,
       "text": "zero dollars and",
       "speaker": "bot",
       "words": [
         {
           "word": "zero",
           "raw": "zero",
-          "start": 16.236,
-          "end": 16.57,
+          "start": 16.677,
+          "end": 17.018,
           "speaker": "bot"
         },
         {
           "word": "dollars",
           "raw": "dollars",
-          "start": 16.57,
-          "end": 17.156,
+          "start": 17.018,
+          "end": 17.616,
           "speaker": "bot"
         },
         {
           "word": "and",
           "raw": "and",
-          "start": 17.156,
-          "end": 17.407,
+          "start": 17.616,
+          "end": 17.872,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 17.407,
-      "end": 18.16,
+      "start": 17.872,
+      "end": 18.641,
       "text": "build it in",
       "speaker": "bot",
       "words": [
         {
           "word": "build",
           "raw": "build",
-          "start": 17.407,
-          "end": 17.825,
+          "start": 17.872,
+          "end": 18.299,
           "speaker": "bot"
         },
         {
           "word": "it",
           "raw": "it",
-          "start": 17.825,
-          "end": 17.993,
+          "start": 18.299,
+          "end": 18.47,
           "speaker": "bot"
         },
         {
           "word": "in",
           "raw": "in",
-          "start": 17.993,
-          "end": 18.16,
+          "start": 18.47,
+          "end": 18.641,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 18.16,
-      "end": 19.08,
+      "start": 18.641,
+      "end": 19.58,
       "text": "ten minutes.",
       "speaker": "bot",
       "words": [
         {
           "word": "ten",
           "raw": "ten",
-          "start": 18.16,
-          "end": 18.411,
+          "start": 18.641,
+          "end": 18.897,
           "speaker": "bot"
         },
         {
           "word": "minutes",
           "raw": "minutes.",
-          "start": 18.411,
-          "end": 19.08,
+          "start": 18.897,
+          "end": 19.58,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 19.444,
-      "end": 21.307,
+      "start": 20.2,
+      "end": 21.971,
       "text": "Zero dollars?",
       "speaker": "rival",
       "words": [
         {
           "word": "Zero",
           "raw": "Zero",
-          "start": 19.444,
-          "end": 20.065,
+          "start": 20.2,
+          "end": 20.79,
           "speaker": "rival"
         },
         {
           "word": "dollars",
           "raw": "dollars?",
-          "start": 20.065,
-          "end": 21.307,
+          "start": 20.79,
+          "end": 21.971,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 21.257,
-      "end": 23.03,
+      "start": 21.921,
+      "end": 23.61,
       "text": "Nothing in modern",
       "speaker": "rival",
       "words": [
         {
           "word": "Nothing",
           "raw": "Nothing",
-          "start": 21.257,
-          "end": 22.084,
+          "start": 21.921,
+          "end": 22.709,
           "speaker": "rival"
         },
         {
           "word": "in",
           "raw": "in",
-          "start": 22.084,
-          "end": 22.321,
+          "start": 22.709,
+          "end": 22.935,
           "speaker": "rival"
         },
         {
           "word": "modern",
           "raw": "modern",
-          "start": 22.321,
-          "end": 23.03,
+          "start": 22.935,
+          "end": 23.61,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 23.03,
-      "end": 24.094,
+      "start": 23.61,
+      "end": 24.624,
       "text": "AI is free.",
       "speaker": "rival",
       "words": [
         {
           "word": "AI",
           "raw": "AI",
-          "start": 23.03,
-          "end": 23.267,
+          "start": 23.61,
+          "end": 23.836,
           "speaker": "rival"
         },
         {
           "word": "is",
           "raw": "is",
-          "start": 23.267,
-          "end": 23.503,
+          "start": 23.836,
+          "end": 24.061,
           "speaker": "rival"
         },
         {
           "word": "free",
           "raw": "free.",
-          "start": 23.503,
-          "end": 24.094,
+          "start": 24.061,
+          "end": 24.624,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 24.094,
-      "end": 25.081,
+      "start": 24.624,
+      "end": 25.564,
       "text": "Claude is the",
       "speaker": "rival",
       "words": [
         {
           "word": "Claude",
           "raw": "Claude",
-          "start": 24.094,
-          "end": 24.632,
+          "start": 24.624,
+          "end": 25.137,
           "speaker": "rival"
         },
         {
           "word": "is",
           "raw": "is",
-          "start": 24.632,
-          "end": 24.812,
+          "start": 25.137,
+          "end": 25.308,
           "speaker": "rival"
         },
         {
           "word": "the",
           "raw": "the",
-          "start": 24.812,
-          "end": 25.081,
+          "start": 25.308,
+          "end": 25.564,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 25.081,
-      "end": 26.607,
+      "start": 25.564,
+      "end": 27.017,
       "text": "industry standard.",
       "speaker": "rival",
       "words": [
         {
           "word": "industry",
           "raw": "industry",
-          "start": 25.081,
-          "end": 25.799,
+          "start": 25.564,
+          "end": 26.248,
           "speaker": "rival"
         },
         {
           "word": "standard",
           "raw": "standard.",
-          "start": 25.799,
-          "end": 26.607,
+          "start": 26.248,
+          "end": 27.017,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 26.914,
-      "end": 27.913,
+      "start": 27.53,
+      "end": 28.549,
       "text": "Let's check the",
       "speaker": "bot",
       "words": [
         {
           "word": "Let's",
           "raw": "Let's",
-          "start": 26.914,
-          "end": 27.298,
+          "start": 27.53,
+          "end": 27.922,
           "speaker": "bot"
         },
         {
           "word": "check",
           "raw": "check",
-          "start": 27.298,
-          "end": 27.682,
+          "start": 27.922,
+          "end": 28.314,
           "speaker": "bot"
         },
         {
           "word": "the",
           "raw": "the",
-          "start": 27.682,
-          "end": 27.913,
+          "start": 28.314,
+          "end": 28.549,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 27.913,
-      "end": 28.527,
+      "start": 28.549,
+      "end": 29.176,
       "text": "numbers.",
       "speaker": "bot",
       "words": [
         {
           "word": "numbers",
           "raw": "numbers.",
-          "start": 27.913,
-          "end": 28.527,
+          "start": 28.549,
+          "end": 29.176,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 28.986,
-      "end": 30.077,
+      "start": 29.782,
+      "end": 30.895,
       "text": "Claude caps you",
       "speaker": "bot",
       "words": [
         {
           "word": "Claude",
           "raw": "Claude",
-          "start": 28.986,
-          "end": 29.489,
+          "start": 29.782,
+          "end": 30.296,
           "speaker": "bot"
         },
         {
           "word": "caps",
           "raw": "caps",
-          "start": 29.489,
-          "end": 29.825,
+          "start": 30.296,
+          "end": 30.638,
           "speaker": "bot"
         },
         {
           "word": "you",
           "raw": "you",
-          "start": 29.825,
-          "end": 30.077,
+          "start": 30.638,
+          "end": 30.895,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 30.077,
-      "end": 31.083,
+      "start": 30.895,
+      "end": 31.923,
       "text": "at 200k tokens",
       "speaker": "bot",
       "words": [
         {
           "word": "at",
           "raw": "at",
-          "start": 30.077,
-          "end": 30.244,
+          "start": 30.895,
+          "end": 31.067,
           "speaker": "bot"
         },
         {
           "word": "200k",
           "raw": "200k",
-          "start": 30.244,
-          "end": 30.58,
+          "start": 31.067,
+          "end": 31.409,
           "speaker": "bot"
         },
         {
           "word": "tokens",
           "raw": "tokens",
-          "start": 30.58,
-          "end": 31.083,
+          "start": 31.409,
+          "end": 31.923,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 31.083,
-      "end": 32.425,
+      "start": 31.923,
+      "end": 33.293,
       "text": "and costs hundreds",
       "speaker": "bot",
       "words": [
         {
           "word": "and",
           "raw": "and",
-          "start": 31.083,
-          "end": 31.335,
+          "start": 31.923,
+          "end": 32.18,
           "speaker": "bot"
         },
         {
           "word": "costs",
           "raw": "costs",
-          "start": 31.335,
-          "end": 31.754,
+          "start": 32.18,
+          "end": 32.608,
           "speaker": "bot"
         },
         {
           "word": "hundreds",
           "raw": "hundreds",
-          "start": 31.754,
-          "end": 32.425,
+          "start": 32.608,
+          "end": 33.293,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 32.425,
-      "end": 33.348,
+      "start": 33.293,
+      "end": 34.235,
       "text": "every month.",
       "speaker": "bot",
       "words": [
         {
           "word": "every",
           "raw": "every",
-          "start": 32.425,
-          "end": 32.845,
+          "start": 33.293,
+          "end": 33.721,
           "speaker": "bot"
         },
         {
           "word": "month",
           "raw": "month.",
-          "start": 32.845,
-          "end": 33.348,
+          "start": 33.721,
+          "end": 34.235,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 33.348,
-      "end": 34.648,
+      "start": 34.235,
+      "end": 35.561,
       "text": "Google Gemini 2.5",
       "speaker": "bot",
       "words": [
         {
           "word": "Google",
           "raw": "Google",
-          "start": 33.348,
-          "end": 33.868,
+          "start": 34.235,
+          "end": 34.765,
           "speaker": "bot"
         },
         {
           "word": "Gemini",
           "raw": "Gemini",
-          "start": 33.868,
-          "end": 34.388,
+          "start": 34.765,
+          "end": 35.296,
           "speaker": "bot"
         },
         {
           "word": "2.5",
           "raw": "2.5",
-          "start": 34.388,
-          "end": 34.648,
+          "start": 35.296,
+          "end": 35.561,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 34.648,
-      "end": 35.774,
+      "start": 35.561,
+      "end": 36.71,
       "text": "Flash gives you",
       "speaker": "bot",
       "words": [
         {
           "word": "Flash",
           "raw": "Flash",
-          "start": 34.648,
-          "end": 35.081,
+          "start": 35.561,
+          "end": 36.003,
           "speaker": "bot"
         },
         {
           "word": "gives",
           "raw": "gives",
-          "start": 35.081,
-          "end": 35.514,
+          "start": 36.003,
+          "end": 36.445,
           "speaker": "bot"
         },
         {
           "word": "you",
           "raw": "you",
-          "start": 35.514,
-          "end": 35.774,
+          "start": 36.445,
+          "end": 36.71,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 35.774,
-      "end": 37.161,
+      "start": 36.71,
+      "end": 38.124,
       "text": "one million tokens",
       "speaker": "bot",
       "words": [
         {
           "word": "one",
           "raw": "one",
-          "start": 35.774,
-          "end": 36.034,
+          "start": 36.71,
+          "end": 36.975,
           "speaker": "bot"
         },
         {
           "word": "million",
           "raw": "million",
-          "start": 36.034,
-          "end": 36.641,
+          "start": 36.975,
+          "end": 37.594,
           "speaker": "bot"
         },
         {
           "word": "tokens",
           "raw": "tokens",
-          "start": 36.641,
-          "end": 37.161,
+          "start": 37.594,
+          "end": 38.124,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 37.161,
-      "end": 37.941,
+      "start": 38.124,
+      "end": 38.92,
       "text": "on the free",
       "speaker": "bot",
       "words": [
         {
           "word": "on",
           "raw": "on",
-          "start": 37.161,
-          "end": 37.334,
+          "start": 38.124,
+          "end": 38.301,
           "speaker": "bot"
         },
         {
           "word": "the",
           "raw": "the",
-          "start": 37.334,
-          "end": 37.594,
+          "start": 38.301,
+          "end": 38.566,
           "speaker": "bot"
         },
         {
           "word": "free",
           "raw": "free",
-          "start": 37.594,
-          "end": 37.941,
+          "start": 38.566,
+          "end": 38.92,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 37.941,
-      "end": 38.374,
+      "start": 38.92,
+      "end": 39.362,
       "text": "tier.",
       "speaker": "bot",
       "words": [
         {
           "word": "tier",
           "raw": "tier.",
-          "start": 37.941,
-          "end": 38.374,
+          "start": 38.92,
+          "end": 39.362,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 32.906,
-      "end": 33.358,
+      "start": 39.998,
+      "end": 40.419,
       "text": "Wait,",
       "speaker": "junior",
       "words": [
         {
           "word": "Wait",
           "raw": "Wait,",
-          "start": 32.906,
-          "end": 33.358,
+          "start": 39.998,
+          "end": 40.419,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 33.358,
-      "end": 34.894,
+      "start": 40.419,
+      "end": 41.852,
       "text": "one million tokens?",
       "speaker": "junior",
       "words": [
         {
           "word": "one",
           "raw": "one",
-          "start": 33.358,
-          "end": 33.629,
+          "start": 40.419,
+          "end": 40.672,
           "speaker": "junior"
         },
         {
           "word": "million",
           "raw": "million",
-          "start": 33.629,
-          "end": 34.261,
+          "start": 40.672,
+          "end": 41.262,
           "speaker": "junior"
         },
         {
           "word": "tokens",
           "raw": "tokens?",
-          "start": 34.261,
-          "end": 34.894,
+          "start": 41.262,
+          "end": 41.852,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 34.894,
-      "end": 35.781,
+      "start": 41.852,
+      "end": 42.682,
       "text": "For free?!",
       "speaker": "junior",
       "words": [
         {
           "word": "For",
           "raw": "For",
-          "start": 34.894,
-          "end": 35.19,
+          "start": 41.852,
+          "end": 42.129,
           "speaker": "junior"
         },
         {
           "word": "free",
           "raw": "free?!",
-          "start": 35.19,
-          "end": 35.781,
+          "start": 42.129,
+          "end": 42.682,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 36.132,
-      "end": 36.577,
+      "start": 43.182,
+      "end": 43.605,
       "text": "Okay,",
       "speaker": "rival",
       "words": [
         {
           "word": "Okay",
           "raw": "Okay,",
-          "start": 36.132,
-          "end": 36.577,
+          "start": 43.182,
+          "end": 43.605,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 36.577,
-      "end": 37.645,
+      "start": 43.605,
+      "end": 44.622,
       "text": "but Claude has",
       "speaker": "rival",
       "words": [
         {
           "word": "but",
           "raw": "but",
-          "start": 36.577,
-          "end": 36.844,
+          "start": 43.605,
+          "end": 43.86,
           "speaker": "rival"
         },
         {
           "word": "Claude",
           "raw": "Claude",
-          "start": 36.844,
-          "end": 37.378,
+          "start": 43.86,
+          "end": 44.368,
           "speaker": "rival"
         },
         {
           "word": "has",
           "raw": "has",
-          "start": 37.378,
-          "end": 37.645,
+          "start": 44.368,
+          "end": 44.622,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 37.645,
-      "end": 39.246,
+      "start": 44.622,
+      "end": 46.146,
       "text": "better reasoning for",
       "speaker": "rival",
       "words": [
         {
           "word": "better",
           "raw": "better",
-          "start": 37.645,
-          "end": 38.178,
+          "start": 44.622,
+          "end": 45.13,
           "speaker": "rival"
         },
         {
           "word": "reasoning",
           "raw": "reasoning",
-          "start": 38.178,
-          "end": 38.979,
+          "start": 45.13,
+          "end": 45.892,
           "speaker": "rival"
         },
         {
           "word": "for",
           "raw": "for",
-          "start": 38.979,
-          "end": 39.246,
+          "start": 45.892,
+          "end": 46.146,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 39.246,
-      "end": 39.869,
+      "start": 46.146,
+      "end": 46.739,
       "text": "agents!",
       "speaker": "rival",
       "words": [
         {
           "word": "agents",
           "raw": "agents!",
-          "start": 39.246,
-          "end": 39.869,
+          "start": 46.146,
+          "end": 46.739,
           "speaker": "rival"
         }
       ]
     },
     {
-      "start": 40.122,
-      "end": 41.891,
+      "start": 47.204,
+      "end": 49.009,
       "text": "Antigravity CLI orchestrates",
       "speaker": "bot",
       "words": [
         {
           "word": "Antigravity",
           "raw": "Antigravity",
-          "start": 40.122,
-          "end": 40.87,
+          "start": 47.204,
+          "end": 47.968,
           "speaker": "bot"
         },
         {
           "word": "CLI",
           "raw": "CLI",
-          "start": 40.87,
-          "end": 41.074,
+          "start": 47.968,
+          "end": 48.176,
           "speaker": "bot"
         },
         {
           "word": "orchestrates",
           "raw": "orchestrates",
-          "start": 41.074,
-          "end": 41.891,
+          "start": 48.176,
+          "end": 49.009,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 41.891,
-      "end": 43.387,
+      "start": 49.009,
+      "end": 50.536,
       "text": "multi-agent coding right",
       "speaker": "bot",
       "words": [
         {
           "word": "multi-agent",
           "raw": "multi-agent",
-          "start": 41.891,
-          "end": 42.639,
+          "start": 49.009,
+          "end": 49.773,
           "speaker": "bot"
         },
         {
           "word": "coding",
           "raw": "coding",
-          "start": 42.639,
-          "end": 43.047,
+          "start": 49.773,
+          "end": 50.189,
           "speaker": "bot"
         },
         {
           "word": "right",
           "raw": "right",
-          "start": 43.047,
-          "end": 43.387,
+          "start": 50.189,
+          "end": 50.536,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 43.387,
-      "end": 44.68,
+      "start": 50.536,
+      "end": 51.855,
       "text": "inside your terminal,",
       "speaker": "bot",
       "words": [
         {
           "word": "inside",
           "raw": "inside",
-          "start": 43.387,
-          "end": 43.796,
+          "start": 50.536,
+          "end": 50.953,
           "speaker": "bot"
         },
         {
           "word": "your",
           "raw": "your",
-          "start": 43.796,
-          "end": 44.068,
+          "start": 50.953,
+          "end": 51.231,
           "speaker": "bot"
         },
         {
           "word": "terminal",
           "raw": "terminal,",
-          "start": 44.068,
-          "end": 44.68,
+          "start": 51.231,
+          "end": 51.855,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 44.68,
-      "end": 45.972,
+      "start": 51.855,
+      "end": 53.174,
       "text": "with auto-healing and",
       "speaker": "bot",
       "words": [
         {
           "word": "with",
           "raw": "with",
-          "start": 44.68,
-          "end": 44.952,
+          "start": 51.855,
+          "end": 52.133,
           "speaker": "bot"
         },
         {
           "word": "auto-healing",
           "raw": "auto-healing",
-          "start": 44.952,
-          "end": 45.768,
+          "start": 52.133,
+          "end": 52.966,
           "speaker": "bot"
         },
         {
           "word": "and",
           "raw": "and",
-          "start": 45.768,
-          "end": 45.972,
+          "start": 52.966,
+          "end": 53.174,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 45.972,
-      "end": 47.197,
+      "start": 53.174,
+      "end": 54.424,
       "text": "local verification.",
       "speaker": "bot",
       "words": [
         {
           "word": "local",
           "raw": "local",
-          "start": 45.972,
-          "end": 46.313,
+          "start": 53.174,
+          "end": 53.522,
           "speaker": "bot"
         },
         {
           "word": "verification",
           "raw": "verification.",
-          "start": 46.313,
-          "end": 47.197,
+          "start": 53.522,
+          "end": 54.424,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 47.498,
-      "end": 48.036,
+      "start": 55.004,
+      "end": 55.506,
       "text": "So I don't",
       "speaker": "junior",
       "words": [
         {
           "word": "So",
           "raw": "So",
-          "start": 47.498,
-          "end": 47.618,
+          "start": 55.004,
+          "end": 55.116,
           "speaker": "junior"
         },
         {
           "word": "I",
           "raw": "I",
-          "start": 47.618,
-          "end": 47.737,
+          "start": 55.116,
+          "end": 55.227,
           "speaker": "junior"
         },
         {
           "word": "don't",
           "raw": "don't",
-          "start": 47.737,
-          "end": 48.036,
+          "start": 55.227,
+          "end": 55.506,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 48.036,
-      "end": 48.574,
+      "start": 55.506,
+      "end": 56.008,
       "text": "need a 200",
       "speaker": "junior",
       "words": [
         {
           "word": "need",
           "raw": "need",
-          "start": 48.036,
-          "end": 48.275,
+          "start": 55.506,
+          "end": 55.729,
           "speaker": "junior"
         },
         {
           "word": "a",
           "raw": "a",
-          "start": 48.275,
-          "end": 48.395,
+          "start": 55.729,
+          "end": 55.841,
           "speaker": "junior"
         },
         {
           "word": "200",
           "raw": "200",
-          "start": 48.395,
-          "end": 48.574,
+          "start": 55.841,
+          "end": 56.008,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 48.574,
-      "end": 49.71,
+      "start": 56.008,
+      "end": 57.068,
       "text": "dollar subscription?",
       "speaker": "junior",
       "words": [
         {
           "word": "dollar",
           "raw": "dollar",
-          "start": 48.574,
-          "end": 48.933,
+          "start": 56.008,
+          "end": 56.343,
           "speaker": "junior"
         },
         {
           "word": "subscription",
           "raw": "subscription?",
-          "start": 48.933,
-          "end": 49.71,
+          "start": 56.343,
+          "end": 57.068,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 50.026,
-      "end": 51.074,
+      "start": 57.484,
+      "end": 58.554,
       "text": "Not a single",
       "speaker": "bot",
       "words": [
         {
           "word": "Not",
           "raw": "Not",
-          "start": 50.026,
-          "end": 50.312,
+          "start": 57.484,
+          "end": 57.776,
           "speaker": "bot"
         },
         {
           "word": "a",
           "raw": "a",
-          "start": 50.312,
-          "end": 50.503,
+          "start": 57.776,
+          "end": 57.971,
           "speaker": "bot"
         },
         {
           "word": "single",
           "raw": "single",
-          "start": 50.503,
-          "end": 51.074,
+          "start": 57.971,
+          "end": 58.554,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 51.074,
-      "end": 51.551,
+      "start": 58.554,
+      "end": 59.041,
       "text": "cent.",
       "speaker": "bot",
       "words": [
         {
           "word": "cent",
           "raw": "cent.",
-          "start": 51.074,
-          "end": 51.551,
+          "start": 58.554,
+          "end": 59.041,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 51.551,
-      "end": 52.851,
+      "start": 59.041,
+      "end": 60.368,
       "text": "Just pip install",
       "speaker": "bot",
       "words": [
         {
           "word": "Just",
           "raw": "Just",
-          "start": 51.551,
-          "end": 51.922,
+          "start": 59.041,
+          "end": 59.42,
           "speaker": "bot"
         },
         {
           "word": "pip",
           "raw": "pip",
-          "start": 51.922,
-          "end": 52.201,
+          "start": 59.42,
+          "end": 59.704,
           "speaker": "bot"
         },
         {
           "word": "install",
           "raw": "install",
-          "start": 52.201,
-          "end": 52.851,
+          "start": 59.704,
+          "end": 60.368,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 52.851,
-      "end": 55.08,
+      "start": 60.368,
+      "end": 62.642,
       "text": "antigravity-sdk and launch",
       "speaker": "bot",
       "words": [
         {
           "word": "antigravity-sdk",
           "raw": "antigravity-sdk",
-          "start": 52.851,
-          "end": 54.244,
+          "start": 60.368,
+          "end": 61.789,
           "speaker": "bot"
         },
         {
           "word": "and",
           "raw": "and",
-          "start": 54.244,
-          "end": 54.522,
+          "start": 61.789,
+          "end": 62.073,
           "speaker": "bot"
         },
         {
           "word": "launch",
           "raw": "launch",
-          "start": 54.522,
-          "end": 55.08,
+          "start": 62.073,
+          "end": 62.642,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 55.08,
-      "end": 55.451,
+      "start": 62.642,
+      "end": 63.021,
       "text": "agy.",
       "speaker": "bot",
       "words": [
         {
           "word": "agy",
           "raw": "agy.",
-          "start": 55.08,
-          "end": 55.451,
+          "start": 62.642,
+          "end": 63.021,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 55.77,
-      "end": 56.459,
+      "start": 63.574,
+      "end": 64.249,
       "text": "Sorry bro,",
       "speaker": "junior",
       "words": [
         {
           "word": "Sorry",
           "raw": "Sorry",
-          "start": 55.77,
-          "end": 56.153,
+          "start": 63.574,
+          "end": 63.949,
           "speaker": "junior"
         },
         {
           "word": "bro",
           "raw": "bro,",
-          "start": 56.153,
-          "end": 56.459,
+          "start": 63.949,
+          "end": 64.249,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 56.459,
-      "end": 57.378,
+      "start": 64.249,
+      "end": 65.15,
       "text": "looks like I'm",
       "speaker": "junior",
       "words": [
         {
           "word": "looks",
           "raw": "looks",
-          "start": 56.459,
-          "end": 56.842,
+          "start": 64.249,
+          "end": 64.625,
           "speaker": "junior"
         },
         {
           "word": "like",
           "raw": "like",
-          "start": 56.842,
-          "end": 57.148,
+          "start": 64.625,
+          "end": 64.925,
           "speaker": "junior"
         },
         {
           "word": "I'm",
           "raw": "I'm",
-          "start": 57.148,
-          "end": 57.378,
+          "start": 64.925,
+          "end": 65.15,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 57.378,
-      "end": 58.22,
+      "start": 65.15,
+      "end": 65.975,
       "text": "keeping my 10",
       "speaker": "junior",
       "words": [
         {
           "word": "keeping",
           "raw": "keeping",
-          "start": 57.378,
-          "end": 57.914,
+          "start": 65.15,
+          "end": 65.675,
           "speaker": "junior"
         },
         {
           "word": "my",
           "raw": "my",
-          "start": 57.914,
-          "end": 58.067,
+          "start": 65.675,
+          "end": 65.825,
           "speaker": "junior"
         },
         {
           "word": "10",
           "raw": "10",
-          "start": 58.067,
-          "end": 58.22,
+          "start": 65.825,
+          "end": 65.975,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 58.22,
-      "end": 59.445,
+      "start": 65.975,
+      "end": 67.176,
       "text": "dollars for tacos!",
       "speaker": "junior",
       "words": [
         {
           "word": "dollars",
           "raw": "dollars",
-          "start": 58.22,
-          "end": 58.756,
+          "start": 65.975,
+          "end": 66.501,
           "speaker": "junior"
         },
         {
           "word": "for",
           "raw": "for",
-          "start": 58.756,
-          "end": 58.986,
+          "start": 66.501,
+          "end": 66.726,
           "speaker": "junior"
         },
         {
           "word": "tacos",
           "raw": "tacos!",
-          "start": 58.986,
-          "end": 59.445,
+          "start": 66.726,
+          "end": 67.176,
           "speaker": "junior"
         }
       ]
     },
     {
-      "start": 59.762,
-      "end": 60.8,
+      "start": 67.644,
+      "end": 68.704,
       "text": "Wise choice.",
       "speaker": "bot",
       "words": [
         {
           "word": "Wise",
           "raw": "Wise",
-          "start": 59.762,
-          "end": 60.139,
+          "start": 67.644,
+          "end": 68.029,
           "speaker": "bot"
         },
         {
           "word": "choice",
           "raw": "choice.",
-          "start": 60.139,
-          "end": 60.8,
+          "start": 68.029,
+          "end": 68.704,
           "speaker": "bot"
         }
       ]
     },
     {
-      "start": 60.799,
-      "end": 62.762,
+      "start": 68.704,
+      "end": 70.706,
       "text": "Tacos don't hallucinate.",
       "speaker": "bot",
       "words": [
         {
           "word": "Tacos",
           "raw": "Tacos",
-          "start": 60.799,
-          "end": 61.245,
+          "start": 68.704,
+          "end": 69.159,
           "speaker": "bot"
         },
         {
           "word": "don't",
           "raw": "don't",
-          "start": 61.245,
-          "end": 61.691,
+          "start": 69.159,
+          "end": 69.614,
           "speaker": "bot"
         },
         {
           "word": "hallucinate",
           "raw": "hallucinate.",
-          "start": 61.691,
-          "end": 62.762,
+          "start": 69.614,
+          "end": 70.706,
           "speaker": "bot"
         }
       ]
@@ -2682,16 +2682,16 @@
       "index": 0,
       "speaker": "junior",
       "start": 0.0,
-      "end": 5.448,
-      "duration": 5.448,
+      "end": 5.328,
+      "duration": 5.328,
       "text": "I need to build an AI agent for my project, but I only have 10 dollars in my bank account.",
       "cardTrigger": null
     },
     {
       "index": 1,
       "speaker": "rival",
-      "start": 5.648,
-      "end": 14.48,
+      "start": 5.778,
+      "end": 14.61,
       "duration": 8.832,
       "text": "Good luck. You need Claude Pro, a $200 API tier, and at least three months of manual prompt engineering.",
       "cardTrigger": null
@@ -2699,26 +2699,26 @@
     {
       "index": 2,
       "speaker": "bot",
-      "start": 14.68,
-      "end": 19.144,
-      "duration": 4.464,
+      "start": 15.09,
+      "end": 19.65,
+      "duration": 4.56,
       "text": "Or... you could spend zero dollars and build it in ten minutes.",
       "cardTrigger": null
     },
     {
       "index": 3,
       "speaker": "rival",
-      "start": 19.344,
-      "end": 26.664,
-      "duration": 7.32,
+      "start": 20.1,
+      "end": 27.06,
+      "duration": 6.96,
       "text": "Zero dollars? Nothing in modern AI is free. Claude is the industry standard.",
       "cardTrigger": null
     },
     {
       "index": 4,
       "speaker": "bot",
-      "start": 26.864,
-      "end": 28.736,
+      "start": 27.48,
+      "end": 29.352,
       "duration": 1.872,
       "text": "Let's check the numbers.",
       "cardTrigger": true
@@ -2726,72 +2726,72 @@
     {
       "index": 5,
       "speaker": "bot",
-      "start": 28.936,
-      "end": 32.656,
-      "duration": 3.72,
+      "start": 29.732,
+      "end": 39.428,
+      "duration": 9.696,
       "text": "Claude caps you at 200k tokens and costs hundreds every month. Google Gemini 2.5 Flash gives you one million tokens on the free tier.",
       "cardTrigger": null
     },
     {
       "index": 6,
       "speaker": "junior",
-      "start": 32.856,
-      "end": 35.832,
-      "duration": 2.976,
+      "start": 39.948,
+      "end": 42.732,
+      "duration": 2.784,
       "text": "Wait, one million tokens? For free?!",
       "cardTrigger": null
     },
     {
       "index": 7,
       "speaker": "rival",
-      "start": 36.032,
-      "end": 39.872,
-      "duration": 3.84,
+      "start": 43.082,
+      "end": 46.754,
+      "duration": 3.672,
       "text": "Okay, but Claude has better reasoning for agents!",
       "cardTrigger": null
     },
     {
       "index": 8,
       "speaker": "bot",
-      "start": 40.072,
-      "end": 47.248,
-      "duration": 7.176,
+      "start": 47.154,
+      "end": 54.474,
+      "duration": 7.32,
       "text": "Antigravity CLI orchestrates multi-agent coding right inside your terminal, with auto-healing and local verification.",
       "cardTrigger": null
     },
     {
       "index": 9,
       "speaker": "junior",
-      "start": 47.448,
-      "end": 49.776,
-      "duration": 2.328,
+      "start": 54.954,
+      "end": 57.114,
+      "duration": 2.16,
       "text": "So I don't need a 200 dollar subscription?",
       "cardTrigger": null
     },
     {
       "index": 10,
       "speaker": "bot",
-      "start": 49.976,
-      "end": 55.52,
-      "duration": 5.544,
+      "start": 57.434,
+      "end": 63.074,
+      "duration": 5.64,
       "text": "Not a single cent. Just pip install antigravity-sdk and launch agy.",
       "cardTrigger": null
     },
     {
       "index": 11,
       "speaker": "junior",
-      "start": 55.72,
-      "end": 59.512,
-      "duration": 3.792,
+      "start": 63.524,
+      "end": 67.244,
+      "duration": 3.72,
       "text": "Sorry bro, looks like I'm keeping my 10 dollars for tacos!",
       "cardTrigger": null
     },
     {
       "index": 12,
       "speaker": "bot",
-      "start": 59.712,
-      "end": 62.832,
-      "duration": 3.12,
+      "start": 67.594,
+      "end": 70.762,
+      "duration": 3.168,
       "text": "Wise choice. Tacos don't hallucinate.",
       "cardTrigger": null
     }

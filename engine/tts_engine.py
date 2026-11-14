@@ -104,6 +104,18 @@ CHARACTER_VOICE_PROFILES = {
         "rate": "-3%",
         "description": "Deep resonant cinematic hacker bass AI",
     },
+    "dad": {
+        "voice": "en-IN-PrabhatNeural",
+        "pitch": "-4Hz",
+        "rate": "-1%",
+        "description": "Authoritative, nostalgic Indian Dad tone, scolding yet hilarious",
+    },
+    "boomer_dad": {
+        "voice": "en-US-ChristopherNeural",
+        "pitch": "-8Hz",
+        "rate": "-2%",
+        "description": "Grumpy traditional Dad questioning electronics and power bills",
+    },
 }
 
 
@@ -514,20 +526,6 @@ def generate_dialogue_speech(
         turn_audio_files = []
         current_timeline = 0.0
 
-        # Generate silence audio snippet for pauses between turns
-        pause_file = os.path.join(tmpdir, "pause.mp3")
-        subprocess.run(
-            [
-                "ffmpeg", "-y", "-f", "lavfi",
-                "-i", "anullsrc=r=24000:cl=mono",
-                "-t", str(pause_between_turns),
-                "-q:a", "9", "-acodec", "libmp3lame",
-                pause_file
-            ],
-            capture_output=True,
-            check=True
-        )
-
         for idx, turn in enumerate(dialogue):
             speaker = turn.get("speaker", "human").lower()
             text = clean_text_for_speech(turn.get("text", ""))
@@ -539,7 +537,9 @@ def generate_dialogue_speech(
 
             # Dynamic Character Voice Profile matching
             matched_profile = None
-            if "female" in speaker:
+            if "dad" in speaker or "father" in speaker or "uncle" in speaker:
+                matched_profile = CHARACTER_VOICE_PROFILES.get("dad")
+            elif "female" in speaker:
                 matched_profile = CHARACTER_VOICE_PROFILES.get("human_female")
             elif "gemini" in speaker:
                 matched_profile = CHARACTER_VOICE_PROFILES.get("gemini")
@@ -640,10 +640,39 @@ def generate_dialogue_speech(
 
             turn_audio_files.append(turn_audio_path)
 
-            # Add pause between turns (except last turn)
-            if idx < len(dialogue) - 1 and pause_between_turns > 0:
-                turn_audio_files.append(pause_file)
-                current_timeline = turn_end + pause_between_turns
+            # Add dynamic dramatic pause between turns (except last turn)
+            if idx < len(dialogue) - 1:
+                # Comedic timing: calculate pause duration based on emotion, speaker, and text
+                turn_pause = turn.get("pause_after")
+                if turn_pause is None:
+                    if emotion == "smug":
+                        turn_pause = 0.50  # Deadpan pause after AI roast lands
+                    elif emotion == "shocked":
+                        turn_pause = 0.38  # Disbelief / pause before comeback
+                    elif emotion == "angry":
+                        turn_pause = 0.28  # Snappy, heated confrontation
+                    elif "?" in text:
+                        turn_pause = 0.42  # Setup question waiting for answer
+                    else:
+                        turn_pause = 0.25  # Natural conversational break
+
+                if turn_pause > 0.04:
+                    pause_turn_file = os.path.join(tmpdir, f"pause_{idx:03d}.mp3")
+                    subprocess.run(
+                        [
+                            "ffmpeg", "-y", "-f", "lavfi",
+                            "-i", "anullsrc=r=24000:cl=mono",
+                            "-t", f"{turn_pause:.3f}",
+                            "-q:a", "9", "-acodec", "libmp3lame",
+                            pause_turn_file
+                        ],
+                        capture_output=True,
+                        check=True
+                    )
+                    turn_audio_files.append(pause_turn_file)
+                    current_timeline = round(turn_end + turn_pause, 3)
+                else:
+                    current_timeline = turn_end
             else:
                 current_timeline = turn_end
 
@@ -674,6 +703,16 @@ def generate_dialogue_speech(
 
     total_duration = get_audio_duration(out_audio)
     duration_in_frames = int(math.ceil((total_duration + 0.5) * 30))
+
+    # Extract audio envelope for lip sync and audio-reactive 3D face animation
+    envelope = []
+    try:
+        from engine.audio_analyzer import extract_frame_audio_envelope
+        envelope_path = os.path.join(os.path.dirname(os.path.abspath(out_audio)), "audio_envelope.json")
+        envelope = extract_frame_audio_envelope(out_audio, fps=30, out_json=envelope_path)
+        print(f"📊 Extracted {len(envelope)} audio envelope frames for reactive mouth syncing.")
+    except Exception as e_env:
+        print(f"⚠️ Audio envelope extraction notice: {e_env}")
 
     # Write WebVTT
     vtt_lines = ["WEBVTT\n"]
@@ -732,7 +771,8 @@ def generate_dialogue_speech(
         "duration": total_duration,
         "frames": duration_in_frames,
         "turns": turns_summary,
-        "language": lang
+        "language": lang,
+        "envelope": envelope
     }
 
 

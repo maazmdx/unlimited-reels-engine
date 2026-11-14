@@ -17,26 +17,32 @@ export const ViralHook: React.FC<ViralHookProps> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  if (frame > durationFrames) {
+  // If frame has completely passed the duration window, unmount cleanly
+  if (frame >= durationFrames) {
     return null;
   }
 
-  // Punch-in spring animation
+  // Punch-in spring animation with crisp physics damping
   const punch = spring({
     frame,
     fps,
     config: {
-      damping: 14,
-      mass: 0.6,
-      stiffness: 180,
+      damping: 15,
+      mass: 0.65,
+      stiffness: 175,
     },
   });
 
-  // Scale from 1.25 down to 1.0, then fade out at end
-  const scale = interpolate(punch, [0, 1], [1.25, 1.0]);
+  // Scale from 1.20 down to 1.0
+  const scale = interpolate(punch, [0, 1], [1.20, 1.0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // Smooth flicker-free opacity curve: 0 -> 1 over 8 frames, holds, then 1 -> 0 over last 12 frames
   const opacity = interpolate(
     frame,
-    [0, 10, durationFrames - 15, durationFrames],
+    [0, 8, durationFrames - 12, durationFrames],
     [0, 1, 1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
@@ -45,7 +51,7 @@ export const ViralHook: React.FC<ViralHookProps> = ({
     <div
       style={{
         position: "absolute",
-        top: 240,
+        top: 230,
         left: 0,
         right: 0,
         display: "flex",
@@ -55,7 +61,10 @@ export const ViralHook: React.FC<ViralHookProps> = ({
         pointerEvents: "none",
         padding: "0 64px",
         opacity,
-        transform: `scale(${scale})`,
+        transform: `translate3d(0, 0, 0) scale(${scale})`,
+        transformOrigin: "center center",
+        backfaceVisibility: "hidden",
+        WebkitFontSmoothing: "antialiased",
       }}
     >
       {/* Alert Tag Badge */}
@@ -74,22 +83,23 @@ export const ViralHook: React.FC<ViralHookProps> = ({
           textTransform: "uppercase",
           boxShadow: "0 0 30px rgba(239, 68, 68, 0.7), 0 4px 12px rgba(0,0,0,0.5)",
           marginBottom: 16,
+          backfaceVisibility: "hidden",
         }}
       >
         <span>{tag}</span>
       </div>
 
-      {/* Main Hook Headline */}
+      {/* Main Hook Headline Card (Anti-Flicker Solid Translucency) */}
       <div
         style={{
-          backgroundColor: "rgba(11, 15, 25, 0.92)",
+          backgroundColor: "rgba(11, 15, 25, 0.96)",
           border: "2px solid rgba(239, 68, 68, 0.8)",
           borderRadius: 24,
           padding: "24px 36px",
           textAlign: "center",
           boxShadow: "0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(239, 68, 68, 0.3)",
-          backdropFilter: "blur(20px)",
           maxWidth: 920,
+          backfaceVisibility: "hidden",
         }}
       >
         <h1

@@ -1,84 +1,135 @@
 import React from "react";
-import { useCurrentFrame, spring, useVideoConfig } from "remotion";
+import { useCurrentFrame, spring, interpolate, useVideoConfig } from "remotion";
 
-interface ComparisonCard3DProps {
-  isVisible: boolean;
-  title?: string;
+export interface ComparisonRow {
+  feature: string;
+  claude: string;
+  claudeGood?: boolean;
+  antigravity: string;
+  antiGood?: boolean;
 }
 
+export interface ComparisonCard3DProps {
+  isVisible?: boolean;
+  startFrame?: number;
+  endFrame?: number;
+  title?: string;
+  leftHeader?: string;
+  rightHeader?: string;
+  badge?: string;
+  winner?: string;
+  buttonText?: string;
+  rows?: ComparisonRow[];
+}
+
+const DEFAULT_COMPARISON_ROWS: ComparisonRow[] = [
+  {
+    feature: "Cost / Month",
+    claude: "$200+ / mo",
+    claudeGood: false,
+    antigravity: "$0 Free Tier",
+    antiGood: true,
+  },
+  {
+    feature: "Context Window",
+    claude: "200,000 tokens",
+    claudeGood: false,
+    antigravity: "1,000,000 tokens",
+    antiGood: true,
+  },
+  {
+    feature: "Multi-Agent Autonomy",
+    claude: "Single chat / Manual",
+    claudeGood: false,
+    antigravity: "Antigravity CLI (agy)",
+    antiGood: true,
+  },
+  {
+    feature: "Local Video Render",
+    claude: "Not supported",
+    claudeGood: false,
+    antigravity: "Unlimited 9:16 Reels ($0)",
+    antiGood: true,
+  },
+];
+
 export const ComparisonCard3D: React.FC<ComparisonCard3DProps> = ({
-  isVisible,
+  isVisible = true,
+  startFrame = 75,
+  endFrame = 900,
   title = "Tool Comparison • The Real Numbers",
+  leftHeader = "Anthropic Claude",
+  rightHeader = "Google Antigravity",
+  badge = "$0 VERIFIED",
+  winner = "Google Antigravity & Gemini 2.5 (100% Free Local Setup)",
+  buttonText = "Run `agy` Free",
+  rows,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Smooth entrance pop
-  const cardFrame = Math.max(0, frame - 70);
-  const scale = spring({
-    frame: cardFrame,
+  // If outside time bounds or marked invisible, unmount cleanly
+  if (!isVisible || frame < startFrame || frame > endFrame + 15) {
+    return null;
+  }
+
+  // Smooth entrance pop starting exactly at startFrame
+  const cardAge = Math.max(0, frame - startFrame);
+  const entrance = spring({
+    frame: cardAge,
     fps,
-    config: { damping: 14, stiffness: 120 },
+    config: { damping: 15, stiffness: 130 },
   });
 
-  const floatY = Math.sin(frame / 20) * 4;
+  const scale = interpolate(entrance, [0, 1], [0.88, 1.0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
-  if (!isVisible || scale < 0.01) return null;
+  // Smooth entrance and exit opacity curve
+  const entranceOpacity = interpolate(cardAge, [0, 10], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
-  const comparisonRows = [
-    {
-      feature: "Cost / Month",
-      claude: "$200+ / mo",
-      claudeGood: false,
-      antigravity: "$0 Free Tier",
-      antiGood: true,
-    },
-    {
-      feature: "Context Window",
-      claude: "200,000 tokens",
-      claudeGood: false,
-      antigravity: "1,000,000 tokens",
-      antiGood: true,
-    },
-    {
-      feature: "Multi-Agent Autonomy",
-      claude: "Single chat / Manual",
-      claudeGood: false,
-      antigravity: "Antigravity CLI (agy)",
-      antiGood: true,
-    },
-    {
-      feature: "Local Video Render",
-      claude: "Not supported",
-      claudeGood: false,
-      antigravity: "Unlimited 9:16 Reels ($0)",
-      antiGood: true,
-    },
-  ];
+  const exitOpacity = interpolate(frame, [endFrame - 15, endFrame], [1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  const overallOpacity = entranceOpacity * exitOpacity;
+
+  if (overallOpacity <= 0.001) {
+    return null;
+  }
+
+  // Sub-pixel floating motion
+  const floatY = Math.sin(frame / 22) * 3.5;
+  const comparisonRows = rows && rows.length > 0 ? rows : DEFAULT_COMPARISON_ROWS;
 
   return (
     <div
       style={{
         position: "absolute",
         left: 130,
-        top: 240 + floatY,
+        top: 240,
         width: 820,
         height: 620,
-        backgroundColor: "rgba(12, 17, 29, 0.96)",
-        backdropFilter: "blur(20px)",
+        backgroundColor: "rgba(11, 17, 30, 0.98)",
         borderRadius: 24,
         border: "1px solid rgba(255, 255, 255, 0.14)",
         boxShadow: "0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(56, 189, 248, 0.25)",
         overflow: "hidden",
-        transform: `scale(${scale})`,
+        opacity: overallOpacity,
+        transform: `translate3d(0, ${floatY}px, 0) scale(${scale})`,
         transformOrigin: "center center",
-        zIndex: 45,
+        zIndex: 50,
         fontFamily: "system-ui, -apple-system, sans-serif",
+        backfaceVisibility: "hidden",
+        WebkitFontSmoothing: "antialiased",
       }}
     >
-      {/* ======================================================== */}
-      {/* 1. MACOS TITLE BAR                                       */}
-      {/* ======================================================== */}
+      {/* 1. Window Header */}
       <div
         style={{
           height: 54,
@@ -113,13 +164,11 @@ export const ComparisonCard3D: React.FC<ComparisonCard3DProps> = ({
             border: "1px solid rgba(16, 185, 129, 0.3)",
           }}
         >
-          $0 VERIFIED
+          {badge}
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* 2. SIDE-BY-SIDE HEADERS                                  */}
-      {/* ======================================================== */}
+      {/* 2. Side-By-Side Headers */}
       <div
         style={{
           display: "grid",
@@ -133,16 +182,14 @@ export const ComparisonCard3D: React.FC<ComparisonCard3DProps> = ({
           Feature
         </div>
         <div style={{ color: "#F87171", fontSize: 16, fontWeight: 800, textAlign: "center" }}>
-          Anthropic Claude
+          {leftHeader}
         </div>
         <div style={{ color: "#38BDF8", fontSize: 16, fontWeight: 800, textAlign: "center" }}>
-          Google Antigravity
+          {rightHeader}
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* 3. COMPARISON ROWS                                       */}
-      {/* ======================================================== */}
+      {/* 3. Comparison Rows */}
       <div style={{ padding: "8px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
         {comparisonRows.map((row, idx) => (
           <div
@@ -199,9 +246,7 @@ export const ComparisonCard3D: React.FC<ComparisonCard3DProps> = ({
         ))}
       </div>
 
-      {/* ======================================================== */}
-      {/* 4. FOOTER VERDICT BAR                                    */}
-      {/* ======================================================== */}
+      {/* 4. Footer Verdict Bar */}
       <div
         style={{
           marginTop: 10,
@@ -214,7 +259,7 @@ export const ComparisonCard3D: React.FC<ComparisonCard3DProps> = ({
         }}
       >
         <div style={{ color: "#94A3B8", fontSize: 15, fontWeight: 500 }}>
-          Winner: <strong style={{ color: "#38BDF8" }}>Google Antigravity & Gemini 2.5</strong> (100% Free Local Setup)
+          {winner}
         </div>
 
         <div
@@ -228,7 +273,7 @@ export const ComparisonCard3D: React.FC<ComparisonCard3DProps> = ({
             boxShadow: "0 4px 12px rgba(2, 132, 199, 0.4)",
           }}
         >
-          Run `agy` Free
+          {buttonText}
         </div>
       </div>
     </div>

@@ -24,6 +24,12 @@ else:
     PROJECT_ROOT = SCRIPT_DIR.parent
     REMOTION_DIR = SCRIPT_DIR
 
+# Self-bootstrap virtualenv if running outside it
+venv_python = PROJECT_ROOT / ".venv" / "bin" / "python3"
+if venv_python.exists() and sys.prefix == getattr(sys, "base_prefix", sys.prefix):
+    res = subprocess.call([str(venv_python)] + sys.argv)
+    sys.exit(res)
+
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 

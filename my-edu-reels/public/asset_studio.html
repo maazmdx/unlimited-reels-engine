@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity 3D Reel Asset Studio & Workshop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    body {
+      background-color: #070B14;
+      color: #F8FAFC;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow-x: hidden;
+    }
+    .viewport-container {
+      width: 480px;
+      height: 853px; /* 9:16 vertical ratio scaled */
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(56, 189, 248, 0.2);
+    }
+    .neon-border {
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🎬</span>
+          <h1 class="text-2xl font-black tracking-tight text-white">Antigravity 3D Asset Studio & Scene Workshop</h1>
+          <span class="bg-sky-500/10 text-sky-400 text-xs px-2.5 py-1 rounded-full font-bold border border-sky-500/20">9:16 Vertical Live Preview</span>
+        </div>
+        <p class="text-sm text-slate-400 mt-1">Interactive real-time 3D characters, props, camera choreography, and anti-flicker banner testing for reels.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="snapBtn" class="bg-sky-500 hover:bg-sky-600 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-sky-500/20">
+          <span>📸</span> Capture Snapshot
+        </button>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left: Interactive 9:16 Viewport -->
+      <div class="lg:col-span-5 flex flex-col items-center">
+        <div class="viewport-container relative rounded-3xl overflow-hidden bg-slate-950 neon-border">
+          <canvas id="threeCanvas" class="w-full h-full block"></canvas>
+
+          <!-- Overlay 1: Viral Hook Banner -->
+          <div id="hookOverlay" class="absolute top-10 left-6 right-6 transition-all duration-300 pointer-events-none">
+            <div class="flex flex-col items-center text-center">
+              <span id="hookTagText" class="bg-red-500 text-white text-[11px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-red-500/50 mb-2">
+                ⚠️ REAL TALK
+              </span>
+              <div class="bg-slate-950/95 border-2 border-red-500/80 rounded-2xl p-4 shadow-2xl backdrop-blur-md w-full">
+                <h2 id="hookHeadlineText" class="text-xl font-black text-white leading-tight uppercase mb-1">THE 6-HOUR DEV BLUNDER</h2>
+                <p id="hookSubheadlineText" class="text-xs text-slate-300 font-medium">Why junior devs are getting completely outclassed by $0 AI</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overlay 2: Floating 3D Comparison Card -->
+          <div id="cardOverlay" class="absolute top-48 left-4 right-4 bg-slate-950/98 border border-white/10 rounded-2xl p-4 shadow-2xl pointer-events-none transition-all duration-300">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+              <div class="flex gap-1.5">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+              </div>
+              <span id="cardTitleText" class="text-xs font-bold text-slate-200">Tool Comparison • Real Numbers</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-black px-2 py-0.5 rounded border border-emerald-500/30">$0 VERIFIED</span>
+            </div>
+            <div class="space-y-1.5 text-xs">
+              <div class="flex justify-between py-1 px-2 rounded bg-slate-900/60 border border-white/5">
+                <span class="text-slate-400">Monthly Cost</span>
+                <span class="text-red-400 font-bold">$200/mo</span>
+                <span class="text-sky-400 font-extrabold">$0 Free Tier</span>
+              </div>
+              <div class="flex justify-between py-1 px-2 rounded bg-slate-900/40 border border-white/5">
+                <span class="text-slate-400">Context Window</span>
+                <span class="text-red-400 font-bold">200k tokens</span>
+                <span class="text-sky-400 font-extrabold">1M tokens</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between items-center text-[10px]">
+              <span class="text-slate-400">Winner: Google Antigravity & Gemini</span>
+              <span class="bg-sky-600 text-white font-bold px-2 py-1 rounded">Run `agy` Free</span>
+            </div>
+          </div>
+
+          <!-- Overlay 3: Subtitles -->
+          <div id="subOverlay" class="absolute bottom-8 left-4 right-4 flex flex-col items-center pointer-events-none">
+            <span id="speakerBadge" class="bg-sky-500/20 text-sky-400 border border-sky-500/50 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full mb-1.5">
+              ● Google Antigravity
+            </span>
+            <div class="bg-slate-950/95 border border-white/10 rounded-xl px-4 py-2 text-center max-w-sm shadow-xl">
+              <p id="subtitleText" class="text-sm font-bold text-white">
+                "Zero dollars. Nothing in modern AI is free."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Control Dashboard -->
+      <div class="lg:col-span-7 space-y-6">
+        <!-- 1. Speaker & Cast Switcher -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span>🎭</span> Active Speaker & Character Cast
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button class="char-btn active px-4 py-3 rounded-xl border border-sky-500 bg-sky-500/10 text-white font-bold text-sm text-left transition hover:bg-sky-500/20" data-speaker="bot">
+              <div class="text-base mb-1">🤖</div>
+              <div>Antigravity Bot</div>
+              <div class="text-[11px] text-slate-400 font-normal">Faceted Terracotta</div>
+            </button>
+            <button class="char-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-950 text-white font-bold text-sm text-left transition hover:bg-slate-800" data-speaker="junior">
+              <div class="text-base mb-1">🧢</div>
+              <div>Junior Dev</div>
+              <div class="text-[11px] text-slate-400 font-normal">Beanie & Hoodie</div>
+            </button>
+            <button class="char-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-950 text-white font-bold text-sm text-left transition hover:bg-slate-800" data-speaker="dad">
+              <div class="text-base mb-1">☕</div>
+              <div>Indian Dad</div>
+              <div class="text-[11px] text-slate-400 font-normal">Glasses & Chai</div>
+            </button>
+            <button class="char-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-950 text-white font-bold text-sm text-left transition hover:bg-slate-800" data-speaker="rival">
+              <div class="text-base mb-1">👔</div>
+              <div>Rival Senior</div>
+              <div class="text-[11px] text-slate-400 font-normal">Blazer & Tie</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Camera Choreography & Smooth Zooms -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span>🎥</span> Camera Angles (Smooth Spring Interpolation)
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button class="cam-btn px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white font-bold text-xs transition hover:bg-slate-800" data-cam="wide">Wide Studio (Overview)</button>
+            <button class="cam-btn px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white font-bold text-xs transition hover:bg-slate-800" data-cam="junior">Junior Dev Punch-in</button>
+            <button class="cam-btn px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white font-bold text-xs transition hover:bg-slate-800" data-cam="dad">Dad Close-up (Center)</button>
+            <button class="cam-btn px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white font-bold text-xs transition hover:bg-slate-800" data-cam="bot">Antigravity Bot Punch-in</button>
+          </div>
+        </div>
+
+        <!-- 3. Audio-Reactive Lip Sync Simulator -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wider flex items-center gap-2">
+              <span>🎙️</span> Audio Envelope & Mouth Sync
+            </h3>
+            <span id="ampLabel" class="text-xs font-mono text-emerald-400 font-bold">Amplitude: 0.00</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <input id="ampSlider" type="range" min="0" max="1" step="0.02" value="0" class="w-full h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-sky-400">
+            <button id="talkSimBtn" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition">
+              Simulate Speech
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Overlays & Anti-Flicker Toggles -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span>🛡️</span> Overlays & Anti-Flickering Controls
+          </h3>
+          <div class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
+              <input id="toggleHook" type="checkbox" checked class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-sky-500 focus:ring-0">
+              Show Viral Hook (0-3s)
+            </label>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
+              <input id="toggleCard" type="checkbox" checked class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-sky-500 focus:ring-0">
+              Show 3D Comparison Card
+            </label>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
+              <input id="toggleSub" type="checkbox" checked class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-sky-500 focus:ring-0">
+              Show Lower-Third Subtitles
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // Three.js Interactive Setup
+    // -------------------------------------------------------------
+    const canvas = document.getElementById('threeCanvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(480, 853);
+    renderer.shadowMap.enabled = true;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0B0F19);
+
+    const camera = new THREE.PerspectiveCamera(46, 480 / 853, 0.1, 100);
+    camera.position.set(0, 0.2, 8.2);
+
+    // Studio Lights
+    const ambientLight = new THREE.AmbientLight(0xF1F5F9, 1.2);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xFFF7ED, 2.4);
+    sunLight.position.set(4.5, 7.5, 6.0);
+    scene.add(sunLight);
+
+    const fillLight = new THREE.DirectionalLight(0x94A3B8, 1.1);
+    fillLight.position.set(-5.0, 4.0, 4.0);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.PointLight(0x38BDF8, 2.6, 12);
+    rimLight.position.set(0, 3.2, -2.5);
+    scene.add(rimLight);
+
+    // Diner Table & Backdrop
+    const tableGroup = new THREE.Group();
+    tableGroup.position.set(0, -0.7, 0);
+
+    const tableMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(5.2, 0.14, 1.8),
+      new THREE.MeshStandardMaterial({ color: 0x3B2314, roughness: 0.3, metalness: 0.2 })
+    );
+    tableMesh.position.set(0, -0.76, 0.6);
+    tableGroup.add(tableMesh);
+
+    const rimMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(5.22, 0.15, 0.04),
+      new THREE.MeshStandardMaterial({ color: 0xE2E8F0, metalness: 0.9, roughness: 0.1 })
+    );
+    rimMesh.position.set(0, -0.76, 1.51);
+    tableGroup.add(rimMesh);
+
+    const backwall = new THREE.Mesh(
+      new THREE.PlaneGeometry(14, 10),
+      new THREE.MeshStandardMaterial({ color: 0x0B0F19, roughness: 0.8 })
+    );
+    backwall.position.set(0, 1.8, -3.2);
+    tableGroup.add(backwall);
+
+    const neonLine = new THREE.Mesh(
+      new THREE.BoxGeometry(10, 0.08, 0.04),
+      new THREE.MeshStandardMaterial({ color: 0x00F0FF, emissive: 0x00F0FF, emissiveIntensity: 1.8 })
+    );
+    neonLine.position.set(0, 2.8, -3.15);
+    tableGroup.add(neonLine);
+
+    scene.add(tableGroup);
+
+    // -------------------------------------------------------------
+    // Characters
+    // -------------------------------------------------------------
+    // 1. Antigravity Bot
+    const botGroup = new THREE.Group();
+    botGroup.position.set(1.4, -0.3, 0.3);
+    botGroup.rotation.set(0.06, -0.32, 0);
+
+    const botChassis = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(0.88, 1),
+      new THREE.MeshStandardMaterial({ color: 0xD95A2B, roughness: 0.55, metalness: 0.12, flatShading: true })
+    );
+    botGroup.add(botChassis);
+
+    const antennaRod = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.03, 0.04, 0.42, 6),
+      new THREE.MeshStandardMaterial({ color: 0x8C3518, roughness: 0.5 })
+    );
+    antennaRod.position.set(0, 1.05, 0);
+    botGroup.add(antennaRod);
+
+    const antennaTip = new THREE.Mesh(
+      new THREE.SphereGeometry(0.09, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0xFFD166, emissive: 0xFFD166, emissiveIntensity: 1.0 })
+    );
+    antennaTip.position.set(0, 1.32, 0);
+    botGroup.add(antennaTip);
+
+    const oledFace = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.56, 0.56, 0.06, 24),
+      new THREE.MeshStandardMaterial({ color: 0x0A0F1A, roughness: 0.2, metalness: 0.8 })
+    );
+    oledFace.rotation.x = Math.PI / 2;
+    oledFace.position.set(0, 0.02, 0.76);
+    botGroup.add(oledFace);
+
+    // Bot Eyes
+    const botEyeL = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.06, 0.06, 0.13, 8),
+      new THREE.MeshStandardMaterial({ color: 0xFFD166, emissive: 0xFFD166, emissiveIntensity: 1.5 })
+    );
+    botEyeL.rotation.z = Math.PI / 2;
+    botEyeL.position.set(-0.2, 0.16, 0.81);
+    botGroup.add(botEyeL);
+
+    const botEyeR = botEyeL.clone();
+    botEyeR.position.set(0.2, 0.16, 0.81);
+    botGroup.add(botEyeR);
+
+    // Bot 5-Bar Equalizer Mouth
+    const botBars = [];
+    [-0.22, -0.11, 0, 0.11, 0.22].forEach((x, i) => {
+      const bar = new THREE.Mesh(
+        new THREE.BoxGeometry(0.065, 0.12, 0.02),
+        new THREE.MeshStandardMaterial({ color: 0xFFD166, emissive: 0xFFD166, emissiveIntensity: 1.2 })
+      );
+      bar.position.set(x, -0.18, 0.81);
+      botBars.push(bar);
+      botGroup.add(bar);
+    });
+
+    scene.add(botGroup);
+
+    // 2. Junior Dev
+    const juniorGroup = new THREE.Group();
+    juniorGroup.position.set(-1.4, -0.65, 0.1);
+    juniorGroup.rotation.set(0.05, 0.26, 0);
+
+    const juniorTorso = new THREE.Mesh(
+      new THREE.BoxGeometry(1.55, 1.2, 0.9),
+      new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.7, flatShading: true })
+    );
+    juniorTorso.position.set(0, -1.3, 0);
+    juniorGroup.add(juniorTorso);
+
+    const juniorHead = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(0.64, 1),
+      new THREE.MeshStandardMaterial({ color: 0xB88258, roughness: 0.65, flatShading: true })
+    );
+    juniorHead.position.set(0, -0.14, 0.08);
+    juniorGroup.add(juniorHead);
+
+    const juniorBeanie = new THREE.Mesh(
+      new THREE.SphereGeometry(0.68, 12, 10, 0, Math.PI * 2, 0, Math.PI / 1.8),
+      new THREE.MeshStandardMaterial({ color: 0x1E222A, roughness: 0.8, flatShading: true })
+    );
+    juniorBeanie.position.set(0, 0.3, 0.04);
+    juniorGroup.add(juniorBeanie);
+
+    const juniorMouth = new THREE.Mesh(
+      new THREE.BoxGeometry(0.22, 0.08, 0.06),
+      new THREE.MeshStandardMaterial({ color: 0x4A1E14, roughness: 0.7 })
+    );
+    juniorMouth.position.set(0, -0.32, 0.62);
+    juniorGroup.add(juniorMouth);
+
+    scene.add(juniorGroup);
+
+    // 3. Indian Dad Character
+    const dadGroup = new THREE.Group();
+    dadGroup.position.set(0.0, -0.65, 0.2);
+    dadGroup.rotation.set(0.06, 0, 0);
+
+    const dadPolo = new THREE.Mesh(
+      new THREE.BoxGeometry(1.65, 1.25, 0.95),
+      new THREE.MeshStandardMaterial({ color: 0xC2410C, roughness: 0.75, flatShading: true })
+    );
+    dadPolo.position.set(0, -1.3, 0);
+    dadGroup.add(dadPolo);
+
+    const dadCollar = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.16, 0.1),
+      new THREE.MeshStandardMaterial({ color: 0xFEF3C7, roughness: 0.6 })
+    );
+    dadCollar.position.set(0, -0.72, 0.46);
+    dadGroup.add(dadCollar);
+
+    const dadHead = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(0.66, 1),
+      new THREE.MeshStandardMaterial({ color: 0xB88258, roughness: 0.65, flatShading: true })
+    );
+    dadHead.position.set(0, -0.14, 0.08);
+    dadGroup.add(dadHead);
+
+    const dadHair = new THREE.Mesh(
+      new THREE.SphereGeometry(0.69, 12, 10, 0, Math.PI * 2, 0, Math.PI / 1.7),
+      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8, flatShading: true })
+    );
+    dadHair.position.set(0, 0.28, 0.02);
+    dadGroup.add(dadHair);
+
+    // Dad Glasses
+    const dadGlasses = new THREE.Group();
+    dadGlasses.position.set(0, -0.06, 0.65);
+    const glassFrameL = new THREE.Mesh(
+      new THREE.TorusGeometry(0.14, 0.022, 6, 16),
+      new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.3, metalness: 0.6 })
+    );
+    glassFrameL.position.set(-0.2, 0, 0);
+    dadGlasses.add(glassFrameL);
+    const glassFrameR = glassFrameL.clone();
+    glassFrameR.position.set(0.2, 0, 0);
+    dadGlasses.add(glassFrameR);
+    dadGroup.add(dadGlasses);
+
+    // Dad Moustache
+    const dadMoustache = new THREE.Mesh(
+      new THREE.BoxGeometry(0.38, 0.10, 0.09),
+      new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.9 })
+    );
+    dadMoustache.position.set(0, -0.22, 0.68);
+    dadGroup.add(dadMoustache);
+
+    // Dad Mouth
+    const dadMouth = new THREE.Mesh(
+      new THREE.BoxGeometry(0.24, 0.08, 0.06),
+      new THREE.MeshStandardMaterial({ color: 0x4A1E14, roughness: 0.7 })
+    );
+    dadMouth.position.set(0, -0.35, 0.62);
+    dadGroup.add(dadMouth);
+
+    // Chai Cup on Table
+    const chaiGroup = new THREE.Group();
+    chaiGroup.position.set(0.35, -0.72, 0.75);
+    const saucer = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.25, 0.22, 0.03, 16),
+      new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.2 })
+    );
+    chaiGroup.add(saucer);
+    const cup = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.14, 0.11, 0.25, 16),
+      new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.2 })
+    );
+    cup.position.set(0, 0.14, 0);
+    chaiGroup.add(cup);
+    dadGroup.add(chaiGroup);
+
+    scene.add(dadGroup);
+
+    // -------------------------------------------------------------
+    // Animation & Camera Choreography
+    // -------------------------------------------------------------
+    let currentSpeaker = "bot";
+    let targetCamPos = { x: 0, y: 0.2, z: 8.2, fov: 46 };
+    let currentAmp = 0.0;
+    let clock = new THREE.Clock();
+
+    function updateCameraTarget(target) {
+      if (target === "junior") {
+        targetCamPos = { x: -0.65, y: -0.12, z: 6.6, fov: 41 };
+      } else if (target === "dad") {
+        targetCamPos = { x: 0.0, y: -0.08, z: 6.4, fov: 40 };
+      } else if (target === "bot") {
+        targetCamPos = { x: 0.65, y: -0.05, z: 6.3, fov: 39 };
+      } else {
+        targetCamPos = { x: 0.0, y: 0.20, z: 8.2, fov: 46 };
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const time = clock.getElapsedTime();
+
+      // Smooth camera interpolation
+      camera.position.x += (targetCamPos.x - camera.position.x) * 0.08;
+      camera.position.y += (targetCamPos.y - camera.position.y) * 0.08;
+      camera.position.z += (targetCamPos.z - camera.position.z) * 0.08;
+      camera.fov += (targetCamPos.fov - camera.fov) * 0.08;
+      camera.updateProjectionMatrix();
+
+      // Bot reactive mouth
+      const isBotSpeaking = currentSpeaker === "bot";
+      const botAmp = isBotSpeaking ? Math.max(0.08, currentAmp) : 0.04;
+      botBars.forEach((bar, i) => {
+        const mult = [0.7, 1.0, 1.4, 1.0, 0.7][i];
+        bar.scale.y = Math.max(0.3, botAmp * 3.4 * mult);
+      });
+      botGroup.position.y = -0.3 + Math.sin(time * 2) * 0.04;
+
+      // Junior Dev reactive mouth
+      const isJuniorSpeaking = currentSpeaker === "junior";
+      const junAmp = isJuniorSpeaking ? Math.max(0.08, currentAmp) : 0.03;
+      juniorMouth.scale.y = 1 + junAmp * 4.0;
+      if (isJuniorSpeaking) {
+        juniorGroup.rotation.x = 0.05 + Math.sin(time * 6) * 0.03;
+      }
+
+      // Dad reactive mouth & scolding head wag
+      const isDadSpeaking = currentSpeaker === "dad";
+      const dadAmp = isDadSpeaking ? Math.max(0.08, currentAmp) : 0.03;
+      dadMouth.scale.y = 1 + dadAmp * 4.2;
+      if (isDadSpeaking) {
+        dadGroup.rotation.y = Math.sin(time * 7) * 0.06;
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // -------------------------------------------------------------
+    // UI Event Handlers
+    // -------------------------------------------------------------
+    document.querySelectorAll('.char-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('border-sky-500', 'bg-sky-500/10'));
+        btn.classList.add('border-sky-500', 'bg-sky-500/10');
+        currentSpeaker = btn.dataset.speaker;
+        updateCameraTarget(currentSpeaker);
+
+        // Update Subtitles Badge
+        const badge = document.getElementById('speakerBadge');
+        if (currentSpeaker === 'dad') {
+          badge.textContent = '● Dad (Unbeatable Logic)';
+          badge.className = 'bg-orange-500/20 text-orange-400 border border-orange-500/50 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full mb-1.5';
+        } else if (currentSpeaker === 'junior') {
+          badge.textContent = '● Junior Dev';
+          badge.className = 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full mb-1.5';
+        } else {
+          badge.textContent = '● Google Antigravity';
+          badge.className = 'bg-sky-500/20 text-sky-400 border border-sky-500/50 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full mb-1.5';
+        }
+      });
+    });
+
+    document.querySelectorAll('.cam-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        updateCameraTarget(btn.dataset.cam);
+      });
+    });
+
+    const ampSlider = document.getElementById('ampSlider');
+    const ampLabel = document.getElementById('ampLabel');
+    ampSlider.addEventListener('input', (e) => {
+      currentAmp = parseFloat(e.target.value);
+      ampLabel.textContent = `Amplitude: ${currentAmp.toFixed(2)}`;
+    });
+
+    let simInterval = null;
+    document.getElementById('talkSimBtn').addEventListener('click', () => {
+      if (simInterval) {
+        clearInterval(simInterval);
+        simInterval = null;
+        currentAmp = 0;
+        ampSlider.value = 0;
+        ampLabel.textContent = 'Amplitude: 0.00';
+      } else {
+        simInterval = setInterval(() => {
+          currentAmp = Math.random() * 0.8 + 0.1;
+          ampSlider.value = currentAmp;
+          ampLabel.textContent = `Amplitude: ${currentAmp.toFixed(2)}`;
+        }, 100);
+      }
+    });
+
+    // Overlay Toggles
+    document.getElementById('toggleHook').addEventListener('change', (e) => {
+      document.getElementById('hookOverlay').style.opacity = e.target.checked ? '1' : '0';
+    });
+    document.getElementById('toggleCard').addEventListener('change', (e) => {
+      document.getElementById('cardOverlay').style.opacity = e.target.checked ? '1' : '0';
+    });
+    document.getElementById('toggleSub').addEventListener('change', (e) => {
+      document.getElementById('subOverlay').style.opacity = e.target.checked ? '1' : '0';
+    });
+
+    // Snapshot Handler
+    document.getElementById('snapBtn').addEventListener('click', () => {
+      const dataURL = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = `antigravity_scene_${currentSpeaker}.png`;
+      a.click();
+    });
+  </script>
+</body>
+</html>

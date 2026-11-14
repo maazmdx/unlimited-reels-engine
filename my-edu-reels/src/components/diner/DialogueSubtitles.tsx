@@ -52,7 +52,9 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
 
   // If no exact match, find if we're between two close chunks (less than 0.6s gap)
   if (!activeChunk && chunks.length > 0) {
-    const prevChunk = [...chunks].reverse().find((c) => currentTime > c.end && currentTime - c.end < 0.6);
+    const prevChunk = [...chunks]
+      .reverse()
+      .find((c) => currentTime > c.end && currentTime - c.end < 0.6);
     if (prevChunk) {
       activeChunk = prevChunk;
       activeWordIndex = (prevChunk.words?.length || 1) - 1;
@@ -64,16 +66,24 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
   }
 
   const speaker = (activeChunk.speaker || activeSpeaker || "bot").toLowerCase();
-  const isHuman = speaker === "human" || speaker === "junior";
+  const isHuman = speaker === "human" || speaker === "junior" || speaker === "dev";
   const isRival = speaker === "rival" || speaker === "senior";
+  const isDad = speaker === "dad" || speaker === "father" || speaker === "uncle";
+  const isClaude = speaker === "claude";
+  const isGrok = speaker === "grok";
 
-  // Speaker badge styling
+  // Dynamic speaker badge styling
   let badgeLabel = "Google Antigravity";
   let badgeColor = "#38BDF8";
   let badgeBg = "rgba(56, 189, 248, 0.15)";
   let badgeBorder = "rgba(56, 189, 248, 0.5)";
 
-  if (isHuman) {
+  if (isDad) {
+    badgeLabel = "Dad (Unbeatable Logic)";
+    badgeColor = "#F97316"; // Bright Orange
+    badgeBg = "rgba(249, 115, 22, 0.20)";
+    badgeBorder = "rgba(249, 115, 22, 0.6)";
+  } else if (isHuman) {
     badgeLabel = "Junior Dev";
     badgeColor = "#34D399";
     badgeBg = "rgba(52, 211, 153, 0.15)";
@@ -83,6 +93,16 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
     badgeColor = "#F59E0B";
     badgeBg = "rgba(245, 158, 11, 0.15)";
     badgeBorder = "rgba(245, 158, 11, 0.5)";
+  } else if (isClaude) {
+    badgeLabel = "Anthropic Claude";
+    badgeColor = "#D97706";
+    badgeBg = "rgba(217, 119, 6, 0.15)";
+    badgeBorder = "rgba(217, 119, 6, 0.5)";
+  } else if (isGrok) {
+    badgeLabel = "xAI Grok";
+    badgeColor = "#E2E8F0";
+    badgeBg = "rgba(226, 232, 240, 0.15)";
+    badgeBorder = "rgba(226, 232, 240, 0.5)";
   }
 
   const words = activeChunk.words || [];
@@ -97,61 +117,48 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        zIndex: 80,
+        zIndex: 100,
         pointerEvents: "none",
-        padding: "0 54px",
+        padding: "0 48px",
+        transform: "translate3d(0, 0, 0)",
+        backfaceVisibility: "hidden",
+        WebkitFontSmoothing: "antialiased",
       }}
     >
-      {/* Stable Speaker Badge (No blinking between syllables) */}
+      {/* Speaker Identifier Badge */}
       <div
         style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: 10,
+          gap: 6,
           backgroundColor: badgeBg,
+          color: badgeColor,
           border: `1.5px solid ${badgeBorder}`,
-          padding: "6px 20px",
-          borderRadius: 24,
-          marginBottom: 16,
-          backdropFilter: "blur(12px)",
-          boxShadow: `0 4px 20px rgba(0,0,0,0.5)`,
+          borderRadius: 20,
+          padding: "6px 18px",
+          fontSize: 16,
+          fontWeight: 800,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          marginBottom: 12,
+          boxShadow: `0 4px 16px ${badgeBg}`,
         }}
       >
-        <span
-          style={{
-            width: 9,
-            height: 9,
-            borderRadius: "50%",
-            backgroundColor: badgeColor,
-            boxShadow: `0 0 12px ${badgeColor}`,
-          }}
-        />
-        <span
-          style={{
-            color: "#FFFFFF",
-            fontSize: 16,
-            fontWeight: 800,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-          }}
-        >
-          {badgeLabel}
-        </span>
+        <span style={{ fontSize: 14 }}>●</span>
+        <span>{badgeLabel}</span>
       </div>
 
-      {/* High-Impact Subtitle Typography (Matches Reference Reels) */}
+      {/* Main Subtitle Box (Anti-Flicker Solid Translucency) */}
       <div
         style={{
-          textAlign: "center",
-          maxWidth: 960,
-          lineHeight: 1.35,
-          background: "rgba(7, 11, 20, 0.72)",
-          padding: "16px 32px",
-          borderRadius: 28,
+          backgroundColor: "rgba(11, 15, 25, 0.94)",
           border: "1px solid rgba(255, 255, 255, 0.12)",
-          backdropFilter: "blur(14px)",
-          boxShadow: "0 12px 36px rgba(0,0,0,0.65)",
+          borderRadius: 20,
+          padding: "16px 28px",
+          maxWidth: 960,
+          textAlign: "center",
+          boxShadow: "0 16px 40px rgba(0,0,0,0.8)",
+          backfaceVisibility: "hidden",
         }}
       >
         {words.length > 0 ? (
@@ -161,36 +168,36 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
               flexWrap: "wrap",
               justifyContent: "center",
               gap: "8px 12px",
+              fontFamily:
+                styleMode === "serif_gold"
+                  ? "Georgia, 'Times New Roman', serif"
+                  : "system-ui, -apple-system, sans-serif",
             }}
           >
-            {words.map((w, wIdx) => {
-              const isCurrent = wIdx === activeWordIndex;
-              const isPast = wIdx < activeWordIndex;
-
+            {words.map((w, idx) => {
+              const isActive = idx === activeWordIndex;
+              const isPast = idx < activeWordIndex;
               return (
                 <span
-                  key={wIdx}
+                  key={idx}
                   style={{
-                    fontSize: 42,
-                    fontWeight: 800,
-                    fontFamily:
-                      styleMode === "serif_gold"
-                        ? "Georgia, 'Times New Roman', serif"
-                        : "system-ui, -apple-system, sans-serif",
-                    color: isCurrent
-                      ? "#FDE047" // Golden highlight
+                    fontSize: 32,
+                    fontWeight: 700,
+                    lineHeight: 1.3,
+                    color: isActive
+                      ? "#FFDF00"
                       : isPast
-                      ? "#FFFFFF"
-                      : "rgba(255, 255, 255, 0.75)",
-                    transform: isCurrent ? "scale(1.08)" : "scale(1.0)",
+                      ? "#F8FAFC"
+                      : "rgba(248, 250, 252, 0.65)",
+                    textShadow: isActive
+                      ? "0 0 16px rgba(255, 223, 0, 0.8), 0 2px 8px rgba(0,0,0,0.9)"
+                      : "0 2px 6px rgba(0,0,0,0.8)",
+                    transform: isActive ? "scale(1.08)" : "scale(1.0)",
                     display: "inline-block",
-                    transition: "transform 0.1s ease, color 0.1s ease",
-                    textShadow: isCurrent
-                      ? "0 0 20px rgba(253, 224, 71, 0.6), 0 3px 8px rgba(0,0,0,0.9)"
-                      : "0 3px 8px rgba(0,0,0,0.9)",
+                    transition: "transform 0.05s ease-out",
                   }}
                 >
-                  {w.raw || w.word}
+                  {w.word}
                 </span>
               );
             })}
@@ -198,11 +205,15 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
         ) : (
           <span
             style={{
-              fontSize: 42,
-              fontWeight: 800,
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              color: "#FDE047",
-              textShadow: "0 3px 12px rgba(0,0,0,0.9)",
+              fontSize: 32,
+              fontWeight: 700,
+              color: "#F8FAFC",
+              lineHeight: 1.3,
+              fontFamily:
+                styleMode === "serif_gold"
+                  ? "Georgia, 'Times New Roman', serif"
+                  : "system-ui, -apple-system, sans-serif",
+              textShadow: "0 2px 8px rgba(0,0,0,0.9)",
             }}
           >
             {activeChunk.text}

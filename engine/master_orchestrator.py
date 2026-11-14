@@ -12,10 +12,19 @@ Agent 6: Google Drive Cloud Dispatcher
 
 import sys
 import os
+import subprocess
+from pathlib import Path
+
+# Self-bootstrap virtualenv if available
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+venv_python = PROJECT_ROOT / ".venv" / "bin" / "python3"
+if venv_python.exists() and sys.prefix == getattr(sys, "base_prefix", sys.prefix):
+    res = subprocess.call([str(venv_python)] + sys.argv)
+    sys.exit(res)
+
 import time
 import json
 import argparse
-from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -41,6 +50,8 @@ BANNER = r"""
 
 def run_pipeline(
     topic_override: str = None,
+    topic_id: str = None,
+    category: str = None,
     output_filename: str = None,
     drive_folder_id: str = None,
     max_audit_attempts: int = 3
@@ -49,7 +60,11 @@ def run_pipeline(
     start_time = time.time()
 
     # Step 1: Agent 1 (Trend Researcher)
-    researcher = TrendResearcherAgent(topic_override=topic_override)
+    researcher = TrendResearcherAgent(
+        topic_override=topic_override,
+        topic_id=topic_id,
+        category=category
+    )
     topic_data = researcher.research_daily_topic()
 
     # Step 2: Agent 2 (Script Director)
@@ -121,12 +136,16 @@ def run_pipeline(
 def main():
     parser = argparse.ArgumentParser(description="Run Antigravity Autonomous Video Orchestrator")
     parser.add_argument("--topic", type=str, default=None, help="Custom topic override")
+    parser.add_argument("--topic-id", type=str, default=None, help="Exact topic ID (e.g. dad_vs_wifi_ai, dad_vs_gpu_bill)")
+    parser.add_argument("--category", type=str, default=None, help="Category (e.g. 'AI vs Dad', 'AI vs AI', 'AI vs Humans')")
     parser.add_argument("--out", type=str, default=None, help="Custom output filename")
     parser.add_argument("--drive-folder", type=str, default=None, help="Google Drive folder ID")
     args = parser.parse_args()
 
     run_pipeline(
         topic_override=args.topic,
+        topic_id=args.topic_id,
+        category=args.category,
         output_filename=args.out,
         drive_folder_id=args.drive_folder
     )

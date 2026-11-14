@@ -1,1488 +1,2678 @@
 {
   "words": [
     {
-      "word": "Antigravity",
-      "raw": "Antigravity,",
+      "word": "I",
+      "raw": "I",
       "start": 0.05,
-      "end": 1.019,
-      "speaker": "human_male"
+      "end": 0.193,
+      "speaker": "junior"
     },
     {
-      "word": "I",
-      "raw": "I",
-      "start": 1.019,
-      "end": 1.181,
-      "speaker": "human_male"
+      "word": "need",
+      "raw": "need",
+      "start": 0.193,
+      "end": 0.48,
+      "speaker": "junior"
     },
     {
-      "word": "worked",
-      "raw": "worked",
-      "start": 1.181,
-      "end": 1.666,
-      "speaker": "human_male"
+      "word": "to",
+      "raw": "to",
+      "start": 0.48,
+      "end": 0.623,
+      "speaker": "junior"
     },
     {
-      "word": "so",
-      "raw": "so",
-      "start": 1.666,
-      "end": 1.827,
-      "speaker": "human_male"
+      "word": "build",
+      "raw": "build",
+      "start": 0.623,
+      "end": 0.982,
+      "speaker": "junior"
     },
     {
-      "word": "hard",
-      "raw": "hard",
-      "start": 1.827,
-      "end": 2.15,
-      "speaker": "human_male"
-    },
-    {
-      "word": "today",
-      "raw": "today!",
-      "start": 2.15,
-      "end": 2.635,
-      "speaker": "human_male"
-    },
-    {
-      "word": "I",
-      "raw": "I",
-      "start": 2.635,
-      "end": 2.78,
-      "speaker": "human_male"
-    },
-    {
-      "word": "spent",
-      "raw": "spent",
-      "start": 2.78,
-      "end": 3.142,
-      "speaker": "human_male"
-    },
-    {
-      "word": "six",
-      "raw": "six",
-      "start": 3.142,
-      "end": 3.359,
-      "speaker": "human_male"
-    },
-    {
-      "word": "straight",
-      "raw": "straight",
-      "start": 3.359,
-      "end": 3.939,
-      "speaker": "human_male"
-    },
-    {
-      "word": "hours",
-      "raw": "hours",
-      "start": 3.939,
-      "end": 4.301,
-      "speaker": "human_male"
-    },
-    {
-      "word": "writing",
-      "raw": "writing",
-      "start": 4.301,
-      "end": 4.808,
-      "speaker": "human_male"
-    },
-    {
-      "word": "API",
-      "raw": "API",
-      "start": 4.808,
-      "end": 5.025,
-      "speaker": "human_male"
-    },
-    {
-      "word": "boilerplate",
-      "raw": "boilerplate",
-      "start": 5.025,
-      "end": 5.822,
-      "speaker": "human_male"
-    },
-    {
-      "word": "from",
-      "raw": "from",
-      "start": 5.822,
-      "end": 6.112,
-      "speaker": "human_male"
-    },
-    {
-      "word": "scratch",
-      "raw": "scratch.",
-      "start": 6.112,
-      "end": 6.691,
-      "speaker": "human_male"
-    },
-    {
-      "word": "Congratulations",
-      "raw": "Congratulations.",
-      "start": 7.114,
-      "end": 8.671,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "You",
-      "raw": "You",
-      "start": 8.671,
-      "end": 8.88,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "wasted",
-      "raw": "wasted",
-      "start": 8.88,
-      "end": 9.298,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "three",
-      "raw": "three",
-      "start": 9.298,
-      "end": 9.646,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "hundred",
-      "raw": "hundred",
-      "start": 9.646,
-      "end": 10.133,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "dollars",
-      "raw": "dollars",
-      "start": 10.133,
-      "end": 10.62,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "of",
-      "raw": "of",
-      "start": 10.62,
-      "end": 10.759,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "company",
-      "raw": "company",
-      "start": 10.759,
-      "end": 11.247,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "payroll",
-      "raw": "payroll",
-      "start": 11.247,
-      "end": 11.734,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "on",
-      "raw": "on",
-      "start": 11.734,
-      "end": 11.873,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "a",
-      "raw": "a",
-      "start": 11.873,
-      "end": 12.012,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "single",
-      "raw": "single",
-      "start": 12.012,
-      "end": 12.43,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "terminal",
-      "raw": "terminal",
-      "start": 12.43,
-      "end": 12.987,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "command",
-      "raw": "command.",
-      "start": 12.987,
-      "end": 13.544,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "Hey",
-      "raw": "Hey!",
-      "start": 13.962,
-      "end": 14.495,
-      "speaker": "human_male"
-    },
-    {
-      "word": "That",
-      "raw": "That",
-      "start": 14.495,
-      "end": 14.784,
-      "speaker": "human_male"
-    },
-    {
-      "word": "was",
-      "raw": "was",
-      "start": 14.784,
-      "end": 15.0,
-      "speaker": "human_male"
-    },
-    {
-      "word": "complex",
-      "raw": "complex",
-      "start": 15.0,
-      "end": 15.505,
-      "speaker": "human_male"
-    },
-    {
-      "word": "schema",
-      "raw": "schema",
-      "start": 15.505,
-      "end": 15.938,
-      "speaker": "human_male"
-    },
-    {
-      "word": "validation",
-      "raw": "validation",
-      "start": 15.938,
-      "end": 16.659,
-      "speaker": "human_male"
-    },
-    {
-      "word": "and",
-      "raw": "and",
-      "start": 16.659,
-      "end": 16.876,
-      "speaker": "human_male"
-    },
-    {
-      "word": "database",
-      "raw": "database",
-      "start": 16.876,
-      "end": 17.453,
-      "speaker": "human_male"
-    },
-    {
-      "word": "mappings",
-      "raw": "mappings!",
-      "start": 17.453,
-      "end": 18.102,
-      "speaker": "human_male"
-    },
-    {
-      "word": "My",
-      "raw": "My",
-      "start": 18.53,
-      "end": 18.684,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "autonomous",
-      "raw": "autonomous",
-      "start": 18.684,
-      "end": 19.452,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "subagent",
-      "raw": "subagent",
-      "start": 19.452,
-      "end": 20.066,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "generated",
-      "raw": "generated",
-      "start": 20.066,
-      "end": 20.757,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "the",
-      "raw": "the",
-      "start": 20.757,
-      "end": 20.987,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "schema",
-      "raw": "schema,",
-      "start": 20.987,
-      "end": 21.525,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "wrote",
-      "raw": "wrote",
-      "start": 21.525,
-      "end": 21.909,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "the",
-      "raw": "the",
-      "start": 21.909,
-      "end": 22.139,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "migrations",
-      "raw": "migrations,",
-      "start": 22.139,
-      "end": 22.984,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "ran",
-      "raw": "ran",
-      "start": 22.984,
-      "end": 23.214,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "static",
-      "raw": "static",
-      "start": 23.214,
-      "end": 23.675,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "analysis",
-      "raw": "analysis,",
-      "start": 23.675,
-      "end": 24.366,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "and",
-      "raw": "and",
-      "start": 24.366,
-      "end": 24.597,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "deployed",
-      "raw": "deployed",
-      "start": 24.597,
-      "end": 25.211,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "it",
-      "raw": "it",
-      "start": 25.211,
-      "end": 25.365,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "in",
-      "raw": "in",
-      "start": 25.365,
-      "end": 25.518,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "two",
-      "raw": "two",
-      "start": 25.518,
-      "end": 25.749,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "seconds",
-      "raw": "seconds.",
-      "start": 25.749,
-      "end": 26.363,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "For",
-      "raw": "For",
-      "start": 26.363,
-      "end": 26.674,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "zero",
-      "raw": "zero",
-      "start": 26.674,
-      "end": 27.089,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "dollars",
-      "raw": "dollars.",
-      "start": 27.089,
-      "end": 27.919,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "Wait",
-      "raw": "Wait...",
-      "start": 28.354,
-      "end": 28.948,
-      "speaker": "human_male"
-    },
-    {
-      "word": "two",
-      "raw": "two",
-      "start": 28.948,
-      "end": 29.202,
-      "speaker": "human_male"
-    },
-    {
-      "word": "seconds",
-      "raw": "seconds?",
-      "start": 29.202,
-      "end": 29.881,
-      "speaker": "human_male"
-    },
-    {
-      "word": "Are",
-      "raw": "Are",
-      "start": 29.881,
-      "end": 30.08,
-      "speaker": "human_male"
-    },
-    {
-      "word": "human",
-      "raw": "human",
-      "start": 30.08,
-      "end": 30.412,
-      "speaker": "human_male"
-    },
-    {
-      "word": "coders",
-      "raw": "coders",
-      "start": 30.412,
-      "end": 30.81,
-      "speaker": "human_male"
-    },
-    {
-      "word": "actually",
-      "raw": "actually",
-      "start": 30.81,
-      "end": 31.34,
-      "speaker": "human_male"
-    },
-    {
-      "word": "obsolete",
-      "raw": "obsolete?",
-      "start": 31.34,
-      "end": 31.937,
-      "speaker": "human_male"
-    },
-    {
-      "word": "Coders",
-      "raw": "Coders",
-      "start": 32.37,
-      "end": 32.854,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "who",
-      "raw": "who",
-      "start": 32.854,
-      "end": 33.096,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "type",
-      "raw": "type",
-      "start": 33.096,
-      "end": 33.419,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "repetitive",
-      "raw": "repetitive",
-      "start": 33.419,
-      "end": 34.226,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "boilerplate",
-      "raw": "boilerplate",
-      "start": 34.226,
-      "end": 35.114,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "are",
-      "raw": "are",
-      "start": 35.114,
-      "end": 35.357,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "obsolete",
-      "raw": "obsolete.",
-      "start": 35.357,
-      "end": 36.083,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "Coders",
-      "raw": "Coders",
-      "start": 36.083,
-      "end": 36.61,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "who",
-      "raw": "who",
-      "start": 36.61,
-      "end": 36.873,
-      "speaker": "antigravity_bot"
-    },
-    {
-      "word": "orchestrate",
-      "raw": "orchestrate",
-      "start": 36.873,
-      "end": 37.838,
-      "speaker": "antigravity_bot"
+      "word": "an",
+      "raw": "an",
+      "start": 0.982,
+      "end": 1.125,
+      "speaker": "junior"
     },
     {
       "word": "AI",
       "raw": "AI",
-      "start": 37.838,
-      "end": 38.014,
-      "speaker": "antigravity_bot"
+      "start": 1.125,
+      "end": 1.268,
+      "speaker": "junior"
     },
     {
-      "word": "agents",
-      "raw": "agents",
-      "start": 38.014,
-      "end": 38.54,
-      "speaker": "antigravity_bot"
+      "word": "agent",
+      "raw": "agent",
+      "start": 1.268,
+      "end": 1.627,
+      "speaker": "junior"
     },
     {
-      "word": "run",
-      "raw": "run",
-      "start": 38.54,
-      "end": 38.804,
-      "speaker": "antigravity_bot"
+      "word": "for",
+      "raw": "for",
+      "start": 1.627,
+      "end": 1.842,
+      "speaker": "junior"
+    },
+    {
+      "word": "my",
+      "raw": "my",
+      "start": 1.842,
+      "end": 1.985,
+      "speaker": "junior"
+    },
+    {
+      "word": "project",
+      "raw": "project,",
+      "start": 1.985,
+      "end": 2.558,
+      "speaker": "junior"
+    },
+    {
+      "word": "but",
+      "raw": "but",
+      "start": 2.558,
+      "end": 2.774,
+      "speaker": "junior"
+    },
+    {
+      "word": "I",
+      "raw": "I",
+      "start": 2.774,
+      "end": 2.917,
+      "speaker": "junior"
+    },
+    {
+      "word": "only",
+      "raw": "only",
+      "start": 2.917,
+      "end": 3.204,
+      "speaker": "junior"
+    },
+    {
+      "word": "have",
+      "raw": "have",
+      "start": 3.204,
+      "end": 3.49,
+      "speaker": "junior"
+    },
+    {
+      "word": "10",
+      "raw": "10",
+      "start": 3.49,
+      "end": 3.634,
+      "speaker": "junior"
+    },
+    {
+      "word": "dollars",
+      "raw": "dollars",
+      "start": 3.634,
+      "end": 4.135,
+      "speaker": "junior"
+    },
+    {
+      "word": "in",
+      "raw": "in",
+      "start": 4.135,
+      "end": 4.279,
+      "speaker": "junior"
+    },
+    {
+      "word": "my",
+      "raw": "my",
+      "start": 4.279,
+      "end": 4.422,
+      "speaker": "junior"
+    },
+    {
+      "word": "bank",
+      "raw": "bank",
+      "start": 4.422,
+      "end": 4.709,
+      "speaker": "junior"
+    },
+    {
+      "word": "account",
+      "raw": "account.",
+      "start": 4.709,
+      "end": 5.282,
+      "speaker": "junior"
+    },
+    {
+      "word": "Good",
+      "raw": "Good",
+      "start": 5.878,
+      "end": 6.556,
+      "speaker": "rival"
+    },
+    {
+      "word": "luck",
+      "raw": "luck.",
+      "start": 6.556,
+      "end": 7.403,
+      "speaker": "rival"
+    },
+    {
+      "word": "You",
+      "raw": "You",
+      "start": 7.353,
+      "end": 7.63,
+      "speaker": "rival"
+    },
+    {
+      "word": "need",
+      "raw": "need",
+      "start": 7.63,
+      "end": 7.999,
+      "speaker": "rival"
+    },
+    {
+      "word": "Claude",
+      "raw": "Claude",
+      "start": 7.999,
+      "end": 8.553,
+      "speaker": "rival"
+    },
+    {
+      "word": "Pro",
+      "raw": "Pro,",
+      "start": 8.553,
+      "end": 8.922,
+      "speaker": "rival"
+    },
+    {
+      "word": "a",
+      "raw": "a",
+      "start": 8.922,
+      "end": 9.107,
+      "speaker": "rival"
+    },
+    {
+      "word": "200",
+      "raw": "$200",
+      "start": 9.107,
+      "end": 9.476,
+      "speaker": "rival"
+    },
+    {
+      "word": "API",
+      "raw": "API",
+      "start": 9.476,
+      "end": 9.753,
+      "speaker": "rival"
+    },
+    {
+      "word": "tier",
+      "raw": "tier,",
+      "start": 9.753,
+      "end": 10.215,
+      "speaker": "rival"
+    },
+    {
+      "word": "and",
+      "raw": "and",
+      "start": 10.215,
+      "end": 10.491,
+      "speaker": "rival"
+    },
+    {
+      "word": "at",
+      "raw": "at",
+      "start": 10.491,
+      "end": 10.676,
+      "speaker": "rival"
+    },
+    {
+      "word": "least",
+      "raw": "least",
+      "start": 10.676,
+      "end": 11.138,
+      "speaker": "rival"
+    },
+    {
+      "word": "three",
+      "raw": "three",
+      "start": 11.138,
+      "end": 11.599,
+      "speaker": "rival"
+    },
+    {
+      "word": "months",
+      "raw": "months",
+      "start": 11.599,
+      "end": 12.153,
+      "speaker": "rival"
+    },
+    {
+      "word": "of",
+      "raw": "of",
+      "start": 12.153,
+      "end": 12.338,
+      "speaker": "rival"
+    },
+    {
+      "word": "manual",
+      "raw": "manual",
+      "start": 12.338,
+      "end": 12.891,
+      "speaker": "rival"
+    },
+    {
+      "word": "prompt",
+      "raw": "prompt",
+      "start": 12.891,
+      "end": 13.445,
+      "speaker": "rival"
+    },
+    {
+      "word": "engineering",
+      "raw": "engineering.",
+      "start": 13.445,
+      "end": 14.553,
+      "speaker": "rival"
+    },
+    {
+      "word": "Or",
+      "raw": "Or...",
+      "start": 15.14,
+      "end": 15.567,
+      "speaker": "bot"
+    },
+    {
+      "word": "you",
+      "raw": "you",
+      "start": 15.567,
+      "end": 15.823,
+      "speaker": "bot"
+    },
+    {
+      "word": "could",
+      "raw": "could",
+      "start": 15.823,
+      "end": 16.25,
+      "speaker": "bot"
+    },
+    {
+      "word": "spend",
+      "raw": "spend",
+      "start": 16.25,
+      "end": 16.677,
+      "speaker": "bot"
+    },
+    {
+      "word": "zero",
+      "raw": "zero",
+      "start": 16.677,
+      "end": 17.018,
+      "speaker": "bot"
+    },
+    {
+      "word": "dollars",
+      "raw": "dollars",
+      "start": 17.018,
+      "end": 17.616,
+      "speaker": "bot"
+    },
+    {
+      "word": "and",
+      "raw": "and",
+      "start": 17.616,
+      "end": 17.872,
+      "speaker": "bot"
+    },
+    {
+      "word": "build",
+      "raw": "build",
+      "start": 17.872,
+      "end": 18.299,
+      "speaker": "bot"
+    },
+    {
+      "word": "it",
+      "raw": "it",
+      "start": 18.299,
+      "end": 18.47,
+      "speaker": "bot"
+    },
+    {
+      "word": "in",
+      "raw": "in",
+      "start": 18.47,
+      "end": 18.641,
+      "speaker": "bot"
+    },
+    {
+      "word": "ten",
+      "raw": "ten",
+      "start": 18.641,
+      "end": 18.897,
+      "speaker": "bot"
+    },
+    {
+      "word": "minutes",
+      "raw": "minutes.",
+      "start": 18.897,
+      "end": 19.58,
+      "speaker": "bot"
+    },
+    {
+      "word": "Zero",
+      "raw": "Zero",
+      "start": 20.2,
+      "end": 20.79,
+      "speaker": "rival"
+    },
+    {
+      "word": "dollars",
+      "raw": "dollars?",
+      "start": 20.79,
+      "end": 21.971,
+      "speaker": "rival"
+    },
+    {
+      "word": "Nothing",
+      "raw": "Nothing",
+      "start": 21.921,
+      "end": 22.709,
+      "speaker": "rival"
+    },
+    {
+      "word": "in",
+      "raw": "in",
+      "start": 22.709,
+      "end": 22.935,
+      "speaker": "rival"
+    },
+    {
+      "word": "modern",
+      "raw": "modern",
+      "start": 22.935,
+      "end": 23.61,
+      "speaker": "rival"
+    },
+    {
+      "word": "AI",
+      "raw": "AI",
+      "start": 23.61,
+      "end": 23.836,
+      "speaker": "rival"
+    },
+    {
+      "word": "is",
+      "raw": "is",
+      "start": 23.836,
+      "end": 24.061,
+      "speaker": "rival"
+    },
+    {
+      "word": "free",
+      "raw": "free.",
+      "start": 24.061,
+      "end": 24.624,
+      "speaker": "rival"
+    },
+    {
+      "word": "Claude",
+      "raw": "Claude",
+      "start": 24.624,
+      "end": 25.137,
+      "speaker": "rival"
+    },
+    {
+      "word": "is",
+      "raw": "is",
+      "start": 25.137,
+      "end": 25.308,
+      "speaker": "rival"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 38.804,
-      "end": 39.067,
-      "speaker": "antigravity_bot"
+      "start": 25.308,
+      "end": 25.564,
+      "speaker": "rival"
     },
     {
-      "word": "company",
-      "raw": "company.",
-      "start": 39.067,
-      "end": 39.769,
-      "speaker": "antigravity_bot"
+      "word": "industry",
+      "raw": "industry",
+      "start": 25.564,
+      "end": 26.248,
+      "speaker": "rival"
     },
     {
-      "word": "Upgrade",
-      "raw": "Upgrade",
-      "start": 39.769,
-      "end": 40.358,
-      "speaker": "antigravity_bot"
+      "word": "standard",
+      "raw": "standard.",
+      "start": 26.248,
+      "end": 27.017,
+      "speaker": "rival"
+    },
+    {
+      "word": "Let's",
+      "raw": "Let's",
+      "start": 27.53,
+      "end": 27.922,
+      "speaker": "bot"
+    },
+    {
+      "word": "check",
+      "raw": "check",
+      "start": 27.922,
+      "end": 28.314,
+      "speaker": "bot"
+    },
+    {
+      "word": "the",
+      "raw": "the",
+      "start": 28.314,
+      "end": 28.549,
+      "speaker": "bot"
+    },
+    {
+      "word": "numbers",
+      "raw": "numbers.",
+      "start": 28.549,
+      "end": 29.176,
+      "speaker": "bot"
+    },
+    {
+      "word": "Claude",
+      "raw": "Claude",
+      "start": 29.782,
+      "end": 30.296,
+      "speaker": "bot"
+    },
+    {
+      "word": "caps",
+      "raw": "caps",
+      "start": 30.296,
+      "end": 30.638,
+      "speaker": "bot"
+    },
+    {
+      "word": "you",
+      "raw": "you",
+      "start": 30.638,
+      "end": 30.895,
+      "speaker": "bot"
+    },
+    {
+      "word": "at",
+      "raw": "at",
+      "start": 30.895,
+      "end": 31.067,
+      "speaker": "bot"
+    },
+    {
+      "word": "200k",
+      "raw": "200k",
+      "start": 31.067,
+      "end": 31.409,
+      "speaker": "bot"
+    },
+    {
+      "word": "tokens",
+      "raw": "tokens",
+      "start": 31.409,
+      "end": 31.923,
+      "speaker": "bot"
+    },
+    {
+      "word": "and",
+      "raw": "and",
+      "start": 31.923,
+      "end": 32.18,
+      "speaker": "bot"
+    },
+    {
+      "word": "costs",
+      "raw": "costs",
+      "start": 32.18,
+      "end": 32.608,
+      "speaker": "bot"
+    },
+    {
+      "word": "hundreds",
+      "raw": "hundreds",
+      "start": 32.608,
+      "end": 33.293,
+      "speaker": "bot"
+    },
+    {
+      "word": "every",
+      "raw": "every",
+      "start": 33.293,
+      "end": 33.721,
+      "speaker": "bot"
+    },
+    {
+      "word": "month",
+      "raw": "month.",
+      "start": 33.721,
+      "end": 34.235,
+      "speaker": "bot"
+    },
+    {
+      "word": "Google",
+      "raw": "Google",
+      "start": 34.235,
+      "end": 34.765,
+      "speaker": "bot"
+    },
+    {
+      "word": "Gemini",
+      "raw": "Gemini",
+      "start": 34.765,
+      "end": 35.296,
+      "speaker": "bot"
+    },
+    {
+      "word": "2.5",
+      "raw": "2.5",
+      "start": 35.296,
+      "end": 35.561,
+      "speaker": "bot"
+    },
+    {
+      "word": "Flash",
+      "raw": "Flash",
+      "start": 35.561,
+      "end": 36.003,
+      "speaker": "bot"
+    },
+    {
+      "word": "gives",
+      "raw": "gives",
+      "start": 36.003,
+      "end": 36.445,
+      "speaker": "bot"
+    },
+    {
+      "word": "you",
+      "raw": "you",
+      "start": 36.445,
+      "end": 36.71,
+      "speaker": "bot"
+    },
+    {
+      "word": "one",
+      "raw": "one",
+      "start": 36.71,
+      "end": 36.975,
+      "speaker": "bot"
+    },
+    {
+      "word": "million",
+      "raw": "million",
+      "start": 36.975,
+      "end": 37.594,
+      "speaker": "bot"
+    },
+    {
+      "word": "tokens",
+      "raw": "tokens",
+      "start": 37.594,
+      "end": 38.124,
+      "speaker": "bot"
+    },
+    {
+      "word": "on",
+      "raw": "on",
+      "start": 38.124,
+      "end": 38.301,
+      "speaker": "bot"
+    },
+    {
+      "word": "the",
+      "raw": "the",
+      "start": 38.301,
+      "end": 38.566,
+      "speaker": "bot"
+    },
+    {
+      "word": "free",
+      "raw": "free",
+      "start": 38.566,
+      "end": 38.92,
+      "speaker": "bot"
+    },
+    {
+      "word": "tier",
+      "raw": "tier.",
+      "start": 38.92,
+      "end": 39.362,
+      "speaker": "bot"
+    },
+    {
+      "word": "Wait",
+      "raw": "Wait,",
+      "start": 39.998,
+      "end": 40.419,
+      "speaker": "junior"
+    },
+    {
+      "word": "one",
+      "raw": "one",
+      "start": 40.419,
+      "end": 40.672,
+      "speaker": "junior"
+    },
+    {
+      "word": "million",
+      "raw": "million",
+      "start": 40.672,
+      "end": 41.262,
+      "speaker": "junior"
+    },
+    {
+      "word": "tokens",
+      "raw": "tokens?",
+      "start": 41.262,
+      "end": 41.852,
+      "speaker": "junior"
+    },
+    {
+      "word": "For",
+      "raw": "For",
+      "start": 41.852,
+      "end": 42.129,
+      "speaker": "junior"
+    },
+    {
+      "word": "free",
+      "raw": "free?!",
+      "start": 42.129,
+      "end": 42.682,
+      "speaker": "junior"
+    },
+    {
+      "word": "Okay",
+      "raw": "Okay,",
+      "start": 43.182,
+      "end": 43.605,
+      "speaker": "rival"
+    },
+    {
+      "word": "but",
+      "raw": "but",
+      "start": 43.605,
+      "end": 43.86,
+      "speaker": "rival"
+    },
+    {
+      "word": "Claude",
+      "raw": "Claude",
+      "start": 43.86,
+      "end": 44.368,
+      "speaker": "rival"
+    },
+    {
+      "word": "has",
+      "raw": "has",
+      "start": 44.368,
+      "end": 44.622,
+      "speaker": "rival"
+    },
+    {
+      "word": "better",
+      "raw": "better",
+      "start": 44.622,
+      "end": 45.13,
+      "speaker": "rival"
+    },
+    {
+      "word": "reasoning",
+      "raw": "reasoning",
+      "start": 45.13,
+      "end": 45.892,
+      "speaker": "rival"
+    },
+    {
+      "word": "for",
+      "raw": "for",
+      "start": 45.892,
+      "end": 46.146,
+      "speaker": "rival"
+    },
+    {
+      "word": "agents",
+      "raw": "agents!",
+      "start": 46.146,
+      "end": 46.739,
+      "speaker": "rival"
+    },
+    {
+      "word": "Antigravity",
+      "raw": "Antigravity",
+      "start": 47.204,
+      "end": 47.968,
+      "speaker": "bot"
+    },
+    {
+      "word": "CLI",
+      "raw": "CLI",
+      "start": 47.968,
+      "end": 48.176,
+      "speaker": "bot"
+    },
+    {
+      "word": "orchestrates",
+      "raw": "orchestrates",
+      "start": 48.176,
+      "end": 49.009,
+      "speaker": "bot"
+    },
+    {
+      "word": "multi-agent",
+      "raw": "multi-agent",
+      "start": 49.009,
+      "end": 49.773,
+      "speaker": "bot"
+    },
+    {
+      "word": "coding",
+      "raw": "coding",
+      "start": 49.773,
+      "end": 50.189,
+      "speaker": "bot"
+    },
+    {
+      "word": "right",
+      "raw": "right",
+      "start": 50.189,
+      "end": 50.536,
+      "speaker": "bot"
+    },
+    {
+      "word": "inside",
+      "raw": "inside",
+      "start": 50.536,
+      "end": 50.953,
+      "speaker": "bot"
     },
     {
       "word": "your",
       "raw": "your",
-      "start": 40.358,
-      "end": 40.695,
-      "speaker": "antigravity_bot"
+      "start": 50.953,
+      "end": 51.231,
+      "speaker": "bot"
     },
     {
-      "word": "workflow",
-      "raw": "workflow.",
-      "start": 40.695,
-      "end": 41.452,
-      "speaker": "antigravity_bot"
+      "word": "terminal",
+      "raw": "terminal,",
+      "start": 51.231,
+      "end": 51.855,
+      "speaker": "bot"
+    },
+    {
+      "word": "with",
+      "raw": "with",
+      "start": 51.855,
+      "end": 52.133,
+      "speaker": "bot"
+    },
+    {
+      "word": "auto-healing",
+      "raw": "auto-healing",
+      "start": 52.133,
+      "end": 52.966,
+      "speaker": "bot"
+    },
+    {
+      "word": "and",
+      "raw": "and",
+      "start": 52.966,
+      "end": 53.174,
+      "speaker": "bot"
+    },
+    {
+      "word": "local",
+      "raw": "local",
+      "start": 53.174,
+      "end": 53.522,
+      "speaker": "bot"
+    },
+    {
+      "word": "verification",
+      "raw": "verification.",
+      "start": 53.522,
+      "end": 54.424,
+      "speaker": "bot"
+    },
+    {
+      "word": "So",
+      "raw": "So",
+      "start": 55.004,
+      "end": 55.116,
+      "speaker": "junior"
+    },
+    {
+      "word": "I",
+      "raw": "I",
+      "start": 55.116,
+      "end": 55.227,
+      "speaker": "junior"
+    },
+    {
+      "word": "don't",
+      "raw": "don't",
+      "start": 55.227,
+      "end": 55.506,
+      "speaker": "junior"
+    },
+    {
+      "word": "need",
+      "raw": "need",
+      "start": 55.506,
+      "end": 55.729,
+      "speaker": "junior"
+    },
+    {
+      "word": "a",
+      "raw": "a",
+      "start": 55.729,
+      "end": 55.841,
+      "speaker": "junior"
+    },
+    {
+      "word": "200",
+      "raw": "200",
+      "start": 55.841,
+      "end": 56.008,
+      "speaker": "junior"
+    },
+    {
+      "word": "dollar",
+      "raw": "dollar",
+      "start": 56.008,
+      "end": 56.343,
+      "speaker": "junior"
+    },
+    {
+      "word": "subscription",
+      "raw": "subscription?",
+      "start": 56.343,
+      "end": 57.068,
+      "speaker": "junior"
+    },
+    {
+      "word": "Not",
+      "raw": "Not",
+      "start": 57.484,
+      "end": 57.776,
+      "speaker": "bot"
+    },
+    {
+      "word": "a",
+      "raw": "a",
+      "start": 57.776,
+      "end": 57.971,
+      "speaker": "bot"
+    },
+    {
+      "word": "single",
+      "raw": "single",
+      "start": 57.971,
+      "end": 58.554,
+      "speaker": "bot"
+    },
+    {
+      "word": "cent",
+      "raw": "cent.",
+      "start": 58.554,
+      "end": 59.041,
+      "speaker": "bot"
+    },
+    {
+      "word": "Just",
+      "raw": "Just",
+      "start": 59.041,
+      "end": 59.42,
+      "speaker": "bot"
+    },
+    {
+      "word": "pip",
+      "raw": "pip",
+      "start": 59.42,
+      "end": 59.704,
+      "speaker": "bot"
+    },
+    {
+      "word": "install",
+      "raw": "install",
+      "start": 59.704,
+      "end": 60.368,
+      "speaker": "bot"
+    },
+    {
+      "word": "antigravity-sdk",
+      "raw": "antigravity-sdk",
+      "start": 60.368,
+      "end": 61.789,
+      "speaker": "bot"
+    },
+    {
+      "word": "and",
+      "raw": "and",
+      "start": 61.789,
+      "end": 62.073,
+      "speaker": "bot"
+    },
+    {
+      "word": "launch",
+      "raw": "launch",
+      "start": 62.073,
+      "end": 62.642,
+      "speaker": "bot"
+    },
+    {
+      "word": "agy",
+      "raw": "agy.",
+      "start": 62.642,
+      "end": 63.021,
+      "speaker": "bot"
+    },
+    {
+      "word": "Sorry",
+      "raw": "Sorry",
+      "start": 63.574,
+      "end": 63.949,
+      "speaker": "junior"
+    },
+    {
+      "word": "bro",
+      "raw": "bro,",
+      "start": 63.949,
+      "end": 64.249,
+      "speaker": "junior"
+    },
+    {
+      "word": "looks",
+      "raw": "looks",
+      "start": 64.249,
+      "end": 64.625,
+      "speaker": "junior"
+    },
+    {
+      "word": "like",
+      "raw": "like",
+      "start": 64.625,
+      "end": 64.925,
+      "speaker": "junior"
+    },
+    {
+      "word": "I'm",
+      "raw": "I'm",
+      "start": 64.925,
+      "end": 65.15,
+      "speaker": "junior"
+    },
+    {
+      "word": "keeping",
+      "raw": "keeping",
+      "start": 65.15,
+      "end": 65.675,
+      "speaker": "junior"
+    },
+    {
+      "word": "my",
+      "raw": "my",
+      "start": 65.675,
+      "end": 65.825,
+      "speaker": "junior"
+    },
+    {
+      "word": "10",
+      "raw": "10",
+      "start": 65.825,
+      "end": 65.975,
+      "speaker": "junior"
+    },
+    {
+      "word": "dollars",
+      "raw": "dollars",
+      "start": 65.975,
+      "end": 66.501,
+      "speaker": "junior"
+    },
+    {
+      "word": "for",
+      "raw": "for",
+      "start": 66.501,
+      "end": 66.726,
+      "speaker": "junior"
+    },
+    {
+      "word": "tacos",
+      "raw": "tacos!",
+      "start": 66.726,
+      "end": 67.176,
+      "speaker": "junior"
+    },
+    {
+      "word": "Wise",
+      "raw": "Wise",
+      "start": 67.644,
+      "end": 68.029,
+      "speaker": "bot"
+    },
+    {
+      "word": "choice",
+      "raw": "choice.",
+      "start": 68.029,
+      "end": 68.704,
+      "speaker": "bot"
+    },
+    {
+      "word": "Tacos",
+      "raw": "Tacos",
+      "start": 68.704,
+      "end": 69.159,
+      "speaker": "bot"
+    },
+    {
+      "word": "don't",
+      "raw": "don't",
+      "start": 69.159,
+      "end": 69.614,
+      "speaker": "bot"
+    },
+    {
+      "word": "hallucinate",
+      "raw": "hallucinate.",
+      "start": 69.614,
+      "end": 70.706,
+      "speaker": "bot"
     }
   ],
   "chunks": [
     {
       "start": 0.05,
-      "end": 1.019,
-      "text": "Antigravity,",
-      "speaker": "human_male",
+      "end": 0.623,
+      "text": "I need to",
+      "speaker": "junior",
       "words": [
         {
-          "word": "Antigravity",
-          "raw": "Antigravity,",
+          "word": "I",
+          "raw": "I",
           "start": 0.05,
-          "end": 1.019,
-          "speaker": "human_male"
+          "end": 0.193,
+          "speaker": "junior"
+        },
+        {
+          "word": "need",
+          "raw": "need",
+          "start": 0.193,
+          "end": 0.48,
+          "speaker": "junior"
+        },
+        {
+          "word": "to",
+          "raw": "to",
+          "start": 0.48,
+          "end": 0.623,
+          "speaker": "junior"
         }
       ]
     },
     {
-      "start": 1.019,
-      "end": 1.827,
-      "text": "I worked so",
-      "speaker": "human_male",
+      "start": 0.623,
+      "end": 1.268,
+      "text": "build an AI",
+      "speaker": "junior",
       "words": [
+        {
+          "word": "build",
+          "raw": "build",
+          "start": 0.623,
+          "end": 0.982,
+          "speaker": "junior"
+        },
+        {
+          "word": "an",
+          "raw": "an",
+          "start": 0.982,
+          "end": 1.125,
+          "speaker": "junior"
+        },
+        {
+          "word": "AI",
+          "raw": "AI",
+          "start": 1.125,
+          "end": 1.268,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 1.268,
+      "end": 1.985,
+      "text": "agent for my",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "agent",
+          "raw": "agent",
+          "start": 1.268,
+          "end": 1.627,
+          "speaker": "junior"
+        },
+        {
+          "word": "for",
+          "raw": "for",
+          "start": 1.627,
+          "end": 1.842,
+          "speaker": "junior"
+        },
+        {
+          "word": "my",
+          "raw": "my",
+          "start": 1.842,
+          "end": 1.985,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 1.985,
+      "end": 2.558,
+      "text": "project,",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "project",
+          "raw": "project,",
+          "start": 1.985,
+          "end": 2.558,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 2.558,
+      "end": 3.204,
+      "text": "but I only",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "but",
+          "raw": "but",
+          "start": 2.558,
+          "end": 2.774,
+          "speaker": "junior"
+        },
         {
           "word": "I",
           "raw": "I",
-          "start": 1.019,
-          "end": 1.181,
-          "speaker": "human_male"
+          "start": 2.774,
+          "end": 2.917,
+          "speaker": "junior"
         },
         {
-          "word": "worked",
-          "raw": "worked",
-          "start": 1.181,
-          "end": 1.666,
-          "speaker": "human_male"
-        },
-        {
-          "word": "so",
-          "raw": "so",
-          "start": 1.666,
-          "end": 1.827,
-          "speaker": "human_male"
+          "word": "only",
+          "raw": "only",
+          "start": 2.917,
+          "end": 3.204,
+          "speaker": "junior"
         }
       ]
     },
     {
-      "start": 1.827,
-      "end": 2.635,
-      "text": "hard today!",
-      "speaker": "human_male",
+      "start": 3.204,
+      "end": 4.135,
+      "text": "have 10 dollars",
+      "speaker": "junior",
       "words": [
         {
-          "word": "hard",
-          "raw": "hard",
-          "start": 1.827,
-          "end": 2.15,
-          "speaker": "human_male"
+          "word": "have",
+          "raw": "have",
+          "start": 3.204,
+          "end": 3.49,
+          "speaker": "junior"
         },
         {
-          "word": "today",
-          "raw": "today!",
-          "start": 2.15,
-          "end": 2.635,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 2.635,
-      "end": 3.359,
-      "text": "I spent six",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "I",
-          "raw": "I",
-          "start": 2.635,
-          "end": 2.78,
-          "speaker": "human_male"
-        },
-        {
-          "word": "spent",
-          "raw": "spent",
-          "start": 2.78,
-          "end": 3.142,
-          "speaker": "human_male"
-        },
-        {
-          "word": "six",
-          "raw": "six",
-          "start": 3.142,
-          "end": 3.359,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 3.359,
-      "end": 4.808,
-      "text": "straight hours writing",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "straight",
-          "raw": "straight",
-          "start": 3.359,
-          "end": 3.939,
-          "speaker": "human_male"
-        },
-        {
-          "word": "hours",
-          "raw": "hours",
-          "start": 3.939,
-          "end": 4.301,
-          "speaker": "human_male"
-        },
-        {
-          "word": "writing",
-          "raw": "writing",
-          "start": 4.301,
-          "end": 4.808,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 4.808,
-      "end": 6.112,
-      "text": "API boilerplate from",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "API",
-          "raw": "API",
-          "start": 4.808,
-          "end": 5.025,
-          "speaker": "human_male"
-        },
-        {
-          "word": "boilerplate",
-          "raw": "boilerplate",
-          "start": 5.025,
-          "end": 5.822,
-          "speaker": "human_male"
-        },
-        {
-          "word": "from",
-          "raw": "from",
-          "start": 5.822,
-          "end": 6.112,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 6.112,
-      "end": 6.691,
-      "text": "scratch.",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "scratch",
-          "raw": "scratch.",
-          "start": 6.112,
-          "end": 6.691,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 7.114,
-      "end": 8.671,
-      "text": "Congratulations.",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "Congratulations",
-          "raw": "Congratulations.",
-          "start": 7.114,
-          "end": 8.671,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 8.671,
-      "end": 9.646,
-      "text": "You wasted three",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "You",
-          "raw": "You",
-          "start": 8.671,
-          "end": 8.88,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "wasted",
-          "raw": "wasted",
-          "start": 8.88,
-          "end": 9.298,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "three",
-          "raw": "three",
-          "start": 9.298,
-          "end": 9.646,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 9.646,
-      "end": 10.759,
-      "text": "hundred dollars of",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "hundred",
-          "raw": "hundred",
-          "start": 9.646,
-          "end": 10.133,
-          "speaker": "antigravity_bot"
+          "word": "10",
+          "raw": "10",
+          "start": 3.49,
+          "end": 3.634,
+          "speaker": "junior"
         },
         {
           "word": "dollars",
           "raw": "dollars",
-          "start": 10.133,
-          "end": 10.62,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "of",
-          "raw": "of",
-          "start": 10.62,
-          "end": 10.759,
-          "speaker": "antigravity_bot"
+          "start": 3.634,
+          "end": 4.135,
+          "speaker": "junior"
         }
       ]
     },
     {
-      "start": 10.759,
-      "end": 11.873,
-      "text": "company payroll on",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "company",
-          "raw": "company",
-          "start": 10.759,
-          "end": 11.247,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "payroll",
-          "raw": "payroll",
-          "start": 11.247,
-          "end": 11.734,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "on",
-          "raw": "on",
-          "start": 11.734,
-          "end": 11.873,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 11.873,
-      "end": 12.987,
-      "text": "a single terminal",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "a",
-          "raw": "a",
-          "start": 11.873,
-          "end": 12.012,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "single",
-          "raw": "single",
-          "start": 12.012,
-          "end": 12.43,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "terminal",
-          "raw": "terminal",
-          "start": 12.43,
-          "end": 12.987,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 12.987,
-      "end": 13.544,
-      "text": "command.",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "command",
-          "raw": "command.",
-          "start": 12.987,
-          "end": 13.544,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 13.962,
-      "end": 14.495,
-      "text": "Hey!",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "Hey",
-          "raw": "Hey!",
-          "start": 13.962,
-          "end": 14.495,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 14.495,
-      "end": 15.505,
-      "text": "That was complex",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "That",
-          "raw": "That",
-          "start": 14.495,
-          "end": 14.784,
-          "speaker": "human_male"
-        },
-        {
-          "word": "was",
-          "raw": "was",
-          "start": 14.784,
-          "end": 15.0,
-          "speaker": "human_male"
-        },
-        {
-          "word": "complex",
-          "raw": "complex",
-          "start": 15.0,
-          "end": 15.505,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 15.505,
-      "end": 16.876,
-      "text": "schema validation and",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "schema",
-          "raw": "schema",
-          "start": 15.505,
-          "end": 15.938,
-          "speaker": "human_male"
-        },
-        {
-          "word": "validation",
-          "raw": "validation",
-          "start": 15.938,
-          "end": 16.659,
-          "speaker": "human_male"
-        },
-        {
-          "word": "and",
-          "raw": "and",
-          "start": 16.659,
-          "end": 16.876,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 16.876,
-      "end": 18.102,
-      "text": "database mappings!",
-      "speaker": "human_male",
-      "words": [
-        {
-          "word": "database",
-          "raw": "database",
-          "start": 16.876,
-          "end": 17.453,
-          "speaker": "human_male"
-        },
-        {
-          "word": "mappings",
-          "raw": "mappings!",
-          "start": 17.453,
-          "end": 18.102,
-          "speaker": "human_male"
-        }
-      ]
-    },
-    {
-      "start": 18.53,
-      "end": 20.066,
-      "text": "My autonomous subagent",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "My",
-          "raw": "My",
-          "start": 18.53,
-          "end": 18.684,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "autonomous",
-          "raw": "autonomous",
-          "start": 18.684,
-          "end": 19.452,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "subagent",
-          "raw": "subagent",
-          "start": 19.452,
-          "end": 20.066,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 20.066,
-      "end": 21.525,
-      "text": "generated the schema,",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "generated",
-          "raw": "generated",
-          "start": 20.066,
-          "end": 20.757,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "the",
-          "raw": "the",
-          "start": 20.757,
-          "end": 20.987,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "schema",
-          "raw": "schema,",
-          "start": 20.987,
-          "end": 21.525,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 21.525,
-      "end": 22.984,
-      "text": "wrote the migrations,",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "wrote",
-          "raw": "wrote",
-          "start": 21.525,
-          "end": 21.909,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "the",
-          "raw": "the",
-          "start": 21.909,
-          "end": 22.139,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "migrations",
-          "raw": "migrations,",
-          "start": 22.139,
-          "end": 22.984,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 22.984,
-      "end": 24.366,
-      "text": "ran static analysis,",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "ran",
-          "raw": "ran",
-          "start": 22.984,
-          "end": 23.214,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "static",
-          "raw": "static",
-          "start": 23.214,
-          "end": 23.675,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "analysis",
-          "raw": "analysis,",
-          "start": 23.675,
-          "end": 24.366,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 24.366,
-      "end": 25.365,
-      "text": "and deployed it",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "and",
-          "raw": "and",
-          "start": 24.366,
-          "end": 24.597,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "deployed",
-          "raw": "deployed",
-          "start": 24.597,
-          "end": 25.211,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "it",
-          "raw": "it",
-          "start": 25.211,
-          "end": 25.365,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 25.365,
-      "end": 26.363,
-      "text": "in two seconds.",
-      "speaker": "antigravity_bot",
+      "start": 4.135,
+      "end": 4.709,
+      "text": "in my bank",
+      "speaker": "junior",
       "words": [
         {
           "word": "in",
           "raw": "in",
-          "start": 25.365,
-          "end": 25.518,
-          "speaker": "antigravity_bot"
+          "start": 4.135,
+          "end": 4.279,
+          "speaker": "junior"
         },
         {
-          "word": "two",
-          "raw": "two",
-          "start": 25.518,
-          "end": 25.749,
-          "speaker": "antigravity_bot"
+          "word": "my",
+          "raw": "my",
+          "start": 4.279,
+          "end": 4.422,
+          "speaker": "junior"
         },
         {
-          "word": "seconds",
-          "raw": "seconds.",
-          "start": 25.749,
-          "end": 26.363,
-          "speaker": "antigravity_bot"
+          "word": "bank",
+          "raw": "bank",
+          "start": 4.422,
+          "end": 4.709,
+          "speaker": "junior"
         }
       ]
     },
     {
-      "start": 26.363,
-      "end": 27.919,
-      "text": "For zero dollars.",
-      "speaker": "antigravity_bot",
+      "start": 4.709,
+      "end": 5.282,
+      "text": "account.",
+      "speaker": "junior",
       "words": [
         {
-          "word": "For",
-          "raw": "For",
-          "start": 26.363,
-          "end": 26.674,
-          "speaker": "antigravity_bot"
+          "word": "account",
+          "raw": "account.",
+          "start": 4.709,
+          "end": 5.282,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 5.878,
+      "end": 7.403,
+      "text": "Good luck.",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "Good",
+          "raw": "Good",
+          "start": 5.878,
+          "end": 6.556,
+          "speaker": "rival"
         },
+        {
+          "word": "luck",
+          "raw": "luck.",
+          "start": 6.556,
+          "end": 7.403,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 7.353,
+      "end": 8.553,
+      "text": "You need Claude",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "You",
+          "raw": "You",
+          "start": 7.353,
+          "end": 7.63,
+          "speaker": "rival"
+        },
+        {
+          "word": "need",
+          "raw": "need",
+          "start": 7.63,
+          "end": 7.999,
+          "speaker": "rival"
+        },
+        {
+          "word": "Claude",
+          "raw": "Claude",
+          "start": 7.999,
+          "end": 8.553,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 8.553,
+      "end": 8.922,
+      "text": "Pro,",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "Pro",
+          "raw": "Pro,",
+          "start": 8.553,
+          "end": 8.922,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 8.922,
+      "end": 9.753,
+      "text": "a $200 API",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "a",
+          "raw": "a",
+          "start": 8.922,
+          "end": 9.107,
+          "speaker": "rival"
+        },
+        {
+          "word": "200",
+          "raw": "$200",
+          "start": 9.107,
+          "end": 9.476,
+          "speaker": "rival"
+        },
+        {
+          "word": "API",
+          "raw": "API",
+          "start": 9.476,
+          "end": 9.753,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 9.753,
+      "end": 10.215,
+      "text": "tier,",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "tier",
+          "raw": "tier,",
+          "start": 9.753,
+          "end": 10.215,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 10.215,
+      "end": 11.138,
+      "text": "and at least",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "and",
+          "raw": "and",
+          "start": 10.215,
+          "end": 10.491,
+          "speaker": "rival"
+        },
+        {
+          "word": "at",
+          "raw": "at",
+          "start": 10.491,
+          "end": 10.676,
+          "speaker": "rival"
+        },
+        {
+          "word": "least",
+          "raw": "least",
+          "start": 10.676,
+          "end": 11.138,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 11.138,
+      "end": 12.338,
+      "text": "three months of",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "three",
+          "raw": "three",
+          "start": 11.138,
+          "end": 11.599,
+          "speaker": "rival"
+        },
+        {
+          "word": "months",
+          "raw": "months",
+          "start": 11.599,
+          "end": 12.153,
+          "speaker": "rival"
+        },
+        {
+          "word": "of",
+          "raw": "of",
+          "start": 12.153,
+          "end": 12.338,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 12.338,
+      "end": 14.553,
+      "text": "manual prompt engineering.",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "manual",
+          "raw": "manual",
+          "start": 12.338,
+          "end": 12.891,
+          "speaker": "rival"
+        },
+        {
+          "word": "prompt",
+          "raw": "prompt",
+          "start": 12.891,
+          "end": 13.445,
+          "speaker": "rival"
+        },
+        {
+          "word": "engineering",
+          "raw": "engineering.",
+          "start": 13.445,
+          "end": 14.553,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 15.14,
+      "end": 15.567,
+      "text": "Or...",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Or",
+          "raw": "Or...",
+          "start": 15.14,
+          "end": 15.567,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 15.567,
+      "end": 16.677,
+      "text": "you could spend",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "you",
+          "raw": "you",
+          "start": 15.567,
+          "end": 15.823,
+          "speaker": "bot"
+        },
+        {
+          "word": "could",
+          "raw": "could",
+          "start": 15.823,
+          "end": 16.25,
+          "speaker": "bot"
+        },
+        {
+          "word": "spend",
+          "raw": "spend",
+          "start": 16.25,
+          "end": 16.677,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 16.677,
+      "end": 17.872,
+      "text": "zero dollars and",
+      "speaker": "bot",
+      "words": [
         {
           "word": "zero",
           "raw": "zero",
-          "start": 26.674,
-          "end": 27.089,
-          "speaker": "antigravity_bot"
+          "start": 16.677,
+          "end": 17.018,
+          "speaker": "bot"
         },
         {
           "word": "dollars",
-          "raw": "dollars.",
-          "start": 27.089,
-          "end": 27.919,
-          "speaker": "antigravity_bot"
+          "raw": "dollars",
+          "start": 17.018,
+          "end": 17.616,
+          "speaker": "bot"
+        },
+        {
+          "word": "and",
+          "raw": "and",
+          "start": 17.616,
+          "end": 17.872,
+          "speaker": "bot"
         }
       ]
     },
     {
-      "start": 28.354,
-      "end": 28.948,
-      "text": "Wait...",
-      "speaker": "human_male",
+      "start": 17.872,
+      "end": 18.641,
+      "text": "build it in",
+      "speaker": "bot",
       "words": [
         {
-          "word": "Wait",
-          "raw": "Wait...",
-          "start": 28.354,
-          "end": 28.948,
-          "speaker": "human_male"
+          "word": "build",
+          "raw": "build",
+          "start": 17.872,
+          "end": 18.299,
+          "speaker": "bot"
+        },
+        {
+          "word": "it",
+          "raw": "it",
+          "start": 18.299,
+          "end": 18.47,
+          "speaker": "bot"
+        },
+        {
+          "word": "in",
+          "raw": "in",
+          "start": 18.47,
+          "end": 18.641,
+          "speaker": "bot"
         }
       ]
     },
     {
-      "start": 28.948,
-      "end": 29.881,
-      "text": "two seconds?",
-      "speaker": "human_male",
+      "start": 18.641,
+      "end": 19.58,
+      "text": "ten minutes.",
+      "speaker": "bot",
       "words": [
         {
-          "word": "two",
-          "raw": "two",
-          "start": 28.948,
-          "end": 29.202,
-          "speaker": "human_male"
+          "word": "ten",
+          "raw": "ten",
+          "start": 18.641,
+          "end": 18.897,
+          "speaker": "bot"
         },
         {
-          "word": "seconds",
-          "raw": "seconds?",
-          "start": 29.202,
-          "end": 29.881,
-          "speaker": "human_male"
+          "word": "minutes",
+          "raw": "minutes.",
+          "start": 18.897,
+          "end": 19.58,
+          "speaker": "bot"
         }
       ]
     },
     {
-      "start": 29.881,
-      "end": 30.81,
-      "text": "Are human coders",
-      "speaker": "human_male",
+      "start": 20.2,
+      "end": 21.971,
+      "text": "Zero dollars?",
+      "speaker": "rival",
       "words": [
         {
-          "word": "Are",
-          "raw": "Are",
-          "start": 29.881,
-          "end": 30.08,
-          "speaker": "human_male"
+          "word": "Zero",
+          "raw": "Zero",
+          "start": 20.2,
+          "end": 20.79,
+          "speaker": "rival"
         },
         {
-          "word": "human",
-          "raw": "human",
-          "start": 30.08,
-          "end": 30.412,
-          "speaker": "human_male"
-        },
-        {
-          "word": "coders",
-          "raw": "coders",
-          "start": 30.412,
-          "end": 30.81,
-          "speaker": "human_male"
+          "word": "dollars",
+          "raw": "dollars?",
+          "start": 20.79,
+          "end": 21.971,
+          "speaker": "rival"
         }
       ]
     },
     {
-      "start": 30.81,
-      "end": 31.937,
-      "text": "actually obsolete?",
-      "speaker": "human_male",
+      "start": 21.921,
+      "end": 23.61,
+      "text": "Nothing in modern",
+      "speaker": "rival",
       "words": [
         {
-          "word": "actually",
-          "raw": "actually",
-          "start": 30.81,
-          "end": 31.34,
-          "speaker": "human_male"
+          "word": "Nothing",
+          "raw": "Nothing",
+          "start": 21.921,
+          "end": 22.709,
+          "speaker": "rival"
         },
         {
-          "word": "obsolete",
-          "raw": "obsolete?",
-          "start": 31.34,
-          "end": 31.937,
-          "speaker": "human_male"
+          "word": "in",
+          "raw": "in",
+          "start": 22.709,
+          "end": 22.935,
+          "speaker": "rival"
+        },
+        {
+          "word": "modern",
+          "raw": "modern",
+          "start": 22.935,
+          "end": 23.61,
+          "speaker": "rival"
         }
       ]
     },
     {
-      "start": 32.37,
-      "end": 33.419,
-      "text": "Coders who type",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "Coders",
-          "raw": "Coders",
-          "start": 32.37,
-          "end": 32.854,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "who",
-          "raw": "who",
-          "start": 32.854,
-          "end": 33.096,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "type",
-          "raw": "type",
-          "start": 33.096,
-          "end": 33.419,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 33.419,
-      "end": 35.357,
-      "text": "repetitive boilerplate are",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "repetitive",
-          "raw": "repetitive",
-          "start": 33.419,
-          "end": 34.226,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "boilerplate",
-          "raw": "boilerplate",
-          "start": 34.226,
-          "end": 35.114,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "are",
-          "raw": "are",
-          "start": 35.114,
-          "end": 35.357,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 35.357,
-      "end": 36.083,
-      "text": "obsolete.",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "obsolete",
-          "raw": "obsolete.",
-          "start": 35.357,
-          "end": 36.083,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 36.083,
-      "end": 37.838,
-      "text": "Coders who orchestrate",
-      "speaker": "antigravity_bot",
-      "words": [
-        {
-          "word": "Coders",
-          "raw": "Coders",
-          "start": 36.083,
-          "end": 36.61,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "who",
-          "raw": "who",
-          "start": 36.61,
-          "end": 36.873,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "orchestrate",
-          "raw": "orchestrate",
-          "start": 36.873,
-          "end": 37.838,
-          "speaker": "antigravity_bot"
-        }
-      ]
-    },
-    {
-      "start": 37.838,
-      "end": 38.804,
-      "text": "AI agents run",
-      "speaker": "antigravity_bot",
+      "start": 23.61,
+      "end": 24.624,
+      "text": "AI is free.",
+      "speaker": "rival",
       "words": [
         {
           "word": "AI",
           "raw": "AI",
-          "start": 37.838,
-          "end": 38.014,
-          "speaker": "antigravity_bot"
+          "start": 23.61,
+          "end": 23.836,
+          "speaker": "rival"
         },
         {
-          "word": "agents",
-          "raw": "agents",
-          "start": 38.014,
-          "end": 38.54,
-          "speaker": "antigravity_bot"
+          "word": "is",
+          "raw": "is",
+          "start": 23.836,
+          "end": 24.061,
+          "speaker": "rival"
         },
         {
-          "word": "run",
-          "raw": "run",
-          "start": 38.54,
-          "end": 38.804,
-          "speaker": "antigravity_bot"
+          "word": "free",
+          "raw": "free.",
+          "start": 24.061,
+          "end": 24.624,
+          "speaker": "rival"
         }
       ]
     },
     {
-      "start": 38.804,
-      "end": 39.769,
-      "text": "the company.",
-      "speaker": "antigravity_bot",
+      "start": 24.624,
+      "end": 25.564,
+      "text": "Claude is the",
+      "speaker": "rival",
       "words": [
+        {
+          "word": "Claude",
+          "raw": "Claude",
+          "start": 24.624,
+          "end": 25.137,
+          "speaker": "rival"
+        },
+        {
+          "word": "is",
+          "raw": "is",
+          "start": 25.137,
+          "end": 25.308,
+          "speaker": "rival"
+        },
         {
           "word": "the",
           "raw": "the",
-          "start": 38.804,
-          "end": 39.067,
-          "speaker": "antigravity_bot"
-        },
-        {
-          "word": "company",
-          "raw": "company.",
-          "start": 39.067,
-          "end": 39.769,
-          "speaker": "antigravity_bot"
+          "start": 25.308,
+          "end": 25.564,
+          "speaker": "rival"
         }
       ]
     },
     {
-      "start": 39.769,
-      "end": 41.452,
-      "text": "Upgrade your workflow.",
-      "speaker": "antigravity_bot",
+      "start": 25.564,
+      "end": 27.017,
+      "text": "industry standard.",
+      "speaker": "rival",
       "words": [
         {
-          "word": "Upgrade",
-          "raw": "Upgrade",
-          "start": 39.769,
-          "end": 40.358,
-          "speaker": "antigravity_bot"
+          "word": "industry",
+          "raw": "industry",
+          "start": 25.564,
+          "end": 26.248,
+          "speaker": "rival"
+        },
+        {
+          "word": "standard",
+          "raw": "standard.",
+          "start": 26.248,
+          "end": 27.017,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 27.53,
+      "end": 28.549,
+      "text": "Let's check the",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Let's",
+          "raw": "Let's",
+          "start": 27.53,
+          "end": 27.922,
+          "speaker": "bot"
+        },
+        {
+          "word": "check",
+          "raw": "check",
+          "start": 27.922,
+          "end": 28.314,
+          "speaker": "bot"
+        },
+        {
+          "word": "the",
+          "raw": "the",
+          "start": 28.314,
+          "end": 28.549,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 28.549,
+      "end": 29.176,
+      "text": "numbers.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "numbers",
+          "raw": "numbers.",
+          "start": 28.549,
+          "end": 29.176,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 29.782,
+      "end": 30.895,
+      "text": "Claude caps you",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Claude",
+          "raw": "Claude",
+          "start": 29.782,
+          "end": 30.296,
+          "speaker": "bot"
+        },
+        {
+          "word": "caps",
+          "raw": "caps",
+          "start": 30.296,
+          "end": 30.638,
+          "speaker": "bot"
+        },
+        {
+          "word": "you",
+          "raw": "you",
+          "start": 30.638,
+          "end": 30.895,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 30.895,
+      "end": 31.923,
+      "text": "at 200k tokens",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "at",
+          "raw": "at",
+          "start": 30.895,
+          "end": 31.067,
+          "speaker": "bot"
+        },
+        {
+          "word": "200k",
+          "raw": "200k",
+          "start": 31.067,
+          "end": 31.409,
+          "speaker": "bot"
+        },
+        {
+          "word": "tokens",
+          "raw": "tokens",
+          "start": 31.409,
+          "end": 31.923,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 31.923,
+      "end": 33.293,
+      "text": "and costs hundreds",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "and",
+          "raw": "and",
+          "start": 31.923,
+          "end": 32.18,
+          "speaker": "bot"
+        },
+        {
+          "word": "costs",
+          "raw": "costs",
+          "start": 32.18,
+          "end": 32.608,
+          "speaker": "bot"
+        },
+        {
+          "word": "hundreds",
+          "raw": "hundreds",
+          "start": 32.608,
+          "end": 33.293,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 33.293,
+      "end": 34.235,
+      "text": "every month.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "every",
+          "raw": "every",
+          "start": 33.293,
+          "end": 33.721,
+          "speaker": "bot"
+        },
+        {
+          "word": "month",
+          "raw": "month.",
+          "start": 33.721,
+          "end": 34.235,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 34.235,
+      "end": 35.561,
+      "text": "Google Gemini 2.5",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Google",
+          "raw": "Google",
+          "start": 34.235,
+          "end": 34.765,
+          "speaker": "bot"
+        },
+        {
+          "word": "Gemini",
+          "raw": "Gemini",
+          "start": 34.765,
+          "end": 35.296,
+          "speaker": "bot"
+        },
+        {
+          "word": "2.5",
+          "raw": "2.5",
+          "start": 35.296,
+          "end": 35.561,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 35.561,
+      "end": 36.71,
+      "text": "Flash gives you",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Flash",
+          "raw": "Flash",
+          "start": 35.561,
+          "end": 36.003,
+          "speaker": "bot"
+        },
+        {
+          "word": "gives",
+          "raw": "gives",
+          "start": 36.003,
+          "end": 36.445,
+          "speaker": "bot"
+        },
+        {
+          "word": "you",
+          "raw": "you",
+          "start": 36.445,
+          "end": 36.71,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 36.71,
+      "end": 38.124,
+      "text": "one million tokens",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "one",
+          "raw": "one",
+          "start": 36.71,
+          "end": 36.975,
+          "speaker": "bot"
+        },
+        {
+          "word": "million",
+          "raw": "million",
+          "start": 36.975,
+          "end": 37.594,
+          "speaker": "bot"
+        },
+        {
+          "word": "tokens",
+          "raw": "tokens",
+          "start": 37.594,
+          "end": 38.124,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 38.124,
+      "end": 38.92,
+      "text": "on the free",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "on",
+          "raw": "on",
+          "start": 38.124,
+          "end": 38.301,
+          "speaker": "bot"
+        },
+        {
+          "word": "the",
+          "raw": "the",
+          "start": 38.301,
+          "end": 38.566,
+          "speaker": "bot"
+        },
+        {
+          "word": "free",
+          "raw": "free",
+          "start": 38.566,
+          "end": 38.92,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 38.92,
+      "end": 39.362,
+      "text": "tier.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "tier",
+          "raw": "tier.",
+          "start": 38.92,
+          "end": 39.362,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 39.998,
+      "end": 40.419,
+      "text": "Wait,",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "Wait",
+          "raw": "Wait,",
+          "start": 39.998,
+          "end": 40.419,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 40.419,
+      "end": 41.852,
+      "text": "one million tokens?",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "one",
+          "raw": "one",
+          "start": 40.419,
+          "end": 40.672,
+          "speaker": "junior"
+        },
+        {
+          "word": "million",
+          "raw": "million",
+          "start": 40.672,
+          "end": 41.262,
+          "speaker": "junior"
+        },
+        {
+          "word": "tokens",
+          "raw": "tokens?",
+          "start": 41.262,
+          "end": 41.852,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 41.852,
+      "end": 42.682,
+      "text": "For free?!",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "For",
+          "raw": "For",
+          "start": 41.852,
+          "end": 42.129,
+          "speaker": "junior"
+        },
+        {
+          "word": "free",
+          "raw": "free?!",
+          "start": 42.129,
+          "end": 42.682,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 43.182,
+      "end": 43.605,
+      "text": "Okay,",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "Okay",
+          "raw": "Okay,",
+          "start": 43.182,
+          "end": 43.605,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 43.605,
+      "end": 44.622,
+      "text": "but Claude has",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "but",
+          "raw": "but",
+          "start": 43.605,
+          "end": 43.86,
+          "speaker": "rival"
+        },
+        {
+          "word": "Claude",
+          "raw": "Claude",
+          "start": 43.86,
+          "end": 44.368,
+          "speaker": "rival"
+        },
+        {
+          "word": "has",
+          "raw": "has",
+          "start": 44.368,
+          "end": 44.622,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 44.622,
+      "end": 46.146,
+      "text": "better reasoning for",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "better",
+          "raw": "better",
+          "start": 44.622,
+          "end": 45.13,
+          "speaker": "rival"
+        },
+        {
+          "word": "reasoning",
+          "raw": "reasoning",
+          "start": 45.13,
+          "end": 45.892,
+          "speaker": "rival"
+        },
+        {
+          "word": "for",
+          "raw": "for",
+          "start": 45.892,
+          "end": 46.146,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 46.146,
+      "end": 46.739,
+      "text": "agents!",
+      "speaker": "rival",
+      "words": [
+        {
+          "word": "agents",
+          "raw": "agents!",
+          "start": 46.146,
+          "end": 46.739,
+          "speaker": "rival"
+        }
+      ]
+    },
+    {
+      "start": 47.204,
+      "end": 49.009,
+      "text": "Antigravity CLI orchestrates",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Antigravity",
+          "raw": "Antigravity",
+          "start": 47.204,
+          "end": 47.968,
+          "speaker": "bot"
+        },
+        {
+          "word": "CLI",
+          "raw": "CLI",
+          "start": 47.968,
+          "end": 48.176,
+          "speaker": "bot"
+        },
+        {
+          "word": "orchestrates",
+          "raw": "orchestrates",
+          "start": 48.176,
+          "end": 49.009,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 49.009,
+      "end": 50.536,
+      "text": "multi-agent coding right",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "multi-agent",
+          "raw": "multi-agent",
+          "start": 49.009,
+          "end": 49.773,
+          "speaker": "bot"
+        },
+        {
+          "word": "coding",
+          "raw": "coding",
+          "start": 49.773,
+          "end": 50.189,
+          "speaker": "bot"
+        },
+        {
+          "word": "right",
+          "raw": "right",
+          "start": 50.189,
+          "end": 50.536,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 50.536,
+      "end": 51.855,
+      "text": "inside your terminal,",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "inside",
+          "raw": "inside",
+          "start": 50.536,
+          "end": 50.953,
+          "speaker": "bot"
         },
         {
           "word": "your",
           "raw": "your",
-          "start": 40.358,
-          "end": 40.695,
-          "speaker": "antigravity_bot"
+          "start": 50.953,
+          "end": 51.231,
+          "speaker": "bot"
         },
         {
-          "word": "workflow",
-          "raw": "workflow.",
-          "start": 40.695,
-          "end": 41.452,
-          "speaker": "antigravity_bot"
+          "word": "terminal",
+          "raw": "terminal,",
+          "start": 51.231,
+          "end": 51.855,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 51.855,
+      "end": 53.174,
+      "text": "with auto-healing and",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "with",
+          "raw": "with",
+          "start": 51.855,
+          "end": 52.133,
+          "speaker": "bot"
+        },
+        {
+          "word": "auto-healing",
+          "raw": "auto-healing",
+          "start": 52.133,
+          "end": 52.966,
+          "speaker": "bot"
+        },
+        {
+          "word": "and",
+          "raw": "and",
+          "start": 52.966,
+          "end": 53.174,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 53.174,
+      "end": 54.424,
+      "text": "local verification.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "local",
+          "raw": "local",
+          "start": 53.174,
+          "end": 53.522,
+          "speaker": "bot"
+        },
+        {
+          "word": "verification",
+          "raw": "verification.",
+          "start": 53.522,
+          "end": 54.424,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 55.004,
+      "end": 55.506,
+      "text": "So I don't",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "So",
+          "raw": "So",
+          "start": 55.004,
+          "end": 55.116,
+          "speaker": "junior"
+        },
+        {
+          "word": "I",
+          "raw": "I",
+          "start": 55.116,
+          "end": 55.227,
+          "speaker": "junior"
+        },
+        {
+          "word": "don't",
+          "raw": "don't",
+          "start": 55.227,
+          "end": 55.506,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 55.506,
+      "end": 56.008,
+      "text": "need a 200",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "need",
+          "raw": "need",
+          "start": 55.506,
+          "end": 55.729,
+          "speaker": "junior"
+        },
+        {
+          "word": "a",
+          "raw": "a",
+          "start": 55.729,
+          "end": 55.841,
+          "speaker": "junior"
+        },
+        {
+          "word": "200",
+          "raw": "200",
+          "start": 55.841,
+          "end": 56.008,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 56.008,
+      "end": 57.068,
+      "text": "dollar subscription?",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "dollar",
+          "raw": "dollar",
+          "start": 56.008,
+          "end": 56.343,
+          "speaker": "junior"
+        },
+        {
+          "word": "subscription",
+          "raw": "subscription?",
+          "start": 56.343,
+          "end": 57.068,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 57.484,
+      "end": 58.554,
+      "text": "Not a single",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Not",
+          "raw": "Not",
+          "start": 57.484,
+          "end": 57.776,
+          "speaker": "bot"
+        },
+        {
+          "word": "a",
+          "raw": "a",
+          "start": 57.776,
+          "end": 57.971,
+          "speaker": "bot"
+        },
+        {
+          "word": "single",
+          "raw": "single",
+          "start": 57.971,
+          "end": 58.554,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 58.554,
+      "end": 59.041,
+      "text": "cent.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "cent",
+          "raw": "cent.",
+          "start": 58.554,
+          "end": 59.041,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 59.041,
+      "end": 60.368,
+      "text": "Just pip install",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Just",
+          "raw": "Just",
+          "start": 59.041,
+          "end": 59.42,
+          "speaker": "bot"
+        },
+        {
+          "word": "pip",
+          "raw": "pip",
+          "start": 59.42,
+          "end": 59.704,
+          "speaker": "bot"
+        },
+        {
+          "word": "install",
+          "raw": "install",
+          "start": 59.704,
+          "end": 60.368,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 60.368,
+      "end": 62.642,
+      "text": "antigravity-sdk and launch",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "antigravity-sdk",
+          "raw": "antigravity-sdk",
+          "start": 60.368,
+          "end": 61.789,
+          "speaker": "bot"
+        },
+        {
+          "word": "and",
+          "raw": "and",
+          "start": 61.789,
+          "end": 62.073,
+          "speaker": "bot"
+        },
+        {
+          "word": "launch",
+          "raw": "launch",
+          "start": 62.073,
+          "end": 62.642,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 62.642,
+      "end": 63.021,
+      "text": "agy.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "agy",
+          "raw": "agy.",
+          "start": 62.642,
+          "end": 63.021,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 63.574,
+      "end": 64.249,
+      "text": "Sorry bro,",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "Sorry",
+          "raw": "Sorry",
+          "start": 63.574,
+          "end": 63.949,
+          "speaker": "junior"
+        },
+        {
+          "word": "bro",
+          "raw": "bro,",
+          "start": 63.949,
+          "end": 64.249,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 64.249,
+      "end": 65.15,
+      "text": "looks like I'm",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "looks",
+          "raw": "looks",
+          "start": 64.249,
+          "end": 64.625,
+          "speaker": "junior"
+        },
+        {
+          "word": "like",
+          "raw": "like",
+          "start": 64.625,
+          "end": 64.925,
+          "speaker": "junior"
+        },
+        {
+          "word": "I'm",
+          "raw": "I'm",
+          "start": 64.925,
+          "end": 65.15,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 65.15,
+      "end": 65.975,
+      "text": "keeping my 10",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "keeping",
+          "raw": "keeping",
+          "start": 65.15,
+          "end": 65.675,
+          "speaker": "junior"
+        },
+        {
+          "word": "my",
+          "raw": "my",
+          "start": 65.675,
+          "end": 65.825,
+          "speaker": "junior"
+        },
+        {
+          "word": "10",
+          "raw": "10",
+          "start": 65.825,
+          "end": 65.975,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 65.975,
+      "end": 67.176,
+      "text": "dollars for tacos!",
+      "speaker": "junior",
+      "words": [
+        {
+          "word": "dollars",
+          "raw": "dollars",
+          "start": 65.975,
+          "end": 66.501,
+          "speaker": "junior"
+        },
+        {
+          "word": "for",
+          "raw": "for",
+          "start": 66.501,
+          "end": 66.726,
+          "speaker": "junior"
+        },
+        {
+          "word": "tacos",
+          "raw": "tacos!",
+          "start": 66.726,
+          "end": 67.176,
+          "speaker": "junior"
+        }
+      ]
+    },
+    {
+      "start": 67.644,
+      "end": 68.704,
+      "text": "Wise choice.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Wise",
+          "raw": "Wise",
+          "start": 67.644,
+          "end": 68.029,
+          "speaker": "bot"
+        },
+        {
+          "word": "choice",
+          "raw": "choice.",
+          "start": 68.029,
+          "end": 68.704,
+          "speaker": "bot"
+        }
+      ]
+    },
+    {
+      "start": 68.704,
+      "end": 70.706,
+      "text": "Tacos don't hallucinate.",
+      "speaker": "bot",
+      "words": [
+        {
+          "word": "Tacos",
+          "raw": "Tacos",
+          "start": 68.704,
+          "end": 69.159,
+          "speaker": "bot"
+        },
+        {
+          "word": "don't",
+          "raw": "don't",
+          "start": 69.159,
+          "end": 69.614,
+          "speaker": "bot"
+        },
+        {
+          "word": "hallucinate",
+          "raw": "hallucinate.",
+          "start": 69.614,
+          "end": 70.706,
+          "speaker": "bot"
         }
       ]
     }
@@ -1490,56 +2680,119 @@
   "turns": [
     {
       "index": 0,
-      "speaker": "human_male",
+      "speaker": "junior",
       "start": 0.0,
-      "end": 6.744,
-      "duration": 6.744,
-      "text": "Antigravity, I worked so hard today! I spent six straight hours writing API boilerplate from scratch.",
+      "end": 5.328,
+      "duration": 5.328,
+      "text": "I need to build an AI agent for my project, but I only have 10 dollars in my bank account.",
       "cardTrigger": null
     },
     {
       "index": 1,
-      "speaker": "antigravity_bot",
-      "start": 7.064,
-      "end": 13.592,
-      "duration": 6.528,
-      "text": "Congratulations. You wasted three hundred dollars of company payroll on a single terminal command.",
+      "speaker": "rival",
+      "start": 5.778,
+      "end": 14.61,
+      "duration": 8.832,
+      "text": "Good luck. You need Claude Pro, a $200 API tier, and at least three months of manual prompt engineering.",
       "cardTrigger": null
     },
     {
       "index": 2,
-      "speaker": "human_male",
-      "start": 13.912,
-      "end": 18.16,
-      "duration": 4.248,
-      "text": "Hey! That was complex schema validation and database mappings!",
+      "speaker": "bot",
+      "start": 15.09,
+      "end": 19.65,
+      "duration": 4.56,
+      "text": "Or... you could spend zero dollars and build it in ten minutes.",
       "cardTrigger": null
     },
     {
       "index": 3,
-      "speaker": "antigravity_bot",
-      "start": 18.48,
-      "end": 27.984,
-      "duration": 9.504,
-      "text": "My autonomous subagent generated the schema, wrote the migrations, ran static analysis, and deployed it in two seconds. For zero dollars.",
+      "speaker": "rival",
+      "start": 20.1,
+      "end": 27.06,
+      "duration": 6.96,
+      "text": "Zero dollars? Nothing in modern AI is free. Claude is the industry standard.",
       "cardTrigger": null
     },
     {
       "index": 4,
-      "speaker": "human_male",
-      "start": 28.304,
-      "end": 32.0,
-      "duration": 3.696,
-      "text": "Wait... two seconds? Are human coders actually obsolete?",
-      "cardTrigger": null
+      "speaker": "bot",
+      "start": 27.48,
+      "end": 29.352,
+      "duration": 1.872,
+      "text": "Let's check the numbers.",
+      "cardTrigger": true
     },
     {
       "index": 5,
-      "speaker": "antigravity_bot",
-      "start": 32.32,
-      "end": 41.488,
-      "duration": 9.168,
-      "text": "Coders who type repetitive boilerplate are obsolete. Coders who orchestrate AI agents run the company. Upgrade your workflow.",
+      "speaker": "bot",
+      "start": 29.732,
+      "end": 39.428,
+      "duration": 9.696,
+      "text": "Claude caps you at 200k tokens and costs hundreds every month. Google Gemini 2.5 Flash gives you one million tokens on the free tier.",
+      "cardTrigger": null
+    },
+    {
+      "index": 6,
+      "speaker": "junior",
+      "start": 39.948,
+      "end": 42.732,
+      "duration": 2.784,
+      "text": "Wait, one million tokens? For free?!",
+      "cardTrigger": null
+    },
+    {
+      "index": 7,
+      "speaker": "rival",
+      "start": 43.082,
+      "end": 46.754,
+      "duration": 3.672,
+      "text": "Okay, but Claude has better reasoning for agents!",
+      "cardTrigger": null
+    },
+    {
+      "index": 8,
+      "speaker": "bot",
+      "start": 47.154,
+      "end": 54.474,
+      "duration": 7.32,
+      "text": "Antigravity CLI orchestrates multi-agent coding right inside your terminal, with auto-healing and local verification.",
+      "cardTrigger": null
+    },
+    {
+      "index": 9,
+      "speaker": "junior",
+      "start": 54.954,
+      "end": 57.114,
+      "duration": 2.16,
+      "text": "So I don't need a 200 dollar subscription?",
+      "cardTrigger": null
+    },
+    {
+      "index": 10,
+      "speaker": "bot",
+      "start": 57.434,
+      "end": 63.074,
+      "duration": 5.64,
+      "text": "Not a single cent. Just pip install antigravity-sdk and launch agy.",
+      "cardTrigger": null
+    },
+    {
+      "index": 11,
+      "speaker": "junior",
+      "start": 63.524,
+      "end": 67.244,
+      "duration": 3.72,
+      "text": "Sorry bro, looks like I'm keeping my 10 dollars for tacos!",
+      "cardTrigger": null
+    },
+    {
+      "index": 12,
+      "speaker": "bot",
+      "start": 67.594,
+      "end": 70.762,
+      "duration": 3.168,
+      "text": "Wise choice. Tacos don't hallucinate.",
       "cardTrigger": null
     }
   ]

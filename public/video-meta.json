@@ -1,9 +1,9 @@
 {
-  "title": "The 6-Hour Dev Blunder",
+  "title": "The $200/Month AI Subscription Trap",
   "language": "en",
   "type": "dialogue",
-  "durationInSeconds": 41.544,
-  "durationInFrames": 1262,
+  "durationInSeconds": 70.824,
+  "durationInFrames": 2140,
   "fps": 30,
   "width": 1080,
   "height": 1920,
@@ -11,7 +11,7 @@
     "human": "en-US-AndrewNeural",
     "bot": "en-US-BrianNeural"
   },
-  "turnsCount": 6,
-  "wordCount": 86,
-  "chunksCount": 35
+  "turnsCount": 13,
+  "wordCount": 155,
+  "chunksCount": 63
 }

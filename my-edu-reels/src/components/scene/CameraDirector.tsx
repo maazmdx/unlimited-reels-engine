@@ -1,13 +1,14 @@
 import React from "react";
-import { useCurrentFrame } from "remotion";
+import { useCurrentFrame, interpolate } from "remotion";
 
 export interface CameraCue {
   startFrame: number;
   endFrame: number;
-  zoomLevel: number; // 1.0 (wide), 1.25 (medium), 1.4 (punch close-up)
-  targetX: number; // 540 (center), 270 (left speaker), 810 (right speaker)
-  targetY?: number; // default ~900
+  zoomLevel: number; // 1.0 (wide), 1.22 (medium), 1.40 (punch close-up)
+  targetX: number; // 540 (center), 270 (left human), 810 (right bot)
+  targetY?: number; // default ~820 (character eye/face level)
   shake?: boolean;
+  isPunch?: boolean;
 }
 
 export interface CameraDirectorProps {
@@ -19,9 +20,7 @@ export interface CameraDirectorProps {
 
 export const CameraDirector: React.FC<CameraDirectorProps> = ({
   children,
-  activeSpeaker = "bot",
   cameraCues = [],
-  currentTurnIndex = 0,
 }) => {
   const frame = useCurrentFrame();
 
@@ -30,28 +29,59 @@ export const CameraDirector: React.FC<CameraDirectorProps> = ({
     (c) => frame >= c.startFrame && frame <= c.endFrame
   );
 
-  // Default target based on active speaker if no specific cue is active
-  let targetScale = 1.0;
-  let targetOriginX = 540;
-  let targetOriginY = 960;
+  let currentScale = 1.0;
+  let currentOriginX = 540;
+  let currentOriginY = 860;
   let isShaking = false;
 
   if (currentCue) {
-    targetScale = currentCue.zoomLevel;
-    targetOriginX = currentCue.targetX;
-    targetOriginY = currentCue.targetY ?? 960;
-    isShaking = !!currentCue.shake;
+    const transitionFrames = currentCue.isPunch ? 5 : 12;
+
+    // Smooth ease-in zoom at cue start and ease-out at cue end
+    const progressIn = interpolate(
+      frame,
+      [currentCue.startFrame, currentCue.startFrame + transitionFrames],
+      [0, 1],
+      { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+    );
+
+    const progressOut = interpolate(
+      frame,
+      [currentCue.endFrame - transitionFrames, currentCue.endFrame],
+      [1, 0],
+      { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+    );
+
+    const zoomBlend = Math.min(progressIn, progressOut);
+
+    currentScale = interpolate(zoomBlend, [0, 1], [1.0, currentCue.zoomLevel]);
+    currentOriginX = interpolate(zoomBlend, [0, 1], [540, currentCue.targetX]);
+    currentOriginY = interpolate(
+      zoomBlend,
+      [0, 1],
+      [860, currentCue.targetY ?? 820]
+    );
+
+    isShaking = !!currentCue.shake && frame - currentCue.startFrame < 14;
   } else {
-    // Subtle rhythmic dialogue push-in on turn changes
-    const turnPhase = (frame % 90) / 90;
-    targetScale = 1.0 + Math.sin(turnPhase * Math.PI) * 0.04;
-    targetOriginX = 540;
-    targetOriginY = 960;
+    // Subtle organic breathing push when in wide shot
+    const breath = Math.sin(frame / 20) * 0.015;
+    currentScale = 1.0 + breath;
+    currentOriginX = 540;
+    currentOriginY = 860;
   }
 
-  // Camera impact shake
-  const shakeX = isShaking ? Math.sin(frame * 1.8) * 8 : 0;
-  const shakeY = isShaking ? Math.cos(frame * 2.2) * 6 : 0;
+  // Handheld camera organic micro-drift (mimicking cinematic steadycam)
+  const driftX = Math.sin(frame / 28) * 3;
+  const driftY = Math.cos(frame / 32) * 2;
+
+  // Impact camera shake (decaying exponentially)
+  let shakeOffset = 0;
+  if (isShaking && currentCue) {
+    const shakeAge = frame - currentCue.startFrame;
+    const decay = Math.max(0, 1 - shakeAge / 14);
+    shakeOffset = Math.sin(frame * 1.6) * 12 * decay;
+  }
 
   return (
     <div
@@ -60,9 +90,8 @@ export const CameraDirector: React.FC<CameraDirectorProps> = ({
         height: 1920,
         position: "relative",
         overflow: "hidden",
-        transform: `scale(${targetScale}) translate(${shakeX}px, ${shakeY}px)`,
-        transformOrigin: `${targetOriginX}px ${targetOriginY}px`,
-        transition: "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        transform: `scale(${currentScale}) translate(${driftX + shakeOffset}px, ${driftY}px)`,
+        transformOrigin: `${currentOriginX}px ${currentOriginY}px`,
       }}
     >
       {children}
