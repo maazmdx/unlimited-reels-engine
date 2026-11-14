@@ -50,6 +50,7 @@ export interface ThreeWayComparisonReelProps {
   audioEnvelope?: number[];
   enableSFX?: boolean;
   bgMusicVolume?: number;
+  bgImage?: string;
 }
 
 const DEFAULT_THREEWAY_DATA: ThreeWaySubtitleData = {
@@ -83,6 +84,7 @@ export const ThreeWayComparisonReel: React.FC<ThreeWayComparisonReelProps> = ({
   audioEnvelope = [],
   enableSFX = true,
   bgMusicVolume = 0.10,
+  bgImage = "backgrounds/bg_cyber_diner.jpg",
 }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
@@ -169,13 +171,14 @@ export const ThreeWayComparisonReel: React.FC<ThreeWayComparisonReelProps> = ({
       {/* 4. Top Retention Progress Bar */}
       <ProgressBar color="#38BDF8" height={8} />
 
-      {/* 5. 3D Three.js WebGL Scene with Smooth Spring Interpolated Camera */}
+      {/* 5. 3D Three.js WebGL Scene with Smooth Spring Interpolated Camera & 16:9 Scenic Background */}
       <ThreeDinerScene
         speaker={speaker}
         audioAmplitude={currentAmp}
         shake={isShaking}
         turns={turns as ThreeDinerTurn[]}
         hasDad={hasDad}
+        bgImage={bgImage}
       />
 
       {/* 6. Viral Hook Overlay (Frames 0 to 75, Anti-Flicker) */}

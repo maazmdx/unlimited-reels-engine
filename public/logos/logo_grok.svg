@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="grokBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#09090B" stop-opacity="1"/>
+    </radialGradient>
+    <filter id="grokGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <circle cx="256" cy="256" r="240" fill="url(#grokBg)" stroke="#FFFFFF" stroke-width="8" stroke-opacity="0.85"/>
+  <circle cx="256" cy="256" r="210" fill="#09090B"/>
+  <!-- xAI Angular Geometric X -->
+  <g transform="translate(256, 256)" filter="url(#grokGlow)">
+    <!-- Primary Thick Diagonal Slash -->
+    <path d="M -130,-140 L 70,140 L 130,140 L -70,-140 Z" fill="#FFFFFF"/>
+    <!-- Intersecting Angular Bar -->
+    <path d="M 130,-140 L -30,50 L 10,95 L 140,-85 Z" fill="#E4E4E7"/>
+    <path d="M -130,140 L -30,20 L 5,-25 L -105,140 Z" fill="#E4E4E7"/>
+    <!-- Red Accent dot for rogue vibe -->
+    <circle cx="110" cy="-110" r="14" fill="#EF4444"/>
+  </g>
+</svg>

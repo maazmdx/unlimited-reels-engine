@@ -71,6 +71,7 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
   const isDad = speaker === "dad" || speaker === "father" || speaker === "uncle";
   const isClaude = speaker === "claude";
   const isGrok = speaker === "grok";
+  const isCodex = speaker === "codex" || speaker === "chatgpt" || speaker === "openai";
 
   // Dynamic speaker badge styling
   let badgeLabel = "Google Antigravity";
@@ -103,6 +104,11 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
     badgeColor = "#E2E8F0";
     badgeBg = "rgba(226, 232, 240, 0.15)";
     badgeBorder = "rgba(226, 232, 240, 0.5)";
+  } else if (isCodex) {
+    badgeLabel = "OpenAI Codex";
+    badgeColor = "#10B981";
+    badgeBg = "rgba(16, 185, 129, 0.15)";
+    badgeBorder = "rgba(16, 185, 129, 0.5)";
   }
 
   const words = activeChunk.words || [];
