@@ -1,5 +1,5 @@
 import React from "react";
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from "remotion";
+import { useCurrentFrame, interpolate } from "remotion";
 
 interface LowPolyRivalDevProps {
   isSpeaking: boolean;
@@ -15,7 +15,6 @@ export const LowPolyRivalDev: React.FC<LowPolyRivalDevProps> = ({
   scale = 1.0,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
   // Skeptical idle sway
   const breathY = Math.sin((frame + 10) / 19) * 3.5;
@@ -29,14 +28,8 @@ export const LowPolyRivalDev: React.FC<LowPolyRivalDevProps> = ({
       })
     : 2.5;
 
-  // Speaking indicator pop
-  const bubbleScale = isSpeaking
-    ? spring({
-        frame: frame % 30,
-        fps,
-        config: { damping: 14, stiffness: 150 },
-      })
-    : 0;
+  // Speaking indicator pop (continuous smooth sine curve)
+  const bubbleScale = isSpeaking ? (0.5 + 0.5 * Math.sin(frame * 0.25)) : 0;
 
   return (
     <div

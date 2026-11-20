@@ -118,6 +118,28 @@ def parse_args():
         help="Skip automatic Real SFX sound design and audio mastering",
     )
     parser.add_argument(
+        "--insta", "--recreate",
+        type=str,
+        default=None,
+        help="Instagram Reel URL, video file, or topic to recreate and remix",
+    )
+    parser.add_argument(
+        "--morning-batch",
+        action="store_true",
+        help="Run autonomous daily morning batch (generates 2-3 reels)",
+    )
+    parser.add_argument(
+        "--count",
+        type=int,
+        default=3,
+        help="Number of reels in morning batch (2 or 3)",
+    )
+    parser.add_argument(
+        "--schedule-morning",
+        action="store_true",
+        help="Set up daily morning crontab schedule (08:30 AM)",
+    )
+    parser.add_argument(
         "--list-presets",
         action="store_true",
         help="List all available built-in viral script presets",
@@ -172,6 +194,24 @@ def main():
         print("Available Viral Script Presets:")
         for k, v in VIRAL_PRESETS.items():
             print(f"  • {k:<25} : {v['title']} [{v['style'].upper()} | {v['language'].upper()}]")
+        sys.exit(0)
+
+    # Route: Daily Morning Cron Scheduler
+    if args.schedule_morning:
+        from engine.morning_batch_runner import setup_cron_schedule
+        setup_cron_schedule(hour=8, minute=30)
+        sys.exit(0)
+
+    # Route: Autonomous Morning Batch Generation (2-3 reels)
+    if args.morning_batch:
+        from engine.morning_batch_runner import run_morning_batch
+        run_morning_batch(count=args.count)
+        sys.exit(0)
+
+    # Route: Instagram / Social Reel Ingestion & AI Recreation
+    if args.insta:
+        from engine.master_orchestrator import run_pipeline
+        run_pipeline(insta_url=args.insta, output_filename=args.output if args.output != "out/educational-reel.mp4" else None)
         sys.exit(0)
 
     # Interactive trigger if no args
@@ -326,6 +366,12 @@ def main():
         composition_id,
         str(out_file),
         f"--props=public/reel_props.json",
+        "--gl=angle",
+        "--angle=swiftshader",
+        "--concurrency=3",
+        "--codec=h264",
+        "--pixel-format=yuv420p",
+        "--jpeg-quality=90",
         "--timeout=120000",
     ]
 

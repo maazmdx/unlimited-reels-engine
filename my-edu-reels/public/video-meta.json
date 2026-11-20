@@ -1,17 +1,13 @@
 {
-  "title": "The $200/Month AI Subscription Trap",
+  "title": "Production on Friday Skit",
   "language": "en",
   "type": "dialogue",
-  "durationInSeconds": 70.824,
-  "durationInFrames": 2140,
+  "durationInSeconds": 29.606,
+  "durationInFrames": 901,
   "fps": 30,
   "width": 1080,
   "height": 1920,
-  "speakers": {
-    "human": "en-US-AndrewNeural",
-    "bot": "en-US-BrianNeural"
-  },
-  "turnsCount": 13,
-  "wordCount": 155,
-  "chunksCount": 63
+  "turnsCount": 6,
+  "wordCount": 82,
+  "chunksCount": 29
 }

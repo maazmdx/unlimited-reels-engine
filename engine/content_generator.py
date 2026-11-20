@@ -304,7 +304,7 @@ VIRAL_PRESETS: Dict[str, Dict[str, Any]] = {
     "diner_gemini_antigravity_en": {
         "title": "Google Antigravity & Gemini 2.5: The $400k AI Path",
         "style": "diner",
-        "comp": "DinerAgentReel",
+        "comp": "MasterAutonomousReel",
         "language": "en",
         "category": "Diner AI Dialogue",
         "human_voice": "en-US-GuyNeural",
@@ -339,7 +339,7 @@ VIRAL_PRESETS: Dict[str, Dict[str, Any]] = {
     "diner_gemini_antigravity_hi": {
         "title": "Google Antigravity और Gemini से कमाई का तरीका",
         "style": "diner",
-        "comp": "DinerAgentReel",
+        "comp": "MasterAutonomousReel",
         "language": "hi",
         "category": "Diner AI Dialogue Hindi",
         "human_voice": "hi-IN-MadhurNeural",
@@ -370,7 +370,7 @@ VIRAL_PRESETS: Dict[str, Dict[str, Any]] = {
     "diner_gemini_antigravity_kn": {
         "title": "ಗೂಗಲ್ ಆಂಟಿಗ್ರ್ಯಾವಿಟಿ ಮತ್ತು ಜೆಮಿನಿ - ಎಐ ಏಜೆಂಟ್ ಕ್ರಾಂತಿ",
         "style": "diner",
-        "comp": "DinerAgentReel",
+        "comp": "MasterAutonomousReel",
         "language": "kn",
         "category": "Diner AI Dialogue Kannada",
         "human_voice": "kn-IN-GaganNeural",

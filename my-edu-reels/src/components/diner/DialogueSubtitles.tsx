@@ -208,7 +208,6 @@ export const DialogueSubtitles: React.FC<DialogueSubtitlesProps> = ({
                       : "0 3px 8px rgba(0,0,0,0.9)",
                     transform: isActive ? "scale(1.06)" : "scale(1.0)",
                     display: "inline-block",
-                    transition: "transform 0.05s ease-out",
                   }}
                 >
                   {w.word}

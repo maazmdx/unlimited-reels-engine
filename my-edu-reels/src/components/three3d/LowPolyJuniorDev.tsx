@@ -1,5 +1,5 @@
 import React from "react";
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from "remotion";
+import { useCurrentFrame, interpolate } from "remotion";
 
 interface LowPolyJuniorDevProps {
   isSpeaking: boolean;
@@ -15,7 +15,6 @@ export const LowPolyJuniorDev: React.FC<LowPolyJuniorDevProps> = ({
   scale = 1.0,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
   // Idle natural breathing and head bob
   const breathY = Math.sin(frame / 18) * 4;
@@ -29,14 +28,8 @@ export const LowPolyJuniorDev: React.FC<LowPolyJuniorDevProps> = ({
       })
     : 3;
 
-  // Speaking indicator pop-in
-  const speechBubblePop = isSpeaking
-    ? spring({
-        frame: frame % 30,
-        fps,
-        config: { damping: 14, stiffness: 150 },
-      })
-    : 0;
+  // Speaking indicator pop-in (continuous smooth sine curve)
+  const speechBubblePop = isSpeaking ? (0.5 + 0.5 * Math.sin(frame * 0.25)) : 0;
 
   return (
     <div

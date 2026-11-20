@@ -1,0 +1,162 @@
+name: Autonomous Reels Cloud Generator
+
+'on':
+  schedule:
+    # Daily run at 08:30 AM IST (03:00 UTC)
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      reel_count:
+        description: 'Number of daily reels to generate'
+        required: true
+        type: choice
+        default: '2'
+        options:
+          - '1'
+          - '2'
+          - '3'
+      insta_url:
+        description: 'Optional Instagram / Shorts URL override to recreate'
+        required: false
+        type: string
+        default: ''
+      scene_preset:
+        description: '3D Scene Environment Preset'
+        required: true
+        type: choice
+        default: 'diner'
+        options:
+          - 'diner'
+          - 'desk'
+          - 'auto'
+
+concurrency:
+  group: reels-cloud-pipeline
+  cancel-in-progress: false
+
+jobs:
+  generate-and-deliver:
+    name: Generate 3D Reels & Neural Voice
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Install System FFmpeg & Headless Chromium Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ffmpeg \
+            libnss3 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libdrm2 \
+            libxkbcommon0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libgbm1 \
+            libasound2t64 || sudo apt-get install -y --no-install-recommends libasound2
+
+      - name: 🐍 Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: ⚡ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: "my-edu-reels/package-lock.json"
+
+      - name: 📦 Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 📦 Install Remotion Dependencies
+        run: |
+          cd my-edu-reels
+          npm ci
+
+      - name: 🧠 Cache Kokoro-82M ONNX Models (~338 MB)
+        uses: actions/cache@v4
+        id: cache-kokoro
+        with:
+          path: .cache/kokoro
+          key: kokoro-onnx-v1-models
+
+      - name: 🌐 Cache Remotion Headless Chromium
+        uses: actions/cache@v4
+        id: cache-remotion-browser
+        with:
+          path: |
+            ~/.cache/remotion
+            my-edu-reels/node_modules/.remotion
+          key: remotion-chromium-${{ runner.os }}-${{ hashFiles('my-edu-reels/package-lock.json') }}
+
+      - name: 🎙️ Ensure Kokoro-82M Voice Models Ready
+        run: |
+          python -c "from engine.tts_engine import ensure_kokoro_model; onnx, bin = ensure_kokoro_model(); print(f'✅ Kokoro Models Ready: {onnx} & {bin}')"
+
+      - name: 🌐 Ensure Remotion Browser Binary Ready
+        run: |
+          cd my-edu-reels
+          npx remotion browser ensure
+
+      - name: 🚀 Execute Autonomous Video Batch Generation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+          CI: "true"
+        run: |
+          REEL_COUNT="${{ github.event.inputs.reel_count || '2' }}"
+          SCENE_PRESET="${{ github.event.inputs.scene_preset || 'diner' }}"
+          INSTA_URL="${{ github.event.inputs.insta_url || '' }}"
+
+          CMD="python engine/morning_batch_runner.py --count=$REEL_COUNT --scene-preset=$SCENE_PRESET --drive"
+
+          if [ -n "$INSTA_URL" ]; then
+            CMD="$CMD --insta-url=\"$INSTA_URL\""
+          fi
+
+          echo "🎬 Running command: $CMD"
+          eval $CMD
+
+      - name: 📤 Upload Generated Morning Reels Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: morning-reels-${{ github.run_number }}-${{ github.run_id }}
+          path: |
+            out/morning_*/*.mp4
+            out/morning_*/*_caption.txt
+            out/morning_*/audit_thumbnails/**
+            out/morning_*/batch_report.json
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: 🔄 Update Inbox Queue in Repository
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add inbox/insta_queue.txt || true
+          if git status --porcelain | grep -q "inbox/insta_queue.txt"; then
+            git commit -m "chore(inbox): archive processed URLs from morning batch [skip ci]"
+            git push
+          else
+            echo "ℹ️ No inbox queue updates to commit."
+          fi

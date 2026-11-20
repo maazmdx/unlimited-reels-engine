@@ -1,5 +1,5 @@
 import React from "react";
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from "remotion";
+import { useCurrentFrame, interpolate } from "remotion";
 
 interface LowPolyAntigravityBotProps {
   isSpeaking: boolean;
@@ -15,7 +15,6 @@ export const LowPolyAntigravityBot: React.FC<LowPolyAntigravityBotProps> = ({
   scale = 1.0,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
   // Floating hover physics with subtle rotation
   const hoverY = Math.sin(frame / 15) * 10;
@@ -32,14 +31,8 @@ export const LowPolyAntigravityBot: React.FC<LowPolyAntigravityBotProps> = ({
   const pill4 = isSpeaking ? interpolate(Math.cos(frame * 0.8), [-1, 1], [6, 22]) : 4;
   const pill5 = isSpeaking ? interpolate(Math.sin(frame * 1.1), [-1, 1], [4, 16]) : 4;
 
-  // Radiating sound wave indicator
-  const soundWaveScale = isSpeaking
-    ? spring({
-        frame: frame % 30,
-        fps,
-        config: { damping: 14, stiffness: 150 },
-      })
-    : 0;
+  // Radiating sound wave indicator (continuous smooth sine curve)
+  const soundWaveScale = isSpeaking ? (0.5 + 0.5 * Math.sin(frame * 0.25)) : 0;
 
   return (
     <div

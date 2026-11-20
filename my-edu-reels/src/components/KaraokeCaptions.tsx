@@ -48,8 +48,9 @@ export const KaraokeCaptions: React.FC<KaraokeCaptionsProps> = ({
         end: (idx + 1) * 0.4,
       }));
 
+  const chunkAge = activeChunk ? Math.max(0, Math.floor((currentTime - activeChunk.start) * fps)) : 0;
   const chunkSpring = spring({
-    frame: frame % 30,
+    frame: Math.min(chunkAge, 30),
     fps,
     config: { damping: 14, mass: 0.6, stiffness: 180 },
   });
@@ -126,7 +127,6 @@ export const KaraokeCaptions: React.FC<KaraokeCaptionsProps> = ({
                 WebkitTextStroke: isWordActive ? "2px #000000" : "1px #000000",
                 display: "inline-block",
                 transform: `scale(${scale})`,
-                transition: "color 0.1s ease",
               }}
             >
               {item.word}

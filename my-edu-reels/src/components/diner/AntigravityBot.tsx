@@ -1,5 +1,5 @@
 import React from "react";
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from "remotion";
+import { useCurrentFrame, interpolate } from "remotion";
 
 interface AntigravityBotProps {
   isSpeaking: boolean;
@@ -7,7 +7,6 @@ interface AntigravityBotProps {
 
 export const AntigravityBot: React.FC<AntigravityBotProps> = ({ isSpeaking }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
   // Smooth floating hover physics
   const hoverY = Math.sin(frame / 16) * 9;
@@ -17,14 +16,8 @@ export const AntigravityBot: React.FC<AntigravityBotProps> = ({ isSpeaking }) =>
   const isBlinking = frame % 120 > 114;
   const eyeHeight = isBlinking ? 2 : 10;
 
-  // Sound wave speaker indicator pop when speaking
-  const indicatorScale = isSpeaking
-    ? spring({
-        frame: frame % 30,
-        fps,
-        config: { damping: 14, stiffness: 160 },
-      })
-    : 0;
+  // Sound wave speaker indicator pop when speaking (continuous smooth sine curve)
+  const indicatorScale = isSpeaking ? (0.5 + 0.5 * Math.sin(frame * 0.25)) : 0;
 
   // OLED mouth equalizer waveform when speaking
   const wave1 = isSpeaking ? interpolate(Math.sin(frame * 0.9), [-1, 1], [3, 16]) : 3;

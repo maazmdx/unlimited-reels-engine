@@ -14,6 +14,9 @@ import {
   MasterAutonomousReelProps,
 } from "./MasterAutonomousReel";
 import { TestThree } from "./TestThree";
+import { CharacterShowcase3D } from "./CharacterShowcase3D";
+import { DinerSceneShowcase } from "./DinerSceneShowcase";
+import { DeskSceneShowcase } from "./DeskSceneShowcase";
 import { DEFAULT_SUBTITLES } from "./data/defaultSubs";
 
 const calculateEduMetadata: CalculateMetadataFunction<EduReelProps> = async ({
@@ -100,22 +103,24 @@ const calculateThreeWayMetadata: CalculateMetadataFunction<ThreeWayComparisonRee
 const calculateMasterMetadata: CalculateMetadataFunction<MasterAutonomousReelProps> = async ({
   props,
 }) => {
-  const subs = props.subtitles || (DEFAULT_SUBTITLES as any);
-  const chunks = subs?.chunks || [];
-  const turns = subs?.turns || [];
-  let audioDurationSec = 15.0;
-  if (turns.length > 0) {
-    audioDurationSec = turns[turns.length - 1].end + 0.6;
-  } else if (chunks.length > 0) {
-    audioDurationSec = chunks[chunks.length - 1].end + 0.6;
+  let computedFrames = props.timeline?.duration_in_frames || 0;
+  if (!computedFrames) {
+    const subs = props.subtitles || (DEFAULT_SUBTITLES as any);
+    const chunks = subs?.chunks || [];
+    const turns = subs?.turns || [];
+    let audioDurationSec = 15.0;
+    if (turns.length > 0) {
+      audioDurationSec = turns[turns.length - 1].end + 0.6;
+    } else if (chunks.length > 0) {
+      audioDurationSec = chunks[chunks.length - 1].end + 0.6;
+    }
+    computedFrames = Math.ceil(audioDurationSec * 30);
   }
-  const computedFrames = Math.ceil(audioDurationSec * 30);
 
   return {
-    durationInFrames: computedFrames > 0 ? computedFrames : 450,
+    durationInFrames: computedFrames > 0 ? computedFrames : 900,
     props: {
       ...props,
-      subtitles: subs,
     },
   };
 };
@@ -257,13 +262,65 @@ export const RemotionRoot: React.FC = () => {
           subtitles: DEFAULT_SUBTITLES as any,
           audioSrc: "voice.mp3",
           environment: "diner",
-          weather: "raining",
+          scenePreset: "diner",
+          cardStartFrame: 430,
+          cardData: {
+            title: "API Boilerplate Benchmark",
+            badge: "340x SPEEDUP",
+            type: "benchmark",
+            durationSeconds: 4.0,
+            startFrame: 430,
+            items: [
+              { label: "Junior Manual Coding", value: "6h 40m", badge: "FATIGUED", isPositive: false },
+              { label: "Claude + Antigravity Loop", value: "48s", badge: "AUTONOMOUS", isPositive: true },
+              { label: "Cost & Token Spend", value: "$0.00", badge: "100% PASSING", isPositive: true },
+            ],
+            highlight: "Zero hallucination with deterministic test gates.",
+          },
         }}
       />
 
       <Composition
         id="TestThree"
         component={TestThree}
+        durationInFrames={30}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* 
+        3D Character Showcase / Turntable Studio
+        Showcases low-poly faceted 3D rigs for humans and floating AI orbs
+        Dimensions: 1080 x 1920, 30fps
+      */}
+      <Composition
+        id="CharacterShowcase3D"
+        component={CharacterShowcase3D}
+        durationInFrames={30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          mode: "humans",
+        }}
+      />
+
+      {/* 
+        3D Environment Verification Showcases
+        Dimensions: 1080 x 1920, 30fps
+      */}
+      <Composition
+        id="DinerSceneShowcase"
+        component={DinerSceneShowcase}
+        durationInFrames={30}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="DeskSceneShowcase"
+        component={DeskSceneShowcase}
         durationInFrames={30}
         fps={30}
         width={1080}

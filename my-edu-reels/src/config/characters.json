@@ -1,0 +1,148 @@
+{
+  "junior_dev": {
+    "id": "junior_dev",
+    "display_name": "Junior Developer",
+    "badge_label": "Junior Dev",
+    "role": "Optimistic Junior Engineer",
+    "type": "human",
+    "rig_component": "LowPolyHumanRig",
+    "palette": {
+      "primary": "#1E293B",
+      "secondary": "#0F172A",
+      "accent": "#38BDF8",
+      "skin": "#E0A97A",
+      "shell": "#1E293B",
+      "eyeGlow": "#FFFFFF"
+    },
+    "default_position": [-1.4, -0.7, 0.1],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "am_michael",
+      "speed": 1.03,
+      "pitch": "+0Hz",
+      "fallback_edge_voice": "en-US-AndrewNeural"
+    }
+  },
+  "dad": {
+    "id": "dad",
+    "display_name": "Indian Dad",
+    "badge_label": "Dad",
+    "role": "Frugal Pragmatic Parent",
+    "type": "human",
+    "rig_component": "LowPolyHumanRig",
+    "palette": {
+      "primary": "#C2410C",
+      "secondary": "#FEF3C7",
+      "accent": "#F97316",
+      "skin": "#C58A5B",
+      "shell": "#C2410C",
+      "eyeGlow": "#FFFFFF"
+    },
+    "default_position": [0.0, -0.7, 0.2],
+    "voice_profile": {
+      "engine": "edge_tts",
+      "voice_id": "en-IN-PrabhatNeural",
+      "speed": 1.04,
+      "pitch": "+0Hz",
+      "rate": "+4%",
+      "fallback_kokoro_voice": "am_onyx",
+      "fallback_edge_voice": "en-IN-PrabhatNeural"
+    }
+  },
+  "claude": {
+    "id": "claude",
+    "display_name": "Claude AI",
+    "badge_label": "Claude 3.7",
+    "role": "Philosophical Intellectual AI",
+    "type": "ai_orb",
+    "rig_component": "LowPolyAIOrbRig",
+    "palette": {
+      "primary": "#E07A47",
+      "secondary": "#CC6B3B",
+      "accent": "#F59E0B",
+      "skin": "#E07A47",
+      "shell": "#E07A47",
+      "eyeGlow": "#F59E0B"
+    },
+    "default_position": [0.0, -0.35, 0.2],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "bm_george",
+      "speed": 0.98,
+      "pitch": "+0Hz",
+      "fallback_edge_voice": "en-GB-RyanNeural"
+    }
+  },
+  "gemini": {
+    "id": "gemini",
+    "display_name": "Gemini AI",
+    "badge_label": "Gemini 2.5 Flash",
+    "role": "Deep Resonant Autonomous AI",
+    "type": "ai_orb",
+    "rig_component": "LowPolyAIOrbRig",
+    "palette": {
+      "primary": "#E2E8F0",
+      "secondary": "#94A3B8",
+      "accent": "#38BDF8",
+      "skin": "#E2E8F0",
+      "shell": "#E2E8F0",
+      "eyeGlow": "#38BDF8"
+    },
+    "default_position": [1.4, -0.35, 0.2],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "af_bella",
+      "speed": 1.04,
+      "pitch": "+0Hz",
+      "fallback_edge_voice": "en-US-AriaNeural"
+    }
+  },
+  "grok": {
+    "id": "grok",
+    "display_name": "Grok AI",
+    "badge_label": "Grok 3",
+    "role": "Sarcastic Fast Rogue Cyber AI",
+    "type": "ai_orb",
+    "rig_component": "LowPolyAIOrbRig",
+    "palette": {
+      "primary": "#18181B",
+      "secondary": "#27272A",
+      "accent": "#EF4444",
+      "skin": "#18181B",
+      "shell": "#18181B",
+      "eyeGlow": "#EF4444"
+    },
+    "default_position": [0.0, -0.35, 0.2],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "am_fenrir",
+      "speed": 1.08,
+      "pitch": "+0Hz",
+      "fallback_edge_voice": "en-US-ChristopherNeural"
+    }
+  },
+  "antigravity_bot": {
+    "id": "antigravity_bot",
+    "display_name": "Antigravity Bot",
+    "badge_label": "Antigravity AI",
+    "role": "Authoritative Google Antigravity Agent",
+    "type": "ai_orb",
+    "rig_component": "LowPolyAIOrbRig",
+    "palette": {
+      "primary": "#D95A2B",
+      "secondary": "#0F172A",
+      "accent": "#38BDF8",
+      "skin": "#D95A2B",
+      "shell": "#D95A2B",
+      "eyeGlow": "#38BDF8"
+    },
+    "default_position": [1.4, -0.35, 0.2],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "bm_lewis",
+      "speed": 1.00,
+      "pitch": "+0Hz",
+      "fallback_edge_voice": "en-US-BrianNeural"
+    }
+  }
+}

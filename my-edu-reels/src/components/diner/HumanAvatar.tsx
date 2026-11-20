@@ -1,5 +1,5 @@
 import React from "react";
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from "remotion";
+import { useCurrentFrame, interpolate } from "remotion";
 
 interface HumanAvatarProps {
   isSpeaking: boolean;
@@ -7,7 +7,6 @@ interface HumanAvatarProps {
 
 export const HumanAvatar: React.FC<HumanAvatarProps> = ({ isSpeaking }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
   // Subtle natural breathing sway
   const breathY = Math.sin(frame / 20) * 4;
@@ -24,14 +23,8 @@ export const HumanAvatar: React.FC<HumanAvatarProps> = ({ isSpeaking }) => {
   const isBlinking = frame % 90 > 84;
   const eyeHeight = isBlinking ? 1 : 9;
 
-  // Speech bubble pop animation when speaking starts
-  const bubbleScale = isSpeaking
-    ? spring({
-        frame: frame % 30,
-        fps,
-        config: { damping: 12, stiffness: 150 },
-      })
-    : 0;
+  // Speech bubble pop animation when speaking starts (continuous smooth sine curve)
+  const bubbleScale = isSpeaking ? (0.5 + 0.5 * Math.sin(frame * 0.25)) : 0;
 
   return (
     <div

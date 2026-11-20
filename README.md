@@ -1,125 +1,84 @@
-# 🎬 Antigravity Unlimited Video Engine ($0 Local Reel Automation)
+# 🎬 Antigravity Unlimited Video Engine ($0 AI Reels Engine)
 
-> **Autonomous 100% Free, Local 9:16 Video Engineering Pipeline** for Instagram Reels, YouTube Shorts, and TikTok. Powered by **Python (Edge-TTS)** and **Remotion (React + TypeScript)**.
-
----
-
-## ⚡ Key Highlights & Architecture
-
-- **$0 Total Cost**: No paid APIs, no OpenAI subscriptions, no ElevenLabs bills.
-- **Neural Voice Synthesis**: Powered by Microsoft Edge Neural TTS (`edge-tts`) with 100+ natural voices (Christopher, Jenny, Andrew, Ryan, Guy, Ava).
-- **Karaoke Bouncing Captions**: Word-level boundary synchronization with active bouncing word highlight (`#FFE600` neon yellow) and glassmorphic pill background.
-- **Instagram Reels Safe Zone**: Engineered for vertical 9:16 (`1080x1920`), strictly observing a `1080x1420` safe container (`paddingTop: 220`, `paddingBottom: 280`, `paddingLeft: 64`, `paddingRight: 64`) so titles and captions are never obscured by platform buttons or audio tags.
-- **Multi-Genre Compositions**:
-  1. `EduReel` - Sleek dark space theme (`#0B0F19`), glowing black hole accretion disk SVG, dual clock time dilation comparison, Einstein field equations.
-  2. `FunnyReel` - High-energy meme theme, spring physics emoji pops, relatable daily humor, default mode network science punchline.
-  3. `UniversalReel` - Dynamic multi-phase scene engine that automatically adapts to any custom topic or script.
-- **Retention Retention Mechanics**: Top glowing progress bar (`ProgressBar`) and dynamic scene transitions keep watch-time high.
+> **Autonomous 100% Free, Local 9:16 Video Generation & Recreation Engine** for Instagram Reels, YouTube Shorts, and TikTok. Powered by **Gemini Multimodal AI**, **Edge-TTS Neural Acoustics**, and **Remotion (React + TypeScript)**.
 
 ---
 
-## 🚀 Quick Start (Single Command)
+## 🌟 The Core Capabilities
 
-### 1. Generate & Render a Video with One Command
-From either `unlimited-reels-engine/` or `my-edu-reels/`:
+### 1. 📥 Instagram & Social Video Recreation
+Picks any AI video from Instagram (via URL, local file, or inbox queue), deconstructs its viral anatomy with Gemini Multimodal AI, and recreates it in a fresh manner with slightly remixed narrative twists, our animated character rosters, and our neural voices!
 
+### 2. 🌅 Morning Batch Mode (2–3 Videos Every Morning)
+Runs autonomously every morning via local system cron (`08:30 AM`). Automatically ingests queued Instagram links from `inbox/insta_queue.txt` or draws from our high-retention viral daily matrix, producing 2–3 distinct reels in dated folders (`out/morning_YYYY_MM_DD/`) with algorithm-optimized Instagram captions and hashtags.
+
+### 3. 🔍 5-Stage Multi-Check Quality Watchdog
+Autonomous quality auditor (`QualityAuditorAgent`) rigorously inspects every rendered video:
+1. **Dimensions & Codec**: 1080x1920 (9:16 vertical), 30 FPS, H.264/AAC.
+2. **Audio Levels & Loudness**: Broadcast target (-14dB LUFS), zero digital clipping, no silence.
+3. **Voice/Visual Sync**: Safe-tail padding (+0.5s) to guarantee zero speech cutoff.
+4. **Keyframe Animation Integrity**: Audits 4 critical keyframes (Hook, Card Reveal, Climax, Punchline) to guarantee non-blank, rich-contrast visual rendering.
+5. **Safe Zone Conformance**: Strictly enforces `1080x1420` safe area so UI overlays on Instagram never block text.
+*Includes automatic remediation and auto-healing!*
+
+---
+
+## 🚀 Quick Commands
+
+### 1. Recreate an Instagram Reel or Topic
 ```bash
-# Render default Educational Reel (Black Hole Time Dilation)
-python3 automate_reel.py
+# Recreate from an Instagram URL
+python3 engine/master_orchestrator.py --insta "https://www.instagram.com/reel/C7XYZ123/"
 
-# Render custom Educational Reel with automatic script synthesis
-python3 automate_reel.py --topic "Quantum Tunneling" --style educational
-
-# Render a Funny / Meme Reel
-python3 automate_reel.py --topic "Why your brain remembers cringe at 3 AM" --style funny
-
-# Render a custom raw script
-python3 automate_reel.py --script "Here is why your GPS requires Einstein's relativity..." --style educational
+# Or recreate from a topic/debate
+python3 engine/master_orchestrator.py --insta "Why you should never pay $200 for Claude when Google Antigravity is free"
 ```
 
-### 2. Launch Interactive Live Studio Preview
+### 2. Run Daily Morning Batch (2–3 Reels)
 ```bash
-cd my-edu-reels
-npm run dev
+# Execute morning batch right now (produces 2-3 reels into out/morning_YYYY_MM_DD/)
+python3 engine/morning_batch_runner.py --count 3
+
+# Schedule morning batch to run every day at 08:30 AM via system cron
+python3 engine/morning_batch_runner.py --schedule --hour 8 --minute 30
 ```
-Open [http://localhost:3000](http://localhost:3000) to preview animations, scrub frames, and test different compositions interactively!
+
+### 3. Interactive Automation Wizard
+```bash
+./setup_automation.sh
+```
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Architecture
 
 ```
 unlimited-reels-engine/
-├── .venv/                         # Isolated Python virtual environment
-├── automate_reel.py               # Root CLI launcher
-├── engine/                        # Python Core Engine
-│   ├── tts_engine.py              # Edge-TTS synthesizer + word timing parser
-│   └── content_generator.py       # Algorithmic viral script generator & presets
-└── my-edu-reels/                  # Remotion Project Workspace
-    ├── automate_reel.py           # In-project automation CLI
-    ├── package.json
-    ├── remotion.config.ts
-    ├── public/                    # Render assets
-    │   ├── voice.mp3              # Generated neural voiceover
-    │   ├── subs.vtt               # WebVTT subtitle cues
-    │   ├── subs.json              # Karaoke word-level timestamps
-    │   └── video-meta.json        # Audio length & frame calculation
-    └── src/
-        ├── Root.tsx               # Remotion root with composition registry
-        ├── EduReel.tsx            # 9:16 Educational Master Composition
-        ├── FunnyReel.tsx          # 9:16 Funny / Meme Master Composition
-        ├── UniversalReel.tsx      # Dynamic multi-scene script explainer
-        ├── components/
-        │   ├── BackgroundGrid.tsx # Pulsing spacetime grid & particles
-        │   ├── BlackHoleVisual.tsx# Scene 1: Accretion disk & photon sphere
-        │   ├── ClockComparison.tsx# Scene 2: 1.0x vs 0.3x twin clock paradox
-        │   ├── RelativityCard.tsx # Scene 3: Einstein field equations
-        │   ├── KaraokeCaptions.tsx# Hormozi/MrBeast style bouncing captions
-        │   └── ProgressBar.tsx    # Retention progress bar
-        └── data/
-            └── defaultSubs.ts     # Pre-compiled fallback timing data
-```
-
----
-
-## 🎙️ Curated Voice Library
-
-| Preset ID | Voice Identifier | Style / Tone |
-| :--- | :--- | :--- |
-| `educational_male` | `en-US-ChristopherNeural` | Deep, authoritative, documentary (Default) |
-| `educational_female` | `en-US-JennyNeural` | Crisp, engaging, informative |
-| `british_documentary`| `en-GB-RyanNeural` | BBC nature / cosmos narration |
-| `energetic_male` | `en-US-AndrewMultilingualNeural` | Upbeat YouTube creator / meme tone |
-| `punchy_female` | `en-US-AvaNeural` | Energetic, punchy, modern |
-| `quirky_expressive` | `en-US-GuyNeural` | Relatable humor & conversation |
-
-Specify any voice using `--voice`:
-```bash
-python3 automate_reel.py --topic "Gravitational Waves" --voice en-GB-RyanNeural
-```
-
----
-
-## 🛠️ CLI Options Reference
-
-```
-usage: automate_reel.py [-h] [--topic TOPIC] [--script SCRIPT]
-                        [--style {educational,funny,universal}]
-                        [--comp COMP] [--preset PRESET]
-                        [--voice VOICE] [--rate RATE]
-                        [--output OUTPUT] [--list-presets]
-                        [--preview] [--interactive]
-
-Options:
-  --topic TOPIC         Topic for automatic viral script generation
-  --script SCRIPT       Custom speech script text
-  --style STYLE         Video style: educational (default), funny, universal
-  --comp COMP           Remotion composition ID (EduReel, FunnyReel, UniversalReel)
-  --preset PRESET       Use a built-in viral preset (e.g. black_hole_time, quantum_tunneling, brain_at_3am)
-  --voice VOICE         Neural voice name
-  --rate RATE           TTS speech rate (e.g., '+5%', '+10%')
-  --output, -o OUTPUT   Output MP4 destination (default: out/educational-reel.mp4)
-  --preview             Launch interactive Remotion Studio in browser
-  --list-presets        List all available built-in viral presets
-  --interactive, -i     Interactive terminal wizard
+├── automate_reel.py                 # Master CLI entrypoint
+├── setup_automation.sh              # One-click interactive setup & scheduler
+├── inbox/
+│   └── insta_queue.txt              # Drop Instagram / social URLs here to auto-process
+├── engine/
+│   ├── morning_batch_runner.py      # Daily batch orchestrator (2-3 reels every morning)
+│   ├── master_orchestrator.py       # Multi-agent feedback loop orchestrator
+│   ├── tts_engine.py                # Edge-TTS neural multi-voice + studio DSP mastering
+│   ├── video_auditor.py             # Video inspection & frame analysis
+│   └── agents/
+│       ├── insta_analyzer.py        # Social reel download & Gemini multimodal deconstruction
+│       ├── recreation_director.py   # AI viral remixer (adapts into our animated styles)
+│       ├── script_director.py       # Multi-character screenwriter
+│       ├── audio_director.py        # Neural acoustics, Hz pitch tuning & subtitle alignment
+│       ├── scene_director.py        # Remotion visual compiler & headless MP4 renderer
+│       ├── quality_auditor.py       # 5-stage broadcast quality watchdog
+│       └── drive_dispatcher.py      # Google Drive cloud sync & local exporter
+├── my-edu-reels/                    # Remotion React 19 + TypeScript Video Engine
+│   ├── src/
+│   │   ├── MasterAutonomousReel.tsx # 2.5D Animated character stage & dynamic cards
+│   │   ├── ThreeWayComparisonReel.tsx # 3D Diner with Three.js camera & floating browser
+│   │   ├── AnimeEduReel.tsx         # Shonen manga speedlines, glowing aura & formulas
+│   │   ├── EduReel.tsx              # Astrophysics & science explainer
+│   │   └── FunnyReel.tsx            # Relatable developer comedy & memes
+│   └── public/                      # Render assets, voices & subtitles
+└── out/
+    └── morning_YYYY_MM_DD/          # Daily morning batch outputs, captions & audit frames
 ```

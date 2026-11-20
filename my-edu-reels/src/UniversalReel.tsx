@@ -63,7 +63,7 @@ export const UniversalReel: React.FC<UniversalReelProps> = ({
   );
   const activeScene = scenes[currentSceneIndex] || scenes[0];
 
-  const sceneProgressFrame = frame % framesPerScene;
+  const sceneProgressFrame = Math.max(0, frame - currentSceneIndex * framesPerScene);
   const sceneSpring = spring({
     frame: sceneProgressFrame,
     fps,
@@ -202,7 +202,6 @@ export const UniversalReel: React.FC<UniversalReelProps> = ({
                     idx === currentSceneIndex
                       ? accentColor
                       : "rgba(255, 255, 255, 0.2)",
-                  transition: "all 0.3s ease",
                   boxShadow:
                     idx === currentSceneIndex
                       ? `0 0 10px ${accentColor}`

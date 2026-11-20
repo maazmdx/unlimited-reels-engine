@@ -1,23 +1,48 @@
-# Environments & Dependencies
+# Environments & Virtual Envs
 .venv/
+venv/
+ENV/
+env/
+
+# Package Dependencies
 node_modules/
 my-edu-reels/node_modules/
 my-edu-reels/.remotion/
+~/.cache/remotion/
 
-# Python Cache
+# Caches & Local Models (Cached in CI via actions/cache)
+.cache/
+.pytest_cache/
 __pycache__/
 */__pycache__/
 *.pyc
 
-# Rendered Media Outputs & Large Files
+# Environment Secrets & Local Tokens
+.env
+*.env
+.env.local
+.env.*.local
+
+# Rendered Media Outputs & Audit Dumps
 *.zip
 out/
+my-edu-reels/out/
+*.log
+
+# Audio/Video Scratch Artifacts
 public/*.mp3
 public/*.mp4
 public/sfx/*.mp3
 public/sfx/*.wav
+my-edu-reels/public/*.mp3
+my-edu-reels/public/*.mp4
 
-# OS & Temp
+# OS Artifacts & Temp
 .DS_Store
 Thumbs.db
 *.tmp
+*.swp
+
+# Explicitly Keep Essential Configs & Queues Tracked
+!engine/config/characters.json
+!inbox/insta_queue.txt

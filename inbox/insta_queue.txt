@@ -1,0 +1,7 @@
+# Add Instagram Reel, TikTok, or YouTube Shorts URLs below (one per line).
+# The Morning AI Video Engine will pick them up, analyze the viral hook, and recreate them
+# in our signature 3D/2.5D animation style with neural voices.
+#
+# Examples:
+# https://www.instagram.com/reel/C7XYZ123/
+# https://www.youtube.com/shorts/dQw4w9WgXcQ

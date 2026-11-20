@@ -1,7 +1,14 @@
 """
-Antigravity Unlimited Video Engine - Multilingual Neural Voice & Subtitle Generator
-100% Free Zero-Cost ($0) TTS Engine with Edge-TTS and gTTS Fallback.
-Supported Languages: English, Hindi (हिंदी), Kannada (ಕನ್ನಡ), Indian English.
+Antigravity Unlimited Video Engine - Neural Voice & Lip-Sync Timeline Generator
+Features:
+- Primary Engine: Kokoro-82M (kokoro-onnx) CPU-friendly, free neural voice synthesis
+- Fallback & Per-Character Engine: Edge-TTS (with strict pitch="+0Hz", no metallic artifacts)
+- Auto model caching in .cache/kokoro/ (kokoro-v1.0.onnx + voices-v1.0.bin)
+- Leading/trailing silence trimming (dead air <= 0.08s) via FFmpeg silenceremove
+- Snappy comedic turn pauses (0.15s - 0.28s, punchline max 0.35s)
+- Clean broadcast DSP mastering (highpass=75, warmth EQ, transparent compressor, -14.0 LUFS loudnorm)
+- Subtle lo-fi ambient music bed ducked at -22 dB
+- Multi-character 30fps lip-sync envelopes exported to timeline.json & subs.json
 """
 
 import os
@@ -10,8 +17,16 @@ import json
 import math
 import asyncio
 import re
-from typing import List, Dict, Any, Optional
+import subprocess
+import shutil
+import tempfile
+from pathlib import Path
+from typing import List, Dict, Any, Optional, Tuple
 
+import numpy as np
+import soundfile as sf
+
+# Optional edge_tts and gtts imports
 try:
     import edge_tts
 except ImportError:
@@ -27,151 +42,103 @@ try:
 except ImportError:
     MP3 = None
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+CONFIG_PATH = PROJECT_ROOT / "engine" / "config" / "characters.json"
+CACHE_DIR = PROJECT_ROOT / ".cache" / "kokoro"
 
-# Curated high-performing voices for Reels & Shorts across languages
-PRESET_VOICES = {
-    # English - Educational & Documentary
-    "educational_male": "en-US-ChristopherNeural",   # Deep, authoritative, clear
-    "educational_female": "en-US-JennyNeural",         # Crisp, informative, engaging
-    "british_documentary": "en-GB-RyanNeural",         # Sophisticated BBC style
-    # English - Dynamic, Anime & Funny
-    "energetic_male": "en-US-AndrewMultilingualNeural", # High-tempo YouTube creator tone
-    "punchy_female": "en-US-AvaNeural",                # Vibrant, upbeat, punchy
-    "quirky_expressive": "en-US-GuyNeural",            # Natural conversation & reactions
-    "deep_cinema": "en-US-EricNeural",                 # Dramatic & intense
-    # Indian English
-    "indian_english_male": "en-IN-PrabhatNeural",      # Natural Indian English male
-    "indian_english_female": "en-IN-NeerjaExpressiveNeural", # Expressive Indian English female
-    # Hindi (हिंदी)
-    "hindi_male": "hi-IN-MadhurNeural",                # High-energy, engaging, perfect for viral/anime
-    "hindi_female": "hi-IN-SwaraNeural",               # Warm, clear, documentary/storytelling
-    # Curated dialogue voices
-    "human_male": "en-US-AndrewNeural",         # Ultra-warm, natural podcast conversational tone
-    "human_female": "en-US-JennyNeural",
-    "bot_male": "en-US-BrianNeural",            # Deep, resonant, authoritative baritone AI
-    "bot_female": "en-US-AriaNeural",
-    "rival_male": "en-US-ChristopherNeural",    # Confident, sharp senior developer tone
-    # Hindi dialogue
-    "hindi_human": "hi-IN-MadhurNeural",
-    "hindi_bot": "hi-IN-SwaraNeural",
-    "hindi_rival": "hi-IN-DivyaNeural",
-    # Kannada dialogue
-    "kannada_human": "kn-IN-GaganNeural",
-    "kannada_bot": "kn-IN-SapnaNeural",
-}
+# Kokoro model download endpoints
+KOKORO_MODEL_URL = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx"
+KOKORO_VOICES_URL = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin"
 
-# Dedicated Character Voice Profiles with tailored pitch deepening (Hz), rate, and persona
-CHARACTER_VOICE_PROFILES = {
-    "human_male": {
-        "voice": "en-US-AndrewNeural",
-        "pitch": "+0Hz",
-        "rate": "+2%",
-        "description": "Natural conversational developer tone, expressive",
-    },
-    "human_female": {
-        "voice": "en-US-JennyNeural",
-        "pitch": "+0Hz",
-        "rate": "+0%",
-        "description": "Sharp, articulate tech lead / skeptic",
-    },
-    "antigravity_bot": {
-        "voice": "en-US-BrianNeural",
-        "pitch": "-14Hz",
-        "rate": "-2%",
-        "description": "Deep resonant authoritative baritone Google Antigravity AI",
-    },
-    "gemini": {
-        "voice": "en-US-BrianNeural",
-        "pitch": "-12Hz",
-        "rate": "-1%",
-        "description": "Smooth cosmic authoritative baritone Gemini AI",
-    },
-    "claude": {
-        "voice": "en-GB-RyanNeural",
-        "pitch": "-10Hz",
-        "rate": "-1%",
-        "description": "Sophisticated British intellectual dry-witted Claude AI",
-    },
-    "grok": {
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "-16Hz",
-        "rate": "+4%",
-        "description": "Deep sarcastic fast rogue cyber AI",
-    },
-    "codex": {
-        "voice": "en-US-EricNeural",
-        "pitch": "-22Hz",
-        "rate": "-3%",
-        "description": "Deep resonant cinematic hacker bass AI",
-    },
-    "dad": {
-        "voice": "en-IN-PrabhatNeural",
-        "pitch": "-4Hz",
-        "rate": "-1%",
-        "description": "Authoritative, nostalgic Indian Dad tone, scolding yet hilarious",
-    },
-    "boomer_dad": {
-        "voice": "en-US-ChristopherNeural",
-        "pitch": "-8Hz",
-        "rate": "-2%",
-        "description": "Grumpy traditional Dad questioning electronics and power bills",
-    },
-}
+# Global Kokoro singleton instance
+_KOKORO_INSTANCE = None
 
 
-def apply_broadcast_vocal_depth(input_audio: str, output_audio: str) -> bool:
+def ensure_kokoro_model(cache_dir: Optional[Path] = None) -> Tuple[Path, Path]:
     """
-    Applies studio-grade broadcast DSP mastering to TTS audio for maximum vocal depth,
-    warmth, chest resonance (proximity effect), and crisp articulation matching the viral reels.
+    Ensures that kokoro-v1.0.onnx and voices-v1.0.bin are cached and ready.
+    Downloads them automatically if missing or incomplete.
     """
-    import subprocess
-    filter_chain = (
-        "highpass=f=70,"
-        "equalizer=f=120:t=q:w=1.2:g=4.2,"
-        "equalizer=f=900:t=q:w=2.0:g=-2.0,"
-        "equalizer=f=4200:t=q:w=1.5:g=2.5,"
-        "acompressor=threshold=-18dB:ratio=3.2:attack=15:release=85:makeup=2.5dB,"
-        "aecho=0.8:0.85:26:0.08,"
-        "loudnorm=I=-16:TP=-1.0:LRA=7"
-    )
-    cmd = [
-        "ffmpeg", "-y",
-        "-i", input_audio,
-        "-af", filter_chain,
-        "-c:a", "libmp3lame",
-        "-b:a", "192k",
-        output_audio
-    ]
+    target_dir = Path(cache_dir) if cache_dir else CACHE_DIR
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    onnx_file = target_dir / "kokoro-v1.0.onnx"
+    voices_file = target_dir / "voices-v1.0.bin"
+
+    # Also check user home cache as a secondary search path
+    user_cache = Path.home() / ".cache" / "kokoro"
+    if not (onnx_file.exists() and onnx_file.stat().st_size > 50_000_000):
+        if (user_cache / "kokoro-v1.0.onnx").exists() and (user_cache / "kokoro-v1.0.onnx").stat().st_size > 50_000_000:
+            onnx_file = user_cache / "kokoro-v1.0.onnx"
+
+    if not (voices_file.exists() and voices_file.stat().st_size > 5_000_000):
+        if (user_cache / "voices-v1.0.bin").exists() and (user_cache / "voices-v1.0.bin").stat().st_size > 5_000_000:
+            voices_file = user_cache / "voices-v1.0.bin"
+
+    import urllib.request
+
+    if not (voices_file.exists() and voices_file.stat().st_size > 5_000_000):
+        print(f"📥 [Kokoro] Downloading voices-v1.0.bin to {voices_file}...")
+        urllib.request.urlretrieve(KOKORO_VOICES_URL, str(voices_file))
+
+    if not (onnx_file.exists() and onnx_file.stat().st_size > 50_000_000):
+        print(f"📥 [Kokoro] Downloading kokoro-v1.0.onnx to {onnx_file}...")
+        urllib.request.urlretrieve(KOKORO_MODEL_URL, str(onnx_file))
+
+    return onnx_file, voices_file
+
+
+def get_kokoro():
+    """Returns initialized Kokoro ONNX singleton."""
+    global _KOKORO_INSTANCE
+    if _KOKORO_INSTANCE is not None:
+        return _KOKORO_INSTANCE
+
     try:
-        res = subprocess.run(cmd, capture_output=True, check=True)
-        return True
+        from kokoro_onnx import Kokoro
+        onnx_path, voices_path = ensure_kokoro_model()
+        print(f"🧠 [Kokoro-82M] Loading ONNX runtime from {onnx_path.name} & {voices_path.name}...")
+        _KOKORO_INSTANCE = Kokoro(str(onnx_path), str(voices_path))
+        print("✅ [Kokoro-82M] Engine initialized on CPU.")
+        return _KOKORO_INSTANCE
     except Exception as e:
-        print(f"⚠️ Broadcast DSP mastering fallback: {e}")
-        return False
+        print(f"⚠️ [Kokoro-82M] Initialization notice: {e}")
+        return None
+
+
+def load_character_profiles() -> Dict[str, Any]:
+    """Loads characters.json as single source of truth for voices and parameters."""
+    if CONFIG_PATH.exists():
+        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def canonicalize_character_id(speaker_str: str) -> str:
+    """Normalizes any speaker label or alias to its canonical characters.json ID."""
+    s = (speaker_str or "").lower().strip()
+    if s in ["junior", "dev", "junior_dev", "human_male", "junior developer"]:
+        return "junior_dev"
+    if s in ["dad", "father", "indian_dad", "boomer_dad", "parent"]:
+        return "dad"
+    if s in ["claude", "claude_ai", "anthropic"]:
+        return "claude"
+    if s in ["gemini", "gemini_ai", "google_gemini"]:
+        return "gemini"
+    if s in ["grok", "grok_ai", "xai"]:
+        return "grok"
+    if s in ["bot", "antigravity", "antigravity_bot", "ai"]:
+        return "antigravity_bot"
+    return s if s in load_character_profiles() else "junior_dev"
 
 
 def detect_language(text: str) -> str:
     """Detects primary language script: 'kn' (Kannada), 'hi' (Hindi), or 'en' (English)."""
-    # Kannada Unicode block: U+0C80 - U+0CFF
     if re.search(r'[\u0C80-\u0CFF]', text):
         return "kn"
-    # Devanagari Unicode block (Hindi): U+0900 - U+097F
     if re.search(r'[\u0900-\u097F]', text):
         return "hi"
     return "en"
-
-
-def get_default_voice_for_text(text: str, style: str = "educational") -> str:
-    """Selects the optimal neural voice based on language script and video style."""
-    lang = detect_language(text)
-    if lang == "kn":
-        return PRESET_VOICES["kannada_male"]
-    elif lang == "hi":
-        return PRESET_VOICES["hindi_male"]
-    else:
-        if style in ["funny", "anime"]:
-            return PRESET_VOICES["energetic_male"]
-        return PRESET_VOICES["educational_male"]
 
 
 def clean_text_for_speech(text: str) -> str:
@@ -193,18 +160,14 @@ def format_vtt_timestamp(seconds: float) -> str:
 
 
 def get_audio_duration(file_path: str) -> float:
-    """Calculates audio duration in seconds using mutagen or ffprobe."""
-    if MP3 is not None and os.path.exists(file_path):
-        try:
-            audio = MP3(file_path)
-            if audio.info and audio.info.length:
-                return float(audio.info.length)
-        except Exception:
-            pass
-
-    # Fallback to ffprobe
+    """Calculates audio duration in seconds using ffprobe or soundfile."""
     try:
-        import subprocess
+        info = sf.info(file_path)
+        return float(info.duration)
+    except Exception:
+        pass
+
+    try:
         res = subprocess.run(
             [
                 "ffprobe", "-v", "error", "-show_entries",
@@ -217,87 +180,49 @@ def get_audio_duration(file_path: str) -> float:
         )
         return float(res.stdout.strip())
     except Exception:
-        return 12.0
+        return 10.0
 
 
-def build_word_and_chunk_timings(sentences: List[Dict[str, Any]]) -> Dict[str, Any]:
+def trim_silence(input_audio: str, output_audio: str) -> bool:
     """
-    Interpolates word-level timestamps within sentence boundaries
-    and groups words into dynamic 2-4 word caption pills.
-    Works seamlessly across English, Hindi, and Kannada.
+    Trims leading and trailing silence via FFmpeg silenceremove
+    so no line has dead air > 0.08s.
     """
-    all_words = []
-    
-    for sent in sentences:
-        s_text = sent["text"].strip()
-        s_start = sent["start"]
-        s_end = sent["end"]
-        s_duration = max(s_end - s_start, 0.2)
-        
-        words = s_text.split()
-        if not words:
-            continue
-            
-        weights = [max(len(w), 2) for w in words]
-        total_weight = sum(weights)
-        
-        current_time = s_start
-        for i, word in enumerate(words):
-            word_dur = (weights[i] / total_weight) * s_duration
-            w_start = round(current_time, 3)
-            w_end = round(current_time + word_dur, 3)
-            current_time += word_dur
-            
-            clean_word = re.sub(r'^[^\w\u0900-\u097F\u0C80-\u0CFF]+|[^\w\u0900-\u097F\u0C80-\u0CFF]+$', '', word)
-            all_words.append({
-                "word": clean_word if clean_word else word,
-                "raw": word,
-                "start": w_start,
-                "end": w_end
-            })
-
-    # Group into readable subtitle chunks (2-3 words each or punctuation break)
-    chunks = []
-    chunk_words = []
-    
-    for w in all_words:
-        chunk_words.append(w)
-        ends_with_punct = bool(re.search(r'[.,!?:;|॥]$', w["raw"]))
-        if len(chunk_words) >= 3 or ends_with_punct:
-            chunks.append({
-                "start": chunk_words[0]["start"],
-                "end": chunk_words[-1]["end"],
-                "text": " ".join([cw["raw"] for cw in chunk_words]),
-                "words": list(chunk_words)
-            })
-            chunk_words = []
-            
-    if chunk_words:
-        chunks.append({
-            "start": chunk_words[0]["start"],
-            "end": chunk_words[-1]["end"],
-            "text": " ".join([cw["raw"] for cw in chunk_words]),
-            "words": list(chunk_words)
-        })
-
-    return {
-        "words": all_words,
-        "chunks": chunks
-    }
+    filter_str = "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-42dB:stop_periods=-1:stop_duration=0.05:stop_threshold=-42dB"
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", input_audio,
+        "-af", filter_str,
+        output_audio
+    ]
+    try:
+        subprocess.run(cmd, capture_output=True, check=True)
+        return True
+    except Exception as e:
+        shutil.copy2(input_audio, output_audio)
+        return False
 
 
 async def _synthesize_edge_tts(
     text: str,
     voice: str,
-    rate: str,
-    out_audio: str,
+    rate: str = "+0%",
+    out_audio: str = "temp.mp3",
     pitch: str = "+0Hz"
 ) -> List[Dict[str, Any]]:
-    """Synthesizes voice using Edge-TTS with strict timeout and automatic retry."""
+    """
+    Synthesizes voice using Edge-TTS with pitch strictly at '+0Hz' (no metallic pitch shift).
+    """
+    if edge_tts is None:
+        raise RuntimeError("edge-tts package not installed.")
+
+    # Enforce zero metallic pitch shifts
+    clean_pitch = "+0Hz"
+
     last_err = None
     for attempt in range(1, 4):
         try:
-            comm = edge_tts.Communicate(text, voice=voice, rate=rate, pitch=pitch)
+            comm = edge_tts.Communicate(text, voice=voice, rate=rate, pitch=clean_pitch)
             sentences = []
             audio_data = bytearray()
 
@@ -324,141 +249,202 @@ async def _synthesize_edge_tts(
                 return sentences
         except Exception as e:
             last_err = e
-            await asyncio.sleep(0.5 * attempt)
+            await asyncio.sleep(0.4 * attempt)
 
     raise RuntimeError(f"Edge-TTS failed after 3 attempts: {repr(last_err)}")
 
 
-def _synthesize_gtts(
+def _synthesize_kokoro(
     text: str,
-    out_audio: str,
-    lang: str = "en"
-) -> List[Dict[str, Any]]:
-    """Fallback TTS using Google Translate TTS with explicit timeout."""
-    if gTTS is None:
-        raise RuntimeError("gTTS package not installed for fallback.")
-    gtts_lang = lang if lang in ["hi", "kn", "en"] else "en"
-    tts = gTTS(text=text, lang=gtts_lang, timeout=12)
+    voice_id: str = "am_michael",
+    speed: float = 1.0,
+    out_audio: str = "temp.wav"
+) -> Tuple[List[Dict[str, Any]], float]:
+    """
+    Synthesizes speech using Kokoro-82M ONNX on CPU.
+    Returns (word_timings, duration).
+    """
+    kokoro = get_kokoro()
+    if kokoro is None:
+        raise RuntimeError("Kokoro ONNX engine unavailable.")
+
+    # Determine language tag from voice prefix (b -> British, a -> American)
+    lang_tag = "en-gb" if voice_id.startswith("b") else "en-us"
+
+    samples, sample_rate = kokoro.create(
+        text=text,
+        voice=voice_id,
+        speed=float(speed),
+        lang=lang_tag,
+        trim=True
+    )
+
     os.makedirs(os.path.dirname(os.path.abspath(out_audio)), exist_ok=True)
-    tts.save(out_audio)
+    sf.write(out_audio, samples, sample_rate, subtype="PCM_16")
 
-    total_dur = get_audio_duration(out_audio)
-    sentences_raw = [s.strip() for s in re.split(r'(?<=[.!?|॥])\s+', text) if s.strip()]
-    if not sentences_raw:
-        sentences_raw = [text]
+    # Trim leading/trailing dead air using FFmpeg
+    trimmed_audio = out_audio + ".trim.wav"
+    if trim_silence(out_audio, trimmed_audio):
+        if os.path.exists(trimmed_audio) and os.path.getsize(trimmed_audio) > 1000:
+            shutil.move(trimmed_audio, out_audio)
 
-    total_chars = sum(len(s) for s in sentences_raw)
-    sentences = []
-    cur_t = 0.0
-    for s in sentences_raw:
-        dur = (len(s) / max(total_chars, 1)) * total_dur
-        sentences.append({
-            "text": s,
-            "start": round(cur_t, 3),
-            "end": round(cur_t + dur, 3)
+    duration = get_audio_duration(out_audio)
+
+    # Build proportional word boundaries
+    words = text.split()
+    weights = [max(len(w), 2) for w in words]
+    total_w = sum(weights) or 1.0
+    current_t = 0.0
+    word_timings = []
+
+    for i, w in enumerate(words):
+        dur = (weights[i] / total_w) * duration
+        word_timings.append({
+            "word": re.sub(r'[^\w]', '', w) or w,
+            "raw": w,
+            "start": round(current_t, 3),
+            "end": round(current_t + dur, 3)
         })
-        cur_t += dur
+        current_t += dur
 
-    return sentences
+    return word_timings, duration
 
 
-def generate_speech(
-    text: str,
-    voice: Optional[str] = None,
-    rate: str = "+0%",
-    style: str = "educational",
-    out_audio: str = "public/voice.mp3",
-    out_vtt: str = "public/subs.vtt",
-    out_json: str = "public/subs.json",
-    meta_json: str = "public/video-meta.json",
-    title: str = "EduReel Video"
-) -> Dict[str, Any]:
+def apply_broadcast_mastering(
+    input_vocal_audio: str,
+    output_audio: str,
+    ambient_bed_path: Optional[str] = None,
+    ambient_db: float = -22.0
+) -> bool:
     """
-    Main multilingual speech generator. Produces:
-    1. MP3 audio
-    2. WebVTT subtitles (.vtt)
-    3. Karaoke word-level timings (.json)
-    4. Video metadata (.json) with exact frame calculation for Remotion.
+    Applies clean broadcast mastering:
+    - Highpass filter at 75 Hz (removes sub-rumble)
+    - Gentle warmth & clarity EQ
+    - Gentle compressor (ratio=3.0, threshold=-18dB)
+    - Removed hollow 'aecho' and pitch shifts
+    - Adds subtle warm lo-fi ambient piano bed ducked quietly at -22 dB
+    - Final Loudnorm to exactly -14.0 LUFS (True Peak -1.0 dB, LRA 7)
     """
-    clean_text = clean_text_for_speech(text)
-    if not clean_text:
-        raise ValueError("Text cannot be empty.")
+    from engine.ambient_music import generate_ambient_music_bed, DEFAULT_AMBIENT_PATH
 
-    lang = detect_language(clean_text)
-    selected_voice = voice or get_default_voice_for_text(clean_text, style)
+    vocal_dur = get_audio_duration(input_vocal_audio)
 
-    print(f"🎙️ Synthesizing Voice [{lang.upper()}] with '{selected_voice}' (Rate: {rate})...")
-    sentences = []
-    tts_provider = "edge-tts"
+    # Ensure ambient bed exists
+    if not ambient_bed_path or not os.path.exists(ambient_bed_path):
+        if DEFAULT_AMBIENT_PATH.exists():
+            ambient_bed_path = str(DEFAULT_AMBIENT_PATH)
+        else:
+            ambient_bed_path = generate_ambient_music_bed(max(vocal_dur + 5.0, 30.0))
 
-    # Try Edge-TTS first
+    filter_chain = (
+        "[0:a]highpass=f=75,"
+        "equalizer=f=120:t=q:w=1.2:g=3.5,"
+        "equalizer=f=900:t=q:w=2.0:g=-1.5,"
+        "equalizer=f=4000:t=q:w=1.5:g=2.0,"
+        "acompressor=threshold=-18dB:ratio=3.0:attack=15:release=85:makeup=2.0dB[vocal];"
+        f"[1:a]volume={ambient_db}dB,aloop=loop=-1:size=2e+09[music];"
+        "[vocal][music]amix=inputs=2:duration=first:dropout_transition=2,"
+        "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
+    )
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", input_vocal_audio,
+        "-i", ambient_bed_path,
+        "-filter_complex", filter_chain,
+        "-map", "[out]",
+        "-c:a", "libmp3lame",
+        "-b:a", "192k",
+        output_audio
+    ]
+
     try:
-        sentences = asyncio.run(_synthesize_edge_tts(clean_text, selected_voice, rate, out_audio))
-        if not sentences or os.path.getsize(out_audio) < 500:
-            raise RuntimeError("Edge-TTS generated empty output.")
+        subprocess.run(cmd, capture_output=True, check=True)
+        return True
     except Exception as e:
-        print(f"⚠️ Edge-TTS encountered error: {e}. Falling back to gTTS...")
+        print(f"⚠️ [DSP] FFmpeg mastering notice: {e}, falling back to single stream loudnorm...")
+        simple_cmd = [
+            "ffmpeg", "-y",
+            "-i", input_vocal_audio,
+            "-af", "highpass=f=75,acompressor=threshold=-18dB:ratio=3.0,loudnorm=I=-14.0:TP=-1.0:LRA=7",
+            "-c:a", "libmp3lame",
+            "-b:a", "192k",
+            output_audio
+        ]
         try:
-            sentences = _synthesize_gtts(clean_text, out_audio, lang=lang)
-            tts_provider = "gtts-fallback"
-        except Exception as e_fallback:
-            raise RuntimeError(f"All TTS engines failed: {e_fallback}")
+            subprocess.run(simple_cmd, capture_output=True, check=True)
+            return True
+        except Exception:
+            shutil.copy2(input_vocal_audio, output_audio)
+            return False
 
-    audio_duration = get_audio_duration(out_audio)
-    duration_in_frames = int(math.ceil((audio_duration + 0.4) * 30))
 
-    timing_data = build_word_and_chunk_timings(sentences)
+def extract_character_mouth_envelopes(
+    turns_data: List[Dict[str, Any]],
+    total_frames: int,
+    fps: int = 30
+) -> Dict[str, List[float]]:
+    """
+    Computes real 30fps RMS audio mouth envelopes per character.
+    Envelope is strictly 0.0 whenever that character is not speaking.
+    """
+    registry = load_character_profiles()
+    all_chars = list(registry.keys())
+    if "junior_dev" not in all_chars:
+        all_chars.append("junior_dev")
+    if "dad" not in all_chars:
+        all_chars.append("dad")
+    if "claude" not in all_chars:
+        all_chars.append("claude")
+    if "gemini" not in all_chars:
+        all_chars.append("gemini")
+    if "grok" not in all_chars:
+        all_chars.append("grok")
+    if "antigravity_bot" not in all_chars:
+        all_chars.append("antigravity_bot")
 
-    # Write WebVTT
-    vtt_lines = ["WEBVTT\n"]
-    for i, chunk in enumerate(timing_data["chunks"]):
-        start_ts = format_vtt_timestamp(chunk["start"])
-        end_ts = format_vtt_timestamp(chunk["end"])
-        vtt_lines.append(f"{i + 1}\n{start_ts} --> {end_ts}\n{chunk['text']}\n")
+    envelopes = {char_id: [0.0] * total_frames for char_id in all_chars}
 
-    os.makedirs(os.path.dirname(os.path.abspath(out_vtt)), exist_ok=True)
-    with open(out_vtt, "w", encoding="utf-8") as f:
-        f.write("\n".join(vtt_lines))
+    for turn in turns_data:
+        char_id = turn["character_id"]
+        audio_file = turn.get("audio_file")
+        if not audio_file or not os.path.exists(audio_file):
+            continue
 
-    # Write word-level JSON for Karaoke bouncing animations
-    os.makedirs(os.path.dirname(os.path.abspath(out_json)), exist_ok=True)
-    with open(out_json, "w", encoding="utf-8") as f:
-        json.dump(timing_data, f, indent=2, ensure_ascii=False)
+        start_frame = turn["start_frame"]
+        end_frame = turn["end_frame"]
 
-    meta = {
-        "title": title,
-        "language": lang,
-        "ttsProvider": tts_provider,
-        "voice": selected_voice,
-        "rate": rate,
-        "durationInSeconds": round(audio_duration, 3),
-        "durationInFrames": duration_in_frames,
-        "fps": 30,
-        "width": 1080,
-        "height": 1920,
-        "wordCount": len(timing_data["words"]),
-        "chunksCount": len(timing_data["chunks"])
-    }
+        try:
+            samples, sr = sf.read(audio_file)
+            if len(samples.shape) > 1:
+                samples = np.mean(samples, axis=1)
 
-    os.makedirs(os.path.dirname(os.path.abspath(meta_json)), exist_ok=True)
-    with open(meta_json, "w", encoding="utf-8") as f:
-        json.dump(meta, f, indent=2, ensure_ascii=False)
+            turn_frames = max(end_frame - start_frame, 1)
+            samples_per_frame = sr / fps
 
-    print(f"✅ Voice generated: {out_audio} ({audio_duration:.2f}s, {duration_in_frames} frames @ 30fps)")
-    print(f"✅ Subtitles generated: {out_vtt} & {out_json}")
-    print(f"✅ Metadata generated: {meta_json}")
+            for f_idx in range(turn_frames):
+                target_frame = start_frame + f_idx
+                if target_frame >= total_frames:
+                    break
 
-    return {
-        "audio_path": out_audio,
-        "vtt_path": out_vtt,
-        "json_path": out_json,
-        "meta_path": meta_json,
-        "duration": audio_duration,
-        "frames": duration_in_frames,
-        "voice": selected_voice,
-        "language": lang,
-        "provider": tts_provider
-    }
+                s_start = int(f_idx * samples_per_frame)
+                s_end = int((f_idx + 1) * samples_per_frame)
+                slice_audio = samples[s_start:s_end]
+
+                if len(slice_audio) > 0:
+                    rms = float(np.sqrt(np.mean(slice_audio ** 2)))
+                    # Normalize RMS smoothly between 0.0 and 1.0
+                    val = min(1.0, max(0.0, (rms - 0.008) * 8.5))
+                    val = round(float(val), 3)
+                else:
+                    val = 0.0
+
+                if char_id in envelopes:
+                    envelopes[char_id][target_frame] = val
+        except Exception as e:
+            print(f"⚠️ Mouth envelope extraction notice for {char_id}: {e}")
+
+    return envelopes
 
 
 def generate_dialogue_speech(
@@ -471,272 +457,261 @@ def generate_dialogue_speech(
     out_vtt: str = "public/subs.vtt",
     out_json: str = "public/subs.json",
     meta_json: str = "public/video-meta.json",
-    title: str = "Diner Dialogue Reel",
+    timeline_json: str = "public/timeline.json",
+    title: str = "3D Low-Poly Dialogue Reel",
     pause_between_turns: float = 0.20,
 ) -> Dict[str, Any]:
     """
-    Synthesizes multi-speaker conversational dialogue (e.g. Junior Dev vs Rival Dev vs Antigravity Bot).
-    Synthesizes each turn with corresponding voice, inserts natural micro-pauses,
-    concatenates seamlessly via FFmpeg, applies broadcast vocal depth DSP, and generates synchronized word cues.
+    Main Multi-Speaker Neural Voice & Lip-Sync Pipeline:
+    - Uses Kokoro-82M neural voices per characters.json
+    - Edge-TTS authentic Indian Dad & clean fallback
+    - Strips dead air with silenceremove
+    - Tight comedic pauses (0.15s - 0.28s)
+    - Broadcast mastering at -14.0 LUFS + ambient lo-fi music bed ducked at -22 dB
+    - Exports unified timeline.json with per-character 30fps mouth envelopes.
     """
-    import tempfile
-    import subprocess
-    import shutil
-    import time
-
     if not dialogue:
         raise ValueError("Dialogue list cannot be empty.")
 
-    # Determine default voices based on first line's detected language
+    registry = load_character_profiles()
     first_text = dialogue[0]["text"]
     lang = detect_language(first_text)
 
-    if not human_voice:
-        if lang == "hi":
-            human_voice = PRESET_VOICES["hindi_human"]
-        elif lang == "kn":
-            human_voice = PRESET_VOICES["kannada_human"]
-        else:
-            human_voice = PRESET_VOICES["human_male"]
+    print(f"🎙️ Synthesizing Skit Audio ({len(dialogue)} turns) with Neural Kokoro & Edge-TTS...")
 
-    if not bot_voice:
-        if lang == "hi":
-            bot_voice = PRESET_VOICES["hindi_bot"]
-        elif lang == "kn":
-            bot_voice = PRESET_VOICES["kannada_bot"]
-        else:
-            bot_voice = PRESET_VOICES["bot_male"]
-
-    if not rival_voice:
-        if lang == "hi":
-            rival_voice = PRESET_VOICES.get("hindi_rival", "hi-IN-DivyaNeural")
-        else:
-            rival_voice = PRESET_VOICES["rival_male"]
-
-    print(f"🎙️ Synthesizing Dialogue ({len(dialogue)} turns) [Lang: {lang.upper()}]...")
-    print(f"   👤 Dev/Skeptic Voice : {human_voice}")
-    print(f"   👔 Rival/Senior Voice: {rival_voice}")
-    print(f"   🤖 Antigravity Voice : {bot_voice}")
-
+    turns_summary = []
     all_words = []
     all_chunks = []
-    turns_summary = []
 
     with tempfile.TemporaryDirectory() as tmpdir:
         turn_audio_files = []
+        turn_raw_files = []
         current_timeline = 0.0
 
         for idx, turn in enumerate(dialogue):
-            speaker = turn.get("speaker", "human").lower()
+            raw_speaker = turn.get("speaker") or turn.get("character_id") or "junior_dev"
+            canonical_char = canonicalize_character_id(raw_speaker)
+            char_config = registry.get(canonical_char, {})
+            voice_prof = char_config.get("voice_profile", {})
+
             text = clean_text_for_speech(turn.get("text", ""))
             if not text:
                 continue
 
-            pitch = turn.get("pitch", "+0Hz")
-            turn_rate = turn.get("rate") or rate
+            engine_type = voice_prof.get("engine", "kokoro").lower()
+            voice_id = voice_prof.get("voice_id", "am_michael")
+            speed = float(voice_prof.get("speed", 1.0))
+            emotion = (turn.get("emotion") or "neutral").lower()
 
-            # Dynamic Character Voice Profile matching
-            matched_profile = None
-            if "dad" in speaker or "father" in speaker or "uncle" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("dad")
-            elif "female" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("human_female")
-            elif "gemini" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("gemini")
-            elif "claude" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("claude")
-            elif "grok" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("grok")
-            elif "codex" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("codex")
-            elif "antigravity" in speaker or "bot" in speaker or "ai" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("antigravity_bot")
-            elif "male" in speaker or "human" in speaker or "junior" in speaker or "dev" in speaker:
-                matched_profile = CHARACTER_VOICE_PROFILES.get("human_male")
+            turn_wav_raw = os.path.join(tmpdir, f"turn_{idx:03d}_raw.wav")
+            turn_wav_trimmed = os.path.join(tmpdir, f"turn_{idx:03d}_trimmed.wav")
+            word_timings = []
+            turn_dur = 0.0
 
-            if matched_profile and not turn.get("voice"):
-                voice = matched_profile["voice"]
-                if not turn.get("pitch"):
-                    pitch = matched_profile["pitch"]
-                if not turn.get("rate"):
-                    turn_rate = matched_profile["rate"]
-            elif speaker in ["bot", "gemini", "antigravity", "ai"]:
-                voice = turn.get("voice") or bot_voice
-            elif speaker in ["rival", "senior", "traditional", "human2", "boss"]:
-                voice = turn.get("voice") or rival_voice
-            else:
-                voice = turn.get("voice") or human_voice
+            synthesis_success = False
 
-            # Emotional prosody adjustment
-            emotion = turn.get("emotion", "normal").lower()
-            if emotion == "angry":
-                turn_rate = "+5%"
-                if pitch == "+0Hz":
-                    pitch = "+6Hz"
-            elif emotion == "smug":
-                turn_rate = "-2%"
-                if pitch == "+0Hz":
-                    pitch = "-12Hz"
-            elif emotion == "shocked":
-                turn_rate = "+7%"
-                if pitch == "+0Hz":
-                    pitch = "+10Hz"
+            # Primary Engine: Kokoro-82M
+            if engine_type == "kokoro":
+                try:
+                    word_timings, turn_dur = _synthesize_kokoro(
+                        text=text,
+                        voice_id=voice_id,
+                        speed=speed,
+                        out_audio=turn_wav_raw
+                    )
+                    trim_silence(turn_wav_raw, turn_wav_trimmed)
+                    turn_dur = get_audio_duration(turn_wav_trimmed)
+                    synthesis_success = True
+                except Exception as e_kokoro:
+                    print(f"⚠️ Kokoro fallback for turn {idx} ({canonical_char}): {e_kokoro}")
+                    engine_type = "edge_tts"
 
-            turn_audio_path = os.path.join(tmpdir, f"turn_{idx:03d}.mp3")
+            # Fallback or Specific Engine: Edge-TTS
+            if not synthesis_success:
+                fallback_voice = voice_prof.get("fallback_edge_voice") or voice_prof.get("voice_id") or "en-US-AndrewNeural"
+                edge_rate = voice_prof.get("rate") or "+0%"
+                turn_mp3 = os.path.join(tmpdir, f"turn_{idx:03d}_edge.mp3")
 
-            # Synthesize turn audio with pitch deepening & emotional rate
-            try:
-                sentences = asyncio.run(_synthesize_edge_tts(text, voice, turn_rate, turn_audio_path, pitch=pitch))
-                if not sentences or os.path.getsize(turn_audio_path) < 200:
-                    raise RuntimeError("Empty turn audio from edge-tts")
-            except Exception as e:
-                print(f"⚠️ Turn {idx} fallback to gTTS: {e}")
-                turn_lang = detect_language(text)
-                sentences = _synthesize_gtts(text, turn_audio_path, lang=turn_lang)
-            time.sleep(0.12)
+                try:
+                    sentences = asyncio.run(_synthesize_edge_tts(text, fallback_voice, rate=edge_rate, out_audio=turn_mp3, pitch="+0Hz"))
+                    trim_silence(turn_mp3, turn_wav_trimmed)
+                    turn_dur = get_audio_duration(turn_wav_trimmed)
 
-            turn_duration = get_audio_duration(turn_audio_path)
+                    # Build timings
+                    words = text.split()
+                    weights = [max(len(w), 2) for w in words]
+                    total_w = sum(weights) or 1.0
+                    cur_w_t = 0.0
+                    for i, w in enumerate(words):
+                        w_dur = (weights[i] / total_w) * turn_dur
+                        word_timings.append({
+                            "word": re.sub(r'[^\w]', '', w) or w,
+                            "raw": w,
+                            "start": round(cur_w_t, 3),
+                            "end": round(cur_w_t + w_dur, 3)
+                        })
+                        cur_w_t += w_dur
+                except Exception as e_edge:
+                    print(f"⚠️ Edge-TTS error for turn {idx}: {e_edge}")
+                    # gTTS absolute safety fallback
+                    _synthesize_gtts(text, turn_wav_trimmed, lang=lang)
+                    turn_dur = get_audio_duration(turn_wav_trimmed)
+
             turn_start = round(current_timeline, 3)
-            turn_end = round(turn_start + turn_duration, 3)
+            turn_end = round(turn_start + turn_dur, 3)
+            start_frame = int(round(turn_start * 30))
+            end_frame = int(round(turn_end * 30))
 
-            # Build word and chunk timings for this turn
-            turn_timing = build_word_and_chunk_timings(sentences)
+            # Store turn audio file path for envelope analysis
+            persistent_turn_audio = os.path.join(tmpdir, f"turn_{idx:03d}_final.wav")
+            shutil.copy2(turn_wav_trimmed, persistent_turn_audio)
 
-            # Offset timestamps to global timeline and attach speaker
-            for w in turn_timing["words"]:
+            # Global word timestamps
+            turn_words_obj = []
+            for w in word_timings:
                 w_start = round(turn_start + w["start"], 3)
                 w_end = round(turn_start + w["end"], 3)
+                w_data = {
+                    "word": w["word"],
+                    "start_sec": w_start,
+                    "end_sec": w_end
+                }
+                turn_words_obj.append(w_data)
                 all_words.append({
                     "word": w["word"],
-                    "raw": w["raw"],
+                    "raw": w.get("raw", w["word"]),
                     "start": w_start,
                     "end": w_end,
-                    "speaker": speaker
+                    "character_id": canonical_char
                 })
 
-            for c in turn_timing["chunks"]:
-                c_start = round(turn_start + c["start"], 3)
-                c_end = round(turn_start + c["end"], 3)
+            # Subtitle chunking (2-3 words per pill)
+            for i in range(0, len(turn_words_obj), 3):
+                chunk_slice = turn_words_obj[i:i+3]
                 all_chunks.append({
-                    "start": c_start,
-                    "end": c_end,
-                    "text": c["text"],
-                    "speaker": speaker,
-                    "words": [
-                        {**cw, "start": round(turn_start + cw["start"], 3), "end": round(turn_start + cw["end"], 3), "speaker": speaker}
-                        for cw in c.get("words", [])
-                    ]
+                    "start": chunk_slice[0]["start_sec"],
+                    "end": chunk_slice[-1]["end_sec"],
+                    "text": " ".join([cw["word"] for cw in chunk_slice]),
+                    "character_id": canonical_char,
+                    "words": chunk_slice
                 })
 
             turns_summary.append({
-                "index": idx,
-                "speaker": speaker,
-                "start": turn_start,
-                "end": turn_end,
-                "duration": round(turn_duration, 3),
+                "turn_index": idx,
+                "character_id": canonical_char,
                 "text": text,
-                "cardTrigger": turn.get("cardTrigger", None)
+                "emotion": emotion,
+                "start_sec": turn_start,
+                "end_sec": turn_end,
+                "start_frame": start_frame,
+                "end_frame": end_frame,
+                "duration_sec": round(turn_dur, 3),
+                "words": turn_words_obj,
+                "audio_file": persistent_turn_audio
             })
 
-            turn_audio_files.append(turn_audio_path)
+            turn_audio_files.append(persistent_turn_audio)
 
-            # Add dynamic dramatic pause between turns (except last turn)
+            # Comedic Snappy Pausing (0.15s - 0.28s, punchline max 0.35s)
             if idx < len(dialogue) - 1:
-                # Comedic timing: calculate pause duration based on emotion, speaker, and text
-                turn_pause = turn.get("pause_after")
-                if turn_pause is None:
-                    if emotion == "smug":
-                        turn_pause = 0.50  # Deadpan pause after AI roast lands
-                    elif emotion == "shocked":
-                        turn_pause = 0.38  # Disbelief / pause before comeback
-                    elif emotion == "angry":
-                        turn_pause = 0.28  # Snappy, heated confrontation
-                    elif "?" in text:
-                        turn_pause = 0.42  # Setup question waiting for answer
-                    else:
-                        turn_pause = 0.25  # Natural conversational break
-
-                if turn_pause > 0.04:
-                    pause_turn_file = os.path.join(tmpdir, f"pause_{idx:03d}.mp3")
-                    subprocess.run(
-                        [
-                            "ffmpeg", "-y", "-f", "lavfi",
-                            "-i", "anullsrc=r=24000:cl=mono",
-                            "-t", f"{turn_pause:.3f}",
-                            "-q:a", "9", "-acodec", "libmp3lame",
-                            pause_turn_file
-                        ],
-                        capture_output=True,
-                        check=True
-                    )
-                    turn_audio_files.append(pause_turn_file)
-                    current_timeline = round(turn_end + turn_pause, 3)
+                if emotion == "smug":
+                    turn_pause = 0.32  # Punchline pause after roast
+                elif emotion == "shocked":
+                    turn_pause = 0.22  # Brief disbelief
+                elif emotion == "angry":
+                    turn_pause = 0.16  # Snappy, heated cut-in
+                elif "?" in text:
+                    turn_pause = 0.24  # Prompt question pause
                 else:
-                    current_timeline = turn_end
+                    turn_pause = 0.18  # Natural conversational flow
+
+                pause_file = os.path.join(tmpdir, f"pause_{idx:03d}.wav")
+                sf.write(pause_file, np.zeros(int(turn_pause * 24000), dtype=np.float32), 24000)
+                turn_audio_files.append(pause_file)
+                current_timeline = round(turn_end + turn_pause, 3)
             else:
                 current_timeline = turn_end
 
-        # Create concat list for ffmpeg
-        concat_list_path = os.path.join(tmpdir, "concat.txt")
-        with open(concat_list_path, "w", encoding="utf-8") as f:
-            for file_path in turn_audio_files:
-                f.write(f"file '{file_path}'\n")
+        # Concatenate audio files into vocal master
+        concat_txt = os.path.join(tmpdir, "concat.txt")
+        with open(concat_txt, "w", encoding="utf-8") as f:
+            for p in turn_audio_files:
+                f.write(f"file '{p}'\n")
 
-        # Concat with ffmpeg to raw master
-        raw_master = os.path.join(tmpdir, "raw_master.mp3")
+        vocal_master_wav = os.path.join(tmpdir, "vocal_master.wav")
         subprocess.run(
-            [
-                "ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                "-i", concat_list_path,
-                "-c:a", "libmp3lame", "-b:a", "192k",
-                raw_master
-            ],
+            ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", concat_txt, "-c:a", "pcm_s16le", vocal_master_wav],
             capture_output=True,
             check=True
         )
 
-        # Apply studio-grade broadcast DSP mastering for maximum vocal depth & warmth
-        print("🎛️ Mastering Audio with Broadcast Vocal Depth (Chest Warmth + Proximity + Limiting)...")
+        # Apply broadcast DSP mastering & ducked ambient music bed
+        print("🎛️ Mastering Dialogue with Broadcast DSP & Ambient Lo-Fi Bed (-14.0 LUFS, -22 dB bed)...")
         os.makedirs(os.path.dirname(os.path.abspath(out_audio)), exist_ok=True)
-        if not apply_broadcast_vocal_depth(raw_master, out_audio):
-            shutil.copy2(raw_master, out_audio)
+        apply_broadcast_mastering(vocal_master_wav, out_audio)
 
-    total_duration = get_audio_duration(out_audio)
-    duration_in_frames = int(math.ceil((total_duration + 0.5) * 30))
+        total_duration = get_audio_duration(out_audio)
+        duration_in_frames = int(math.ceil((total_duration + 0.4) * 30))
 
-    # Extract audio envelope for lip sync and audio-reactive 3D face animation
-    envelope = []
-    try:
-        from engine.audio_analyzer import extract_frame_audio_envelope
-        envelope_path = os.path.join(os.path.dirname(os.path.abspath(out_audio)), "audio_envelope.json")
-        envelope = extract_frame_audio_envelope(out_audio, fps=30, out_json=envelope_path)
-        print(f"📊 Extracted {len(envelope)} audio envelope frames for reactive mouth syncing.")
-    except Exception as e_env:
-        print(f"⚠️ Audio envelope extraction notice: {e_env}")
+        # Extract real 30fps RMS mouth envelopes per character
+        mouth_envelopes = extract_character_mouth_envelopes(
+            turns_data=turns_summary,
+            total_frames=duration_in_frames,
+            fps=30
+        )
 
-    # Write WebVTT
-    vtt_lines = ["WEBVTT\n"]
-    for i, chunk in enumerate(all_chunks):
-        start_ts = format_vtt_timestamp(chunk["start"])
-        end_ts = format_vtt_timestamp(chunk["end"])
-        vtt_lines.append(f"{i + 1}\n{start_ts} --> {end_ts}\n[{chunk['speaker'].upper()}] {chunk['text']}\n")
+    # Clean internal temporary file references
+    for t in turns_summary:
+        t.pop("audio_file", None)
 
-    os.makedirs(os.path.dirname(os.path.abspath(out_vtt)), exist_ok=True)
-    with open(out_vtt, "w", encoding="utf-8") as f:
-        f.write("\n".join(vtt_lines))
+    # 1. Write timeline.json
+    unified_timeline = {
+        "total_duration_sec": round(total_duration, 3),
+        "duration_in_frames": duration_in_frames,
+        "fps": 30,
+        "turns": turns_summary,
+        "mouth_envelopes": mouth_envelopes
+    }
 
-    # Write JSON data with turns and chunks
-    full_data = {
+    out_dirs = [
+        os.path.dirname(os.path.abspath(timeline_json)),
+        str(PROJECT_ROOT / "public"),
+        str(PROJECT_ROOT / "my-edu-reels" / "public")
+    ]
+    for d in set(out_dirs):
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "timeline.json"), "w", encoding="utf-8") as f:
+            json.dump(unified_timeline, f, indent=2, ensure_ascii=False)
+
+    # 2. Write subs.json
+    subs_data = {
         "words": all_words,
         "chunks": all_chunks,
         "turns": turns_summary
     }
+    for d in set(out_dirs):
+        with open(os.path.join(d, "subs.json"), "w", encoding="utf-8") as f:
+            json.dump(subs_data, f, indent=2, ensure_ascii=False)
 
-    os.makedirs(os.path.dirname(os.path.abspath(out_json)), exist_ok=True)
-    with open(out_json, "w", encoding="utf-8") as f:
-        json.dump(full_data, f, indent=2, ensure_ascii=False)
+    # 3. Write WebVTT
+    vtt_lines = ["WEBVTT\n"]
+    for i, chunk in enumerate(all_chunks):
+        start_ts = format_vtt_timestamp(chunk["start"])
+        end_ts = format_vtt_timestamp(chunk["end"])
+        vtt_lines.append(f"{i + 1}\n{start_ts} --> {end_ts}\n[{chunk['character_id'].upper()}] {chunk['text']}\n")
 
-    # Write video metadata
+    for d in set(out_dirs):
+        with open(os.path.join(d, "subs.vtt"), "w", encoding="utf-8") as f:
+            f.write("\n".join(vtt_lines))
+
+    # 4. Copy audio file to both public folders (voice.mp3, voiceover.mp3, master.mp3)
+    for d in set(out_dirs):
+        for audio_name in ["voice.mp3", "voiceover.mp3", "master.mp3"]:
+            dest_audio = os.path.join(d, audio_name)
+            if os.path.abspath(out_audio) != os.path.abspath(dest_audio):
+                shutil.copy2(out_audio, dest_audio)
+
+    # 5. Write video metadata
     meta = {
         "title": title,
         "language": lang,
@@ -746,37 +721,24 @@ def generate_dialogue_speech(
         "fps": 30,
         "width": 1080,
         "height": 1920,
-        "speakers": {
-            "human": human_voice,
-            "bot": bot_voice
-        },
         "turnsCount": len(turns_summary),
         "wordCount": len(all_words),
         "chunksCount": len(all_chunks)
     }
+    for d in set(out_dirs):
+        with open(os.path.join(d, "video-meta.json"), "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
 
-    os.makedirs(os.path.dirname(os.path.abspath(meta_json)), exist_ok=True)
-    with open(meta_json, "w", encoding="utf-8") as f:
-        json.dump(meta, f, indent=2, ensure_ascii=False)
-
-    print(f"✅ Dialogue track generated: {out_audio} ({total_duration:.2f}s, {duration_in_frames} frames @ 30fps)")
-    print(f"✅ Subtitles generated: {out_vtt} & {out_json}")
-    print(f"✅ Metadata generated: {meta_json}")
+    print(f"✅ Dialogue complete: {out_audio} ({total_duration:.2f}s, {duration_in_frames} frames @ 30fps)")
+    print(f"✅ Exported unified timeline.json with per-character 30fps lip-sync envelopes.")
 
     return {
         "audio_path": out_audio,
         "vtt_path": out_vtt,
         "json_path": out_json,
-        "meta_path": meta_json,
+        "timeline_path": timeline_json,
         "duration": total_duration,
         "frames": duration_in_frames,
         "turns": turns_summary,
-        "language": lang,
-        "envelope": envelope
+        "mouth_envelopes": mouth_envelopes
     }
-
-
-if __name__ == "__main__":
-    test_hi = "क्या आपको पता है कि ब्लैक होल के पास समय धीमा क्यों हो जाता है?"
-    res_hi = generate_speech(test_hi, title="Hindi Test")
-    print("Hindi Test completed:", res_hi)

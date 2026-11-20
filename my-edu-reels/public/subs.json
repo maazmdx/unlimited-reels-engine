@@ -1,2799 +1,1712 @@
 {
   "words": [
     {
-      "word": "I",
-      "raw": "I",
-      "start": 0.05,
-      "end": 0.193,
-      "speaker": "junior"
+      "word": "Hey",
+      "raw": "Hey",
+      "start": 0.0,
+      "end": 0.184,
+      "character_id": "junior_dev"
     },
     {
-      "word": "need",
-      "raw": "need",
-      "start": 0.193,
-      "end": 0.48,
-      "speaker": "junior"
+      "word": "Claude",
+      "raw": "Claude,",
+      "start": 0.184,
+      "end": 0.612,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "I",
+      "raw": "I",
+      "start": 0.612,
+      "end": 0.734,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "just",
+      "raw": "just",
+      "start": 0.734,
+      "end": 0.979,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "pushed",
+      "raw": "pushed",
+      "start": 0.979,
+      "end": 1.346,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "a",
+      "raw": "a",
+      "start": 1.346,
+      "end": 1.468,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "quick",
+      "raw": "quick",
+      "start": 1.468,
+      "end": 1.774,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "fix",
+      "raw": "fix",
+      "start": 1.774,
+      "end": 1.957,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "directly",
+      "raw": "directly",
+      "start": 1.957,
+      "end": 2.447,
+      "character_id": "junior_dev"
     },
     {
       "word": "to",
       "raw": "to",
-      "start": 0.48,
-      "end": 0.623,
-      "speaker": "junior"
-    },
-    {
-      "word": "build",
-      "raw": "build",
-      "start": 0.623,
-      "end": 0.982,
-      "speaker": "junior"
-    },
-    {
-      "word": "an",
-      "raw": "an",
-      "start": 0.982,
-      "end": 1.125,
-      "speaker": "junior"
-    },
-    {
-      "word": "AI",
-      "raw": "AI",
-      "start": 1.125,
-      "end": 1.268,
-      "speaker": "junior"
-    },
-    {
-      "word": "agent",
-      "raw": "agent",
-      "start": 1.268,
-      "end": 1.627,
-      "speaker": "junior"
-    },
-    {
-      "word": "for",
-      "raw": "for",
-      "start": 1.627,
-      "end": 1.842,
-      "speaker": "junior"
-    },
-    {
-      "word": "my",
-      "raw": "my",
-      "start": 1.842,
-      "end": 1.985,
-      "speaker": "junior"
-    },
-    {
-      "word": "project",
-      "raw": "project,",
-      "start": 1.985,
-      "end": 2.558,
-      "speaker": "junior"
-    },
-    {
-      "word": "but",
-      "raw": "but",
-      "start": 2.558,
-      "end": 2.774,
-      "speaker": "junior"
-    },
-    {
-      "word": "I",
-      "raw": "I",
-      "start": 2.774,
-      "end": 2.917,
-      "speaker": "junior"
-    },
-    {
-      "word": "only",
-      "raw": "only",
-      "start": 2.917,
-      "end": 3.204,
-      "speaker": "junior"
-    },
-    {
-      "word": "have",
-      "raw": "have",
-      "start": 3.204,
-      "end": 3.49,
-      "speaker": "junior"
-    },
-    {
-      "word": "10",
-      "raw": "10",
-      "start": 3.49,
-      "end": 3.634,
-      "speaker": "junior"
-    },
-    {
-      "word": "dollars",
-      "raw": "dollars",
-      "start": 3.634,
-      "end": 4.135,
-      "speaker": "junior"
-    },
-    {
-      "word": "in",
-      "raw": "in",
-      "start": 4.135,
-      "end": 4.279,
-      "speaker": "junior"
-    },
-    {
-      "word": "my",
-      "raw": "my",
-      "start": 4.279,
-      "end": 4.422,
-      "speaker": "junior"
-    },
-    {
-      "word": "bank",
-      "raw": "bank",
-      "start": 4.422,
-      "end": 4.709,
-      "speaker": "junior"
-    },
-    {
-      "word": "account",
-      "raw": "account.",
-      "start": 4.709,
-      "end": 5.282,
-      "speaker": "junior"
-    },
-    {
-      "word": "Good",
-      "raw": "Good",
-      "start": 5.878,
-      "end": 6.556,
-      "speaker": "rival"
-    },
-    {
-      "word": "luck",
-      "raw": "luck.",
-      "start": 6.556,
-      "end": 7.403,
-      "speaker": "rival"
-    },
-    {
-      "word": "You",
-      "raw": "You",
-      "start": 7.353,
-      "end": 7.63,
-      "speaker": "rival"
-    },
-    {
-      "word": "need",
-      "raw": "need",
-      "start": 7.63,
-      "end": 7.999,
-      "speaker": "rival"
-    },
-    {
-      "word": "Claude",
-      "raw": "Claude",
-      "start": 7.999,
-      "end": 8.553,
-      "speaker": "rival"
-    },
-    {
-      "word": "Pro",
-      "raw": "Pro,",
-      "start": 8.553,
-      "end": 8.922,
-      "speaker": "rival"
-    },
-    {
-      "word": "a",
-      "raw": "a",
-      "start": 8.922,
-      "end": 9.107,
-      "speaker": "rival"
-    },
-    {
-      "word": "200",
-      "raw": "$200",
-      "start": 9.107,
-      "end": 9.476,
-      "speaker": "rival"
-    },
-    {
-      "word": "API",
-      "raw": "API",
-      "start": 9.476,
-      "end": 9.753,
-      "speaker": "rival"
-    },
-    {
-      "word": "tier",
-      "raw": "tier,",
-      "start": 9.753,
-      "end": 10.215,
-      "speaker": "rival"
-    },
-    {
-      "word": "and",
-      "raw": "and",
-      "start": 10.215,
-      "end": 10.491,
-      "speaker": "rival"
-    },
-    {
-      "word": "at",
-      "raw": "at",
-      "start": 10.491,
-      "end": 10.676,
-      "speaker": "rival"
-    },
-    {
-      "word": "least",
-      "raw": "least",
-      "start": 10.676,
-      "end": 11.138,
-      "speaker": "rival"
-    },
-    {
-      "word": "three",
-      "raw": "three",
-      "start": 11.138,
-      "end": 11.599,
-      "speaker": "rival"
-    },
-    {
-      "word": "months",
-      "raw": "months",
-      "start": 11.599,
-      "end": 12.153,
-      "speaker": "rival"
-    },
-    {
-      "word": "of",
-      "raw": "of",
-      "start": 12.153,
-      "end": 12.338,
-      "speaker": "rival"
-    },
-    {
-      "word": "manual",
-      "raw": "manual",
-      "start": 12.338,
-      "end": 12.891,
-      "speaker": "rival"
-    },
-    {
-      "word": "prompt",
-      "raw": "prompt",
-      "start": 12.891,
-      "end": 13.445,
-      "speaker": "rival"
-    },
-    {
-      "word": "engineering",
-      "raw": "engineering.",
-      "start": 13.445,
-      "end": 14.553,
-      "speaker": "rival"
-    },
-    {
-      "word": "Or",
-      "raw": "Or...",
-      "start": 15.14,
-      "end": 15.567,
-      "speaker": "bot"
-    },
-    {
-      "word": "you",
-      "raw": "you",
-      "start": 15.567,
-      "end": 15.823,
-      "speaker": "bot"
-    },
-    {
-      "word": "could",
-      "raw": "could",
-      "start": 15.823,
-      "end": 16.25,
-      "speaker": "bot"
-    },
-    {
-      "word": "spend",
-      "raw": "spend",
-      "start": 16.25,
-      "end": 16.677,
-      "speaker": "bot"
-    },
-    {
-      "word": "zero",
-      "raw": "zero",
-      "start": 16.677,
-      "end": 17.018,
-      "speaker": "bot"
-    },
-    {
-      "word": "dollars",
-      "raw": "dollars",
-      "start": 17.018,
-      "end": 17.616,
-      "speaker": "bot"
-    },
-    {
-      "word": "and",
-      "raw": "and",
-      "start": 17.616,
-      "end": 17.872,
-      "speaker": "bot"
-    },
-    {
-      "word": "build",
-      "raw": "build",
-      "start": 17.872,
-      "end": 18.299,
-      "speaker": "bot"
-    },
-    {
-      "word": "it",
-      "raw": "it",
-      "start": 18.299,
-      "end": 18.47,
-      "speaker": "bot"
-    },
-    {
-      "word": "in",
-      "raw": "in",
-      "start": 18.47,
-      "end": 18.641,
-      "speaker": "bot"
-    },
-    {
-      "word": "ten",
-      "raw": "ten",
-      "start": 18.641,
-      "end": 18.897,
-      "speaker": "bot"
-    },
-    {
-      "word": "minutes",
-      "raw": "minutes.",
-      "start": 18.897,
-      "end": 19.58,
-      "speaker": "bot"
-    },
-    {
-      "word": "Zero",
-      "raw": "Zero",
-      "start": 20.2,
-      "end": 20.79,
-      "speaker": "rival"
-    },
-    {
-      "word": "dollars",
-      "raw": "dollars?",
-      "start": 20.79,
-      "end": 21.971,
-      "speaker": "rival"
-    },
-    {
-      "word": "Nothing",
-      "raw": "Nothing",
-      "start": 21.921,
-      "end": 22.709,
-      "speaker": "rival"
-    },
-    {
-      "word": "in",
-      "raw": "in",
-      "start": 22.709,
-      "end": 22.935,
-      "speaker": "rival"
-    },
-    {
-      "word": "modern",
-      "raw": "modern",
-      "start": 22.935,
-      "end": 23.61,
-      "speaker": "rival"
-    },
-    {
-      "word": "AI",
-      "raw": "AI",
-      "start": 23.61,
-      "end": 23.836,
-      "speaker": "rival"
-    },
-    {
-      "word": "is",
-      "raw": "is",
-      "start": 23.836,
-      "end": 24.061,
-      "speaker": "rival"
-    },
-    {
-      "word": "free",
-      "raw": "free.",
-      "start": 24.061,
-      "end": 24.624,
-      "speaker": "rival"
-    },
-    {
-      "word": "Claude",
-      "raw": "Claude",
-      "start": 24.624,
-      "end": 25.137,
-      "speaker": "rival"
-    },
-    {
-      "word": "is",
-      "raw": "is",
-      "start": 25.137,
-      "end": 25.308,
-      "speaker": "rival"
-    },
-    {
-      "word": "the",
-      "raw": "the",
-      "start": 25.308,
-      "end": 25.564,
-      "speaker": "rival"
-    },
-    {
-      "word": "industry",
-      "raw": "industry",
-      "start": 25.564,
-      "end": 26.248,
-      "speaker": "rival"
-    },
-    {
-      "word": "standard",
-      "raw": "standard.",
-      "start": 26.248,
-      "end": 27.017,
-      "speaker": "rival"
-    },
-    {
-      "word": "Let's",
-      "raw": "Let's",
-      "start": 27.53,
-      "end": 27.922,
-      "speaker": "bot"
-    },
-    {
-      "word": "check",
-      "raw": "check",
-      "start": 27.922,
-      "end": 28.314,
-      "speaker": "bot"
-    },
-    {
-      "word": "the",
-      "raw": "the",
-      "start": 28.314,
-      "end": 28.549,
-      "speaker": "bot"
-    },
-    {
-      "word": "numbers",
-      "raw": "numbers.",
-      "start": 28.549,
-      "end": 29.176,
-      "speaker": "bot"
-    },
-    {
-      "word": "Claude",
-      "raw": "Claude",
-      "start": 29.782,
-      "end": 30.296,
-      "speaker": "bot"
-    },
-    {
-      "word": "caps",
-      "raw": "caps",
-      "start": 30.296,
-      "end": 30.638,
-      "speaker": "bot"
-    },
-    {
-      "word": "you",
-      "raw": "you",
-      "start": 30.638,
-      "end": 30.895,
-      "speaker": "bot"
-    },
-    {
-      "word": "at",
-      "raw": "at",
-      "start": 30.895,
-      "end": 31.067,
-      "speaker": "bot"
-    },
-    {
-      "word": "200k",
-      "raw": "200k",
-      "start": 31.067,
-      "end": 31.409,
-      "speaker": "bot"
-    },
-    {
-      "word": "tokens",
-      "raw": "tokens",
-      "start": 31.409,
-      "end": 31.923,
-      "speaker": "bot"
-    },
-    {
-      "word": "and",
-      "raw": "and",
-      "start": 31.923,
-      "end": 32.18,
-      "speaker": "bot"
-    },
-    {
-      "word": "costs",
-      "raw": "costs",
-      "start": 32.18,
-      "end": 32.608,
-      "speaker": "bot"
-    },
-    {
-      "word": "hundreds",
-      "raw": "hundreds",
-      "start": 32.608,
-      "end": 33.293,
-      "speaker": "bot"
-    },
-    {
-      "word": "every",
-      "raw": "every",
-      "start": 33.293,
-      "end": 33.721,
-      "speaker": "bot"
-    },
-    {
-      "word": "month",
-      "raw": "month.",
-      "start": 33.721,
-      "end": 34.235,
-      "speaker": "bot"
-    },
-    {
-      "word": "Google",
-      "raw": "Google",
-      "start": 34.235,
-      "end": 34.765,
-      "speaker": "bot"
-    },
-    {
-      "word": "Gemini",
-      "raw": "Gemini",
-      "start": 34.765,
-      "end": 35.296,
-      "speaker": "bot"
-    },
-    {
-      "word": "2.5",
-      "raw": "2.5",
-      "start": 35.296,
-      "end": 35.561,
-      "speaker": "bot"
-    },
-    {
-      "word": "Flash",
-      "raw": "Flash",
-      "start": 35.561,
-      "end": 36.003,
-      "speaker": "bot"
-    },
-    {
-      "word": "gives",
-      "raw": "gives",
-      "start": 36.003,
-      "end": 36.445,
-      "speaker": "bot"
-    },
-    {
-      "word": "you",
-      "raw": "you",
-      "start": 36.445,
-      "end": 36.71,
-      "speaker": "bot"
-    },
-    {
-      "word": "one",
-      "raw": "one",
-      "start": 36.71,
-      "end": 36.975,
-      "speaker": "bot"
-    },
-    {
-      "word": "million",
-      "raw": "million",
-      "start": 36.975,
-      "end": 37.594,
-      "speaker": "bot"
-    },
-    {
-      "word": "tokens",
-      "raw": "tokens",
-      "start": 37.594,
-      "end": 38.124,
-      "speaker": "bot"
+      "start": 2.447,
+      "end": 2.569,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "production",
+      "raw": "production",
+      "start": 2.569,
+      "end": 3.181,
+      "character_id": "junior_dev"
     },
     {
       "word": "on",
       "raw": "on",
-      "start": 38.124,
-      "end": 38.301,
-      "speaker": "bot"
+      "start": 3.181,
+      "end": 3.303,
+      "character_id": "junior_dev"
     },
     {
-      "word": "the",
-      "raw": "the",
-      "start": 38.301,
-      "end": 38.566,
-      "speaker": "bot"
+      "word": "a",
+      "raw": "a",
+      "start": 3.303,
+      "end": 3.425,
+      "character_id": "junior_dev"
     },
     {
-      "word": "free",
-      "raw": "free",
-      "start": 38.566,
-      "end": 38.92,
-      "speaker": "bot"
+      "word": "Friday",
+      "raw": "Friday",
+      "start": 3.425,
+      "end": 3.793,
+      "character_id": "junior_dev"
     },
     {
-      "word": "tier",
-      "raw": "tier.",
-      "start": 38.92,
-      "end": 39.362,
-      "speaker": "bot"
+      "word": "afternoon",
+      "raw": "afternoon.",
+      "start": 3.793,
+      "end": 4.404,
+      "character_id": "junior_dev"
     },
     {
-      "word": "Wait",
-      "raw": "Wait,",
-      "start": 39.998,
-      "end": 40.419,
-      "speaker": "junior"
+      "word": "Fascinating",
+      "raw": "Fascinating.",
+      "start": 4.541,
+      "end": 5.329,
+      "character_id": "claude"
     },
     {
-      "word": "one",
-      "raw": "one",
-      "start": 40.419,
-      "end": 40.672,
-      "speaker": "junior"
-    },
-    {
-      "word": "million",
-      "raw": "million",
-      "start": 40.672,
-      "end": 41.262,
-      "speaker": "junior"
-    },
-    {
-      "word": "tokens",
-      "raw": "tokens?",
-      "start": 41.262,
-      "end": 41.852,
-      "speaker": "junior"
-    },
-    {
-      "word": "For",
-      "raw": "For",
-      "start": 41.852,
-      "end": 42.129,
-      "speaker": "junior"
-    },
-    {
-      "word": "free",
-      "raw": "free?!",
-      "start": 42.129,
-      "end": 42.682,
-      "speaker": "junior"
-    },
-    {
-      "word": "Okay",
-      "raw": "Okay,",
-      "start": 43.182,
-      "end": 43.605,
-      "speaker": "rival"
-    },
-    {
-      "word": "but",
-      "raw": "but",
-      "start": 43.605,
-      "end": 43.86,
-      "speaker": "rival"
-    },
-    {
-      "word": "Claude",
-      "raw": "Claude",
-      "start": 43.86,
-      "end": 44.368,
-      "speaker": "rival"
-    },
-    {
-      "word": "has",
-      "raw": "has",
-      "start": 44.368,
-      "end": 44.622,
-      "speaker": "rival"
-    },
-    {
-      "word": "better",
-      "raw": "better",
-      "start": 44.622,
-      "end": 45.13,
-      "speaker": "rival"
-    },
-    {
-      "word": "reasoning",
-      "raw": "reasoning",
-      "start": 45.13,
-      "end": 45.892,
-      "speaker": "rival"
-    },
-    {
-      "word": "for",
-      "raw": "for",
-      "start": 45.892,
-      "end": 46.146,
-      "speaker": "rival"
-    },
-    {
-      "word": "agents",
-      "raw": "agents!",
-      "start": 46.146,
-      "end": 46.739,
-      "speaker": "rival"
-    },
-    {
-      "word": "Antigravity",
-      "raw": "Antigravity",
-      "start": 47.204,
-      "end": 47.968,
-      "speaker": "bot"
-    },
-    {
-      "word": "CLI",
-      "raw": "CLI",
-      "start": 47.968,
-      "end": 48.176,
-      "speaker": "bot"
-    },
-    {
-      "word": "orchestrates",
-      "raw": "orchestrates",
-      "start": 48.176,
-      "end": 49.009,
-      "speaker": "bot"
-    },
-    {
-      "word": "multi-agent",
-      "raw": "multi-agent",
-      "start": 49.009,
-      "end": 49.773,
-      "speaker": "bot"
-    },
-    {
-      "word": "coding",
-      "raw": "coding",
-      "start": 49.773,
-      "end": 50.189,
-      "speaker": "bot"
-    },
-    {
-      "word": "right",
-      "raw": "right",
-      "start": 50.189,
-      "end": 50.536,
-      "speaker": "bot"
-    },
-    {
-      "word": "inside",
-      "raw": "inside",
-      "start": 50.536,
-      "end": 50.953,
-      "speaker": "bot"
-    },
-    {
-      "word": "your",
-      "raw": "your",
-      "start": 50.953,
-      "end": 51.231,
-      "speaker": "bot"
-    },
-    {
-      "word": "terminal",
-      "raw": "terminal,",
-      "start": 51.231,
-      "end": 51.855,
-      "speaker": "bot"
-    },
-    {
-      "word": "with",
-      "raw": "with",
-      "start": 51.855,
-      "end": 52.133,
-      "speaker": "bot"
-    },
-    {
-      "word": "auto-healing",
-      "raw": "auto-healing",
-      "start": 52.133,
-      "end": 52.966,
-      "speaker": "bot"
-    },
-    {
-      "word": "and",
-      "raw": "and",
-      "start": 52.966,
-      "end": 53.174,
-      "speaker": "bot"
-    },
-    {
-      "word": "local",
-      "raw": "local",
-      "start": 53.174,
-      "end": 53.522,
-      "speaker": "bot"
-    },
-    {
-      "word": "verification",
-      "raw": "verification.",
-      "start": 53.522,
-      "end": 54.424,
-      "speaker": "bot"
-    },
-    {
-      "word": "So",
-      "raw": "So",
-      "start": 55.004,
-      "end": 55.116,
-      "speaker": "junior"
+      "word": "Shall",
+      "raw": "Shall",
+      "start": 5.329,
+      "end": 5.658,
+      "character_id": "claude"
     },
     {
       "word": "I",
       "raw": "I",
-      "start": 55.116,
-      "end": 55.227,
-      "speaker": "junior"
+      "start": 5.658,
+      "end": 5.789,
+      "character_id": "claude"
     },
     {
-      "word": "don't",
-      "raw": "don't",
-      "start": 55.227,
-      "end": 55.506,
-      "speaker": "junior"
+      "word": "draft",
+      "raw": "draft",
+      "start": 5.789,
+      "end": 6.117,
+      "character_id": "claude"
     },
     {
-      "word": "need",
-      "raw": "need",
-      "start": 55.506,
-      "end": 55.729,
-      "speaker": "junior"
+      "word": "the",
+      "raw": "the",
+      "start": 6.117,
+      "end": 6.314,
+      "character_id": "claude"
+    },
+    {
+      "word": "postmortem",
+      "raw": "post-mortem",
+      "start": 6.314,
+      "end": 7.037,
+      "character_id": "claude"
+    },
+    {
+      "word": "now",
+      "raw": "now,",
+      "start": 7.037,
+      "end": 7.3,
+      "character_id": "claude"
+    },
+    {
+      "word": "or",
+      "raw": "or",
+      "start": 7.3,
+      "end": 7.431,
+      "character_id": "claude"
+    },
+    {
+      "word": "wait",
+      "raw": "wait",
+      "start": 7.431,
+      "end": 7.694,
+      "character_id": "claude"
+    },
+    {
+      "word": "until",
+      "raw": "until",
+      "start": 7.694,
+      "end": 8.022,
+      "character_id": "claude"
+    },
+    {
+      "word": "the",
+      "raw": "the",
+      "start": 8.022,
+      "end": 8.219,
+      "character_id": "claude"
+    },
+    {
+      "word": "alerts",
+      "raw": "alerts",
+      "start": 8.219,
+      "end": 8.613,
+      "character_id": "claude"
+    },
+    {
+      "word": "start",
+      "raw": "start",
+      "start": 8.613,
+      "end": 8.942,
+      "character_id": "claude"
+    },
+    {
+      "word": "screaming",
+      "raw": "screaming?",
+      "start": 8.942,
+      "end": 9.599,
+      "character_id": "claude"
+    },
+    {
+      "word": "Relax",
+      "raw": "Relax,",
+      "start": 9.8,
+      "end": 10.231,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "it",
+      "raw": "it",
+      "start": 10.231,
+      "end": 10.374,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "was",
+      "raw": "was",
+      "start": 10.374,
+      "end": 10.589,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "only",
+      "raw": "only",
+      "start": 10.589,
+      "end": 10.877,
+      "character_id": "junior_dev"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 55.729,
-      "end": 55.841,
-      "speaker": "junior"
+      "start": 10.877,
+      "end": 11.02,
+      "character_id": "junior_dev"
     },
     {
-      "word": "200",
-      "raw": "200",
-      "start": 55.841,
-      "end": 56.008,
-      "speaker": "junior"
+      "word": "oneline",
+      "raw": "one-line",
+      "start": 11.02,
+      "end": 11.594,
+      "character_id": "junior_dev"
     },
     {
-      "word": "dollar",
-      "raw": "dollar",
-      "start": 56.008,
-      "end": 56.343,
-      "speaker": "junior"
+      "word": "CSS",
+      "raw": "CSS",
+      "start": 11.594,
+      "end": 11.81,
+      "character_id": "junior_dev"
     },
     {
-      "word": "subscription",
-      "raw": "subscription?",
-      "start": 56.343,
-      "end": 57.068,
-      "speaker": "junior"
+      "word": "change",
+      "raw": "change!",
+      "start": 11.81,
+      "end": 12.312,
+      "character_id": "junior_dev"
     },
     {
-      "word": "Not",
-      "raw": "Not",
-      "start": 57.484,
-      "end": 57.776,
-      "speaker": "bot"
+      "word": "What",
+      "raw": "What",
+      "start": 12.312,
+      "end": 12.599,
+      "character_id": "junior_dev"
     },
     {
-      "word": "a",
-      "raw": "a",
-      "start": 57.776,
-      "end": 57.971,
-      "speaker": "bot"
+      "word": "could",
+      "raw": "could",
+      "start": 12.599,
+      "end": 12.958,
+      "character_id": "junior_dev"
     },
     {
-      "word": "single",
-      "raw": "single",
-      "start": 57.971,
-      "end": 58.554,
-      "speaker": "bot"
+      "word": "possibly",
+      "raw": "possibly",
+      "start": 12.958,
+      "end": 13.532,
+      "character_id": "junior_dev"
     },
     {
-      "word": "cent",
-      "raw": "cent.",
-      "start": 58.554,
-      "end": 59.041,
-      "speaker": "bot"
+      "word": "go",
+      "raw": "go",
+      "start": 13.532,
+      "end": 13.675,
+      "character_id": "junior_dev"
     },
     {
-      "word": "Just",
-      "raw": "Just",
-      "start": 59.041,
-      "end": 59.42,
-      "speaker": "bot"
+      "word": "wrong",
+      "raw": "wrong?",
+      "start": 13.675,
+      "end": 14.106,
+      "character_id": "junior_dev"
     },
     {
-      "word": "pip",
-      "raw": "pip",
-      "start": 59.42,
-      "end": 59.704,
-      "speaker": "bot"
+      "word": "Statistically",
+      "raw": "Statistically",
+      "start": 14.389,
+      "end": 15.248,
+      "character_id": "claude"
     },
     {
-      "word": "install",
-      "raw": "install",
-      "start": 59.704,
-      "end": 60.368,
-      "speaker": "bot"
+      "word": "speaking",
+      "raw": "speaking,",
+      "start": 15.248,
+      "end": 15.842,
+      "character_id": "claude"
     },
     {
-      "word": "antigravity-sdk",
-      "raw": "antigravity-sdk",
-      "start": 60.368,
-      "end": 61.789,
-      "speaker": "bot"
+      "word": "precisely",
+      "raw": "precisely",
+      "start": 15.842,
+      "end": 16.436,
+      "character_id": "claude"
     },
     {
-      "word": "and",
-      "raw": "and",
-      "start": 61.789,
-      "end": 62.073,
-      "speaker": "bot"
+      "word": "everything",
+      "raw": "everything.",
+      "start": 16.436,
+      "end": 17.163,
+      "character_id": "claude"
     },
     {
-      "word": "launch",
-      "raw": "launch",
-      "start": 62.073,
-      "end": 62.642,
-      "speaker": "bot"
+      "word": "The",
+      "raw": "The",
+      "start": 17.163,
+      "end": 17.361,
+      "character_id": "claude"
     },
     {
-      "word": "agy",
-      "raw": "agy.",
-      "start": 62.642,
-      "end": 63.021,
-      "speaker": "bot"
+      "word": "entire",
+      "raw": "entire",
+      "start": 17.361,
+      "end": 17.757,
+      "character_id": "claude"
     },
     {
-      "word": "Sorry",
-      "raw": "Sorry",
-      "start": 63.574,
-      "end": 63.949,
-      "speaker": "junior"
+      "word": "payment",
+      "raw": "payment",
+      "start": 17.757,
+      "end": 18.219,
+      "character_id": "claude"
     },
     {
-      "word": "bro",
-      "raw": "bro,",
-      "start": 63.949,
-      "end": 64.249,
-      "speaker": "junior"
+      "word": "gateway",
+      "raw": "gateway",
+      "start": 18.219,
+      "end": 18.682,
+      "character_id": "claude"
     },
     {
-      "word": "looks",
-      "raw": "looks",
-      "start": 64.249,
-      "end": 64.625,
-      "speaker": "junior"
+      "word": "is",
+      "raw": "is",
+      "start": 18.682,
+      "end": 18.814,
+      "character_id": "claude"
     },
     {
-      "word": "like",
-      "raw": "like",
-      "start": 64.625,
-      "end": 64.925,
-      "speaker": "junior"
+      "word": "already",
+      "raw": "already",
+      "start": 18.814,
+      "end": 19.276,
+      "character_id": "claude"
     },
     {
-      "word": "I'm",
-      "raw": "I'm",
-      "start": 64.925,
-      "end": 65.15,
-      "speaker": "junior"
+      "word": "down",
+      "raw": "down.",
+      "start": 19.276,
+      "end": 19.606,
+      "character_id": "claude"
     },
     {
-      "word": "keeping",
-      "raw": "keeping",
-      "start": 65.15,
-      "end": 65.675,
-      "speaker": "junior"
+      "word": "Arre",
+      "raw": "Arre",
+      "start": 19.89,
+      "end": 20.158,
+      "character_id": "dad"
+    },
+    {
+      "word": "Junior",
+      "raw": "Junior!",
+      "start": 20.158,
+      "end": 20.627,
+      "character_id": "dad"
+    },
+    {
+      "word": "Who",
+      "raw": "Who",
+      "start": 20.627,
+      "end": 20.828,
+      "character_id": "dad"
+    },
+    {
+      "word": "touches",
+      "raw": "touches",
+      "start": 20.828,
+      "end": 21.296,
+      "character_id": "dad"
+    },
+    {
+      "word": "the",
+      "raw": "the",
+      "start": 21.296,
+      "end": 21.497,
+      "character_id": "dad"
+    },
+    {
+      "word": "server",
+      "raw": "server",
+      "start": 21.497,
+      "end": 21.899,
+      "character_id": "dad"
+    },
+    {
+      "word": "on",
+      "raw": "on",
+      "start": 21.899,
+      "end": 22.033,
+      "character_id": "dad"
+    },
+    {
+      "word": "Friday",
+      "raw": "Friday?!",
+      "start": 22.033,
+      "end": 22.569,
+      "character_id": "dad"
+    },
+    {
+      "word": "In",
+      "raw": "In",
+      "start": 22.569,
+      "end": 22.703,
+      "character_id": "dad"
     },
     {
       "word": "my",
       "raw": "my",
-      "start": 65.675,
-      "end": 65.825,
-      "speaker": "junior"
+      "start": 22.703,
+      "end": 22.837,
+      "character_id": "dad"
     },
     {
-      "word": "10",
-      "raw": "10",
-      "start": 65.825,
-      "end": 65.975,
-      "speaker": "junior"
+      "word": "days",
+      "raw": "days",
+      "start": 22.837,
+      "end": 23.104,
+      "character_id": "dad"
     },
     {
-      "word": "dollars",
-      "raw": "dollars",
-      "start": 65.975,
-      "end": 66.501,
-      "speaker": "junior"
+      "word": "we",
+      "raw": "we",
+      "start": 23.104,
+      "end": 23.238,
+      "character_id": "dad"
     },
     {
-      "word": "for",
-      "raw": "for",
-      "start": 66.501,
-      "end": 66.726,
-      "speaker": "junior"
+      "word": "never",
+      "raw": "never",
+      "start": 23.238,
+      "end": 23.573,
+      "character_id": "dad"
     },
     {
-      "word": "tacos",
-      "raw": "tacos!",
-      "start": 66.726,
-      "end": 67.176,
-      "speaker": "junior"
+      "word": "touched",
+      "raw": "touched",
+      "start": 23.573,
+      "end": 24.042,
+      "character_id": "dad"
     },
     {
-      "word": "Wise",
-      "raw": "Wise",
-      "start": 67.644,
-      "end": 68.029,
-      "speaker": "bot"
+      "word": "production",
+      "raw": "production",
+      "start": 24.042,
+      "end": 24.712,
+      "character_id": "dad"
     },
     {
-      "word": "choice",
-      "raw": "choice.",
-      "start": 68.029,
-      "end": 68.704,
-      "speaker": "bot"
+      "word": "without",
+      "raw": "without",
+      "start": 24.712,
+      "end": 25.181,
+      "character_id": "dad"
     },
     {
-      "word": "Tacos",
-      "raw": "Tacos",
-      "start": 68.704,
-      "end": 69.159,
-      "speaker": "bot"
+      "word": "a",
+      "raw": "a",
+      "start": 25.181,
+      "end": 25.314,
+      "character_id": "dad"
     },
     {
-      "word": "don't",
-      "raw": "don't",
-      "start": 69.159,
-      "end": 69.614,
-      "speaker": "bot"
+      "word": "pooja",
+      "raw": "pooja!",
+      "start": 25.314,
+      "end": 25.716,
+      "character_id": "dad"
     },
     {
-      "word": "hallucinate",
-      "raw": "hallucinate.",
-      "start": 69.614,
-      "end": 70.706,
-      "speaker": "bot"
+      "word": "Wait",
+      "raw": "Wait...",
+      "start": 25.936,
+      "end": 26.368,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "why",
+      "raw": "why",
+      "start": 26.368,
+      "end": 26.554,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "is",
+      "raw": "is",
+      "start": 26.554,
+      "end": 26.677,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "the",
+      "raw": "the",
+      "start": 26.677,
+      "end": 26.863,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "production",
+      "raw": "production",
+      "start": 26.863,
+      "end": 27.481,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "database",
+      "raw": "database",
+      "start": 27.481,
+      "end": 27.975,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "dropping",
+      "raw": "dropping",
+      "start": 27.975,
+      "end": 28.469,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "all",
+      "raw": "all",
+      "start": 28.469,
+      "end": 28.654,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "tables",
+      "raw": "tables",
+      "start": 28.654,
+      "end": 29.025,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "right",
+      "raw": "right",
+      "start": 29.025,
+      "end": 29.334,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "now",
+      "raw": "now?!",
+      "start": 29.334,
+      "end": 29.643,
+      "character_id": "junior_dev"
     }
   ],
   "chunks": [
     {
-      "start": 0.05,
-      "end": 0.623,
-      "text": "I need to",
-      "speaker": "junior",
+      "start": 0.0,
+      "end": 0.734,
+      "text": "Hey Claude I",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "I",
-          "raw": "I",
-          "start": 0.05,
-          "end": 0.193,
-          "speaker": "junior"
-        },
-        {
-          "word": "need",
-          "raw": "need",
-          "start": 0.193,
-          "end": 0.48,
-          "speaker": "junior"
-        },
-        {
-          "word": "to",
-          "raw": "to",
-          "start": 0.48,
-          "end": 0.623,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 0.623,
-      "end": 1.268,
-      "text": "build an AI",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "build",
-          "raw": "build",
-          "start": 0.623,
-          "end": 0.982,
-          "speaker": "junior"
-        },
-        {
-          "word": "an",
-          "raw": "an",
-          "start": 0.982,
-          "end": 1.125,
-          "speaker": "junior"
-        },
-        {
-          "word": "AI",
-          "raw": "AI",
-          "start": 1.125,
-          "end": 1.268,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 1.268,
-      "end": 1.985,
-      "text": "agent for my",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "agent",
-          "raw": "agent",
-          "start": 1.268,
-          "end": 1.627,
-          "speaker": "junior"
-        },
-        {
-          "word": "for",
-          "raw": "for",
-          "start": 1.627,
-          "end": 1.842,
-          "speaker": "junior"
-        },
-        {
-          "word": "my",
-          "raw": "my",
-          "start": 1.842,
-          "end": 1.985,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 1.985,
-      "end": 2.558,
-      "text": "project,",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "project",
-          "raw": "project,",
-          "start": 1.985,
-          "end": 2.558,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 2.558,
-      "end": 3.204,
-      "text": "but I only",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "but",
-          "raw": "but",
-          "start": 2.558,
-          "end": 2.774,
-          "speaker": "junior"
-        },
-        {
-          "word": "I",
-          "raw": "I",
-          "start": 2.774,
-          "end": 2.917,
-          "speaker": "junior"
-        },
-        {
-          "word": "only",
-          "raw": "only",
-          "start": 2.917,
-          "end": 3.204,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 3.204,
-      "end": 4.135,
-      "text": "have 10 dollars",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "have",
-          "raw": "have",
-          "start": 3.204,
-          "end": 3.49,
-          "speaker": "junior"
-        },
-        {
-          "word": "10",
-          "raw": "10",
-          "start": 3.49,
-          "end": 3.634,
-          "speaker": "junior"
-        },
-        {
-          "word": "dollars",
-          "raw": "dollars",
-          "start": 3.634,
-          "end": 4.135,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 4.135,
-      "end": 4.709,
-      "text": "in my bank",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "in",
-          "raw": "in",
-          "start": 4.135,
-          "end": 4.279,
-          "speaker": "junior"
-        },
-        {
-          "word": "my",
-          "raw": "my",
-          "start": 4.279,
-          "end": 4.422,
-          "speaker": "junior"
-        },
-        {
-          "word": "bank",
-          "raw": "bank",
-          "start": 4.422,
-          "end": 4.709,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 4.709,
-      "end": 5.282,
-      "text": "account.",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "account",
-          "raw": "account.",
-          "start": 4.709,
-          "end": 5.282,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 5.878,
-      "end": 7.403,
-      "text": "Good luck.",
-      "speaker": "rival",
-      "words": [
-        {
-          "word": "Good",
-          "raw": "Good",
-          "start": 5.878,
-          "end": 6.556,
-          "speaker": "rival"
-        },
-        {
-          "word": "luck",
-          "raw": "luck.",
-          "start": 6.556,
-          "end": 7.403,
-          "speaker": "rival"
-        }
-      ]
-    },
-    {
-      "start": 7.353,
-      "end": 8.553,
-      "text": "You need Claude",
-      "speaker": "rival",
-      "words": [
-        {
-          "word": "You",
-          "raw": "You",
-          "start": 7.353,
-          "end": 7.63,
-          "speaker": "rival"
-        },
-        {
-          "word": "need",
-          "raw": "need",
-          "start": 7.63,
-          "end": 7.999,
-          "speaker": "rival"
+          "word": "Hey",
+          "start_sec": 0.0,
+          "end_sec": 0.184
         },
         {
           "word": "Claude",
-          "raw": "Claude",
-          "start": 7.999,
-          "end": 8.553,
-          "speaker": "rival"
+          "start_sec": 0.184,
+          "end_sec": 0.612
+        },
+        {
+          "word": "I",
+          "start_sec": 0.612,
+          "end_sec": 0.734
         }
       ]
     },
     {
-      "start": 8.553,
-      "end": 8.922,
-      "text": "Pro,",
-      "speaker": "rival",
+      "start": 0.734,
+      "end": 1.468,
+      "text": "just pushed a",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "Pro",
-          "raw": "Pro,",
-          "start": 8.553,
-          "end": 8.922,
-          "speaker": "rival"
+          "word": "just",
+          "start_sec": 0.734,
+          "end_sec": 0.979
+        },
+        {
+          "word": "pushed",
+          "start_sec": 0.979,
+          "end_sec": 1.346
+        },
+        {
+          "word": "a",
+          "start_sec": 1.346,
+          "end_sec": 1.468
         }
       ]
     },
     {
-      "start": 8.922,
-      "end": 9.753,
-      "text": "a $200 API",
-      "speaker": "rival",
+      "start": 1.468,
+      "end": 2.447,
+      "text": "quick fix directly",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "quick",
+          "start_sec": 1.468,
+          "end_sec": 1.774
+        },
+        {
+          "word": "fix",
+          "start_sec": 1.774,
+          "end_sec": 1.957
+        },
+        {
+          "word": "directly",
+          "start_sec": 1.957,
+          "end_sec": 2.447
+        }
+      ]
+    },
+    {
+      "start": 2.447,
+      "end": 3.303,
+      "text": "to production on",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "to",
+          "start_sec": 2.447,
+          "end_sec": 2.569
+        },
+        {
+          "word": "production",
+          "start_sec": 2.569,
+          "end_sec": 3.181
+        },
+        {
+          "word": "on",
+          "start_sec": 3.181,
+          "end_sec": 3.303
+        }
+      ]
+    },
+    {
+      "start": 3.303,
+      "end": 4.404,
+      "text": "a Friday afternoon",
+      "character_id": "junior_dev",
       "words": [
         {
           "word": "a",
-          "raw": "a",
-          "start": 8.922,
-          "end": 9.107,
-          "speaker": "rival"
+          "start_sec": 3.303,
+          "end_sec": 3.425
         },
         {
-          "word": "200",
-          "raw": "$200",
-          "start": 9.107,
-          "end": 9.476,
-          "speaker": "rival"
+          "word": "Friday",
+          "start_sec": 3.425,
+          "end_sec": 3.793
         },
         {
-          "word": "API",
-          "raw": "API",
-          "start": 9.476,
-          "end": 9.753,
-          "speaker": "rival"
+          "word": "afternoon",
+          "start_sec": 3.793,
+          "end_sec": 4.404
         }
       ]
     },
     {
-      "start": 9.753,
-      "end": 10.215,
-      "text": "tier,",
-      "speaker": "rival",
+      "start": 4.541,
+      "end": 5.789,
+      "text": "Fascinating Shall I",
+      "character_id": "claude",
       "words": [
         {
-          "word": "tier",
-          "raw": "tier,",
-          "start": 9.753,
-          "end": 10.215,
-          "speaker": "rival"
+          "word": "Fascinating",
+          "start_sec": 4.541,
+          "end_sec": 5.329
+        },
+        {
+          "word": "Shall",
+          "start_sec": 5.329,
+          "end_sec": 5.658
+        },
+        {
+          "word": "I",
+          "start_sec": 5.658,
+          "end_sec": 5.789
         }
       ]
     },
     {
-      "start": 10.215,
-      "end": 11.138,
-      "text": "and at least",
-      "speaker": "rival",
+      "start": 5.789,
+      "end": 7.037,
+      "text": "draft the postmortem",
+      "character_id": "claude",
       "words": [
         {
-          "word": "and",
-          "raw": "and",
-          "start": 10.215,
-          "end": 10.491,
-          "speaker": "rival"
+          "word": "draft",
+          "start_sec": 5.789,
+          "end_sec": 6.117
         },
         {
-          "word": "at",
-          "raw": "at",
-          "start": 10.491,
-          "end": 10.676,
-          "speaker": "rival"
+          "word": "the",
+          "start_sec": 6.117,
+          "end_sec": 6.314
         },
         {
-          "word": "least",
-          "raw": "least",
-          "start": 10.676,
-          "end": 11.138,
-          "speaker": "rival"
+          "word": "postmortem",
+          "start_sec": 6.314,
+          "end_sec": 7.037
         }
       ]
     },
     {
-      "start": 11.138,
-      "end": 12.338,
-      "text": "three months of",
-      "speaker": "rival",
+      "start": 7.037,
+      "end": 7.694,
+      "text": "now or wait",
+      "character_id": "claude",
       "words": [
         {
-          "word": "three",
-          "raw": "three",
-          "start": 11.138,
-          "end": 11.599,
-          "speaker": "rival"
+          "word": "now",
+          "start_sec": 7.037,
+          "end_sec": 7.3
         },
         {
-          "word": "months",
-          "raw": "months",
-          "start": 11.599,
-          "end": 12.153,
-          "speaker": "rival"
+          "word": "or",
+          "start_sec": 7.3,
+          "end_sec": 7.431
         },
         {
-          "word": "of",
-          "raw": "of",
-          "start": 12.153,
-          "end": 12.338,
-          "speaker": "rival"
+          "word": "wait",
+          "start_sec": 7.431,
+          "end_sec": 7.694
         }
       ]
     },
     {
-      "start": 12.338,
-      "end": 14.553,
-      "text": "manual prompt engineering.",
-      "speaker": "rival",
+      "start": 7.694,
+      "end": 8.613,
+      "text": "until the alerts",
+      "character_id": "claude",
       "words": [
         {
-          "word": "manual",
-          "raw": "manual",
-          "start": 12.338,
-          "end": 12.891,
-          "speaker": "rival"
+          "word": "until",
+          "start_sec": 7.694,
+          "end_sec": 8.022
         },
         {
-          "word": "prompt",
-          "raw": "prompt",
-          "start": 12.891,
-          "end": 13.445,
-          "speaker": "rival"
+          "word": "the",
+          "start_sec": 8.022,
+          "end_sec": 8.219
         },
         {
-          "word": "engineering",
-          "raw": "engineering.",
-          "start": 13.445,
-          "end": 14.553,
-          "speaker": "rival"
+          "word": "alerts",
+          "start_sec": 8.219,
+          "end_sec": 8.613
         }
       ]
     },
     {
-      "start": 15.14,
-      "end": 15.567,
-      "text": "Or...",
-      "speaker": "bot",
+      "start": 8.613,
+      "end": 9.599,
+      "text": "start screaming",
+      "character_id": "claude",
       "words": [
         {
-          "word": "Or",
-          "raw": "Or...",
-          "start": 15.14,
-          "end": 15.567,
-          "speaker": "bot"
+          "word": "start",
+          "start_sec": 8.613,
+          "end_sec": 8.942
+        },
+        {
+          "word": "screaming",
+          "start_sec": 8.942,
+          "end_sec": 9.599
         }
       ]
     },
     {
-      "start": 15.567,
-      "end": 16.677,
-      "text": "you could spend",
-      "speaker": "bot",
+      "start": 9.8,
+      "end": 10.589,
+      "text": "Relax it was",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "you",
-          "raw": "you",
-          "start": 15.567,
-          "end": 15.823,
-          "speaker": "bot"
-        },
-        {
-          "word": "could",
-          "raw": "could",
-          "start": 15.823,
-          "end": 16.25,
-          "speaker": "bot"
-        },
-        {
-          "word": "spend",
-          "raw": "spend",
-          "start": 16.25,
-          "end": 16.677,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 16.677,
-      "end": 17.872,
-      "text": "zero dollars and",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "zero",
-          "raw": "zero",
-          "start": 16.677,
-          "end": 17.018,
-          "speaker": "bot"
-        },
-        {
-          "word": "dollars",
-          "raw": "dollars",
-          "start": 17.018,
-          "end": 17.616,
-          "speaker": "bot"
-        },
-        {
-          "word": "and",
-          "raw": "and",
-          "start": 17.616,
-          "end": 17.872,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 17.872,
-      "end": 18.641,
-      "text": "build it in",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "build",
-          "raw": "build",
-          "start": 17.872,
-          "end": 18.299,
-          "speaker": "bot"
+          "word": "Relax",
+          "start_sec": 9.8,
+          "end_sec": 10.231
         },
         {
           "word": "it",
-          "raw": "it",
-          "start": 18.299,
-          "end": 18.47,
-          "speaker": "bot"
+          "start_sec": 10.231,
+          "end_sec": 10.374
         },
         {
-          "word": "in",
-          "raw": "in",
-          "start": 18.47,
-          "end": 18.641,
-          "speaker": "bot"
+          "word": "was",
+          "start_sec": 10.374,
+          "end_sec": 10.589
         }
       ]
     },
     {
-      "start": 18.641,
-      "end": 19.58,
-      "text": "ten minutes.",
-      "speaker": "bot",
+      "start": 10.589,
+      "end": 11.594,
+      "text": "only a oneline",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "ten",
-          "raw": "ten",
-          "start": 18.641,
-          "end": 18.897,
-          "speaker": "bot"
+          "word": "only",
+          "start_sec": 10.589,
+          "end_sec": 10.877
         },
         {
-          "word": "minutes",
-          "raw": "minutes.",
-          "start": 18.897,
-          "end": 19.58,
-          "speaker": "bot"
+          "word": "a",
+          "start_sec": 10.877,
+          "end_sec": 11.02
+        },
+        {
+          "word": "oneline",
+          "start_sec": 11.02,
+          "end_sec": 11.594
         }
       ]
     },
     {
-      "start": 20.2,
-      "end": 21.971,
-      "text": "Zero dollars?",
-      "speaker": "rival",
+      "start": 11.594,
+      "end": 12.599,
+      "text": "CSS change What",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "Zero",
-          "raw": "Zero",
-          "start": 20.2,
-          "end": 20.79,
-          "speaker": "rival"
+          "word": "CSS",
+          "start_sec": 11.594,
+          "end_sec": 11.81
         },
         {
-          "word": "dollars",
-          "raw": "dollars?",
-          "start": 20.79,
-          "end": 21.971,
-          "speaker": "rival"
+          "word": "change",
+          "start_sec": 11.81,
+          "end_sec": 12.312
+        },
+        {
+          "word": "What",
+          "start_sec": 12.312,
+          "end_sec": 12.599
         }
       ]
     },
     {
-      "start": 21.921,
-      "end": 23.61,
-      "text": "Nothing in modern",
-      "speaker": "rival",
+      "start": 12.599,
+      "end": 13.675,
+      "text": "could possibly go",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "Nothing",
-          "raw": "Nothing",
-          "start": 21.921,
-          "end": 22.709,
-          "speaker": "rival"
+          "word": "could",
+          "start_sec": 12.599,
+          "end_sec": 12.958
         },
         {
-          "word": "in",
-          "raw": "in",
-          "start": 22.709,
-          "end": 22.935,
-          "speaker": "rival"
+          "word": "possibly",
+          "start_sec": 12.958,
+          "end_sec": 13.532
         },
         {
-          "word": "modern",
-          "raw": "modern",
-          "start": 22.935,
-          "end": 23.61,
-          "speaker": "rival"
+          "word": "go",
+          "start_sec": 13.532,
+          "end_sec": 13.675
         }
       ]
     },
     {
-      "start": 23.61,
-      "end": 24.624,
-      "text": "AI is free.",
-      "speaker": "rival",
+      "start": 13.675,
+      "end": 14.106,
+      "text": "wrong",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "AI",
-          "raw": "AI",
-          "start": 23.61,
-          "end": 23.836,
-          "speaker": "rival"
+          "word": "wrong",
+          "start_sec": 13.675,
+          "end_sec": 14.106
+        }
+      ]
+    },
+    {
+      "start": 14.389,
+      "end": 16.436,
+      "text": "Statistically speaking precisely",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "Statistically",
+          "start_sec": 14.389,
+          "end_sec": 15.248
+        },
+        {
+          "word": "speaking",
+          "start_sec": 15.248,
+          "end_sec": 15.842
+        },
+        {
+          "word": "precisely",
+          "start_sec": 15.842,
+          "end_sec": 16.436
+        }
+      ]
+    },
+    {
+      "start": 16.436,
+      "end": 17.757,
+      "text": "everything The entire",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "everything",
+          "start_sec": 16.436,
+          "end_sec": 17.163
+        },
+        {
+          "word": "The",
+          "start_sec": 17.163,
+          "end_sec": 17.361
+        },
+        {
+          "word": "entire",
+          "start_sec": 17.361,
+          "end_sec": 17.757
+        }
+      ]
+    },
+    {
+      "start": 17.757,
+      "end": 18.814,
+      "text": "payment gateway is",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "payment",
+          "start_sec": 17.757,
+          "end_sec": 18.219
+        },
+        {
+          "word": "gateway",
+          "start_sec": 18.219,
+          "end_sec": 18.682
         },
         {
           "word": "is",
-          "raw": "is",
-          "start": 23.836,
-          "end": 24.061,
-          "speaker": "rival"
-        },
-        {
-          "word": "free",
-          "raw": "free.",
-          "start": 24.061,
-          "end": 24.624,
-          "speaker": "rival"
+          "start_sec": 18.682,
+          "end_sec": 18.814
         }
       ]
     },
     {
-      "start": 24.624,
-      "end": 25.564,
-      "text": "Claude is the",
-      "speaker": "rival",
+      "start": 18.814,
+      "end": 19.606,
+      "text": "already down",
+      "character_id": "claude",
       "words": [
         {
-          "word": "Claude",
-          "raw": "Claude",
-          "start": 24.624,
-          "end": 25.137,
-          "speaker": "rival"
+          "word": "already",
+          "start_sec": 18.814,
+          "end_sec": 19.276
         },
         {
-          "word": "is",
-          "raw": "is",
-          "start": 25.137,
-          "end": 25.308,
-          "speaker": "rival"
+          "word": "down",
+          "start_sec": 19.276,
+          "end_sec": 19.606
+        }
+      ]
+    },
+    {
+      "start": 19.89,
+      "end": 20.828,
+      "text": "Arre Junior Who",
+      "character_id": "dad",
+      "words": [
+        {
+          "word": "Arre",
+          "start_sec": 19.89,
+          "end_sec": 20.158
+        },
+        {
+          "word": "Junior",
+          "start_sec": 20.158,
+          "end_sec": 20.627
+        },
+        {
+          "word": "Who",
+          "start_sec": 20.627,
+          "end_sec": 20.828
+        }
+      ]
+    },
+    {
+      "start": 20.828,
+      "end": 21.899,
+      "text": "touches the server",
+      "character_id": "dad",
+      "words": [
+        {
+          "word": "touches",
+          "start_sec": 20.828,
+          "end_sec": 21.296
         },
         {
           "word": "the",
-          "raw": "the",
-          "start": 25.308,
-          "end": 25.564,
-          "speaker": "rival"
+          "start_sec": 21.296,
+          "end_sec": 21.497
+        },
+        {
+          "word": "server",
+          "start_sec": 21.497,
+          "end_sec": 21.899
         }
       ]
     },
     {
-      "start": 25.564,
-      "end": 27.017,
-      "text": "industry standard.",
-      "speaker": "rival",
-      "words": [
-        {
-          "word": "industry",
-          "raw": "industry",
-          "start": 25.564,
-          "end": 26.248,
-          "speaker": "rival"
-        },
-        {
-          "word": "standard",
-          "raw": "standard.",
-          "start": 26.248,
-          "end": 27.017,
-          "speaker": "rival"
-        }
-      ]
-    },
-    {
-      "start": 27.53,
-      "end": 28.549,
-      "text": "Let's check the",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Let's",
-          "raw": "Let's",
-          "start": 27.53,
-          "end": 27.922,
-          "speaker": "bot"
-        },
-        {
-          "word": "check",
-          "raw": "check",
-          "start": 27.922,
-          "end": 28.314,
-          "speaker": "bot"
-        },
-        {
-          "word": "the",
-          "raw": "the",
-          "start": 28.314,
-          "end": 28.549,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 28.549,
-      "end": 29.176,
-      "text": "numbers.",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "numbers",
-          "raw": "numbers.",
-          "start": 28.549,
-          "end": 29.176,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 29.782,
-      "end": 30.895,
-      "text": "Claude caps you",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Claude",
-          "raw": "Claude",
-          "start": 29.782,
-          "end": 30.296,
-          "speaker": "bot"
-        },
-        {
-          "word": "caps",
-          "raw": "caps",
-          "start": 30.296,
-          "end": 30.638,
-          "speaker": "bot"
-        },
-        {
-          "word": "you",
-          "raw": "you",
-          "start": 30.638,
-          "end": 30.895,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 30.895,
-      "end": 31.923,
-      "text": "at 200k tokens",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "at",
-          "raw": "at",
-          "start": 30.895,
-          "end": 31.067,
-          "speaker": "bot"
-        },
-        {
-          "word": "200k",
-          "raw": "200k",
-          "start": 31.067,
-          "end": 31.409,
-          "speaker": "bot"
-        },
-        {
-          "word": "tokens",
-          "raw": "tokens",
-          "start": 31.409,
-          "end": 31.923,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 31.923,
-      "end": 33.293,
-      "text": "and costs hundreds",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "and",
-          "raw": "and",
-          "start": 31.923,
-          "end": 32.18,
-          "speaker": "bot"
-        },
-        {
-          "word": "costs",
-          "raw": "costs",
-          "start": 32.18,
-          "end": 32.608,
-          "speaker": "bot"
-        },
-        {
-          "word": "hundreds",
-          "raw": "hundreds",
-          "start": 32.608,
-          "end": 33.293,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 33.293,
-      "end": 34.235,
-      "text": "every month.",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "every",
-          "raw": "every",
-          "start": 33.293,
-          "end": 33.721,
-          "speaker": "bot"
-        },
-        {
-          "word": "month",
-          "raw": "month.",
-          "start": 33.721,
-          "end": 34.235,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 34.235,
-      "end": 35.561,
-      "text": "Google Gemini 2.5",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Google",
-          "raw": "Google",
-          "start": 34.235,
-          "end": 34.765,
-          "speaker": "bot"
-        },
-        {
-          "word": "Gemini",
-          "raw": "Gemini",
-          "start": 34.765,
-          "end": 35.296,
-          "speaker": "bot"
-        },
-        {
-          "word": "2.5",
-          "raw": "2.5",
-          "start": 35.296,
-          "end": 35.561,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 35.561,
-      "end": 36.71,
-      "text": "Flash gives you",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Flash",
-          "raw": "Flash",
-          "start": 35.561,
-          "end": 36.003,
-          "speaker": "bot"
-        },
-        {
-          "word": "gives",
-          "raw": "gives",
-          "start": 36.003,
-          "end": 36.445,
-          "speaker": "bot"
-        },
-        {
-          "word": "you",
-          "raw": "you",
-          "start": 36.445,
-          "end": 36.71,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 36.71,
-      "end": 38.124,
-      "text": "one million tokens",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "one",
-          "raw": "one",
-          "start": 36.71,
-          "end": 36.975,
-          "speaker": "bot"
-        },
-        {
-          "word": "million",
-          "raw": "million",
-          "start": 36.975,
-          "end": 37.594,
-          "speaker": "bot"
-        },
-        {
-          "word": "tokens",
-          "raw": "tokens",
-          "start": 37.594,
-          "end": 38.124,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 38.124,
-      "end": 38.92,
-      "text": "on the free",
-      "speaker": "bot",
+      "start": 21.899,
+      "end": 22.703,
+      "text": "on Friday In",
+      "character_id": "dad",
       "words": [
         {
           "word": "on",
-          "raw": "on",
-          "start": 38.124,
-          "end": 38.301,
-          "speaker": "bot"
+          "start_sec": 21.899,
+          "end_sec": 22.033
         },
         {
-          "word": "the",
-          "raw": "the",
-          "start": 38.301,
-          "end": 38.566,
-          "speaker": "bot"
+          "word": "Friday",
+          "start_sec": 22.033,
+          "end_sec": 22.569
         },
         {
-          "word": "free",
-          "raw": "free",
-          "start": 38.566,
-          "end": 38.92,
-          "speaker": "bot"
+          "word": "In",
+          "start_sec": 22.569,
+          "end_sec": 22.703
         }
       ]
     },
     {
-      "start": 38.92,
-      "end": 39.362,
-      "text": "tier.",
-      "speaker": "bot",
+      "start": 22.703,
+      "end": 23.238,
+      "text": "my days we",
+      "character_id": "dad",
       "words": [
         {
-          "word": "tier",
-          "raw": "tier.",
-          "start": 38.92,
-          "end": 39.362,
-          "speaker": "bot"
+          "word": "my",
+          "start_sec": 22.703,
+          "end_sec": 22.837
+        },
+        {
+          "word": "days",
+          "start_sec": 22.837,
+          "end_sec": 23.104
+        },
+        {
+          "word": "we",
+          "start_sec": 23.104,
+          "end_sec": 23.238
         }
       ]
     },
     {
-      "start": 39.998,
-      "end": 40.419,
-      "text": "Wait,",
-      "speaker": "junior",
+      "start": 23.238,
+      "end": 24.712,
+      "text": "never touched production",
+      "character_id": "dad",
+      "words": [
+        {
+          "word": "never",
+          "start_sec": 23.238,
+          "end_sec": 23.573
+        },
+        {
+          "word": "touched",
+          "start_sec": 23.573,
+          "end_sec": 24.042
+        },
+        {
+          "word": "production",
+          "start_sec": 24.042,
+          "end_sec": 24.712
+        }
+      ]
+    },
+    {
+      "start": 24.712,
+      "end": 25.716,
+      "text": "without a pooja",
+      "character_id": "dad",
+      "words": [
+        {
+          "word": "without",
+          "start_sec": 24.712,
+          "end_sec": 25.181
+        },
+        {
+          "word": "a",
+          "start_sec": 25.181,
+          "end_sec": 25.314
+        },
+        {
+          "word": "pooja",
+          "start_sec": 25.314,
+          "end_sec": 25.716
+        }
+      ]
+    },
+    {
+      "start": 25.936,
+      "end": 26.677,
+      "text": "Wait why is",
+      "character_id": "junior_dev",
       "words": [
         {
           "word": "Wait",
-          "raw": "Wait,",
-          "start": 39.998,
-          "end": 40.419,
-          "speaker": "junior"
+          "start_sec": 25.936,
+          "end_sec": 26.368
+        },
+        {
+          "word": "why",
+          "start_sec": 26.368,
+          "end_sec": 26.554
+        },
+        {
+          "word": "is",
+          "start_sec": 26.554,
+          "end_sec": 26.677
         }
       ]
     },
     {
-      "start": 40.419,
-      "end": 41.852,
-      "text": "one million tokens?",
-      "speaker": "junior",
+      "start": 26.677,
+      "end": 27.975,
+      "text": "the production database",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "one",
-          "raw": "one",
-          "start": 40.419,
-          "end": 40.672,
-          "speaker": "junior"
+          "word": "the",
+          "start_sec": 26.677,
+          "end_sec": 26.863
         },
         {
-          "word": "million",
-          "raw": "million",
-          "start": 40.672,
-          "end": 41.262,
-          "speaker": "junior"
+          "word": "production",
+          "start_sec": 26.863,
+          "end_sec": 27.481
         },
         {
-          "word": "tokens",
-          "raw": "tokens?",
-          "start": 41.262,
-          "end": 41.852,
-          "speaker": "junior"
+          "word": "database",
+          "start_sec": 27.481,
+          "end_sec": 27.975
         }
       ]
     },
     {
-      "start": 41.852,
-      "end": 42.682,
-      "text": "For free?!",
-      "speaker": "junior",
+      "start": 27.975,
+      "end": 29.025,
+      "text": "dropping all tables",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "For",
-          "raw": "For",
-          "start": 41.852,
-          "end": 42.129,
-          "speaker": "junior"
+          "word": "dropping",
+          "start_sec": 27.975,
+          "end_sec": 28.469
         },
         {
-          "word": "free",
-          "raw": "free?!",
-          "start": 42.129,
-          "end": 42.682,
-          "speaker": "junior"
+          "word": "all",
+          "start_sec": 28.469,
+          "end_sec": 28.654
+        },
+        {
+          "word": "tables",
+          "start_sec": 28.654,
+          "end_sec": 29.025
         }
       ]
     },
     {
-      "start": 43.182,
-      "end": 43.605,
-      "text": "Okay,",
-      "speaker": "rival",
+      "start": 29.025,
+      "end": 29.643,
+      "text": "right now",
+      "character_id": "junior_dev",
       "words": [
-        {
-          "word": "Okay",
-          "raw": "Okay,",
-          "start": 43.182,
-          "end": 43.605,
-          "speaker": "rival"
-        }
-      ]
-    },
-    {
-      "start": 43.605,
-      "end": 44.622,
-      "text": "but Claude has",
-      "speaker": "rival",
-      "words": [
-        {
-          "word": "but",
-          "raw": "but",
-          "start": 43.605,
-          "end": 43.86,
-          "speaker": "rival"
-        },
-        {
-          "word": "Claude",
-          "raw": "Claude",
-          "start": 43.86,
-          "end": 44.368,
-          "speaker": "rival"
-        },
-        {
-          "word": "has",
-          "raw": "has",
-          "start": 44.368,
-          "end": 44.622,
-          "speaker": "rival"
-        }
-      ]
-    },
-    {
-      "start": 44.622,
-      "end": 46.146,
-      "text": "better reasoning for",
-      "speaker": "rival",
-      "words": [
-        {
-          "word": "better",
-          "raw": "better",
-          "start": 44.622,
-          "end": 45.13,
-          "speaker": "rival"
-        },
-        {
-          "word": "reasoning",
-          "raw": "reasoning",
-          "start": 45.13,
-          "end": 45.892,
-          "speaker": "rival"
-        },
-        {
-          "word": "for",
-          "raw": "for",
-          "start": 45.892,
-          "end": 46.146,
-          "speaker": "rival"
-        }
-      ]
-    },
-    {
-      "start": 46.146,
-      "end": 46.739,
-      "text": "agents!",
-      "speaker": "rival",
-      "words": [
-        {
-          "word": "agents",
-          "raw": "agents!",
-          "start": 46.146,
-          "end": 46.739,
-          "speaker": "rival"
-        }
-      ]
-    },
-    {
-      "start": 47.204,
-      "end": 49.009,
-      "text": "Antigravity CLI orchestrates",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Antigravity",
-          "raw": "Antigravity",
-          "start": 47.204,
-          "end": 47.968,
-          "speaker": "bot"
-        },
-        {
-          "word": "CLI",
-          "raw": "CLI",
-          "start": 47.968,
-          "end": 48.176,
-          "speaker": "bot"
-        },
-        {
-          "word": "orchestrates",
-          "raw": "orchestrates",
-          "start": 48.176,
-          "end": 49.009,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 49.009,
-      "end": 50.536,
-      "text": "multi-agent coding right",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "multi-agent",
-          "raw": "multi-agent",
-          "start": 49.009,
-          "end": 49.773,
-          "speaker": "bot"
-        },
-        {
-          "word": "coding",
-          "raw": "coding",
-          "start": 49.773,
-          "end": 50.189,
-          "speaker": "bot"
-        },
         {
           "word": "right",
-          "raw": "right",
-          "start": 50.189,
-          "end": 50.536,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 50.536,
-      "end": 51.855,
-      "text": "inside your terminal,",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "inside",
-          "raw": "inside",
-          "start": 50.536,
-          "end": 50.953,
-          "speaker": "bot"
+          "start_sec": 29.025,
+          "end_sec": 29.334
         },
         {
-          "word": "your",
-          "raw": "your",
-          "start": 50.953,
-          "end": 51.231,
-          "speaker": "bot"
-        },
-        {
-          "word": "terminal",
-          "raw": "terminal,",
-          "start": 51.231,
-          "end": 51.855,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 51.855,
-      "end": 53.174,
-      "text": "with auto-healing and",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "with",
-          "raw": "with",
-          "start": 51.855,
-          "end": 52.133,
-          "speaker": "bot"
-        },
-        {
-          "word": "auto-healing",
-          "raw": "auto-healing",
-          "start": 52.133,
-          "end": 52.966,
-          "speaker": "bot"
-        },
-        {
-          "word": "and",
-          "raw": "and",
-          "start": 52.966,
-          "end": 53.174,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 53.174,
-      "end": 54.424,
-      "text": "local verification.",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "local",
-          "raw": "local",
-          "start": 53.174,
-          "end": 53.522,
-          "speaker": "bot"
-        },
-        {
-          "word": "verification",
-          "raw": "verification.",
-          "start": 53.522,
-          "end": 54.424,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 55.004,
-      "end": 55.506,
-      "text": "So I don't",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "So",
-          "raw": "So",
-          "start": 55.004,
-          "end": 55.116,
-          "speaker": "junior"
-        },
-        {
-          "word": "I",
-          "raw": "I",
-          "start": 55.116,
-          "end": 55.227,
-          "speaker": "junior"
-        },
-        {
-          "word": "don't",
-          "raw": "don't",
-          "start": 55.227,
-          "end": 55.506,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 55.506,
-      "end": 56.008,
-      "text": "need a 200",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "need",
-          "raw": "need",
-          "start": 55.506,
-          "end": 55.729,
-          "speaker": "junior"
-        },
-        {
-          "word": "a",
-          "raw": "a",
-          "start": 55.729,
-          "end": 55.841,
-          "speaker": "junior"
-        },
-        {
-          "word": "200",
-          "raw": "200",
-          "start": 55.841,
-          "end": 56.008,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 56.008,
-      "end": 57.068,
-      "text": "dollar subscription?",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "dollar",
-          "raw": "dollar",
-          "start": 56.008,
-          "end": 56.343,
-          "speaker": "junior"
-        },
-        {
-          "word": "subscription",
-          "raw": "subscription?",
-          "start": 56.343,
-          "end": 57.068,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 57.484,
-      "end": 58.554,
-      "text": "Not a single",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Not",
-          "raw": "Not",
-          "start": 57.484,
-          "end": 57.776,
-          "speaker": "bot"
-        },
-        {
-          "word": "a",
-          "raw": "a",
-          "start": 57.776,
-          "end": 57.971,
-          "speaker": "bot"
-        },
-        {
-          "word": "single",
-          "raw": "single",
-          "start": 57.971,
-          "end": 58.554,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 58.554,
-      "end": 59.041,
-      "text": "cent.",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "cent",
-          "raw": "cent.",
-          "start": 58.554,
-          "end": 59.041,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 59.041,
-      "end": 60.368,
-      "text": "Just pip install",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Just",
-          "raw": "Just",
-          "start": 59.041,
-          "end": 59.42,
-          "speaker": "bot"
-        },
-        {
-          "word": "pip",
-          "raw": "pip",
-          "start": 59.42,
-          "end": 59.704,
-          "speaker": "bot"
-        },
-        {
-          "word": "install",
-          "raw": "install",
-          "start": 59.704,
-          "end": 60.368,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 60.368,
-      "end": 62.642,
-      "text": "antigravity-sdk and launch",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "antigravity-sdk",
-          "raw": "antigravity-sdk",
-          "start": 60.368,
-          "end": 61.789,
-          "speaker": "bot"
-        },
-        {
-          "word": "and",
-          "raw": "and",
-          "start": 61.789,
-          "end": 62.073,
-          "speaker": "bot"
-        },
-        {
-          "word": "launch",
-          "raw": "launch",
-          "start": 62.073,
-          "end": 62.642,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 62.642,
-      "end": 63.021,
-      "text": "agy.",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "agy",
-          "raw": "agy.",
-          "start": 62.642,
-          "end": 63.021,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 63.574,
-      "end": 64.249,
-      "text": "Sorry bro,",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "Sorry",
-          "raw": "Sorry",
-          "start": 63.574,
-          "end": 63.949,
-          "speaker": "junior"
-        },
-        {
-          "word": "bro",
-          "raw": "bro,",
-          "start": 63.949,
-          "end": 64.249,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 64.249,
-      "end": 65.15,
-      "text": "looks like I'm",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "looks",
-          "raw": "looks",
-          "start": 64.249,
-          "end": 64.625,
-          "speaker": "junior"
-        },
-        {
-          "word": "like",
-          "raw": "like",
-          "start": 64.625,
-          "end": 64.925,
-          "speaker": "junior"
-        },
-        {
-          "word": "I'm",
-          "raw": "I'm",
-          "start": 64.925,
-          "end": 65.15,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 65.15,
-      "end": 65.975,
-      "text": "keeping my 10",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "keeping",
-          "raw": "keeping",
-          "start": 65.15,
-          "end": 65.675,
-          "speaker": "junior"
-        },
-        {
-          "word": "my",
-          "raw": "my",
-          "start": 65.675,
-          "end": 65.825,
-          "speaker": "junior"
-        },
-        {
-          "word": "10",
-          "raw": "10",
-          "start": 65.825,
-          "end": 65.975,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 65.975,
-      "end": 67.176,
-      "text": "dollars for tacos!",
-      "speaker": "junior",
-      "words": [
-        {
-          "word": "dollars",
-          "raw": "dollars",
-          "start": 65.975,
-          "end": 66.501,
-          "speaker": "junior"
-        },
-        {
-          "word": "for",
-          "raw": "for",
-          "start": 66.501,
-          "end": 66.726,
-          "speaker": "junior"
-        },
-        {
-          "word": "tacos",
-          "raw": "tacos!",
-          "start": 66.726,
-          "end": 67.176,
-          "speaker": "junior"
-        }
-      ]
-    },
-    {
-      "start": 67.644,
-      "end": 68.704,
-      "text": "Wise choice.",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Wise",
-          "raw": "Wise",
-          "start": 67.644,
-          "end": 68.029,
-          "speaker": "bot"
-        },
-        {
-          "word": "choice",
-          "raw": "choice.",
-          "start": 68.029,
-          "end": 68.704,
-          "speaker": "bot"
-        }
-      ]
-    },
-    {
-      "start": 68.704,
-      "end": 70.706,
-      "text": "Tacos don't hallucinate.",
-      "speaker": "bot",
-      "words": [
-        {
-          "word": "Tacos",
-          "raw": "Tacos",
-          "start": 68.704,
-          "end": 69.159,
-          "speaker": "bot"
-        },
-        {
-          "word": "don't",
-          "raw": "don't",
-          "start": 69.159,
-          "end": 69.614,
-          "speaker": "bot"
-        },
-        {
-          "word": "hallucinate",
-          "raw": "hallucinate.",
-          "start": 69.614,
-          "end": 70.706,
-          "speaker": "bot"
+          "word": "now",
+          "start_sec": 29.334,
+          "end_sec": 29.643
         }
       ]
     }
   ],
   "turns": [
     {
-      "index": 0,
-      "speaker": "junior",
-      "start": 0.0,
-      "end": 5.328,
-      "duration": 5.328,
-      "text": "I need to build an AI agent for my project, but I only have 10 dollars in my bank account.",
-      "cardTrigger": null
+      "turn_index": 0,
+      "character_id": "junior_dev",
+      "text": "Hey Claude, I just pushed a quick fix directly to production on a Friday afternoon.",
+      "emotion": "neutral",
+      "start_sec": 0.0,
+      "end_sec": 4.361,
+      "start_frame": 0,
+      "end_frame": 131,
+      "duration_sec": 4.361,
+      "words": [
+        {
+          "word": "Hey",
+          "start_sec": 0.0,
+          "end_sec": 0.184
+        },
+        {
+          "word": "Claude",
+          "start_sec": 0.184,
+          "end_sec": 0.612
+        },
+        {
+          "word": "I",
+          "start_sec": 0.612,
+          "end_sec": 0.734
+        },
+        {
+          "word": "just",
+          "start_sec": 0.734,
+          "end_sec": 0.979
+        },
+        {
+          "word": "pushed",
+          "start_sec": 0.979,
+          "end_sec": 1.346
+        },
+        {
+          "word": "a",
+          "start_sec": 1.346,
+          "end_sec": 1.468
+        },
+        {
+          "word": "quick",
+          "start_sec": 1.468,
+          "end_sec": 1.774
+        },
+        {
+          "word": "fix",
+          "start_sec": 1.774,
+          "end_sec": 1.957
+        },
+        {
+          "word": "directly",
+          "start_sec": 1.957,
+          "end_sec": 2.447
+        },
+        {
+          "word": "to",
+          "start_sec": 2.447,
+          "end_sec": 2.569
+        },
+        {
+          "word": "production",
+          "start_sec": 2.569,
+          "end_sec": 3.181
+        },
+        {
+          "word": "on",
+          "start_sec": 3.181,
+          "end_sec": 3.303
+        },
+        {
+          "word": "a",
+          "start_sec": 3.303,
+          "end_sec": 3.425
+        },
+        {
+          "word": "Friday",
+          "start_sec": 3.425,
+          "end_sec": 3.793
+        },
+        {
+          "word": "afternoon",
+          "start_sec": 3.793,
+          "end_sec": 4.404
+        }
+      ]
     },
     {
-      "index": 1,
-      "speaker": "rival",
-      "start": 5.778,
-      "end": 14.61,
-      "duration": 8.832,
-      "text": "Good luck. You need Claude Pro, a $200 API tier, and at least three months of manual prompt engineering.",
-      "cardTrigger": null
+      "turn_index": 1,
+      "character_id": "claude",
+      "text": "Fascinating. Shall I draft the post-mortem now, or wait until the alerts start screaming?",
+      "emotion": "deadpan",
+      "start_sec": 4.541,
+      "end_sec": 9.56,
+      "start_frame": 136,
+      "end_frame": 287,
+      "duration_sec": 5.019,
+      "words": [
+        {
+          "word": "Fascinating",
+          "start_sec": 4.541,
+          "end_sec": 5.329
+        },
+        {
+          "word": "Shall",
+          "start_sec": 5.329,
+          "end_sec": 5.658
+        },
+        {
+          "word": "I",
+          "start_sec": 5.658,
+          "end_sec": 5.789
+        },
+        {
+          "word": "draft",
+          "start_sec": 5.789,
+          "end_sec": 6.117
+        },
+        {
+          "word": "the",
+          "start_sec": 6.117,
+          "end_sec": 6.314
+        },
+        {
+          "word": "postmortem",
+          "start_sec": 6.314,
+          "end_sec": 7.037
+        },
+        {
+          "word": "now",
+          "start_sec": 7.037,
+          "end_sec": 7.3
+        },
+        {
+          "word": "or",
+          "start_sec": 7.3,
+          "end_sec": 7.431
+        },
+        {
+          "word": "wait",
+          "start_sec": 7.431,
+          "end_sec": 7.694
+        },
+        {
+          "word": "until",
+          "start_sec": 7.694,
+          "end_sec": 8.022
+        },
+        {
+          "word": "the",
+          "start_sec": 8.022,
+          "end_sec": 8.219
+        },
+        {
+          "word": "alerts",
+          "start_sec": 8.219,
+          "end_sec": 8.613
+        },
+        {
+          "word": "start",
+          "start_sec": 8.613,
+          "end_sec": 8.942
+        },
+        {
+          "word": "screaming",
+          "start_sec": 8.942,
+          "end_sec": 9.599
+        }
+      ]
     },
     {
-      "index": 2,
-      "speaker": "bot",
-      "start": 15.09,
-      "end": 19.65,
-      "duration": 4.56,
-      "text": "Or... you could spend zero dollars and build it in ten minutes.",
-      "cardTrigger": null
+      "turn_index": 2,
+      "character_id": "junior_dev",
+      "text": "Relax, it was only a one-line CSS change! What could possibly go wrong?",
+      "emotion": "smug",
+      "start_sec": 9.8,
+      "end_sec": 14.069,
+      "start_frame": 294,
+      "end_frame": 422,
+      "duration_sec": 4.269,
+      "words": [
+        {
+          "word": "Relax",
+          "start_sec": 9.8,
+          "end_sec": 10.231
+        },
+        {
+          "word": "it",
+          "start_sec": 10.231,
+          "end_sec": 10.374
+        },
+        {
+          "word": "was",
+          "start_sec": 10.374,
+          "end_sec": 10.589
+        },
+        {
+          "word": "only",
+          "start_sec": 10.589,
+          "end_sec": 10.877
+        },
+        {
+          "word": "a",
+          "start_sec": 10.877,
+          "end_sec": 11.02
+        },
+        {
+          "word": "oneline",
+          "start_sec": 11.02,
+          "end_sec": 11.594
+        },
+        {
+          "word": "CSS",
+          "start_sec": 11.594,
+          "end_sec": 11.81
+        },
+        {
+          "word": "change",
+          "start_sec": 11.81,
+          "end_sec": 12.312
+        },
+        {
+          "word": "What",
+          "start_sec": 12.312,
+          "end_sec": 12.599
+        },
+        {
+          "word": "could",
+          "start_sec": 12.599,
+          "end_sec": 12.958
+        },
+        {
+          "word": "possibly",
+          "start_sec": 12.958,
+          "end_sec": 13.532
+        },
+        {
+          "word": "go",
+          "start_sec": 13.532,
+          "end_sec": 13.675
+        },
+        {
+          "word": "wrong",
+          "start_sec": 13.675,
+          "end_sec": 14.106
+        }
+      ]
     },
     {
-      "index": 3,
-      "speaker": "rival",
-      "start": 20.1,
-      "end": 27.06,
-      "duration": 6.96,
-      "text": "Zero dollars? Nothing in modern AI is free. Claude is the industry standard.",
-      "cardTrigger": null
+      "turn_index": 3,
+      "character_id": "claude",
+      "text": "Statistically speaking, precisely everything. The entire payment gateway is already down.",
+      "emotion": "smug",
+      "start_sec": 14.389,
+      "end_sec": 19.57,
+      "start_frame": 432,
+      "end_frame": 587,
+      "duration_sec": 5.181,
+      "words": [
+        {
+          "word": "Statistically",
+          "start_sec": 14.389,
+          "end_sec": 15.248
+        },
+        {
+          "word": "speaking",
+          "start_sec": 15.248,
+          "end_sec": 15.842
+        },
+        {
+          "word": "precisely",
+          "start_sec": 15.842,
+          "end_sec": 16.436
+        },
+        {
+          "word": "everything",
+          "start_sec": 16.436,
+          "end_sec": 17.163
+        },
+        {
+          "word": "The",
+          "start_sec": 17.163,
+          "end_sec": 17.361
+        },
+        {
+          "word": "entire",
+          "start_sec": 17.361,
+          "end_sec": 17.757
+        },
+        {
+          "word": "payment",
+          "start_sec": 17.757,
+          "end_sec": 18.219
+        },
+        {
+          "word": "gateway",
+          "start_sec": 18.219,
+          "end_sec": 18.682
+        },
+        {
+          "word": "is",
+          "start_sec": 18.682,
+          "end_sec": 18.814
+        },
+        {
+          "word": "already",
+          "start_sec": 18.814,
+          "end_sec": 19.276
+        },
+        {
+          "word": "down",
+          "start_sec": 19.276,
+          "end_sec": 19.606
+        }
+      ]
     },
     {
-      "index": 4,
-      "speaker": "bot",
-      "start": 27.48,
-      "end": 29.352,
-      "duration": 1.872,
-      "text": "Let's check the numbers.",
-      "cardTrigger": true
+      "turn_index": 4,
+      "character_id": "dad",
+      "text": "Arre Junior! Who touches the server on Friday?! In my days we never touched production without a pooja!",
+      "emotion": "shocked",
+      "start_sec": 19.89,
+      "end_sec": 25.716,
+      "start_frame": 597,
+      "end_frame": 771,
+      "duration_sec": 5.826,
+      "words": [
+        {
+          "word": "Arre",
+          "start_sec": 19.89,
+          "end_sec": 20.158
+        },
+        {
+          "word": "Junior",
+          "start_sec": 20.158,
+          "end_sec": 20.627
+        },
+        {
+          "word": "Who",
+          "start_sec": 20.627,
+          "end_sec": 20.828
+        },
+        {
+          "word": "touches",
+          "start_sec": 20.828,
+          "end_sec": 21.296
+        },
+        {
+          "word": "the",
+          "start_sec": 21.296,
+          "end_sec": 21.497
+        },
+        {
+          "word": "server",
+          "start_sec": 21.497,
+          "end_sec": 21.899
+        },
+        {
+          "word": "on",
+          "start_sec": 21.899,
+          "end_sec": 22.033
+        },
+        {
+          "word": "Friday",
+          "start_sec": 22.033,
+          "end_sec": 22.569
+        },
+        {
+          "word": "In",
+          "start_sec": 22.569,
+          "end_sec": 22.703
+        },
+        {
+          "word": "my",
+          "start_sec": 22.703,
+          "end_sec": 22.837
+        },
+        {
+          "word": "days",
+          "start_sec": 22.837,
+          "end_sec": 23.104
+        },
+        {
+          "word": "we",
+          "start_sec": 23.104,
+          "end_sec": 23.238
+        },
+        {
+          "word": "never",
+          "start_sec": 23.238,
+          "end_sec": 23.573
+        },
+        {
+          "word": "touched",
+          "start_sec": 23.573,
+          "end_sec": 24.042
+        },
+        {
+          "word": "production",
+          "start_sec": 24.042,
+          "end_sec": 24.712
+        },
+        {
+          "word": "without",
+          "start_sec": 24.712,
+          "end_sec": 25.181
+        },
+        {
+          "word": "a",
+          "start_sec": 25.181,
+          "end_sec": 25.314
+        },
+        {
+          "word": "pooja",
+          "start_sec": 25.314,
+          "end_sec": 25.716
+        }
+      ]
     },
     {
-      "index": 5,
-      "speaker": "bot",
-      "start": 29.732,
-      "end": 39.428,
-      "duration": 9.696,
-      "text": "Claude caps you at 200k tokens and costs hundreds every month. Google Gemini 2.5 Flash gives you one million tokens on the free tier.",
-      "cardTrigger": null
-    },
-    {
-      "index": 6,
-      "speaker": "junior",
-      "start": 39.948,
-      "end": 42.732,
-      "duration": 2.784,
-      "text": "Wait, one million tokens? For free?!",
-      "cardTrigger": null
-    },
-    {
-      "index": 7,
-      "speaker": "rival",
-      "start": 43.082,
-      "end": 46.754,
-      "duration": 3.672,
-      "text": "Okay, but Claude has better reasoning for agents!",
-      "cardTrigger": null
-    },
-    {
-      "index": 8,
-      "speaker": "bot",
-      "start": 47.154,
-      "end": 54.474,
-      "duration": 7.32,
-      "text": "Antigravity CLI orchestrates multi-agent coding right inside your terminal, with auto-healing and local verification.",
-      "cardTrigger": null
-    },
-    {
-      "index": 9,
-      "speaker": "junior",
-      "start": 54.954,
-      "end": 57.114,
-      "duration": 2.16,
-      "text": "So I don't need a 200 dollar subscription?",
-      "cardTrigger": null
-    },
-    {
-      "index": 10,
-      "speaker": "bot",
-      "start": 57.434,
-      "end": 63.074,
-      "duration": 5.64,
-      "text": "Not a single cent. Just pip install antigravity-sdk and launch agy.",
-      "cardTrigger": null
-    },
-    {
-      "index": 11,
-      "speaker": "junior",
-      "start": 63.524,
-      "end": 67.244,
-      "duration": 3.72,
-      "text": "Sorry bro, looks like I'm keeping my 10 dollars for tacos!",
-      "cardTrigger": null
-    },
-    {
-      "index": 12,
-      "speaker": "bot",
-      "start": 67.594,
-      "end": 70.762,
-      "duration": 3.168,
-      "text": "Wise choice. Tacos don't hallucinate.",
-      "cardTrigger": null
+      "turn_index": 5,
+      "character_id": "junior_dev",
+      "text": "Wait... why is the production database dropping all tables right now?!",
+      "emotion": "shocked",
+      "start_sec": 25.936,
+      "end_sec": 29.605,
+      "start_frame": 778,
+      "end_frame": 888,
+      "duration_sec": 3.669,
+      "words": [
+        {
+          "word": "Wait",
+          "start_sec": 25.936,
+          "end_sec": 26.368
+        },
+        {
+          "word": "why",
+          "start_sec": 26.368,
+          "end_sec": 26.554
+        },
+        {
+          "word": "is",
+          "start_sec": 26.554,
+          "end_sec": 26.677
+        },
+        {
+          "word": "the",
+          "start_sec": 26.677,
+          "end_sec": 26.863
+        },
+        {
+          "word": "production",
+          "start_sec": 26.863,
+          "end_sec": 27.481
+        },
+        {
+          "word": "database",
+          "start_sec": 27.481,
+          "end_sec": 27.975
+        },
+        {
+          "word": "dropping",
+          "start_sec": 27.975,
+          "end_sec": 28.469
+        },
+        {
+          "word": "all",
+          "start_sec": 28.469,
+          "end_sec": 28.654
+        },
+        {
+          "word": "tables",
+          "start_sec": 28.654,
+          "end_sec": 29.025
+        },
+        {
+          "word": "right",
+          "start_sec": 29.025,
+          "end_sec": 29.334
+        },
+        {
+          "word": "now",
+          "start_sec": 29.334,
+          "end_sec": 29.643
+        }
+      ]
     }
   ]
 }

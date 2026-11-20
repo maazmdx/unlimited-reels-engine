@@ -5,211 +5,210 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { ThreeCanvas } from "@remotion/three";
+import { CozyDiner3D } from "./components/environments3d/CozyDiner3D";
+import { SunsetDesk3D } from "./components/environments3d/SunsetDesk3D";
+import { LowPolyHumanRig } from "./components/characters3d/LowPolyHumanRig";
+import { LowPolyAIOrbRig } from "./components/characters3d/LowPolyAIOrbRig";
 import {
-  DynamicBackgroundEngine,
-  SceneEnvironment,
-  WeatherType,
-} from "./components/scene/DynamicBackgroundEngine";
-import { EnvironmentProps } from "./components/scene/EnvironmentProps";
+  CameraRig3D,
+  CameraShotType,
+  getCameraRigParams,
+} from "./components/scene/CameraRig3D";
 import {
-  DynamicCharacterRoster,
-  CharacterConfig,
-} from "./components/scene/DynamicCharacterRoster";
-import { CameraDirector, CameraCue } from "./components/scene/CameraDirector";
-import { DesktopExplainerCard } from "./components/diner/DesktopExplainerCard";
-import { DialogueSubtitles, DialogueChunk } from "./components/diner/DialogueSubtitles";
-import { ViralHook } from "./components/ViralHook";
+  CinematicSubtitles,
+  TimelineTurn,
+} from "./components/ui/CinematicSubtitles";
+import {
+  DynamicProofCard,
+  DynamicCardData,
+} from "./components/ui/DynamicProofCard";
 import { ProgressBar } from "./components/ProgressBar";
+import charactersConfigJson from "./config/characters.json";
+import defaultTimelineJson from "../public/timeline.json";
 
-export interface DialogueTurn {
-  index: number;
-  speaker: string;
-  start: number;
-  end: number;
-  text: string;
-  emotion?: "normal" | "smug" | "angry" | "shocked" | "happy" | "sad";
-  cardTrigger?: boolean | null;
-  zoomLevel?: number;
+export interface TimelineData {
+  total_duration_sec: number;
+  duration_in_frames: number;
+  fps: number;
+  turns: TimelineTurn[];
+  mouth_envelopes: Record<string, number[]>;
 }
 
-export interface DialogueSubtitleData {
-  chunks: DialogueChunk[];
-  turns?: DialogueTurn[];
-  words?: unknown[];
+export interface CharacterItemConfig {
+  id: string;
+  type?: string;
+  name?: string;
+  emotion?: string;
+  isSpeaking?: boolean;
 }
 
 export interface MasterAutonomousReelProps {
   [key: string]: unknown;
-  subtitles?: DialogueSubtitleData;
+  scenePreset?: "diner" | "desk";
+  environment?: string;
+  timeline?: TimelineData;
+  subtitles?: {
+    turns?: TimelineTurn[];
+    chunks?: Array<{ start: number; end: number; speaker: string; text: string }>;
+  };
   audioSrc?: string;
-  environment?: SceneEnvironment;
-  weather?: WeatherType;
-  characters?: CharacterConfig[];
-  screenContent?: "code" | "benchmark" | "terminal" | "none";
+  characters?: Array<CharacterItemConfig | string>;
+  cast?: {
+    left?: "junior_dev" | "dad";
+    right?: "claude" | "gemini" | "grok" | "antigravity_bot";
+  };
+  cardData?: DynamicCardData | null;
+  cardStartFrame?: number;
+  cardEndFrame?: number;
   hookHeadline?: string;
   hookSubheadline?: string;
   hookTag?: string;
-  explainerTitle?: string;
-  cardStartFrame?: number;
-  cardEndFrame?: number;
-  cameraCues?: CameraCue[];
+  forcedCameraShot?: CameraShotType;
 }
 
-const DEFAULT_DIALOGUE_DATA: DialogueSubtitleData = {
-  chunks: [
-    {
-      start: 0.0,
-      end: 2.8,
-      speaker: "human_male",
-      text: "I spent 6 hours manually writing API integration boilerplate today.",
-    },
-    {
-      start: 3.0,
-      end: 5.5,
-      speaker: "antigravity_bot",
-      text: "Congratulations. You wasted $300 of company money on a 2-second command.",
-    },
-    {
-      start: 5.8,
-      end: 8.2,
-      speaker: "human_male",
-      text: "Wait... what? How does Antigravity do that for free?",
-    },
-    {
-      start: 8.5,
-      end: 12.0,
-      speaker: "antigravity_bot",
-      text: "Multi-agent loop with Gemini 2.5 Flash. Zero dollars, zero manual fatigue, 100% test passing.",
-    },
-  ],
-  turns: [
-    {
-      index: 0,
-      speaker: "human_male",
-      start: 0.0,
-      end: 2.8,
-      text: "I spent 6 hours manually writing API integration boilerplate today.",
-      emotion: "normal",
-      zoomLevel: 1.15,
-    },
-    {
-      index: 1,
-      speaker: "antigravity_bot",
-      start: 3.0,
-      end: 5.5,
-      text: "Congratulations. You wasted $300 of company money on a 2-second command.",
-      emotion: "smug",
-      zoomLevel: 1.35,
-    },
-    {
-      index: 2,
-      speaker: "human_male",
-      start: 5.8,
-      end: 8.2,
-      text: "Wait... what? How does Antigravity do that for free?",
-      emotion: "shocked",
-      zoomLevel: 1.2,
-    },
-    {
-      index: 3,
-      speaker: "antigravity_bot",
-      start: 8.5,
-      end: 12.0,
-      text: "Multi-agent loop with Gemini 2.5 Flash. Zero dollars, zero manual fatigue, 100% test passing.",
-      emotion: "smug",
-      zoomLevel: 1.3,
-    },
-  ],
-};
+type CharacterRegistry = Record<
+  string,
+  {
+    id: string;
+    display_name: string;
+    badge_label: string;
+    type: "human" | "ai_orb";
+    palette?: Record<string, string>;
+  }
+>;
 
-const DEFAULT_CHARACTERS: CharacterConfig[] = [
-  {
-    id: "char_human",
-    type: "human_male",
-    name: "Junior Dev",
-    emotion: "normal",
-    isSpeaking: false,
-  },
-  {
-    id: "char_ai",
-    type: "antigravity_bot",
-    name: "Antigravity",
-    emotion: "smug",
-    isSpeaking: false,
-  },
-];
+const CHAR_CONFIGS = charactersConfigJson as unknown as CharacterRegistry;
+const DEFAULT_TIMELINE = defaultTimelineJson as unknown as TimelineData;
 
 export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
-  subtitles = DEFAULT_DIALOGUE_DATA,
-  audioSrc = "voice.mp3",
+  scenePreset,
   environment = "diner",
-  weather = "raining",
-  characters = DEFAULT_CHARACTERS,
-  screenContent = "code",
-  hookHeadline = "THE 6-HOUR DEV BLUNDER",
-  hookSubheadline = "Why junior devs are getting completely outclassed by $0 AI",
-  hookTag = "⚠️ WAKEUPS FOR HUMANS",
-  explainerTitle = "Human Blunder vs AI Multi-Agent Speed",
-  cardStartFrame,
-  cardEndFrame,
-  cameraCues,
+  timeline,
+  subtitles,
+  audioSrc = "voice.mp3",
+  characters,
+  cast,
+  cardData = null,
+  cardStartFrame = 430,
+  forcedCameraShot,
 }) => {
   const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
-  const currentTime = frame / fps;
+  const { fps } = useVideoConfig();
 
-  const turns = subtitles?.turns || [];
-  const chunks = subtitles?.chunks || [];
+  // 1. Resolve timeline and turns
+  const activeTimeline: TimelineData = timeline || DEFAULT_TIMELINE;
+  const turns: TimelineTurn[] =
+    activeTimeline.turns && activeTimeline.turns.length > 0
+      ? activeTimeline.turns
+      : (subtitles?.turns as TimelineTurn[]) || [];
 
-  // Determine active speaker from turns
+  // Determine active turn for current frame
   const activeTurn = turns.find(
-    (t) => currentTime >= t.start && currentTime <= t.end + 0.15
+    (t) => frame >= t.start_frame && frame <= t.end_frame
   );
-  const activeSpeakerName = activeTurn ? activeTurn.speaker.toLowerCase() : "";
 
-  // Dynamic character speaking state & emotion update
-  const resolvedCharacters = characters.map((c) => {
-    const isThisSpeaker =
-      activeSpeakerName.includes(c.type) ||
-      activeSpeakerName.includes(c.id) ||
-      (activeSpeakerName.includes("human") && c.type.startsWith("human")) ||
-      (activeSpeakerName.includes("bot") && c.type.includes("bot")) ||
-      activeSpeakerName.includes(c.name.toLowerCase());
+  // 2. Resolve Environment (Diner vs Sunset Desk)
+  const isDeskPreset =
+    scenePreset === "desk" ||
+    environment.toLowerCase().includes("desk") ||
+    environment.toLowerCase().includes("sunset") ||
+    environment.toLowerCase().includes("home");
 
-    const activeEmotion = isThisSpeaker && activeTurn?.emotion
-      ? activeTurn.emotion
-      : c.emotion || "normal";
+  // 3. Resolve Cast (Left Human + Right AI Orb)
+  let leftCharId: "junior_dev" | "dad" = cast?.left || "junior_dev";
+  let rightCharId: "claude" | "gemini" | "grok" | "antigravity_bot" =
+    cast?.right || "claude";
 
-    return {
-      ...c,
-      isSpeaking: isThisSpeaker,
-      emotion: activeEmotion,
-    };
-  });
+  // Auto-detect from characters array or turns if not explicitly set in cast
+  if (!cast?.left && characters && characters.length > 0) {
+    const charNames = characters.map((c) =>
+      typeof c === "string" ? c.toLowerCase() : (c.id || c.name || "").toLowerCase()
+    );
+    if (charNames.some((n) => n.includes("dad"))) {
+      leftCharId = "dad";
+    }
+    if (charNames.some((n) => n.includes("gemini"))) {
+      rightCharId = "gemini";
+    } else if (charNames.some((n) => n.includes("grok"))) {
+      rightCharId = "grok";
+    } else if (charNames.some((n) => n.includes("antigravity"))) {
+      rightCharId = "antigravity_bot";
+    } else if (charNames.some((n) => n.includes("claude"))) {
+      rightCharId = "claude";
+    }
+  }
 
-  // Dynamic Camera Cues derivation if none provided
-  const resolvedCameraCues: CameraCue[] =
-    cameraCues ||
-    turns.map((t) => {
-      const isAI =
-        t.speaker.includes("bot") ||
-        t.speaker.includes("gemini") ||
-        t.speaker.includes("claude") ||
-        t.speaker.includes("grok") ||
-        t.speaker.includes("codex");
-      return {
-        startFrame: Math.floor(t.start * fps),
-        endFrame: Math.floor(t.end * fps),
-        zoomLevel: t.zoomLevel || (isAI ? 1.3 : 1.15),
-        targetX: isAI ? 810 : 270,
-        shake: t.emotion === "angry" || (isAI && t.emotion === "smug"),
-      };
-    });
+  // 4. Resolve Speaker State & Mouth Envelopes (30fps RMS Envelope from timeline)
+  const isLeftSpeaking = activeTurn?.character_id === leftCharId;
+  const isRightSpeaking = activeTurn?.character_id === rightCharId;
 
-  // Card trigger (defaults to midway through video)
-  const defaultCardStart = cardStartFrame ?? 80;
-  const defaultCardEnd = cardEndFrame ?? Math.floor(durationInFrames * 0.92);
-  const isCardVisible = frame >= defaultCardStart && frame <= defaultCardEnd;
+  const mouthOpenLeft =
+    activeTimeline.mouth_envelopes?.[leftCharId]?.[frame] ?? 0;
+  const mouthOpenRight =
+    activeTimeline.mouth_envelopes?.[rightCharId]?.[frame] ?? 0;
+
+  // Emotion mapping
+  const mapEmotion = (
+    rawEmotion?: string
+  ): "neutral" | "tired" | "shocked" | "angry" | "smug" => {
+    if (!rawEmotion) return "neutral";
+    const e = rawEmotion.toLowerCase();
+    if (e.includes("smug") || e.includes("happy")) return "smug";
+    if (e.includes("shock") || e.includes("surpris")) return "shocked";
+    if (e.includes("angr")) return "angry";
+    if (e.includes("tired") || e.includes("sad")) return "tired";
+    return "neutral";
+  };
+
+  const leftEmotion = isLeftSpeaking
+    ? mapEmotion(activeTurn?.emotion)
+    : isRightSpeaking && activeTurn?.emotion === "smug"
+    ? "tired"
+    : "neutral";
+
+  const rightEmotion = isRightSpeaking
+    ? mapEmotion(activeTurn?.emotion)
+    : isLeftSpeaking && activeTurn?.emotion === "shocked"
+    ? "smug"
+    : "neutral";
+
+  // 5. Proof Card State & Safe Zone Coordinates
+  const effectiveCardStart = cardData?.startFrame ?? cardStartFrame;
+  const cardDuration = cardData?.durationSeconds
+    ? Math.round(cardData.durationSeconds * fps)
+    : 120;
+  const cappedCardDuration = Math.min(Math.max(cardDuration, 90), 150);
+  const effectiveCardEnd = effectiveCardStart + cappedCardDuration;
+  const isProofCardActive =
+    !!cardData && frame >= effectiveCardStart && frame <= effectiveCardEnd;
+
+  // Speaker side for camera cutting
+  const speakerSide: "left" | "right" | "wide" = isProofCardActive
+    ? "wide"
+    : isRightSpeaking
+    ? "right"
+    : isLeftSpeaking
+    ? "left"
+    : "wide";
+
+  // 6. Camera Rig Parameters (Persistent, 0 remount)
+  const cameraParams = getCameraRigParams(
+    frame,
+    activeTurn,
+    isProofCardActive,
+    speakerSide,
+    forcedCameraShot
+  );
+
+  // Active speaker styling for subtitles
+  const activeCharConfig = activeTurn
+    ? CHAR_CONFIGS[activeTurn.character_id]
+    : null;
+  const speakerAccentColor =
+    (activeCharConfig?.palette as any)?.accent ||
+    (isRightSpeaking ? "#F59E0B" : "#38BDF8");
+  const speakerDisplayName = activeCharConfig?.badge_label || activeTurn?.character_id;
 
   return (
     <div
@@ -218,63 +217,121 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
         height: 1920,
         position: "relative",
         overflow: "hidden",
-        backgroundColor: "#07090E",
+        backgroundColor: "#070B14",
       }}
     >
       {/* 1. Master Audio Track */}
       <Audio src={staticFile(audioSrc)} />
 
-      {/* 2. Top Retention Progress Bar */}
+      {/* 2. Top Progress Bar */}
       <ProgressBar color="#38BDF8" height={8} />
 
-      {/* 3. Camera Director Wrapper */}
-      <CameraDirector
-        activeSpeaker={activeSpeakerName}
-        cameraCues={resolvedCameraCues}
-        currentTurnIndex={activeTurn?.index ?? 0}
+      {/* 3. Single Persistent Three.js Canvas (Never Remounted) */}
+      <ThreeCanvas
+        dpr={1}
+        width={1080}
+        height={1920}
+        camera={{
+          position: cameraParams.position,
+          fov: cameraParams.fov,
+          near: 0.1,
+          far: 100,
+        }}
+        style={{
+          width: 1080,
+          height: 1920,
+          position: "absolute",
+          top: 0,
+          left: 0,
+        }}
       >
-        {/* Dynamic Background Engine (Diner / Home / Office / Outside Terrace) */}
-        <DynamicBackgroundEngine
-          environment={environment}
-          weather={weather}
-          ambientIntensity={1.0}
+        {/* Dynamic 3-Camera Cutting Controller */}
+        <CameraRig3D
+          activeTurn={activeTurn}
+          isProofCardActive={isProofCardActive}
+          speakerSide={speakerSide}
+          forcedShot={forcedCameraShot}
         />
 
-        {/* Dynamic Character Roster (1 to 4 characters with emotions and talking sync) */}
-        <DynamicCharacterRoster characters={resolvedCharacters} />
+        {/* 3D Environment: CozyDiner3D or SunsetDesk3D */}
+        {isDeskPreset ? (
+          <SunsetDesk3D>
+            {/* Left Seat: Human Dev at Wooden Desk */}
+            <LowPolyHumanRig
+              characterId={leftCharId}
+              isSpeaking={isLeftSpeaking}
+              mouthOpen={mouthOpenLeft}
+              emotion={leftEmotion}
+              position={[-0.45, -0.36, -0.3]}
+              rotation={[
+                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
+                isLeftSpeaking ? 0.16 : 0.28,
+                0,
+              ]}
+              scale={1.08}
+            />
 
-        {/* Environment Foreground Props (Table, Seating, Steaming Coffee Mug, Code Screen) */}
-        <EnvironmentProps
-          environment={environment}
-          showCoffeeMug={true}
-          showScreen={true}
-          screenContent={screenContent}
+            {/* Right Side: AI Orb hovering by Desk */}
+            <LowPolyAIOrbRig
+              characterId={rightCharId}
+              isSpeaking={isRightSpeaking}
+              mouthOpen={mouthOpenRight}
+              emotion={rightEmotion}
+              position={[1.22, 0.22, -0.1]}
+              rotation={[0.02, isRightSpeaking ? -0.12 : -0.22, 0]}
+              scale={1.10}
+            />
+          </SunsetDesk3D>
+        ) : (
+          <CozyDiner3D>
+            {/* Left Seat: Human Dev in Diner Booth */}
+            <LowPolyHumanRig
+              characterId={leftCharId}
+              isSpeaking={isLeftSpeaking}
+              mouthOpen={mouthOpenLeft}
+              emotion={leftEmotion}
+              position={[-1.28, -0.38, -0.1]}
+              rotation={[
+                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
+                isLeftSpeaking ? 0.22 : 0.32,
+                0,
+              ]}
+              scale={1.12}
+            />
+
+            {/* Right Side: AI Orb Floating Across Diner Table */}
+            <LowPolyAIOrbRig
+              characterId={rightCharId}
+              isSpeaking={isRightSpeaking}
+              mouthOpen={mouthOpenRight}
+              emotion={rightEmotion}
+              position={[1.28, 0.15, -0.1]}
+              rotation={[0.02, isRightSpeaking ? -0.14 : -0.24, 0]}
+              scale={1.05}
+            />
+          </CozyDiner3D>
+        )}
+      </ThreeCanvas>
+
+      {/* 4. Upper-Third Dynamic Proof Card (Capped 3.0-5.0s, clears characters below) */}
+      {cardData && (
+        <DynamicProofCard
+          cardData={cardData}
+          startFrame={effectiveCardStart}
+          durationFrames={cappedCardDuration}
         />
-      </CameraDirector>
+      )}
 
-      {/* 4. Viral Retention Hook Banner (First 0-3 Seconds) */}
-      <ViralHook
-        headline={hookHeadline}
-        subheadline={hookSubheadline}
-        tag={hookTag}
-        durationFrames={75}
+      {/* 5. Safe-Zone Subtitles (Upper-Middle top: 280px / Lower-Safe bottom: 320px when card active) */}
+      <CinematicSubtitles
+        activeTurn={activeTurn}
+        isProofCardActive={isProofCardActive}
+        speakerAccentColor={speakerAccentColor}
+        speakerDisplayName={speakerDisplayName}
+        isAI={isRightSpeaking}
       />
 
-      {/* 5. Explainer Tech / Benchmark Card */}
-      <DesktopExplainerCard
-        isVisible={isCardVisible}
-        title={explainerTitle}
-        badge="AI PROVEN SUPERIOR"
-      />
-
-      {/* 6. Dynamic Non-Blinking Subtitles (Gold Serif Lower Third) */}
-      <DialogueSubtitles
-        chunks={chunks}
-        activeSpeaker={activeSpeakerName}
-        styleMode="serif_gold"
-      />
-
-      {/* 7. Cinematic Radial Vignette */}
+      {/* 6. Subtle Cinematic Edge Vignette */}
       <div
         style={{
           position: "absolute",
@@ -283,7 +340,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           width: 1080,
           height: 1920,
           background:
-            "radial-gradient(circle at 50% 45%, transparent 55%, rgba(0,0,0,0.6) 100%)",
+            "radial-gradient(circle at 50% 45%, transparent 55%, rgba(0,0,0,0.55) 100%)",
           pointerEvents: "none",
           zIndex: 90,
         }}

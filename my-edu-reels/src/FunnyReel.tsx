@@ -4,8 +4,6 @@ import {
   Audio,
   staticFile,
   useCurrentFrame,
-  useVideoConfig,
-  spring,
 } from "remotion";
 import { BackgroundGrid } from "./components/BackgroundGrid";
 import { ProgressBar } from "./components/ProgressBar";
@@ -25,14 +23,9 @@ export const FunnyReel: React.FC<FunnyReelProps> = ({
   topic = "Why Your Brain Reminds You of Cringe at 3 AM",
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
-  // Wobbly punchy spring
-  const memeSpring = spring({
-    frame: frame % 45,
-    fps,
-    config: { damping: 8, mass: 0.5, stiffness: 220 },
-  });
+  // Smooth continuous breathing curve (zero modulo reset)
+  const memeSpring = 0.5 + 0.5 * Math.sin(frame * 0.15);
 
   return (
     <div

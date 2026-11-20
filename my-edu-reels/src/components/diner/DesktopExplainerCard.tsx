@@ -15,9 +15,9 @@ export const DesktopExplainerCard: React.FC<DesktopExplainerCardProps> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Spring entrance pop-in
+  // Spring entrance pop-in (deterministic without modulo reset)
   const scale = spring({
-    frame: isVisible ? frame % 60 : 0,
+    frame: isVisible ? Math.min(frame, 30) : 0,
     fps,
     config: { damping: 14, stiffness: 120 },
   });
