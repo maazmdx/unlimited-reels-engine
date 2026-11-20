@@ -368,7 +368,7 @@ def main():
         f"--props=public/reel_props.json",
         "--gl=angle",
         "--angle=swiftshader",
-        "--concurrency=3",
+        "--concurrency=2",
         "--codec=h264",
         "--pixel-format=yuv420p",
         "--jpeg-quality=90",
