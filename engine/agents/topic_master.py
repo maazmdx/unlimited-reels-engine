@@ -332,8 +332,8 @@ class TopicMasterAgent:
     # =========================================================================
 
     def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """Calls Gemini 2.5 Flash with fallback to gemini-3.5-flash and direct REST."""
-        models = ["gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"]
+        """Calls Gemini 2.5 Flash with fallback to fast free-tier models and direct REST."""
+        models = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
 
         if self.client:
             for m in models:

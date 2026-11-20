@@ -381,8 +381,8 @@ class TrendScoutAgent:
     # =========================================================================
 
     def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """Executes Gemini 2.5 Flash request with multi-model and REST fallback."""
-        model_candidates = ["gemini-2.5-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"]
+        """Executes Gemini 2.5 Flash request with fast free-tier multi-model and REST fallback."""
+        model_candidates = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
 
         # 1. Try google.genai Client
         if self.client:

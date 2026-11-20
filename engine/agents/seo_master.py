@@ -14,20 +14,104 @@ Generates high-converting, searchable social assets for each reel:
    - Pinned comment bait
 """
 
+import os
 import json
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional
+import requests
+
+try:
+    from google import genai
+except ImportError:
+    genai = None
+
+from engine.dns_utils import enable_fast_dns
+enable_fast_dns()
 
 
 class SEOMasterAgent:
     """
     Master Agent 3: Crafts Instagram search optimization, tiered hashtag sets,
     pinned comment conversation drivers, and anti-throttle Auto-DM configurations.
+    Uses fast free-tier Gemini fallback with zero-fail deterministic safety.
     """
+
+    FAST_MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
 
     def __init__(self, project_root: Optional[Path] = None):
         self.project_root = Path(project_root or Path(__file__).resolve().parent.parent.parent)
+        self.api_key = os.environ.get("GEMINI_API_KEY")
+        self.headers = {"User-Agent": "AntigravitySEOMaster/1.0", "Content-Type": "application/json"}
+        self.client = None
+        if genai and self.api_key:
+            try:
+                self.client = genai.Client(
+                    api_key=self.api_key,
+                    http_options={"api_version": "v1beta", "timeout": 20000},
+                )
+            except Exception as e:
+                print(f"⚠️ SEOMaster: Gemini client init notice: {e}")
+
+    def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
+        """Calls Gemini with fast free-tier fallback models and direct REST."""
+        if self.client:
+            for m in self.FAST_MODELS:
+                try:
+                    res = self.client.models.generate_content(
+                        model=m,
+                        contents=[prompt],
+                        config=dict(
+                            system_instruction=system_instruction,
+                            temperature=0.7,
+                            response_mime_type="application/json",
+                        ),
+                    )
+                    if res and res.text:
+                        return res.text
+                except Exception as e:
+                    print(f"⚠️ SEOMaster: GenAI {m} warning: {e}")
+
+        if self.api_key:
+            for m in self.FAST_MODELS:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={self.api_key}"
+                payload = {
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "systemInstruction": {"parts": [{"text": system_instruction}]},
+                    "generationConfig": {"temperature": 0.7, "responseMimeType": "application/json"},
+                }
+                try:
+                    r = requests.post(url, json=payload, headers=self.headers, timeout=20.0)
+                    if r.status_code == 200:
+                        parts = r.json().get("candidates", [])[0].get("content", {}).get("parts", [])
+                        if parts:
+                            return parts[0].get("text")
+                except Exception as e:
+                    print(f"⚠️ SEOMaster: REST {m} warning: {e}")
+
+        return None
+
+    def _refine_with_ai(self, title: str, category: str, kw: str, raw_headline: str) -> Optional[Dict[str, Any]]:
+        """Optional AI refinement pass to elevate headline, pinned comment, and replies."""
+        prompt = (
+            f"Topic: {title}\n"
+            f"Category: {category}\n"
+            f"Auto-DM Keyword: {kw}\n"
+            f"Draft Headline: {raw_headline}\n\n"
+            "Return JSON with:\n"
+            "- 'seo_headline': A high-CTR, front-loaded Instagram SEO title with emoji\n"
+            "- 'pinned_comment': An opinionated debate starter question for viewers to comment below\n"
+            "- 'comment_replies': Exactly 3 friendly, distinct public comment replies confirming DM sent (to avoid IG bot throttle)"
+        )
+        sys_inst = "You are an elite Instagram SEO and Engagement Director. Return ONLY valid JSON."
+        try:
+            raw = self._call_gemini_api(prompt, sys_inst)
+            if raw:
+                data = json.loads(raw.strip().strip("`").replace("json\n", "", 1))
+                return data
+        except Exception:
+            pass
+        return None
 
     def generate_seo_assets(
         self,
@@ -75,11 +159,29 @@ class SEOMasterAgent:
         # 3. Pinned Comment Bait (opinionated question to trigger debate velocity)
         pinned_comment = self._craft_pinned_comment(title, category, kw)
 
-        # 4. Tiered Hashtags (3 broad + 4 mid-niche + 3 exact-topic, zero spam)
+        # 4. Varied Public Comment Replies (3 variations to bypass Instagram bot throttling)
+        comment_replies = [
+            f"Sent to your DMs! 🚀 Check your message requests if you don't see it.",
+            f"Just sent over the direct link! ⚡ Enjoy.",
+            f"Check your messages! 📬 Sent the full guide and link.",
+        ]
+
+        # 5. Optional AI refinement with fast free-tier fallback
+        if self.api_key:
+            ai_data = self._refine_with_ai(title, category, kw, seo_headline)
+            if ai_data:
+                if ai_data.get("seo_headline"):
+                    seo_headline = ai_data["seo_headline"]
+                if ai_data.get("pinned_comment"):
+                    pinned_comment = ai_data["pinned_comment"]
+                if ai_data.get("comment_replies") and isinstance(ai_data["comment_replies"], list) and len(ai_data["comment_replies"]) >= 3:
+                    comment_replies = ai_data["comment_replies"][:3]
+
+        # 6. Tiered Hashtags (3 broad + 4 mid-niche + 3 exact-topic, zero spam)
         tiered_hashtags = self._build_tiered_hashtags(title, category, kw)
         hashtags_str = " ".join(tiered_hashtags)
 
-        # 5. Full Caption Text
+        # 7. Full Caption Text
         caption_text = (
             f"{seo_headline}\n\n"
             f"{subheadline}\n\n"
@@ -90,13 +192,6 @@ class SEOMasterAgent:
             f"Follow @antigravity for daily zero-dollar workflows, retro hacks & unfiltered tech truth!\n\n"
             f"{hashtags_str}"
         )
-
-        # 6. Varied Public Comment Replies (3 variations to bypass Instagram bot throttling)
-        comment_replies = [
-            f"Sent to your DMs! 🚀 Check your message requests if you don't see it.",
-            f"Just sent over the direct link! ⚡ Enjoy.",
-            f"Check your messages! 📬 Sent the full guide and link.",
-        ]
 
         dm_msg = script_data.get("dm_message") or (
             f"Hey! 🚀 Here is the verified link and guide for {title}: https://antigravity.run/r/{kw.lower()}\n"

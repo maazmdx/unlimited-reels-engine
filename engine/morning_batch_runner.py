@@ -439,13 +439,28 @@ def run_morning_batch(
                 print(f"ℹ️ Google Drive sync notice (non-fatal): {e_drive}")
                 drive_status = f"SKIPPED: {e_drive}"
 
+        # Resolve autodm_data cleanly from seo_assets or autodm_file or script_data
+        autodm_data = seo_assets.get("autodm_payload") or {}
+        if not autodm_data and autodm_file and Path(autodm_file).exists():
+            try:
+                with open(autodm_file, "r", encoding="utf-8") as f:
+                    autodm_data = json.load(f)
+            except Exception:
+                pass
+        cta_keyword_val = (
+            autodm_data.get("keyword")
+            or script_data.get("auto_dm_keyword")
+            or script_data.get("cta_keyword")
+            or "LINK"
+        )
+
         generated_reels.append({
             "index": idx,
             "title": script_data["title"],
             "video_path": str(final_video_dest),
             "caption_path": str(caption_file),
             "autodm_path": str(autodm_file),
-            "cta_keyword": autodm_data.get("keyword"),
+            "cta_keyword": cta_keyword_val,
             "duration": audit_res.get("duration", 0),
             "quality_score": audit_res.get("score", 100),
             "status": audit_res.get("status", "PASS"),
