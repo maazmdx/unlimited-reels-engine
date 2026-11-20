@@ -1,10 +1,11 @@
 import React from "react";
 import {
   Audio,
+  interpolate,
+  Sequence,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
-  spring,
 } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import { CozyDiner3D } from "./components/environments3d/CozyDiner3D";
@@ -24,6 +25,10 @@ import {
   DynamicProofCard,
   DynamicCardData,
 } from "./components/ui/DynamicProofCard";
+import {
+  NotificationToast,
+  ToastData,
+} from "./components/ui/NotificationToast";
 import { ProgressBar } from "./components/ProgressBar";
 import charactersConfigJson from "./config/characters.json";
 import defaultTimelineJson from "../public/timeline.json";
@@ -64,6 +69,13 @@ export interface MasterAutonomousReelProps {
   cardData?: DynamicCardData | null;
   cardStartFrame?: number;
   cardEndFrame?: number;
+  toastData?: ToastData | null;
+  endCard?: {
+    question?: string;
+    keyword?: string;
+    cta_text?: string;
+    subtext?: string;
+  } | null;
   hookHeadline?: string;
   hookSubheadline?: string;
   hookTag?: string;
@@ -98,6 +110,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   rightCharacterId,
   cardData = null,
   cardStartFrame = 430,
+  toastData = null,
+  endCard = null,
   forcedCameraShot,
   ctaKeyword,
   ctaText,
@@ -192,20 +206,56 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     ? "smug"
     : "neutral";
 
-  // 5. Proof Card State & Safe Zone Coordinates
-  const effectiveCardStart = cardData?.startFrame ?? cardStartFrame;
-  const cardDuration = cardData?.durationSeconds
-    ? Math.round(cardData.durationSeconds * fps)
-    : 120;
-  const cappedCardDuration = Math.min(Math.max(cardDuration, 90), 150);
-  const effectiveCardEnd = effectiveCardStart + cappedCardDuration;
+  // 5. Proof Card State & Safe Zone Coordinates (Act 3: Turns 5-7, 16-30s)
+  const totalFrames = durationInFrames || activeTimeline.duration_in_frames || 450;
+  const startTurnIdx = typeof (cardData as any)?.startTurn === "number" ? (cardData as any).startTurn : 5;
+  const endTurnIdx = typeof (cardData as any)?.endTurn === "number" ? (cardData as any).endTurn : 7;
+
+  // Compute cardStartFrame directly from timeline.turns[startTurnIdx].start_frame (Act 3)
+  const turn5StartFrame =
+    turns && turns.length > startTurnIdx
+      ? turns[startTurnIdx].start_frame
+      : (turns && turns.length > 3 ? turns[3].start_frame : (cardData?.startFrame ?? cardStartFrame));
+  const turn7EndFrame =
+    turns && turns.length > endTurnIdx
+      ? turns[endTurnIdx].end_frame
+      : Math.min(turn5StartFrame + 360, totalFrames - 90);
+  const effectiveCardStart = turn5StartFrame;
+  const effectiveCardEnd = Math.min(turn7EndFrame, totalFrames - 90);
+  const cappedCardDuration = Math.max(30, effectiveCardEnd - effectiveCardStart);
   const isProofCardActive =
     !!cardData && frame >= effectiveCardStart && frame <= effectiveCardEnd;
 
-  // 6. Camera Rig Parameters (Persistent, 0 remount)
+  // Dynamic Row-by-Row Highlighting: Row 1 on Turn 5, Row 2 on Turn 6, Row 3 on Turn 7
+  let activeStepIndex = 0;
+  if (turns && turns.length > endTurnIdx) {
+    const turn6Start = turns[startTurnIdx + 1]?.start_frame ?? (effectiveCardStart + 120);
+    const turn7Start = turns[endTurnIdx]?.start_frame ?? (effectiveCardStart + 240);
+    if (frame < turn6Start) {
+      activeStepIndex = 0; // Turn 5 (Row 1)
+    } else if (frame < turn7Start) {
+      activeStepIndex = 1; // Turn 6 (Row 2)
+    } else {
+      activeStepIndex = 2; // Turn 7 (Row 3)
+    }
+  } else {
+    const cardProgress = (frame - effectiveCardStart) / Math.max(1, cappedCardDuration);
+    activeStepIndex = cardProgress < 0.33 ? 0 : cardProgress < 0.66 ? 1 : 2;
+  }
+
+  // 6. Animated iOS Notification Toast (Act 4: Turn 9, 3.5s duration)
+  const effectiveToastData = toastData || (cardData as any)?.toastData || null;
+  const turn9StartFrame = turns && turns.length > 9 ? turns[9].start_frame : Math.max(0, totalFrames - 240);
+  const toastDurationFrames = 105; // 3.5s @ 30fps
+  const effectiveToastEnd = turn9StartFrame + toastDurationFrames;
+  const isToastActive =
+    !!effectiveToastData && frame >= turn9StartFrame && frame <= effectiveToastEnd;
+
+  // 7. Camera Rig Parameters (Persistent, 0 remount)
   const cameraParams = getCameraRigParams(
     frame,
     activeTurn,
+    turns,
     isProofCardActive,
     leftCharId,
     rightCharId,
@@ -224,32 +274,31 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     activeCharConfig?.badge_label ||
     (activeTurn?.character_id === "junior_dev" ? "Junior Dev" : activeTurn?.character_id);
 
-  // 7. End-Screen Auto-DM CTA Banner (Final 2.5s / 75 frames)
-  const totalFrames = durationInFrames || activeTimeline.duration_in_frames || 450;
-  const ctaDurationFrames = Math.round(2.5 * fps);
-  const ctaStartFrame = Math.max(0, totalFrames - ctaDurationFrames);
-  const isCtaActive = frame >= ctaStartFrame;
+  // 8. Clean 2.5s Black End-Card (Final 75 frames)
+  const endCardDurationFrames = Math.round(2.5 * fps);
+  const endCardStartFrame = Math.max(0, totalFrames - endCardDurationFrames);
+  const isEndCardActive = frame >= endCardStartFrame;
+
+  const endCardFade = isEndCardActive
+    ? interpolate(frame, [endCardStartFrame, endCardStartFrame + 12], [0, 1], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      })
+    : 0;
 
   // Auto-detect CTA keyword from last turn if not explicitly passed
   const resolvedKeyword = (
     ctaKeyword ||
+    endCard?.keyword ||
     (turns.length > 0
       ? turns[turns.length - 1].text.match(/comment\s+([A-Z0-9_]+)/i)?.[1]
       : null) ||
     "LINK"
   ).toUpperCase();
 
-  const ctaSpring = isCtaActive
-    ? spring({
-        frame: frame - ctaStartFrame,
-        fps,
-        config: {
-          damping: 14,
-          mass: 0.8,
-          stiffness: 140,
-        },
-      })
-    : 0;
+  const resolvedEndCardQuestion =
+    endCard?.question ||
+    (cardData?.title ? `Would you try ${cardData.title}?` : "Would you switch to this setup?");
 
   return (
     <div
@@ -263,6 +312,13 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     >
       {/* 1. Master Audio Track */}
       <Audio src={staticFile(audioSrc)} />
+
+      {/* 1b. Subtle chime SFX when NotificationToast pops in on Turn 9 */}
+      {effectiveToastData && (
+        <Sequence from={turn9StartFrame} durationInFrames={60}>
+          <Audio src={staticFile("sfx/chime.mp3")} volume={0.35} />
+        </Sequence>
+      )}
 
       {/* 2. Top Progress Bar */}
       <ProgressBar color="#38BDF8" height={8} />
@@ -289,6 +345,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
         {/* Dynamic 3-Camera Cutting Controller */}
         <CameraRig3D
           activeTurn={activeTurn}
+          turns={turns}
           isProofCardActive={isProofCardActive}
           leftCharId={leftCharId}
           rightCharId={rightCharId}
@@ -353,87 +410,156 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
             />
           </CozyDiner3D>
         )}
+
+        {/* Dedicated Back Rim Light for Right Character (Crisp glowing silhouette for dark bots like Grok) */}
+        <pointLight
+          position={[1.3, 0.8, -1.2]}
+          intensity={2.4}
+          color={
+            rightCharId === "grok"
+              ? "#38BDF8"
+              : rightCharId === "gemini"
+              ? "#60A5FA"
+              : rightCharId === "claude"
+              ? "#F59E0B"
+              : "#38BDF8"
+          }
+          distance={5.0}
+          decay={1.8}
+        />
       </ThreeCanvas>
 
-      {/* 4. Upper-Third Dynamic Proof Card (Capped 3.0-5.0s, clears characters below) */}
-      {cardData && (
+      {/* 4. Upper-Third Dynamic Proof Card (Act 3: Turns 5-7, step-by-step row highlighting) */}
+      {cardData && isProofCardActive && (
         <DynamicProofCard
           cardData={cardData}
           startFrame={effectiveCardStart}
           durationFrames={cappedCardDuration}
+          activeStepIndex={activeStepIndex}
         />
       )}
 
-      {/* 5. Safe-Zone Subtitles (Upper-Middle top: 280px / Lower-Safe bottom: 320px when card active) */}
-      <CinematicSubtitles
-        activeTurn={activeTurn}
-        isProofCardActive={isProofCardActive}
-        speakerAccentColor={speakerAccentColor}
-        speakerDisplayName={speakerDisplayName}
-        isAI={isRightSpeaking || activeCharConfig?.type === "ai_orb"}
-      />
+      {/* 5. Animated iOS Notification Toast (Act 4: Turn 9, 3.5s duration) */}
+      {effectiveToastData && isToastActive && (
+        <NotificationToast
+          toastData={effectiveToastData}
+          startFrame={turn9StartFrame}
+          durationFrames={toastDurationFrames}
+        />
+      )}
 
-      {/* 6. End-Screen Auto-DM CTA Banner (Pulsing-free deterministic spring pill) */}
-      {isCtaActive && (
+      {/* 6. Safe-Zone Subtitles (Upper-Middle top: 280px / Lower-Safe bottom: 320px when card or toast is active) */}
+      {!isEndCardActive && (
+        <CinematicSubtitles
+          activeTurn={activeTurn}
+          isProofCardActive={isProofCardActive || isToastActive}
+          isCtaActive={false}
+          speakerAccentColor={speakerAccentColor}
+          speakerDisplayName={speakerDisplayName}
+          isAI={isRightSpeaking || activeCharConfig?.type === "ai_orb"}
+        />
+      )}
+
+      {/* 7. Clean 2.5s Black End-Card (Act 5: Final 75 frames, matching reference reels with zero subtitle overlap) */}
+      {isEndCardActive && (
         <div
           style={{
             position: "absolute",
-            bottom: 340,
-            left: "50%",
-            transform: `translateX(-50%) translateY(${(1 - ctaSpring) * 36}px) scale(${0.88 + 0.12 * ctaSpring})`,
-            opacity: Math.min(1, ctaSpring * 1.6),
-            zIndex: 110,
+            inset: 0,
+            backgroundColor: "#030712",
+            opacity: endCardFade,
+            zIndex: 120,
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: 16,
-            padding: "16px 36px",
-            borderRadius: 9999,
-            backgroundColor: "rgba(10, 15, 29, 0.94)",
-            border: "2px solid rgba(56, 189, 248, 0.75)",
-            boxShadow:
-              "0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(56, 189, 248, 0.35)",
-            backdropFilter: "blur(16px)",
+            justifyContent: "center",
+            padding: "0 60px",
+            textAlign: "center",
             pointerEvents: "none",
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
           }}
         >
-          <span style={{ fontSize: 34, lineHeight: 1 }}>💬</span>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-            <span
-              style={{
-                fontFamily: "Inter, -apple-system, system-ui, sans-serif",
-                fontSize: 28,
-                fontWeight: 800,
-                color: "#FFFFFF",
-                letterSpacing: "0.02em",
-                textTransform: "uppercase",
-              }}
-            >
-              Comment
-            </span>
-            <span
-              style={{
-                fontFamily: "Inter, -apple-system, system-ui, sans-serif",
-                fontSize: 32,
-                fontWeight: 900,
-                color: "#38BDF8",
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
-                textShadow: "0 0 16px rgba(56, 189, 248, 0.6)",
-              }}
-            >
-              {resolvedKeyword}
-            </span>
-            <span
-              style={{
-                fontFamily: "Inter, -apple-system, system-ui, sans-serif",
-                fontSize: 28,
-                fontWeight: 800,
-                color: "#E2E8F0",
-                letterSpacing: "0.02em",
-              }}
-            >
-              for the link
-            </span>
+          {/* Top Debate Question */}
+          <div
+            style={{
+              fontSize: 42,
+              fontWeight: 800,
+              color: "#F8FAFC",
+              lineHeight: 1.35,
+              maxWidth: 900,
+              marginBottom: 48,
+              letterSpacing: "-0.5px",
+              textShadow: "0 4px 20px rgba(0, 0, 0, 0.95)",
+            }}
+          >
+            {resolvedEndCardQuestion}
+          </div>
+
+          {/* Middle Highlight Auto-DM Pill */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              padding: "20px 48px",
+              borderRadius: 9999,
+              backgroundColor: "rgba(15, 23, 42, 0.96)",
+              border: "2px solid #38BDF8",
+              boxShadow:
+                "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 36px rgba(56, 189, 248, 0.45)",
+              marginBottom: 36,
+            }}
+          >
+            <span style={{ fontSize: 38, lineHeight: 1 }}>💬</span>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+              <span
+                style={{
+                  fontSize: 30,
+                  fontWeight: 800,
+                  color: "#FFFFFF",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                Comment
+              </span>
+              <span
+                style={{
+                  fontSize: 36,
+                  fontWeight: 900,
+                  color: "#38BDF8",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  textShadow: "0 0 20px rgba(56, 189, 248, 0.7)",
+                }}
+              >
+                {resolvedKeyword}
+              </span>
+              <span
+                style={{
+                  fontSize: 30,
+                  fontWeight: 800,
+                  color: "#E2E8F0",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                for the link
+              </span>
+            </div>
+          </div>
+
+          {/* Bottom Subtle Follow Prompt */}
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 700,
+              color: "#94A3B8",
+              letterSpacing: "0.8px",
+              textTransform: "uppercase",
+            }}
+          >
+            {endCard?.subtext || "Follow for Part 2"}
           </div>
         </div>
       )}

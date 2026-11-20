@@ -7,8 +7,8 @@ Performs 8 rigorous verification checks on rendered reels:
 4. Keyframe Animation Integrity (Checks 4 keyframes for non-blank, high-contrast, rendered elements)
 5. 9:16 Safe Zone Conformance (Avoids top audio tag and bottom handle overlays)
 6. Flicker / Frame-Stability Check (3 consecutive frames at 3 timestamps, <25% luminance variance)
-7. Overlay Duration & Occlusion Check (Proof card <= 5.0s, upper-third maxHeight <= 520px)
-8. Character-Voice Alignment & Isolation (Registry matched, distinct voices, isolated mouth envelopes, 18s-38s)
+7. Overlay Duration & Occlusion Check (Multi-step interactive proof card <= 14.0s, upper-third maxHeight <= 520px)
+8. Character-Voice Alignment & Isolation (Registry matched, distinct voices, isolated mouth envelopes, 35s-65s)
 
 Includes automatic remediation and retry loop!
 """
@@ -207,7 +207,7 @@ class QualityAuditorAgent:
 
     def check_overlay_bounds_and_duration(self, meta_path: Optional[str] = None) -> Dict[str, Any]:
         """
-        Check 7: Verifies proof cards stay within <= 5.0s duration and upper-third bounds (maxHeight <= 520px).
+        Check 7: Verifies multi-step interactive proof cards stay within <= 14.0s duration and upper-third bounds (maxHeight <= 520px).
         """
         reasons = []
         path = Path(meta_path) if meta_path else self.project_root / "my-edu-reels" / "public" / "video-meta.json"
@@ -233,19 +233,19 @@ class QualityAuditorAgent:
                     "reasons": []
                 }
 
-            duration_sec = card_data.get("durationSeconds", 4.0)
+            duration_sec = card_data.get("durationSeconds", 12.0)
             max_height = card_data.get("maxHeight", 520)
 
             passed = True
-            if duration_sec > 5.0:
-                reasons.append(f"Proof card duration ({duration_sec}s) exceeds the strict 5.0s retention cap")
+            if duration_sec > 14.0:
+                reasons.append(f"Proof card duration ({duration_sec}s) exceeds the multi-step interactive 14.0s cap")
                 passed = False
 
             if max_height > 520:
                 reasons.append(f"Proof card height ({max_height}px) exceeds the 520px upper-third safety zone")
                 passed = False
 
-            summary = f"Proof card <= 5.0s ({duration_sec:.1f}s) and upper-third bounded (maxHeight: {max_height}px)"
+            summary = f"Interactive proof card <= 14.0s ({duration_sec:.1f}s) and upper-third bounded (maxHeight: {max_height}px)"
             return {
                 "passed": passed,
                 "summary": summary,
@@ -269,7 +269,7 @@ class QualityAuditorAgent:
         - Every character_id exists in registry
         - Each speaking character has a unique voice ID
         - Isolated mouth_envelopes (non-speaking characters strictly 0.0)
-        - Total duration is within 18s-38s
+        - Total duration is within 35s-65s
         """
         reasons = []
         t_path = Path(timeline_path) if timeline_path else self.project_root / "my-edu-reels" / "public" / "timeline.json"
@@ -296,11 +296,11 @@ class QualityAuditorAgent:
 
             passed = True
 
-            # 1. Total duration within 18s - 38s
+            # 1. Total duration within 35s - 65s (2026 sweet spot)
             total_sec = timeline.get("total_duration_sec", 0.0)
-            if total_sec < 18.0 or total_sec > 38.0:
-                reasons.append(f"Total reel duration ({total_sec:.1f}s) outside viral window 18.0s - 38.0s")
-                if total_sec < 10.0 or total_sec > 45.0:
+            if total_sec < 35.0 or total_sec > 65.0:
+                reasons.append(f"Total reel duration ({total_sec:.1f}s) outside viral window 35.0s - 65.0s")
+                if total_sec < 25.0 or total_sec > 75.0:
                     passed = False
 
             # 2. Check each turn character exists in registry
@@ -482,7 +482,7 @@ class QualityAuditorAgent:
             for r in overlay_res.get("reasons", []):
                 reasons.append(f"Check 7 Warning: {r}")
         else:
-            checks_passed.append(f"Check 7 (Overlay Bounds): {overlay_res.get('summary', 'Upper-third proof card within 5.0s and 520px bounds')}")
+            checks_passed.append(f"Check 7 (Overlay Bounds): {overlay_res.get('summary', 'Upper-third interactive proof card within 14.0s and 520px bounds')}")
 
         # 8. Character-Voice Alignment & Isolation Audit
         alignment = self.check_character_voice_alignment()

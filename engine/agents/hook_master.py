@@ -1,17 +1,18 @@
 """
 HookMasterAgent (Master Agent 2: 0-3s Retention & Meme Screenplay Specialist)
-Executes a 2-step craft pass via Gemini 2.5 Flash:
+Executes a 2-step craft pass via Gemini 2.5 Flash / 3.5 Flash:
 1. Hook Battle: Writes 3 competing 0-3s hooks (<= 10 words each) across Curiosity Gap,
    Contrarian Callout, and Relatable Shock; scores each and crowns the #1 scroll-stopper.
-2. Screenplay: Writes a tight 6-7 turn dialogue (22-26s, <= 13 words/turn) strictly between
-   left_character and right_character with dry wit, concrete metrics, upper-third proof card
-   at Turn 3 (4.0s duration), and spoken Auto-DM CTA on the final turn.
+2. Screenplay: Writes a high-retention 11-13 turn dialogue (40-52s, 8-14 words/turn) strictly between
+   left_character and right_character following a 5-act viral arc with multi-step interactive proof card
+   highlighted row-by-row on Turns 5-7, iOS notification toast on Turn 9, spoken Auto-DM CTA, and 2.5s black end-card.
 """
 
 import os
 import sys
 import json
 import re
+import time
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
@@ -40,7 +41,7 @@ class HookMasterAgent:
         self,
         project_root: Optional[Path] = None,
         gemini_api_key: Optional[str] = None,
-        timeout: float = 30.0,
+        timeout: float = 50.0,
     ):
         self.project_root = Path(project_root or PROJECT_ROOT)
         self.timeout = timeout
@@ -52,7 +53,7 @@ class HookMasterAgent:
             try:
                 self.client = genai.Client(
                     api_key=self.api_key,
-                    http_options={"api_version": "v1beta", "timeout": 30000},
+                    http_options={"api_version": "v1beta", "timeout": 50000},
                 )
             except Exception as e:
                 print(f"⚠️ HookMaster: Gemini client init notice: {e}")
@@ -62,25 +63,36 @@ class HookMasterAgent:
     # =========================================================================
 
     def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """Calls Gemini 2.5 Flash with fallback to fast free-tier models and direct REST."""
-        models = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
+        """Calls Gemini with 2026 free-tier models, clean 50s timeout, 1 retry on 504/timeout, and logs model."""
+        models = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]
 
         if self.client:
             for m in models:
-                try:
-                    res = self.client.models.generate_content(
-                        model=m,
-                        contents=[prompt],
-                        config=dict(
-                            system_instruction=system_instruction,
-                            temperature=0.7,
-                            response_mime_type="application/json",
-                        ),
-                    )
-                    if res and res.text:
-                        return res.text
-                except Exception as e:
-                    print(f"⚠️ HookMaster: GenAI {m} warning: {e}")
+                for attempt in range(2):
+                    t0 = time.time()
+                    try:
+                        res = self.client.models.generate_content(
+                            model=m,
+                            contents=[prompt],
+                            config=dict(
+                                system_instruction=system_instruction,
+                                temperature=0.7,
+                                response_mime_type="application/json",
+                            ),
+                        )
+                        if res and res.text:
+                            elapsed = time.time() - t0
+                            print(f"✨ [HookMaster] Gemini model '{m}' succeeded in {elapsed:.2f}s ({len(res.text)} chars).")
+                            return res.text
+                    except Exception as e:
+                        err_str = str(e)
+                        is_504 = "504" in err_str or "DEADLINE_EXCEEDED" in err_str or "timeout" in err_str.lower()
+                        if is_504 and attempt == 0:
+                            print(f"⚠️ HookMaster: GenAI {m} hit 504/deadline, quick retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        print(f"⚠️ HookMaster: GenAI {m} warning: {e}")
+                        break
 
         if self.api_key:
             for m in models:
@@ -90,14 +102,33 @@ class HookMasterAgent:
                     "systemInstruction": {"parts": [{"text": system_instruction}]},
                     "generationConfig": {"temperature": 0.7, "responseMimeType": "application/json"},
                 }
-                try:
-                    r = requests.post(url, json=payload, headers=self.headers, timeout=25.0)
-                    if r.status_code == 200:
-                        parts = r.json().get("candidates", [])[0].get("content", {}).get("parts", [])
-                        if parts:
-                            return parts[0].get("text")
-                except Exception as e:
-                    print(f"⚠️ HookMaster: REST {m} warning: {e}")
+                for attempt in range(2):
+                    t0 = time.time()
+                    try:
+                        r = requests.post(url, json=payload, headers=self.headers, timeout=50.0)
+                        if r.status_code == 200:
+                            parts = r.json().get("candidates", [])[0].get("content", {}).get("parts", [])
+                            if parts:
+                                text = parts[0].get("text")
+                                elapsed = time.time() - t0
+                                print(f"✨ [HookMaster] REST Gemini model '{m}' succeeded in {elapsed:.2f}s ({len(text)} chars).")
+                                return text
+                        elif (r.status_code == 504 or "DEADLINE_EXCEEDED" in r.text) and attempt == 0:
+                            print(f"⚠️ HookMaster: REST {m} hit 504, quick retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        else:
+                            print(f"⚠️ HookMaster: REST {m} returned {r.status_code}: {r.text[:120]}")
+                            break
+                    except Exception as e:
+                        err_str = str(e)
+                        is_timeout = "timeout" in err_str.lower() or "504" in err_str
+                        if is_timeout and attempt == 0:
+                            print(f"⚠️ HookMaster: REST {m} timed out, quick retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        print(f"⚠️ HookMaster: REST {m} warning: {e}")
+                        break
 
         return None
 
@@ -180,9 +211,28 @@ JSON Schema:
                 print(f"⚠️ HookMaster: Hook battle parse error: {e}")
 
         # Deterministic fallback battle
-        fallback_h1 = f"You can play full {title[:25]} directly in Chrome."
-        fallback_h2 = f"Stop paying monthly subscriptions for {title[:20]}."
-        fallback_h3 = f"Why is nobody talking about {title[:25]}?"
+        cat_lower = str(category).lower() + " " + str(title).lower()
+        if "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
+            fallback_h1 = f"You can play full {title[:20]} in Chrome right now."
+            fallback_h2 = f"Zero downloads: {title[:22]} runs in browser."
+            fallback_h3 = f"Why did nobody tell me about {title[:20]}?"
+        elif "ai" in cat_lower or "llm" in cat_lower or "model" in cat_lower:
+            fallback_h1 = f"This free AI tool replaces $50 monthly software."
+            fallback_h2 = f"Stop overpaying for closed AI subscriptions."
+            fallback_h3 = f"How is this free AI model outperforming paid SaaS?"
+        elif "money" in cat_lower or "business" in cat_lower or "earn" in cat_lower or "margin" in cat_lower:
+            fallback_h1 = f"The secret way {title[:22]} prints millions."
+            fallback_h2 = f"Their free tier is actually a genius money trap."
+            fallback_h3 = f"Why every competitor went broke copying this."
+        elif "dad" in cat_lower:
+            fallback_h1 = f"Your dad's craziest tech fix actually works."
+            fallback_h2 = f"Never call IT support for this again."
+            fallback_h3 = f"My dad solved this in ninety seconds."
+        else:
+            fallback_h1 = f"Why is nobody talking about this {title[:20]} trick?"
+            fallback_h2 = f"This single zero-dollar tool changes everything."
+            fallback_h3 = f"Stop doing this manually when {title[:18]} exists."
+
         return {
             "hooks": [
                 {"type": "curiosity_gap", "hook": fallback_h1, "score": 92, "critique": "High direct utility"},
@@ -195,7 +245,8 @@ JSON Schema:
         }
 
     # =========================================================================
-    # STEP B: TIGHT MEME SCREENPLAY (6-7 Turns, Proof Card, Spoken CTA)
+    # =========================================================================
+    # STEP B: 5-ACT VIRAL MEME SCREENPLAY (11-13 Turns, Multi-Step Proof Card, Toast, End-Card)
     # =========================================================================
 
     def craft_screenplay(
@@ -204,11 +255,12 @@ JSON Schema:
         hook_battle_result: Dict[str, Any],
     ) -> Dict[str, Any]:
         """
-        Writes a tight 6-7 turn dialogue (22-26s, <= 13 words/turn) strictly between
-        left_character and right_character.
-        Turn 0 uses winning_hook.
-        Turn 3 triggers upper-third cardData for 4.0s.
-        Final turn ends with spoken CTA: 'Comment [KEYWORD] and I'll DM you the link.'
+        Writes an 11-13 turn dialogue (40-52s, 8-14 words/turn) following a strict 5-act viral arc:
+        - Act 1 (Turns 0-1): Scroll-Stop Hook & Immediate Reaction
+        - Act 2 (Turns 2-4): Hype vs. Reality & Escalation (Skepticism -> Mechanism)
+        - Act 3 (Turns 5-7): Step-by-Step Interactive Proof Card (Highlights Row 1 on Turn 5, Row 2 on Turn 6, Row 3 on Turn 7)
+        - Act 4 (Turns 8-10): Meme Twist + Animated iOS Notification Toast on Turn 9
+        - Act 5 (Turns 11-12): Spoken CTA + 2.5s Clean Black End-Card Cliffhanger
         """
         title = topic.get("title") or topic.get("topic_title")
         left_char = topic.get("left_character", "junior_dev")
@@ -219,16 +271,21 @@ JSON Schema:
         category = topic.get("category", "Tech")
 
         system_instruction = (
-            "You are HookMaster: Screenplay & Dialogue Specialist for 9:16 vertical 3D reels.\n"
-            "Your objective: Write high-retention, comedic dialogue that feels authentic, funny, and informative.\n\n"
-            "STRICT SCREENPLAY RULES:\n"
-            "1. EXACTLY 6 TO 7 TURNS: Target duration 22-26 seconds.\n"
-            "2. MAXIMUM 13 WORDS PER TURN: Keep lines snappy, rhythmic, and punchy.\n"
+            "You are HookMaster: Screenplay & Dialogue Specialist for 9:16 vertical 3D dialogue reels.\n"
+            "Your objective: Write high-retention 40-52 second screenplays modeled on viral 2026 tech reels.\n\n"
+            "STRICT 5-ACT SCREENPLAY RULES:\n"
+            "1. EXACTLY 11 TO 13 SNAPPY TURNS (40-52 seconds total).\n"
+            "2. 8 TO 14 WORDS PER TURN: Crisp, rhythmic, conversational, funny, and educational.\n"
             "3. STRICT 2-CHARACTER ALTERNATION: Alternate strictly between left_character and right_character.\n"
-            "4. DRY WIT & CONCRETE FACTS: Use specific numbers, memory stats, or dollar amounts. Never robotic fluff.\n"
-            "5. UPPER-THIRD CARD TRIGGER: Exactly Turn 3 must have 'cardTrigger': true and 'cardDuration': 4.0.\n"
-            "6. FINAL TURN SPOKEN CTA: Final turn MUST end naturally with spoken: 'Comment " + kw + " and I'll DM you the link.'\n"
-            "7. SCENE PRESET: Keep scenePreset matching requested preset ('diner' or 'desk')."
+            "4. 5-ACT NARRATIVE STRUCTURE:\n"
+            "   - Act 1 (Turns 0-1, 0-5s): Turn 0 is winning hook (<= 10 words). Turn 1 is immediate reaction.\n"
+            "   - Act 2 (Turns 2-4, 5-16s): Skeptical challenge, calling out the catch, dropping surprising mechanism.\n"
+            "   - Act 3 (Turns 5-7, 16-30s): Upper-third proof card open! Row 1 explained on Turn 5, Row 2 on Turn 6, Row 3 on Turn 7.\n"
+            "   - Act 4 (Turns 8-10, 30-43s): Relatable twist & real consequence backed by an iOS Notification Toast sliding in on Turn 9.\n"
+            "   - Act 5 (Turns 11-12, 43-50s): Final punchline + spoken: 'Comment " + kw + " and I'll DM you the link.'\n"
+            "5. NO ROBOTIC FLUFF: Concrete numbers, memory limits, real SaaS fees, or hilarious developer truths.\n"
+            "6. TOAST DATA: Supply toastData (app_name, sender, message, icon) triggered on Turn 9.\n"
+            "7. END-CARD: Supply endCard question (e.g. 'Would you switch to OpenRouter?') for the 2.5s black cliffhanger."
         )
 
         prompt = f"""
@@ -240,11 +297,11 @@ Scene Preset: {scene_preset}
 Auto-DM Keyword: {kw}
 
 TASK:
-Write the complete Remotion screenplay JSON with exactly 6 snappy dialogue turns.
-Turn 0 MUST be {left_char} speaking the winning hook.
-Turn 3 MUST trigger the proof card (`cardTrigger`: true, `cardDuration`: 4.0).
-Turn 5 (Final Turn) MUST be {right_char} delivering the punchline and closing with:
-"Comment {kw} and I'll DM you the link."
+Write the complete 5-act Remotion screenplay JSON with 11-12 snappy dialogue turns.
+- Turn 0 MUST be {left_char} speaking: "{winning_hook}"
+- Turns 5, 6, 7 MUST sequentially explain and highlight Rows 1, 2, and 3 of the Proof Card.
+- Turn 9 MUST introduce the Meme Twist supported by the iOS Notification Toast.
+- Final Turn MUST end with: "Comment {kw} and I'll DM you the link."
 
 JSON Schema:
 {{
@@ -262,11 +319,47 @@ JSON Schema:
   "cta_phrase": "Comment {kw} and I'll DM you the link.",
   "cardType": "comparison",
   "badge": "VERIFIED PROOF",
-  "explainerTitle": "Proof Card Title",
+  "explainerTitle": "{title[:24]} Specs",
   "cardData": {{
-    "point_1": "Concrete metric or comparison",
-    "point_2": "Crucial technical detail",
-    "point_3": "The surprising reality"
+    "title": "{title[:24]} Breakdown",
+    "subtitle": "Step-by-step verified specs",
+    "badge": "VERIFIED PROOF",
+    "rows": [
+      {{
+        "label": "Step 1: Access / Core Tech",
+        "value": "Concrete metric or spec",
+        "status": "VERIFIED",
+        "isPositive": true
+      }},
+      {{
+        "label": "Step 2: Performance / Catch",
+        "value": "Speed or cost comparison",
+        "status": "VERIFIED",
+        "isPositive": true
+      }},
+      {{
+        "label": "Step 3: Bottom Line",
+        "value": "Real-world result",
+        "status": "PROVEN",
+        "isPositive": true
+      }}
+    ],
+    "startTurn": 5,
+    "endTurn": 7,
+    "durationSeconds": 12.0
+  }},
+  "toastData": {{
+    "app_name": "Slack",
+    "sender": "Tech Lead",
+    "message": "Funny punchy 1-line reaction or consequence",
+    "icon": "💬",
+    "time": "now"
+  }},
+  "endCard": {{
+    "question": "Short debate question for the audience?",
+    "keyword": "{kw}",
+    "cta_text": "Comment {kw} for the link",
+    "subtext": "Follow for Part 2"
   }},
   "hook": {{
     "headline": "{title.upper()[:35]}",
@@ -274,12 +367,18 @@ JSON Schema:
     "tag": "⚠️ VIRAL REAL TALK"
   }},
   "dialogue": [
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "{winning_hook}", "emotion": "shocked", "pause_after": 0.35}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Snappy response <= 13 words", "emotion": "smug", "pause_after": 0.35}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Comedic comeback <= 13 words", "emotion": "shocked", "pause_after": 0.35}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Proof reveal <= 13 words", "emotion": "smug", "cardTrigger": true, "cardDuration": 4.0, "pause_after": 0.40}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Realization or reaction <= 13 words", "emotion": "shocked", "pause_after": 0.35}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Punchline. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}}
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "{winning_hook}", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Snappy reaction 8-14 words", "emotion": "smug", "pause_after": 0.30}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Skeptical challenge calling out catch 8-14 words", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Drops surprising truth or mechanism 8-14 words", "emotion": "smug", "pause_after": 0.30}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Demands proof or asks how it works 8-14 words", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Explains Step 1 matching Row 1 8-14 words", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Reacts to Step 2 matching Row 2 8-14 words", "emotion": "shocked", "pause_after": 0.35}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Delivers Step 3 matching Row 3 8-14 words", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Disbelief or realization 8-14 words", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Meme twist or real consequence 8-14 words", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Panicked or funny reaction 8-14 words", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Dry punchline. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}}
   ]
 }}
 """
@@ -293,7 +392,7 @@ JSON Schema:
                     cleaned = re.sub(r"^```(?:json)?\n", "", cleaned)
                     cleaned = re.sub(r"\n```$", "", cleaned)
                 parsed = json.loads(cleaned.strip())
-                if "dialogue" in parsed and len(parsed["dialogue"]) >= 5:
+                if "dialogue" in parsed and len(parsed["dialogue"]) >= 11:
                     screenplay = parsed
             except Exception as e:
                 print(f"⚠️ HookMaster: Screenplay parse error: {e}")
@@ -313,6 +412,54 @@ JSON Schema:
         screenplay["cta_text"] = f"💬 Comment {kw} for the link"
         screenplay["ctaText"] = f"💬 Comment {kw} for the link"
 
+        # Ensure cardData exists and has multi-step structure
+        if not screenplay.get("cardData") or not isinstance(screenplay["cardData"], dict):
+            screenplay["cardData"] = {}
+        card_d = screenplay["cardData"]
+        card_d.setdefault("title", f"{title[:24]} Breakdown")
+        card_d.setdefault("subtitle", "Step-by-step verified specs")
+        card_d.setdefault("badge", "VERIFIED PROOF")
+        card_d.setdefault("startTurn", 5)
+        card_d.setdefault("endTurn", 7)
+        card_d.setdefault("durationSeconds", 12.0)
+        if "rows" not in card_d or not isinstance(card_d["rows"], list) or len(card_d["rows"]) < 3:
+            card_d["rows"] = [
+                {"label": "Step 1: Core Engine", "value": "Direct In-Browser Zero Cost", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 2: Performance", "value": "10x Faster Execution Speed", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 3: Bottom Line", "value": "Zero Subscription Needed", "status": "PROVEN", "isPositive": True},
+            ]
+        card_d["items"] = card_d["rows"]
+
+        # Ensure toastData exists
+        if not screenplay.get("toastData") or not isinstance(screenplay["toastData"], dict):
+            screenplay["toastData"] = {
+                "app_name": "Slack",
+                "sender": "Tech Lead",
+                "message": f"Why is our team using {title[:18]} in production?",
+                "icon": "💬",
+                "time": "now",
+            }
+        else:
+            screenplay["toastData"].setdefault("app_name", "Slack")
+            screenplay["toastData"].setdefault("sender", "Tech Lead")
+            screenplay["toastData"].setdefault("message", f"Check {title[:18]} right now!")
+            screenplay["toastData"].setdefault("icon", "💬")
+            screenplay["toastData"].setdefault("time", "now")
+
+        # Ensure endCard exists
+        if not screenplay.get("endCard") or not isinstance(screenplay["endCard"], dict):
+            screenplay["endCard"] = {
+                "question": f"Would you try {title[:25]}?",
+                "keyword": kw,
+                "cta_text": f"Comment {kw} for the link",
+                "subtext": "Follow for Part 2",
+            }
+        else:
+            screenplay["endCard"].setdefault("question", f"Would you try {title[:25]}?")
+            screenplay["endCard"]["keyword"] = kw
+            screenplay["endCard"]["cta_text"] = f"Comment {kw} for the link"
+            screenplay["endCard"].setdefault("subtext", "Follow for Part 2")
+
         # Attach metadata
         screenplay["hook_battle"] = hook_battle_result
         screenplay["winning_hook"] = winning_hook
@@ -330,8 +477,180 @@ JSON Schema:
         scene_preset: str,
         kw: str,
     ) -> Dict[str, Any]:
-        """Deterministic broadcast-grade fallback screenplay."""
-        title = topic.get("title", "Daily Tech Breakdown")
+        """Deterministic, topic-aware broadcast-grade 12-turn 5-act fallback screenplay."""
+        title = topic.get("title") or topic.get("topic_title") or "Daily Tech Breakdown"
+        category = topic.get("category", "")
+        cat_lower = (str(category) + " " + str(title)).lower()
+
+        if "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
+            badge = "EMULATION STATS"
+            card_title = f"{title[:22]} Specs"
+            rows = [
+                {"label": "Step 1: Core Engine", "value": "100% In-Browser WebAssembly", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 2: Framerate", "value": "Locked 60 FPS in Chrome", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 3: Storage", "value": "Zero Local Downloads Needed", "status": "PROVEN", "isPositive": True},
+            ]
+            toast = {
+                "app_name": "Steam",
+                "sender": "Friend",
+                "message": "Did you seriously boot Windows 95 inside Google Chrome?",
+                "icon": "🎮",
+                "time": "now",
+            }
+            end_question = "Which classic retro game should be ported next?"
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "It is real. Someone ported the full machine architecture to WebAssembly.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Come on, running a full desktop operating system in a tab must crawl.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "V8 JIT compilation compiles the x86 instructions directly into near-native machine code.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "I need proof before I open this on my work laptop.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Step one on screen: it runs pure WebAssembly with zero extensions installed.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two says locked sixty frames per second without stuttering?", "emotion": "shocked", "pause_after": 0.35},
+                {"speaker": right_char, "character_id": right_char, "text": "And step three: zero local disk storage. The entire disk image streams instantly.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "This means retro emulation just became entirely frictionless for everyone.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Watch this: my teammate just messaged me asking how I did it.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "If IT checks browser memory right now, I am getting promoted.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": f"Play it yourself right now. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40},
+            ]
+        elif "ai" in cat_lower or "llm" in cat_lower or "model" in cat_lower:
+            badge = "AI WORKFLOW STATS"
+            card_title = f"{title[:22]} Specs"
+            rows = [
+                {"label": "Step 1: Open Weights", "value": "100% Free Apache-2.0 License", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 2: Cloud Cost", "value": "Saves $40/mo in Closed SaaS", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 3: Inference Speed", "value": "Under 18ms First Token Latency", "status": "PROVEN", "isPositive": True},
+            ]
+            toast = {
+                "app_name": "Slack",
+                "sender": "Tech Lead",
+                "message": "Our OpenAI billing invoice just dropped by eighty percent.",
+                "icon": "⚡",
+                "time": "now",
+            }
+            end_question = "Would you switch your production pipeline to this free model?"
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "You can replace that expensive monthly cloud subscription completely for free.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Every free open model claims that until you see the terrible hallucination rate.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "They distilled the reasoning tokens directly from frontier models with verified benchmarks.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Show me the real breakdown before I cancel my subscription.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Step one on screen: full open weights under an Apache license with no catch.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Step two saves forty dollars every month on single-seat developer licenses?", "emotion": "shocked", "pause_after": 0.35},
+                {"speaker": right_char, "character_id": right_char, "text": "And step three: eighteen millisecond latency because it runs locally on your machine.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "I am literally paying two different corporate providers for worse performance.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Check your notifications: the lead engineer just noticed the savings.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "My subscription cancellation emails are already queued up and sending.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": f"Grab the setup guide right now. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40},
+            ]
+        elif "money" in cat_lower or "business" in cat_lower or "earn" in cat_lower or "margin" in cat_lower:
+            badge = "FINANCIAL TEARDOWN"
+            card_title = f"{title[:22]} Economics"
+            rows = [
+                {"label": "Step 1: Front Product", "value": "100% Free Public Loss Leader", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 2: Gross Margin", "value": "Over 85% on Enterprise Upgrades", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 3: Cash Generated", "value": "Nine Figures on Zero Paid Ads", "status": "PROVEN", "isPositive": True},
+            ]
+            toast = {
+                "app_name": "Stripe",
+                "sender": "Billing Alert",
+                "message": "New Enterprise annual contract activated: $120,000.",
+                "icon": "💰",
+                "time": "now",
+            }
+            end_question = "Is this freemium flywheel the smartest business model in tech?"
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Their actual revenue model is the opposite of what casual users assume.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "If their core software is totally free, how are they funding massive clusters?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "The free tool is a Trojan horse that funnels corporate enterprise contracts.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Break down the exact math before I believe this.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Step one on screen: the consumer tier has near-zero marginal bandwidth cost.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Step two shows eighty-five percent margins once companies mandate compliance?", "emotion": "shocked", "pause_after": 0.35},
+                {"speaker": right_char, "character_id": right_char, "text": "Step three: they print hundreds of millions with zero dollars in paid marketing.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Every startup trying to charge twenty dollars upfront just got completely destroyed.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Look at the Stripe alert that just popped in. Pure organic inbound.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "I am never looking at consumer software pricing the same way again.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": f"Read the full financial teardown. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40},
+            ]
+        elif "dad" in cat_lower:
+            badge = "VERIFIED FIX"
+            card_title = f"{title[:22]} Fix"
+            rows = [
+                {"label": "Step 1: Zero Hardware", "value": "$0 Spent on New Modems", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 2: Time to Fix", "value": "Solved in Under 90 Seconds", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 3: Reliability", "value": "Zero Drops or Reboots All Week", "status": "PROVEN", "isPositive": True},
+            ]
+            toast = {
+                "app_name": "Messages",
+                "sender": "Dad",
+                "message": "Wi-Fi is working! Don't touch any cables ever again.",
+                "icon": "👨‍👧",
+                "time": "now",
+            }
+            end_question = "What is the wildest tech fix your dad ever tried?"
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Listen to me: you do not need to replace the entire network router.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "My dad has been power cycling the modem twelve times every single morning.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "It was never the hardware. The ISP default DNS was timing out constantly.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Show me the fix before he cuts all the ethernet cables.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Step one on screen: you spend exactly zero dollars on replacement hardware.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Step two says changing this single address fixes it in ninety seconds?", "emotion": "shocked", "pause_after": 0.35},
+                {"speaker": right_char, "character_id": right_char, "text": "Step three: rock solid connection with zero dropped packets all week long.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "He literally spent four hours yelling at customer support over this.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Look at the message that just arrived. He thinks he is a genius.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "I am quietly saving this before he tries reformatting the refrigerator.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": f"Share this fix right now. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40},
+            ]
+        else:
+            badge = "TECH BREAKDOWN"
+            card_title = f"{title[:22]} Specs"
+            rows = [
+                {"label": "Step 1: Direct Access", "value": "100% Free Public Availability", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 2: Deployment", "value": "Runs Instantly With Zero Bloat", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 3: Efficiency", "value": "10x Faster Than Legacy Approaches", "status": "PROVEN", "isPositive": True},
+            ]
+            toast = {
+                "app_name": "GitHub",
+                "sender": "Repo Alert",
+                "message": "Trending #1 worldwide with 12,000 new stars today.",
+                "icon": "⭐",
+                "time": "now",
+            }
+            end_question = "Would you integrate this into your daily workflow?"
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "This just dropped publicly with zero corporate paywall or sign-up barrier.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": f"Why is nobody talking about this {title.split()[0]} tool yet?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Because legacy vendors want you locked into their bloated closed ecosystem.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Check the numbers right now before I commit to anything.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Step one on screen: completely open and accessible directly in your browser.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Step two shows instant execution with zero external runtime dependencies?", "emotion": "shocked", "pause_after": 0.35},
+                {"speaker": right_char, "character_id": right_char, "text": "Step three: ten times faster throughput than standard enterprise solutions.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "This completely redefines how modern developers solve this problem.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Look at GitHub right now: it is already trending number one globally.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "I am bookmarking this immediately before everyone else floods the servers.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": f"Grab the free link now. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40},
+            ]
+
+        card_data = {
+            "title": card_title,
+            "subtitle": f"{title[:28]} Breakdown",
+            "badge": badge,
+            "rows": rows,
+            "items": rows,
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0,
+        }
+
+        end_card = {
+            "question": end_question,
+            "keyword": kw,
+            "cta_text": f"Comment {kw} for the link",
+            "subtext": "Follow for Part 2",
+        }
+
         return {
             "title": title[:50],
             "style": scene_preset,
@@ -343,26 +662,17 @@ JSON Schema:
             "cta_keyword": kw,
             "cta_phrase": f"Comment {kw} and I'll DM you the link.",
             "cardType": "comparison",
-            "badge": "VERIFIED PROOF",
-            "explainerTitle": f"{title[:25]} Breakdown",
-            "cardData": {
-                "metric_1": "100% Free WebAssembly Port",
-                "metric_2": "Zero installation needed",
-                "metric_3": "Runs smoothly in Google Chrome",
-            },
+            "badge": badge,
+            "explainerTitle": card_title,
+            "cardData": card_data,
+            "toastData": toast,
+            "endCard": end_card,
             "hook": {
                 "headline": title.upper()[:35],
                 "subheadline": hook,
                 "tag": "⚠️ REAL TALK",
             },
-            "dialogue": [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "It is live right now with zero downloads.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Is this actually playable or just Twitter hype?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at the numbers on screen.", "emotion": "smug", "cardTrigger": True, "cardDuration": 4.0, "pause_after": 0.40},
-                {"speaker": left_char, "character_id": left_char, "text": "My laptop struggles with Slack but runs this fine.", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": f"Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40},
-            ],
+            "dialogue": dialogue,
         }
 
     # =========================================================================
@@ -373,7 +683,7 @@ JSON Schema:
         """
         Executes the full 2-step craft pass:
         1. Hook Battle (3 competing hooks scored -> 1 winner)
-        2. Screenplay (6 turns dialogue, proof card, spoken CTA)
+        2. Screenplay (11-13 turns 5-act viral dialogue, multi-step card, toast, end-card)
         """
         print(f"\n⚡ [HookMaster] Initiating Hook Battle for topic: '{topic.get('title')}'...")
         battle = self.conduct_hook_battle(topic)
@@ -382,7 +692,7 @@ JSON Schema:
         for h in battle.get("hooks", []):
             print(f"   • [{h.get('type')}] Score {h.get('score')}: \"{h.get('hook')}\"")
 
-        print(f"✍️ [HookMaster] Writing 6-turn tight Remotion screenplay...")
+        print(f"✍️ [HookMaster] Writing 5-act (11-13 turn, 40-52s) Remotion screenplay...")
         screenplay = self.craft_screenplay(topic, battle)
         print(f"🎬 [HookMaster] Screenplay ready! (Turns: {len(screenplay.get('dialogue', []))}, Preset: {screenplay.get('scenePreset')}, Cast: {screenplay['leftCharacterId']}&{screenplay['rightCharacterId']})")
         return screenplay

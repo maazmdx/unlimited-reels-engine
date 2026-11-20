@@ -5,6 +5,7 @@ export interface CardProofItem {
   label: string;
   value: string;
   badge?: string;
+  status?: string;
   isPositive?: boolean;
 }
 
@@ -16,40 +17,47 @@ export interface DynamicCardData {
   codeSnippet?: string;
   language?: string;
   items?: CardProofItem[];
+  rows?: CardProofItem[];
   highlight?: string;
   durationSeconds?: number;
   startFrame?: number;
+  durationFrames?: number;
 }
 
 export interface DynamicProofCardProps {
   cardData?: DynamicCardData | null;
   startFrame?: number;
   durationFrames?: number;
+  activeStepIndex?: number;
 }
 
 /**
  * DynamicProofCard:
- * - Upper-third positioning (top: 220px, maxHeight: 520px, width: 920px), perfectly clearing seated characters below.
- * - macOS / terminal dark frosted window with traffic lights, title badge, and dynamic code / benchmark proofs.
- * - Strict duration cap: 3.0s - 5.0s max (90 - 150 frames @ 30fps).
- * - Zero flicker: 0 Math.random(), 0 CSS transition, 0 frame % N spring resets.
+ * - High-contrast light-mode frosted browser card (#F8FAFC with dark #0F172A text).
+ * - Upper-third positioning (top: 220px, maxHeight: 500px, width: 920px), perfectly clearing seated characters.
+ * - Dynamic Step-by-Step highlighting: highlights Row 1 on Turn 5, Row 2 on Turn 6, Row 3 on Turn 7.
+ * - Pops cleanly against dark diner and desk backgrounds.
+ * - Renders ONLY dynamic topic-specific cardData passed from HookMaster / SceneDirector.
  */
 export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   cardData,
   startFrame = 90,
-  durationFrames = 120, // default 4.0s @ 30fps
+  durationFrames = 360, // default ~12.0s @ 30fps for 3-turn interactive proof
+  activeStepIndex,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   if (!cardData) return null;
 
-  // Strict duration capping: clamp duration between 90 and 150 frames (3.0s - 5.0s max)
+  // Strict duration capping: allow interactive multi-step proof up to 14.0s (420 frames @ 30fps)
   const effectiveStart = cardData.startFrame ?? startFrame;
-  const requestedDuration = cardData.durationSeconds
-    ? Math.round(cardData.durationSeconds * fps)
-    : durationFrames;
-  const cappedDuration = Math.min(Math.max(requestedDuration, 90), 150);
+  const requestedDuration =
+    durationFrames ??
+    (cardData.durationSeconds
+      ? Math.round(cardData.durationSeconds * fps)
+      : cardData.durationFrames ?? 360);
+  const cappedDuration = Math.min(Math.max(requestedDuration, 60), 420);
   const effectiveEnd = effectiveStart + cappedDuration;
 
   // Card visibility check
@@ -81,9 +89,43 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   const translateY = interpolate(entrance, [0, 1], [-40, 0]) + exitSlide;
   const scale = interpolate(entrance, [0, 1], [0.94, 1.0]);
 
-  const title = cardData.title || "Autonomous Multi-Agent Speedup";
-  const badge = cardData.badge || "PROVEN ARCHITECTURE";
-  const type = cardData.type || (cardData.codeSnippet ? "code" : "benchmark");
+  // Extract topic-specific rows/items
+  const rawItems = cardData.rows || cardData.items;
+  let items: CardProofItem[] = [];
+
+  if (rawItems && Array.isArray(rawItems) && rawItems.length > 0) {
+    items = rawItems;
+  } else {
+    // If cardData has direct custom key/value pairs (e.g. point_1, engine, etc.), normalize them
+    const ignoredKeys = new Set([
+      "title",
+      "subtitle",
+      "badge",
+      "type",
+      "codeSnippet",
+      "language",
+      "items",
+      "rows",
+      "highlight",
+      "durationSeconds",
+      "startFrame",
+      "durationFrames",
+    ]);
+    const customEntries = Object.entries(cardData).filter(([k]) => !ignoredKeys.has(k));
+    if (customEntries.length > 0) {
+      items = customEntries.slice(0, 3).map(([k, v]) => ({
+        label: k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        value: String(v),
+        badge: "VERIFIED",
+        status: "VERIFIED",
+        isPositive: true,
+      }));
+    }
+  }
+
+  const title = cardData.title || (cardData.subtitle ? `${cardData.subtitle.slice(0, 26)} Specs` : "Verified Tech Specs");
+  const badge = cardData.badge || "VERIFIED PROOF";
+  const type = cardData.type || (cardData.codeSnippet ? "code" : "comparison");
 
   return (
     <div
@@ -92,7 +134,7 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
         top: 220,
         left: 80,
         width: 920,
-        maxHeight: 520,
+        maxHeight: 500,
         zIndex: 80,
         opacity,
         transform: `translateY(${translateY}px) scale(${scale})`,
@@ -103,12 +145,12 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
     >
       <div
         style={{
-          background: "rgba(13, 17, 28, 0.94)",
+          background: "rgba(248, 250, 252, 0.96)",
           backdropFilter: "blur(24px)",
           borderRadius: 22,
-          border: "1px solid rgba(56, 189, 248, 0.28)",
+          border: "2px solid rgba(255, 255, 255, 0.95)",
           boxShadow:
-            "0 24px 60px rgba(0, 0, 0, 0.8), 0 0 45px rgba(56, 189, 248, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.15)",
+            "0 28px 70px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.3), inset 0 1px 2px rgba(255, 255, 255, 1)",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
@@ -117,39 +159,39 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
         {/* Window Titlebar */}
         <div
           style={{
-            height: 48,
-            backgroundColor: "rgba(18, 24, 38, 0.98)",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            height: 52,
+            backgroundColor: "rgba(241, 245, 249, 0.98)",
+            borderBottom: "1px solid rgba(203, 213, 225, 0.8)",
             display: "flex",
             alignItems: "center",
-            padding: "0 18px",
+            padding: "0 20px",
             justifyContent: "space-between",
           }}
         >
           {/* macOS Traffic Lights */}
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <div style={{ width: 12, height: 12, borderRadius: "50%", backgroundColor: "#EF4444" }} />
-            <div style={{ width: 12, height: 12, borderRadius: "50%", backgroundColor: "#F59E0B" }} />
-            <div style={{ width: 12, height: 12, borderRadius: "50%", backgroundColor: "#10B981" }} />
+            <div style={{ width: 13, height: 13, borderRadius: "50%", backgroundColor: "#EF4444" }} />
+            <div style={{ width: 13, height: 13, borderRadius: "50%", backgroundColor: "#F59E0B" }} />
+            <div style={{ width: 13, height: 13, borderRadius: "50%", backgroundColor: "#10B981" }} />
             <span
               style={{
                 marginLeft: 14,
                 fontSize: 14,
-                fontWeight: 600,
-                color: "#94A3B8",
+                fontWeight: 700,
+                color: "#64748B",
                 letterSpacing: "0.2px",
               }}
             >
-              {cardData.language ? `proof.${cardData.language}` : "proof.tsx"}
+              {cardData.language ? `proof.${cardData.language}` : "proof.verified"}
             </span>
           </div>
 
           {/* Window Center Title */}
           <div
             style={{
-              fontSize: 15,
-              fontWeight: 700,
-              color: "#F8FAFC",
+              fontSize: 16,
+              fontWeight: 800,
+              color: "#0F172A",
               letterSpacing: "0.4px",
               textTransform: "uppercase",
             }}
@@ -160,15 +202,14 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
           {/* Badge Pill */}
           <div
             style={{
-              backgroundColor: "rgba(14, 165, 233, 0.2)",
-              border: "1px solid rgba(56, 189, 248, 0.5)",
-              color: "#38BDF8",
-              padding: "4px 12px",
+              backgroundColor: "#0284C7",
+              color: "#FFFFFF",
+              padding: "5px 14px",
               borderRadius: 12,
               fontSize: 12,
               fontWeight: 800,
               letterSpacing: "0.8px",
-              boxShadow: "0 0 12px rgba(56, 189, 248, 0.35)",
+              boxShadow: "0 2px 8px rgba(2, 132, 199, 0.35)",
             }}
           >
             {badge}
@@ -176,18 +217,32 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
         </div>
 
         {/* Content Body */}
-        <div style={{ padding: "20px 24px", color: "#E2E8F0" }}>
+        <div style={{ padding: "20px 24px", color: "#0F172A" }}>
+          {cardData.subtitle && (
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 600,
+                color: "#475569",
+                marginBottom: 14,
+                letterSpacing: "-0.2px",
+              }}
+            >
+              {cardData.subtitle}
+            </div>
+          )}
+
           {type === "code" && cardData.codeSnippet ? (
             <div
               style={{
-                backgroundColor: "rgba(6, 9, 16, 0.85)",
+                backgroundColor: "#0F172A",
                 borderRadius: 14,
                 padding: "16px 20px",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                border: "1px solid rgba(15, 23, 42, 0.9)",
                 fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
                 fontSize: 17,
                 lineHeight: 1.5,
-                color: "#F1F5F9",
+                color: "#F8FAFC",
                 whiteSpace: "pre-wrap",
                 boxShadow: "inset 0 2px 6px rgba(0,0,0,0.5)",
               }}
@@ -195,65 +250,104 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
               {cardData.codeSnippet}
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {/* Benchmark comparison rows */}
-              {(cardData.items || [
-                { label: "Junior Manual Loop", value: "6h 40m", badge: "FATIGUED", isPositive: false },
-                { label: "Antigravity Multi-Agent", value: "48s", badge: "340x FASTER", isPositive: true },
-                { label: "Cost & API Spend", value: "$0.00", badge: "GEMINI FLASH", isPositive: true },
-              ]).map((item, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    backgroundColor: item.isPositive
-                      ? "rgba(16, 185, 129, 0.12)"
-                      : "rgba(239, 68, 68, 0.12)",
-                    border: item.isPositive
-                      ? "1px solid rgba(16, 185, 129, 0.35)"
-                      : "1px solid rgba(239, 68, 68, 0.3)",
-                    borderRadius: 14,
-                    padding: "12px 20px",
-                  }}
-                >
-                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: "#CBD5E1" }}>
-                      {item.label}
-                    </span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {items.map((item, idx) => {
+                const isStepMode = activeStepIndex !== undefined;
+                const isCurrent = isStepMode && idx === activeStepIndex;
+                const isPast = isStepMode && idx < activeStepIndex;
+                const isFuture = isStepMode && idx > activeStepIndex;
+                const isPos = item.isPositive !== false;
+
+                // Step-by-step interactive styling
+                let rowBg = isPos ? "rgba(241, 245, 249, 0.95)" : "rgba(254, 242, 242, 0.95)";
+                let rowBorder = isPos ? "1px solid rgba(203, 213, 225, 0.9)" : "1px solid rgba(252, 165, 165, 0.8)";
+                let rowShadow = "none";
+                let rowOpacity = 1.0;
+                let badgeBg = isPos ? "#0F172A" : "#DC2626";
+                let badgeText = item.badge || item.status || "VERIFIED";
+
+                if (isCurrent) {
+                  rowBg = "rgba(240, 249, 255, 0.98)";
+                  rowBorder = "2px solid #0284C7";
+                  rowShadow = "0 4px 18px rgba(2, 132, 199, 0.25), inset 0 0 12px rgba(56, 189, 248, 0.12)";
+                  badgeBg = "#0284C7";
+                  badgeText = item.status || "ACTIVE";
+                } else if (isPast) {
+                  rowBg = "rgba(240, 253, 244, 0.95)";
+                  rowBorder = "1px solid rgba(134, 239, 172, 0.85)";
+                  badgeBg = "#16A34A";
+                  badgeText = "✓ CHECKED";
+                } else if (isFuture) {
+                  rowBg = "rgba(248, 250, 252, 0.65)";
+                  rowBorder = "1px solid rgba(226, 232, 240, 0.6)";
+                  rowOpacity = 0.55;
+                  badgeBg = "#CBD5E1";
+                  badgeText = "PENDING";
+                }
+
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      backgroundColor: rowBg,
+                      border: rowBorder,
+                      borderRadius: 14,
+                      padding: "10px 18px",
+                      boxShadow: rowShadow,
+                      opacity: rowOpacity,
+                      transform: isCurrent ? "scale(1.015)" : "scale(1.0)",
+                      transformOrigin: "center left",
+                    }}
+                  >
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        {isStepMode && (
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 800,
+                              color: isCurrent ? "#0284C7" : isPast ? "#16A34A" : "#94A3B8",
+                              letterSpacing: "0.5px",
+                            }}
+                          >
+                            STEP {idx + 1}
+                          </span>
+                        )}
+                        <span style={{ fontSize: 13, fontWeight: 700, color: "#475569" }}>
+                          {item.label}
+                        </span>
+                      </div>
+                      <span
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 800,
+                          color: isCurrent ? "#0284C7" : isPast ? "#14532D" : isPos ? "#0F172A" : "#B91C1C",
+                          letterSpacing: "-0.5px",
+                        }}
+                      >
+                        {item.value}
+                      </span>
+                    </div>
                     <span
                       style={{
-                        fontSize: 24,
+                        padding: "5px 12px",
+                        borderRadius: 8,
+                        fontSize: 11,
                         fontWeight: 800,
-                        color: item.isPositive ? "#34D399" : "#F87171",
-                        letterSpacing: "-0.5px",
+                        backgroundColor: badgeBg,
+                        color: isFuture ? "#475569" : "#FFFFFF",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
                       }}
                     >
-                      {item.value}
+                      {badgeText}
                     </span>
                   </div>
-                  {item.badge && (
-                    <span
-                      style={{
-                        padding: "6px 14px",
-                        borderRadius: 10,
-                        fontSize: 13,
-                        fontWeight: 800,
-                        backgroundColor: item.isPositive
-                          ? "rgba(16, 185, 129, 0.25)"
-                          : "rgba(239, 68, 68, 0.25)",
-                        color: item.isPositive ? "#6EE7B7" : "#FCA5A5",
-                        border: item.isPositive
-                          ? "1px solid rgba(52, 211, 153, 0.5)"
-                          : "1px solid rgba(248, 113, 113, 0.5)",
-                      }}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -263,15 +357,15 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
               style={{
                 marginTop: 14,
                 padding: "10px 16px",
-                backgroundColor: "rgba(56, 189, 248, 0.1)",
+                backgroundColor: "rgba(224, 242, 254, 0.85)",
                 borderRadius: 12,
-                border: "1px solid rgba(56, 189, 248, 0.25)",
+                border: "1px solid rgba(56, 189, 248, 0.5)",
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
                 fontSize: 14,
-                fontWeight: 600,
-                color: "#7DD3FC",
+                fontWeight: 700,
+                color: "#0369A1",
               }}
             >
               <span>⚡</span>
