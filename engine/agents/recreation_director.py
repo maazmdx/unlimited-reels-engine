@@ -82,7 +82,7 @@ class RecreationDirectorAgent:
             "4. 'anime': Shonen anime aesthetic, speedlines, Gojo Infinity math, or biological power-up science.\n\n"
             "STRICT RULES:\n"
             "- Do NOT copy verbatim. Change the scenario slightly so it's fresh and original.\n"
-            "- STRICT DURATION TARGET: Total dialogue turns must be between 6 and 8 snappy lines (target duration: 18 to 28 seconds). Short, fast-paced videos achieve 3x higher completion rate on Instagram Reels algorithms and render in under 90 seconds.\n"
+            "- STRICT DURATION TARGET: Total dialogue turns must be strictly between 6 and 7 snappy turns (target total duration: 20 to 28 seconds). Never generate more than 7 turns. Keep every turn under 14 words for maximum retention, instant comedic punch, and ultra-fast renders.\n"
             "- Opening Hook (first turn) must be an instant 0-3s pattern interrupt with high curiosity or shock.\n"
             "- Character IDs must be chosen from: 'junior', 'claude', 'gemini', 'antigravity_bot', 'grok', 'dad'.\n"
             "- Emotion must be one of: 'normal', 'smug', 'shocked', 'angry', 'happy', 'sad'.\n"
@@ -231,18 +231,13 @@ Return ONLY valid JSON.
                 {"id": "char_claude", "type": "claude_bot", "name": "Claude", "emotion": "smug", "isSpeaking": False}
             ],
             "dialogue": [
-                {"speaker": "junior", "text": "Claude, your company is paying almost four thousand dollars every week. No experience required.", "emotion": "shocked", "pause_after": 0.4},
+                {"speaker": "junior", "text": "Claude, your company is paying four thousand dollars every week. No experience required.", "emotion": "shocked", "pause_after": 0.4},
                 {"speaker": "claude", "text": "It says regardless of previous experience, not regardless of Python.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": "junior", "text": "I know Python.", "emotion": "normal", "pause_after": 0.3},
-                {"speaker": "claude", "text": "You know the snake.", "emotion": "smug", "pause_after": 0.45},
-                {"speaker": "junior", "text": "So... do I send my CV?", "emotion": "normal", "pause_after": 0.35},
-                {"speaker": "claude", "text": "Everyone sends a CV. You send proof. Step one: copy their research page into me. Ask for five experiments you can finish this weekend.", "emotion": "smug", "cardTrigger": True, "pause_after": 0.45},
-                {"speaker": "junior", "text": "I can actually do number three.", "emotion": "normal", "pause_after": 0.3},
-                {"speaker": "claude", "text": "Number five would end you. Step two: free Google Colab GPU. Zero dollars.", "emotion": "smug", "pause_after": 0.4},
-                {"speaker": "junior", "text": "Then why did I buy a three thousand dollar gaming laptop?", "emotion": "shocked", "pause_after": 0.4},
-                {"speaker": "claude", "text": "You tell me. Step three: I write the code, you press run. Saturday.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": "junior", "text": "Does this actually work?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": "claude", "text": "One fellow ran an experiment where an AI that loves owls taught another AI to love owls. Now he works there.", "emotion": "smug", "pause_after": 0.55}
+                {"speaker": "claude", "text": "You know the snake. Everyone sends a CV. You send proof.", "emotion": "smug", "pause_after": 0.45},
+                {"speaker": "junior", "text": "What kind of proof?", "emotion": "shocked", "pause_after": 0.35},
+                {"speaker": "claude", "text": "Copy our research page into me, generate three novel benchmarks, and run them free on Google Colab.", "emotion": "smug", "cardTrigger": True, "pause_after": 0.45},
+                {"speaker": "junior", "text": "Wait, that actually lands the interview?", "emotion": "shocked", "pause_after": 0.35}
             ]
         }
 

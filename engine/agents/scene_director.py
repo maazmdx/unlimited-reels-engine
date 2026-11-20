@@ -8,6 +8,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Dict, Any
@@ -183,32 +184,95 @@ class SceneDirectorAgent:
         # Output path
         final_output = self.out_dir / output_name
 
+        # Detect system hardware capabilities
+        cpu_count = os.cpu_count() or 4
+        concurrency = min(4, max(1, cpu_count))
+        has_gpu = bool(shutil.which("nvidia-smi"))
+
+        print(f"⚡ [Agent 4] Hardware detected: {cpu_count} CPU cores (concurrency={concurrency}), GPU present={has_gpu}")
         print(f"⚡ [Agent 4] Executing Remotion Render: '{composition_id}' -> {final_output.name}...")
         start_time = time.time()
-        cmd = [
+
+        base_cmd = [
             "npx", "remotion", "render",
             "src/index.ts",
             composition_id,
             str(final_output),
             "--props=public/video-meta.json",
-            "--gl=angle",
-            "--angle=swiftshader",
-            "--concurrency=2",
-            "--codec=h264",
-            "--pixel-format=yuv420p",
-            "--jpeg-quality=90",
-            "--timeout=120000"
         ]
 
-        res = subprocess.run(cmd, cwd=str(self.remotion_dir), capture_output=True, text=True)
-        if res.returncode != 0:
-            print("❌ Remotion render failed:\n", res.stderr)
-            raise RuntimeError(f"Remotion render error: {res.stderr}")
+        render_success = False
+        last_error = ""
+
+        if has_gpu:
+            # Attempt 1: Fast GPU hardware rendering via angle-egl (Kaggle T4 / NVIDIA Linux)
+            print("🚀 [Agent 4] Attempting GPU-accelerated render (--gl=angle-egl)...")
+            cmd_gpu = base_cmd + [
+                "--gl=angle-egl",
+                f"--concurrency={concurrency}",
+                "--codec=h264",
+                "--pixel-format=yuv420p",
+                "--x264-preset=veryfast",
+                "--crf=23",
+                "--jpeg-quality=85",
+                "--timeout=180000"
+            ]
+            code, out = self._stream_remotion_render(cmd_gpu)
+            if code == 0 and final_output.exists() and final_output.stat().st_size > 50_000:
+                render_success = True
+            else:
+                last_error = out
+                print(f"⚠️ [Agent 4] GPU angle-egl render failed (code {code}). Falling back to SwiftShader CPU engine...")
+
+        if not render_success:
+            # Fallback (or default non-GPU): Deterministic SwiftShader CPU rendering
+            print(f"⚙️ [Agent 4] Executing CPU SwiftShader render (concurrency={concurrency})...")
+            cmd_cpu = base_cmd + [
+                "--gl=angle",
+                "--angle=swiftshader",
+                f"--concurrency={concurrency}",
+                "--codec=h264",
+                "--pixel-format=yuv420p",
+                "--jpeg-quality=85",
+                "--timeout=180000"
+            ]
+            code, out = self._stream_remotion_render(cmd_cpu)
+            if code == 0 and final_output.exists() and final_output.stat().st_size > 50_000:
+                render_success = True
+            else:
+                last_error = out
+
+        if not render_success:
+            print("❌ Remotion render failed:\n", last_error[-1000:])
+            raise RuntimeError(f"Remotion render error: {last_error[-500:]}")
 
         render_sec = time.time() - start_time
         file_size_mb = final_output.stat().st_size / (1024 * 1024)
         print(f"✅ [Agent 4] Rendered successfully in {render_sec:.1f}s ({file_size_mb:.2f} MB)")
         return str(final_output)
+
+    def _stream_remotion_render(self, cmd: list) -> tuple[int, str]:
+        """
+        Executes Remotion render while streaming stdout & stderr live to console,
+        ensuring real-time progress visibility in Kaggle notebooks and headless CI.
+        """
+        process = subprocess.Popen(
+            cmd,
+            cwd=str(self.remotion_dir),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            universal_newlines=True
+        )
+        output_buffer = []
+        if process.stdout:
+            for line in process.stdout:
+                sys.stdout.write(line)
+                sys.stdout.flush()
+                output_buffer.append(line)
+        returncode = process.wait()
+        return returncode, "".join(output_buffer)
 
 
 if __name__ == "__main__":

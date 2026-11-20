@@ -228,7 +228,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
 
       {/* 3. Single Persistent Three.js Canvas (Never Remounted) */}
       <ThreeCanvas
-        dpr={1}
+        dpr={0.75}
         width={1080}
         height={1920}
         camera={{
