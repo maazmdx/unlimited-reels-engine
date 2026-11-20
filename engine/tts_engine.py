@@ -315,7 +315,8 @@ def apply_broadcast_mastering(
     input_vocal_audio: str,
     output_audio: str,
     ambient_bed_path: Optional[str] = None,
-    ambient_db: float = -22.0
+    ambient_db: float = -22.0,
+    sfx_track_path: Optional[str] = None
 ) -> bool:
     """
     Applies clean broadcast mastering:
@@ -324,6 +325,7 @@ def apply_broadcast_mastering(
     - Gentle compressor (ratio=3.0, threshold=-18dB)
     - Removed hollow 'aecho' and pitch shifts
     - Adds subtle warm lo-fi ambient piano bed ducked quietly at -22 dB
+    - Mixes procedural UI SFX (whoosh at Turn 3 + chime at CTA) at -10 dB
     - Final Loudnorm to exactly -14.0 LUFS (True Peak -1.0 dB, LRA 7)
     """
     from engine.ambient_music import generate_ambient_music_bed, DEFAULT_AMBIENT_PATH
@@ -337,27 +339,52 @@ def apply_broadcast_mastering(
         else:
             ambient_bed_path = generate_ambient_music_bed(max(vocal_dur + 5.0, 30.0))
 
-    filter_chain = (
-        "[0:a]highpass=f=75,"
-        "equalizer=f=120:t=q:w=1.2:g=3.5,"
-        "equalizer=f=900:t=q:w=2.0:g=-1.5,"
-        "equalizer=f=4000:t=q:w=1.5:g=2.0,"
-        "acompressor=threshold=-18dB:ratio=3.0:attack=15:release=85:makeup=2.0dB[vocal];"
-        f"[1:a]volume={ambient_db}dB,aloop=loop=-1:size=2e+09[music];"
-        "[vocal][music]amix=inputs=2:duration=first:dropout_transition=2,"
-        "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
-    )
+    has_sfx = bool(sfx_track_path and os.path.exists(sfx_track_path))
 
-    cmd = [
-        "ffmpeg", "-y",
-        "-i", input_vocal_audio,
-        "-i", ambient_bed_path,
-        "-filter_complex", filter_chain,
-        "-map", "[out]",
-        "-c:a", "libmp3lame",
-        "-b:a", "192k",
-        output_audio
-    ]
+    if has_sfx:
+        filter_chain = (
+            "[0:a]highpass=f=75,"
+            "equalizer=f=120:t=q:w=1.2:g=3.5,"
+            "equalizer=f=900:t=q:w=2.0:g=-1.5,"
+            "equalizer=f=4000:t=q:w=1.5:g=2.0,"
+            "acompressor=threshold=-18dB:ratio=3.0:attack=15:release=85:makeup=2.0dB[vocal];"
+            f"[1:a]volume={ambient_db}dB,aloop=loop=-1:size=2e+09[music];"
+            "[2:a]volume=0dB[sfx];"
+            "[vocal][music][sfx]amix=inputs=3:duration=first:dropout_transition=2,"
+            "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
+        )
+        cmd = [
+            "ffmpeg", "-y",
+            "-i", input_vocal_audio,
+            "-i", ambient_bed_path,
+            "-i", sfx_track_path,
+            "-filter_complex", filter_chain,
+            "-map", "[out]",
+            "-c:a", "libmp3lame",
+            "-b:a", "192k",
+            output_audio
+        ]
+    else:
+        filter_chain = (
+            "[0:a]highpass=f=75,"
+            "equalizer=f=120:t=q:w=1.2:g=3.5,"
+            "equalizer=f=900:t=q:w=2.0:g=-1.5,"
+            "equalizer=f=4000:t=q:w=1.5:g=2.0,"
+            "acompressor=threshold=-18dB:ratio=3.0:attack=15:release=85:makeup=2.0dB[vocal];"
+            f"[1:a]volume={ambient_db}dB,aloop=loop=-1:size=2e+09[music];"
+            "[vocal][music]amix=inputs=2:duration=first:dropout_transition=2,"
+            "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
+        )
+        cmd = [
+            "ffmpeg", "-y",
+            "-i", input_vocal_audio,
+            "-i", ambient_bed_path,
+            "-filter_complex", filter_chain,
+            "-map", "[out]",
+            "-c:a", "libmp3lame",
+            "-b:a", "192k",
+            output_audio
+        ]
 
     try:
         subprocess.run(cmd, capture_output=True, check=True)
@@ -648,10 +675,31 @@ def generate_dialogue_speech(
             check=True
         )
 
-        # Apply broadcast DSP mastering & ducked ambient music bed
-        print("🎛️ Mastering Dialogue with Broadcast DSP & Ambient Lo-Fi Bed (-14.0 LUFS, -22 dB bed)...")
+        # Apply broadcast DSP mastering, procedural UI SFX & ducked ambient music bed
+        print("🎛️ Mastering Dialogue with Broadcast DSP, UI SFX & Ambient Bed (-14.0 LUFS, -22 dB bed, -10 dB SFX)...")
         os.makedirs(os.path.dirname(os.path.abspath(out_audio)), exist_ok=True)
-        apply_broadcast_mastering(vocal_master_wav, out_audio)
+
+        vocal_dur = get_audio_duration(vocal_master_wav)
+        # Procedural UI SFX:
+        # 1. Whoosh/pop at Turn 5 start_sec (Act 3 proof card open)
+        whoosh_sec = turns_summary[5]["start_sec"] if len(turns_summary) > 5 else (turns_summary[3]["start_sec"] if len(turns_summary) > 3 else None)
+        # 2. Subtle iOS chime at Turn 9 start_sec (Act 4 notification toast pop-in)
+        toast_sec = turns_summary[9]["start_sec"] if len(turns_summary) > 9 else None
+        # 3. iOS-style chime at total_duration - 2.5s (Act 5 clean black End-Card)
+        chime_sec = max(0.0, vocal_dur - 2.5)
+
+        from engine.ambient_music import generate_sfx_track, generate_sfx_whoosh, generate_sfx_chime
+        sfx_track_file = os.path.join(tmpdir, "sfx_track.wav")
+        generate_sfx_track(
+            total_duration_sec=vocal_dur + 1.0,
+            whoosh_time_sec=whoosh_sec,
+            toast_chime_sec=toast_sec,
+            chime_time_sec=chime_sec,
+            out_path=Path(sfx_track_file),
+            volume_db=-10.0
+        )
+
+        apply_broadcast_mastering(vocal_master_wav, out_audio, sfx_track_path=sfx_track_file)
 
         total_duration = get_audio_duration(out_audio)
         duration_in_frames = int(math.ceil((total_duration + 0.4) * 30))
@@ -707,12 +755,16 @@ def generate_dialogue_speech(
         with open(os.path.join(d, "subs.vtt"), "w", encoding="utf-8") as f:
             f.write("\n".join(vtt_lines))
 
-    # 4. Copy audio file to both public folders (voice.mp3, voiceover.mp3, master.mp3)
+    # 4. Copy audio and SFX files to both public folders (voice.mp3, voiceover.mp3, master.mp3, sfx_*.wav)
     for d in set(out_dirs):
         for audio_name in ["voice.mp3", "voiceover.mp3", "master.mp3"]:
             dest_audio = os.path.join(d, audio_name)
             if os.path.realpath(str(out_audio)) != os.path.realpath(str(dest_audio)):
                 shutil.copy2(out_audio, dest_audio)
+        for sfx_name in ["sfx_whoosh.wav", "sfx_chime.wav"]:
+            src_sfx = PROJECT_ROOT / "assets" / "audio" / sfx_name
+            if src_sfx.exists():
+                shutil.copy2(str(src_sfx), os.path.join(d, sfx_name))
 
     # 5. Write video metadata
     meta = {

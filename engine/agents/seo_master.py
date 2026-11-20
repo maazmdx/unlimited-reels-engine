@@ -16,6 +16,7 @@ Generates high-converting, searchable social assets for each reel:
 
 import os
 import json
+import time
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional
@@ -37,7 +38,7 @@ class SEOMasterAgent:
     Uses fast free-tier Gemini fallback with zero-fail deterministic safety.
     """
 
-    FAST_MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
+    FAST_MODELS = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]
 
     def __init__(self, project_root: Optional[Path] = None):
         self.project_root = Path(project_root or Path(__file__).resolve().parent.parent.parent)
@@ -48,29 +49,40 @@ class SEOMasterAgent:
             try:
                 self.client = genai.Client(
                     api_key=self.api_key,
-                    http_options={"api_version": "v1beta", "timeout": 20000},
+                    http_options={"api_version": "v1beta", "timeout": 50000},
                 )
             except Exception as e:
                 print(f"⚠️ SEOMaster: Gemini client init notice: {e}")
 
     def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """Calls Gemini with fast free-tier fallback models and direct REST."""
+        """Calls Gemini with 2026 free-tier models, clean 50s timeout, 1 retry on 504/timeout, and logs model."""
         if self.client:
             for m in self.FAST_MODELS:
-                try:
-                    res = self.client.models.generate_content(
-                        model=m,
-                        contents=[prompt],
-                        config=dict(
-                            system_instruction=system_instruction,
-                            temperature=0.7,
-                            response_mime_type="application/json",
-                        ),
-                    )
-                    if res and res.text:
-                        return res.text
-                except Exception as e:
-                    print(f"⚠️ SEOMaster: GenAI {m} warning: {e}")
+                for attempt in range(2):
+                    t0 = time.time()
+                    try:
+                        res = self.client.models.generate_content(
+                            model=m,
+                            contents=[prompt],
+                            config=dict(
+                                system_instruction=system_instruction,
+                                temperature=0.7,
+                                response_mime_type="application/json",
+                            ),
+                        )
+                        if res and res.text:
+                            elapsed = time.time() - t0
+                            print(f"✨ [SEOMaster] Gemini model '{m}' succeeded in {elapsed:.2f}s ({len(res.text)} chars).")
+                            return res.text
+                    except Exception as e:
+                        err_str = str(e)
+                        is_504 = "504" in err_str or "DEADLINE_EXCEEDED" in err_str or "timeout" in err_str.lower()
+                        if is_504 and attempt == 0:
+                            print(f"⚠️ SEOMaster: GenAI {m} hit 504/deadline, quick retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        print(f"⚠️ SEOMaster: GenAI {m} warning: {e}")
+                        break
 
         if self.api_key:
             for m in self.FAST_MODELS:
@@ -80,14 +92,33 @@ class SEOMasterAgent:
                     "systemInstruction": {"parts": [{"text": system_instruction}]},
                     "generationConfig": {"temperature": 0.7, "responseMimeType": "application/json"},
                 }
-                try:
-                    r = requests.post(url, json=payload, headers=self.headers, timeout=20.0)
-                    if r.status_code == 200:
-                        parts = r.json().get("candidates", [])[0].get("content", {}).get("parts", [])
-                        if parts:
-                            return parts[0].get("text")
-                except Exception as e:
-                    print(f"⚠️ SEOMaster: REST {m} warning: {e}")
+                for attempt in range(2):
+                    t0 = time.time()
+                    try:
+                        r = requests.post(url, json=payload, headers=self.headers, timeout=50.0)
+                        if r.status_code == 200:
+                            parts = r.json().get("candidates", [])[0].get("content", {}).get("parts", [])
+                            if parts:
+                                text = parts[0].get("text")
+                                elapsed = time.time() - t0
+                                print(f"✨ [SEOMaster] REST Gemini model '{m}' succeeded in {elapsed:.2f}s ({len(text)} chars).")
+                                return text
+                        elif (r.status_code == 504 or "DEADLINE_EXCEEDED" in r.text) and attempt == 0:
+                            print(f"⚠️ SEOMaster: REST {m} hit 504, quick retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        else:
+                            print(f"⚠️ SEOMaster: REST {m} returned {r.status_code}: {r.text[:120]}")
+                            break
+                    except Exception as e:
+                        err_str = str(e)
+                        is_timeout = "timeout" in err_str.lower() or "504" in err_str
+                        if is_timeout and attempt == 0:
+                            print(f"⚠️ SEOMaster: REST {m} timed out, quick retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        print(f"⚠️ SEOMaster: REST {m} warning: {e}")
+                        break
 
         return None
 

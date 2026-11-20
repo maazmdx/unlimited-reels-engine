@@ -131,7 +131,7 @@ class InstaAnalyzerAgent:
             )
 
             response = None
-            for model_name in ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]:
+            for model_name in ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]:
                 try:
                     response = self.client.models.generate_content(
                         model=model_name,
@@ -209,7 +209,7 @@ class InstaAnalyzerAgent:
         )
         try:
             res = None
-            for model_name in ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]:
+            for model_name in ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]:
                 try:
                     res = self.client.models.generate_content(
                         model=model_name,
@@ -240,7 +240,7 @@ class InstaAnalyzerAgent:
         )
         try:
             res = None
-            for model_name in ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]:
+            for model_name in ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]:
                 try:
                     res = self.client.models.generate_content(
                         model=model_name,

@@ -11,6 +11,7 @@ import os
 import sys
 import json
 import re
+import time
 import socket
 import struct
 import xml.etree.ElementTree as ET
@@ -150,7 +151,7 @@ class TrendScoutAgent:
             try:
                 self.client = genai.Client(
                     api_key=self.api_key,
-                    http_options={"api_version": "v1beta", "timeout": 35000},
+                    http_options={"api_version": "v1beta", "timeout": 50000},
                 )
             except Exception as e:
                 print(f"⚠️ TrendScout: Gemini client initialization warning: {e}")
@@ -381,26 +382,37 @@ class TrendScoutAgent:
     # =========================================================================
 
     def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """Executes Gemini 2.5 Flash request with fast free-tier multi-model and REST fallback."""
-        model_candidates = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
+        """Executes Gemini request with 2026 free-tier models, clean 50s timeout, 1 retry on 504, and logs model."""
+        model_candidates = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]
 
         # 1. Try google.genai Client
         if self.client:
             for model_name in model_candidates:
-                try:
-                    response = self.client.models.generate_content(
-                        model=model_name,
-                        contents=[prompt],
-                        config=dict(
-                            system_instruction=system_instruction,
-                            temperature=0.7,
-                            response_mime_type="application/json",
-                        ),
-                    )
-                    if response and response.text:
-                        return response.text
-                except Exception as e:
-                    print(f"⚠️ TrendScout: genai {model_name} attempt warning: {e}")
+                for attempt in range(2):
+                    t0 = time.time()
+                    try:
+                        response = self.client.models.generate_content(
+                            model=model_name,
+                            contents=[prompt],
+                            config=dict(
+                                system_instruction=system_instruction,
+                                temperature=0.7,
+                                response_mime_type="application/json",
+                            ),
+                        )
+                        if response and response.text:
+                            elapsed = time.time() - t0
+                            print(f"✨ [TrendScout] Gemini model '{model_name}' succeeded in {elapsed:.2f}s ({len(response.text)} chars).")
+                            return response.text
+                    except Exception as e:
+                        err_str = str(e)
+                        is_504 = "504" in err_str or "DEADLINE_EXCEEDED" in err_str or "timeout" in err_str.lower()
+                        if is_504 and attempt == 0:
+                            print(f"⚠️ TrendScout: genai {model_name} hit 504/deadline, retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        print(f"⚠️ TrendScout: genai {model_name} attempt warning: {e}")
+                        break
 
         # 2. Try direct REST endpoint fallback
         if self.api_key:
@@ -414,17 +426,36 @@ class TrendScoutAgent:
                         "responseMimeType": "application/json",
                     },
                 }
-                try:
-                    resp = requests.post(url, json=payload, headers=self.headers, timeout=30.0)
-                    if resp.status_code == 200:
-                        data = resp.json()
-                        candidates = data.get("candidates", [])
-                        if candidates:
-                            parts = candidates[0].get("content", {}).get("parts", [])
-                            if parts:
-                                return parts[0].get("text")
-                except Exception as e:
-                    print(f"⚠️ TrendScout: REST fallback {model_name} warning: {e}")
+                for attempt in range(2):
+                    t0 = time.time()
+                    try:
+                        resp = requests.post(url, json=payload, headers=self.headers, timeout=50.0)
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            candidates = data.get("candidates", [])
+                            if candidates:
+                                parts = candidates[0].get("content", {}).get("parts", [])
+                                if parts:
+                                    text = parts[0].get("text")
+                                    elapsed = time.time() - t0
+                                    print(f"✨ [TrendScout] REST Gemini model '{model_name}' succeeded in {elapsed:.2f}s ({len(text)} chars).")
+                                    return text
+                        elif (resp.status_code == 504 or "DEADLINE_EXCEEDED" in resp.text) and attempt == 0:
+                            print(f"⚠️ TrendScout: REST {model_name} hit 504, retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        else:
+                            print(f"⚠️ TrendScout: REST {model_name} returned {resp.status_code}: {resp.text[:120]}")
+                            break
+                    except Exception as e:
+                        err_str = str(e)
+                        is_timeout = "timeout" in err_str.lower() or "504" in err_str
+                        if is_timeout and attempt == 0:
+                            print(f"⚠️ TrendScout: REST {model_name} timed out, retrying once...")
+                            time.sleep(1.0)
+                            continue
+                        print(f"⚠️ TrendScout: REST fallback {model_name} warning: {e}")
+                        break
 
         return None
 

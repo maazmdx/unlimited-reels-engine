@@ -34,7 +34,7 @@ class RecreationDirectorAgent:
         self.client = None
         if genai and os.environ.get("GEMINI_API_KEY"):
             try:
-                self.client = genai.Client(http_options={"api_version": "v1beta", "timeout": 15000})
+                self.client = genai.Client(http_options={"api_version": "v1beta", "timeout": 50000})
             except Exception as e:
                 print(f"⚠️ Gemini Client init notice in Recreation Director: {e}")
 
@@ -193,22 +193,32 @@ Return ONLY valid JSON.
 """
 
         response = None
-        for model_name in ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]:
-            try:
-                response = self.client.models.generate_content(
-                    model=model_name,
-                    contents=[prompt],
-                    config=dict(system_instruction=system_instruction)
-                )
-                if response and response.text:
-                    break
-            except Exception as e:
-                err_msg = str(e).lower()
-                print(f"⚠️ Gemini model {model_name} attempt: {e}")
-                if "connect" in err_msg or "timeout" in err_msg or "network" in err_msg or "failed to establish" in err_msg:
-                    print("⚠️ Network connection to Gemini API unavailable; fast-falling back to 6-pillar matrix.")
-                    break
-                continue
+        for model_name in ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]:
+            for attempt in range(2):
+                t0 = time.time()
+                try:
+                    response = self.client.models.generate_content(
+                        model=model_name,
+                        contents=[prompt],
+                        config=dict(system_instruction=system_instruction)
+                    )
+                    if response and response.text:
+                        elapsed = time.time() - t0
+                        print(f"✨ [RecreationDirector] Gemini model '{model_name}' succeeded in {elapsed:.2f}s.")
+                        break
+                except Exception as e:
+                    err_msg = str(e).lower()
+                    if ("504" in err_msg or "deadline" in err_msg or "timeout" in err_msg) and attempt == 0:
+                        print(f"⚠️ RecreationDirector: {model_name} hit 504/deadline, retrying once...")
+                        time.sleep(1.0)
+                        continue
+                    print(f"⚠️ Gemini model {model_name} attempt: {e}")
+                    if "connect" in err_msg or "timeout" in err_msg or "network" in err_msg or "failed to establish" in err_msg:
+                        print("⚠️ Network connection to Gemini API unavailable; fast-falling back to 6-pillar matrix.")
+                        break
+                    continue
+            if response and response.text:
+                break
 
         if not response or not response.text:
             raise RuntimeError("Gemini generate_content returned empty response across models.")

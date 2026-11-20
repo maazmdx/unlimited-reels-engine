@@ -265,17 +265,17 @@ export const RemotionRoot: React.FC = () => {
           scenePreset: "diner",
           cardStartFrame: 430,
           cardData: {
-            title: "API Boilerplate Benchmark",
-            badge: "340x SPEEDUP",
+            title: "Browser Tech Benchmark",
+            badge: "60 FPS STABLE",
             type: "benchmark",
             durationSeconds: 4.0,
             startFrame: 430,
             items: [
-              { label: "Junior Manual Coding", value: "6h 40m", badge: "FATIGUED", isPositive: false },
-              { label: "Claude + Antigravity Loop", value: "48s", badge: "AUTONOMOUS", isPositive: true },
-              { label: "Cost & Token Spend", value: "$0.00", badge: "100% PASSING", isPositive: true },
+              { label: "Chrome In-Browser Port", value: "Native WASM", badge: "VERIFIED", isPositive: true },
+              { label: "Rendering Performance", value: "60 FPS", badge: "SMOOTH", isPositive: true },
+              { label: "Cost & Installation", value: "$0.00", badge: "ZERO INSTALL", isPositive: true },
             ],
-            highlight: "Zero hallucination with deterministic test gates.",
+            highlight: "Zero local installation needed, runs instantly in tab.",
           },
         }}
       />

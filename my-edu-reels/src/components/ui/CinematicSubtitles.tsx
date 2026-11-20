@@ -23,6 +23,7 @@ export interface TimelineTurn {
 export interface CinematicSubtitlesProps {
   activeTurn?: TimelineTurn | null;
   isProofCardActive?: boolean;
+  isCtaActive?: boolean;
   speakerAccentColor?: string;
   speakerDisplayName?: string;
   isAI?: boolean;
@@ -32,13 +33,15 @@ export interface CinematicSubtitlesProps {
  * CinematicSubtitles:
  * - Strictly enforces 1080x1420 Instagram safe zone (top: 220px, bottom: 280px).
  * - Upper-middle (top: 280px) during normal dialogue shots (clears face and table).
- * - Lower-safe (bottom: 320px) whenever DynamicProofCard is active (0 collision with card or bottom UI).
+ * - Lower-safe (bottom: 320px) whenever DynamicProofCard OR End-Screen CTA is active.
+ * - Guarantees ZERO collision with upper-third CTA pill (top: 260px) or proof card.
  * - High-contrast typography: 2-5 words per chunk with word-level highlight.
  * - Zero CSS transition, zero Math.random(), zero modulo spring resets.
  */
 export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
   activeTurn,
   isProofCardActive = false,
+  isCtaActive = false,
   speakerAccentColor = "#38BDF8",
   speakerDisplayName,
   isAI = false,
@@ -47,7 +50,8 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
   const { fps } = useVideoConfig();
   const currentTime = frame / fps;
 
-  if (!activeTurn || !activeTurn.text) return null;
+  // Clean exit if no active turn or empty text
+  if (!activeTurn || !activeTurn.text || !activeTurn.text.trim()) return null;
 
   const words = activeTurn.words || [];
 
@@ -57,29 +61,49 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
   let activeWordIndexInChunk = -1;
 
   if (words.length > 0) {
+    // If current time is outside the turn's spoken words range (leading/trailing silence or gaps), hide subtitle pill
+    const firstWordStart = words[0].start_sec;
+    const lastWordEnd = words[words.length - 1].end_sec;
+    if (currentTime < firstWordStart - 0.10 || currentTime > lastWordEnd + 0.18) {
+      return null;
+    }
+
     const activeWordIdx = words.findIndex(
-      (w) => currentTime >= w.start_sec && currentTime <= w.end_sec + 0.1
+      (w) => currentTime >= w.start_sec - 0.05 && currentTime <= w.end_sec + 0.10
     );
 
     const safeWordIdx = activeWordIdx >= 0 ? activeWordIdx : 0;
     const chunkStartIdx = Math.floor(safeWordIdx / CHUNK_SIZE) * CHUNK_SIZE;
     activeChunkWords = words.slice(chunkStartIdx, chunkStartIdx + CHUNK_SIZE);
     activeWordIndexInChunk = safeWordIdx - chunkStartIdx;
+
+    // Guard against all-whitespace chunks
+    if (activeChunkWords.length === 0 || activeChunkWords.every((w) => !w.word || !w.word.trim())) {
+      return null;
+    }
+  } else {
+    // If no word-level timestamps, only render strictly within turn bounds
+    if (currentTime < activeTurn.start_sec || currentTime > activeTurn.end_sec) {
+      return null;
+    }
   }
 
-  // Positioning: top: 280px for normal shots; bottom: 320px when proof card is active
-  const positionStyle: React.CSSProperties = isProofCardActive
+  // Positioning: top: 280px for normal shots; bottom: 320px when proof card or CTA pill is active
+  const isBottom = isProofCardActive || isCtaActive;
+  const positionStyle: React.CSSProperties = isBottom
     ? {
         position: "absolute",
         bottom: 320,
         left: 60,
         right: 60,
+        zIndex: 95,
       }
     : {
         position: "absolute",
         top: 280,
         left: 60,
         right: 60,
+        zIndex: 95,
       };
 
   const displayName =

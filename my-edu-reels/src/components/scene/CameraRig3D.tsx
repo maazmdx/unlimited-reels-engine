@@ -8,6 +8,7 @@ export type CameraShotType = "wide" | "closeup_left" | "closeup_right";
 
 export interface CameraRig3DProps {
   activeTurn?: TimelineTurn | null;
+  turns?: TimelineTurn[];
   isProofCardActive?: boolean;
   leftCharId?: string;
   rightCharId?: string;
@@ -40,35 +41,66 @@ export const SHOT_COORDINATES: Record<CameraShotType, CameraShotCoords> = {
 
 /**
  * Calculates deterministic camera parameters for the current frame.
- * Strictly locks cuts to activeTurn.character_id:
+ * Strictly locks cuts to activeTurn.character_id, but HOLDS previous shot during inter-turn pauses:
  * - Turn 0 OR isProofCardActive -> "wide"
  * - activeTurn.character_id === leftCharId -> "closeup_left"
  * - activeTurn.character_id === rightCharId -> "closeup_right"
+ * - Inter-turn pauses (activeTurn === null): holds most recent completed turn shot (ZERO flash-cuts to wide!)
  */
 export function getCameraRigParams(
   frame: number,
   activeTurn?: TimelineTurn | null,
+  turns?: TimelineTurn[],
   isProofCardActive: boolean = false,
   leftCharId: string = "junior_dev",
   rightCharId: string = "claude",
   forcedShot?: CameraShotType
 ): { shot: CameraShotType; position: [number, number, number]; target: [number, number, number]; fov: number } {
-  // 1. Determine active shot strictly from turn character_id
+  // 1. Determine active shot strictly from turn character_id with smooth inter-turn hold
   let shot: CameraShotType = "wide";
 
   if (forcedShot) {
     shot = forcedShot;
-  } else if (isProofCardActive || !activeTurn || activeTurn.turn_index === 0) {
-    // Shot A: Establishing two-shot (Turn 0 establishing shot or forced during Proof Card)
+  } else if (isProofCardActive) {
+    // Shot A: Establishing two-shot forced during Proof Card
     shot = "wide";
-  } else if (activeTurn.character_id === leftCharId) {
-    // Shot B: Seated human close-up (framed comfortably above table)
-    shot = "closeup_left";
-  } else if (activeTurn.character_id === rightCharId) {
-    // Shot C: AI Orb close-up (framed with halo, antenna, and backdrop)
-    shot = "closeup_right";
+  } else if (activeTurn) {
+    if (activeTurn.turn_index === 0) {
+      shot = "wide";
+    } else if (activeTurn.character_id === leftCharId) {
+      shot = "closeup_left";
+    } else if (activeTurn.character_id === rightCharId) {
+      shot = "closeup_right";
+    } else {
+      shot = "wide";
+    }
   } else {
-    shot = "wide";
+    // Inter-turn pause or pre/post dialogue:
+    // DO NOT snap back to "wide" between dialogue turns!
+    // Hold the most recent completed turn's shot until the next turn begins.
+    const firstTurn = turns && turns.length > 0 ? turns[0] : null;
+    if (firstTurn && frame < firstTurn.start_frame) {
+      shot = "wide";
+    } else {
+      const lastActiveTurn =
+        turns && turns.length > 0
+          ? [...turns].filter((t) => t.end_frame <= frame).pop()
+          : null;
+
+      if (lastActiveTurn) {
+        if (lastActiveTurn.turn_index === 0) {
+          shot = "wide";
+        } else if (lastActiveTurn.character_id === leftCharId) {
+          shot = "closeup_left";
+        } else if (lastActiveTurn.character_id === rightCharId) {
+          shot = "closeup_right";
+        } else {
+          shot = "wide";
+        }
+      } else {
+        shot = "wide";
+      }
+    }
   }
 
   const base = SHOT_COORDINATES[shot];
@@ -83,6 +115,12 @@ export function getCameraRigParams(
       { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
     );
     pushInZ = turnProgress * 0.14;
+  } else if (!activeTurn && turns && turns.length > 0) {
+    // During inter-turn pause, hold the completed turn's maximum push-in to prevent zoom pops
+    const lastActiveTurn = [...turns].filter((t) => t.end_frame <= frame).pop();
+    if (lastActiveTurn && lastActiveTurn.turn_index !== 0) {
+      pushInZ = 0.14;
+    }
   }
 
   // 3. Subtle organic camera breathe (deterministic sine, zero random)
@@ -107,11 +145,13 @@ export function getCameraRigParams(
  * CameraRig3D:
  * - Mounted inside <ThreeCanvas> to control the active perspective camera.
  * - Executes crisp editorial cuts strictly locked to activeTurn.character_id.
+ * - Holds speaker close-up during brief inter-turn pauses (0 flash-cuts).
  * - Automatically forces Wide on Turn 0 and when proof card is active.
  * - Deterministic push-in over turn duration with zero jitter.
  */
 export const CameraRig3D: React.FC<CameraRig3DProps> = ({
   activeTurn,
+  turns,
   isProofCardActive = false,
   leftCharId = "junior_dev",
   rightCharId = "claude",
@@ -123,6 +163,7 @@ export const CameraRig3D: React.FC<CameraRig3DProps> = ({
   const params = getCameraRigParams(
     frame,
     activeTurn,
+    turns,
     isProofCardActive,
     leftCharId,
     rightCharId,

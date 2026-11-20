@@ -148,6 +148,29 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     []
   );
 
+  const pantsColor = isDad ? "#334155" : "#1E293B"; // Dad dark charcoal/slate slacks vs Junior Dev dark navy denim
+  const pantsMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: pantsColor,
+        roughness: 0.8,
+        metalness: 0.05,
+        flatShading: true,
+      }),
+    [pantsColor]
+  );
+
+  const boothSeatMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#B91C1C",
+        roughness: 0.6,
+        metalness: 0.05,
+        flatShading: true,
+      }),
+    []
+  );
+
   // =========================================================================
   // 4. EMOTION DYNAMICS (Angled Eyebrows, Top Eyelids, Mouth Open)
   // =========================================================================
@@ -247,6 +270,69 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
             ))}
           </>
         )}
+      </group>
+
+      {/* =================================================================== */}
+      {/* 1B. SEATED LEGS & BOOTH SEAT CUSHION (Natural Booth Sitting Pose)   */}
+      {/* =================================================================== */}
+      <group position={[0, -1.82, 0]}>
+        {/* Belt & Waist */}
+        <mesh position={[0, -0.02, 0.06]} material={darkMat}>
+          <boxGeometry args={[0.84, 0.08, 0.52]} />
+        </mesh>
+        <mesh position={[0, -0.02, 0.33]} material={whiteMat}>
+          <boxGeometry args={[0.10, 0.08, 0.03]} />
+        </mesh>
+
+        {/* Pelvis / Hips */}
+        <mesh position={[0, -0.16, 0.08]} scale={[1.14, 0.55, 0.82]} material={pantsMat}>
+          <cylinderGeometry args={[0.40, 0.38, 0.35, 8]} />
+        </mesh>
+
+        {/* Left Seated Thigh (Horizontal, extending forward) */}
+        <mesh position={[-0.22, -0.32, 0.36]} rotation={[Math.PI / 2 + 0.06, 0, 0]} material={pantsMat}>
+          <cylinderGeometry args={[0.16, 0.14, 0.64, 8]} />
+        </mesh>
+        {/* Left Knee */}
+        <mesh position={[-0.22, -0.35, 0.68]} material={pantsMat}>
+          <sphereGeometry args={[0.14, 8, 8]} />
+        </mesh>
+        {/* Left Lower Leg / Shin (Dropping down) */}
+        <mesh position={[-0.22, -0.70, 0.68]} material={pantsMat}>
+          <cylinderGeometry args={[0.13, 0.11, 0.60, 8]} />
+        </mesh>
+        {/* Left Sneaker / Shoe */}
+        <mesh position={[-0.22, -1.02, 0.74]} material={darkMat}>
+          <boxGeometry args={[0.16, 0.12, 0.28]} />
+        </mesh>
+        <mesh position={[-0.22, -1.07, 0.74]} material={whiteMat}>
+          <boxGeometry args={[0.17, 0.03, 0.30]} />
+        </mesh>
+
+        {/* Right Seated Thigh (Horizontal, extending forward) */}
+        <mesh position={[0.22, -0.32, 0.36]} rotation={[Math.PI / 2 + 0.06, 0, 0]} material={pantsMat}>
+          <cylinderGeometry args={[0.16, 0.14, 0.64, 8]} />
+        </mesh>
+        {/* Right Knee */}
+        <mesh position={[0.22, -0.35, 0.68]} material={pantsMat}>
+          <sphereGeometry args={[0.14, 8, 8]} />
+        </mesh>
+        {/* Right Lower Leg / Shin (Dropping down) */}
+        <mesh position={[0.22, -0.70, 0.68]} material={pantsMat}>
+          <cylinderGeometry args={[0.13, 0.11, 0.60, 8]} />
+        </mesh>
+        {/* Right Sneaker / Shoe */}
+        <mesh position={[0.22, -1.02, 0.74]} material={darkMat}>
+          <boxGeometry args={[0.16, 0.12, 0.28]} />
+        </mesh>
+        <mesh position={[0.22, -1.07, 0.74]} material={whiteMat}>
+          <boxGeometry args={[0.17, 0.03, 0.30]} />
+        </mesh>
+
+        {/* Red Booth Seat Cushion directly under character hips */}
+        <mesh position={[0, -0.42, 0.24]} material={boothSeatMat}>
+          <boxGeometry args={[1.15, 0.22, 1.15]} />
+        </mesh>
       </group>
 
       {/* =================================================================== */}

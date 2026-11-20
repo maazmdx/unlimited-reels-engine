@@ -112,6 +112,80 @@ class SceneDirectorAgent:
         hook = script_data.get("hook", {})
         envelope = audio_result.get("envelope", [])
 
+        # 1. Exact Act 3 (Turns 5-7) Multi-Step Card Timing calculation
+        total_frames = (
+            timeline_data.get("duration_in_frames")
+            if timeline_data
+            else int(audio_result.get("duration", 45) * fps)
+        )
+        turns_list = timeline_data.get("turns", []) if timeline_data else []
+        turn_5_start = None
+        turn_7_end = None
+
+        if len(turns_list) > 5:
+            turn_5_start = turns_list[5].get("start_frame")
+            if len(turns_list) > 7:
+                turn_7_end = turns_list[7].get("end_frame")
+        elif len(turns_list) > 3:
+            turn_5_start = turns_list[3].get("start_frame")
+            turn_7_end = turn_5_start + 120
+
+        if turn_5_start is None:
+            turn_5_start = 450  # Default ~15.0s
+        if turn_7_end is None:
+            turn_7_end = turn_5_start + 360  # Default ~12.0s duration
+
+        card_start_frame = turn_5_start
+        card_end_frame = min(turn_7_end, total_frames - 90)
+        card_duration_frames = max(30, card_end_frame - card_start_frame)
+
+        # 2. Compile real topic-specific cardData from HookMasterAgent
+        raw_card = script_data.get("cardData") or {}
+        card_title = script_data.get("explainerTitle") or f"{script_data.get('title', 'Feature')[:24]} Specs"
+        card_badge = script_data.get("badge") or "VERIFIED PROOF"
+
+        rows = []
+        if isinstance(raw_card, dict):
+            if "rows" in raw_card and isinstance(raw_card["rows"], list):
+                rows = raw_card["rows"]
+            elif "items" in raw_card and isinstance(raw_card["items"], list):
+                rows = raw_card["items"]
+            else:
+                for k, v in list(raw_card.items())[:3]:
+                    clean_k = str(k).replace("_", " ").title()
+                    val_str = str(v)
+                    is_pos = not any(neg in val_str.lower() for neg in ["slow", "fail", "expensive", "fatigue", "manual", "high", "loss"])
+                    status = "VERIFIED" if is_pos else "LIMITATION"
+                    rows.append({
+                        "label": clean_k,
+                        "value": val_str,
+                        "badge": status,
+                        "status": status,
+                        "isPositive": is_pos,
+                    })
+        elif isinstance(raw_card, list):
+            rows = raw_card
+
+        if not rows:
+            topic_title = script_data.get("title", "Tech Feature")
+            rows = [
+                {"label": "Core Feature", "value": f"Verified: {topic_title[:24]}", "badge": "LIVE", "status": "LIVE", "isPositive": True},
+                {"label": "System Access", "value": "Direct In-Browser Zero Cost", "badge": "FREE", "status": "FREE", "isPositive": True},
+                {"label": "Setup Speed", "value": "Instant Execution Under 60s", "badge": "FAST", "status": "FAST", "isPositive": True},
+            ]
+
+        compiled_card_data = {
+            "title": card_title,
+            "subtitle": script_data.get("title", ""),
+            "badge": card_badge,
+            "type": script_data.get("cardType", "comparison"),
+            "rows": rows,
+            "items": rows,
+            "startFrame": card_start_frame,
+            "durationSeconds": card_duration_frames / fps,
+            "durationFrames": card_duration_frames,
+        }
+
         props_data = {
             "scenePreset": scene_preset,
             "cast": cast,
@@ -129,14 +203,18 @@ class SceneDirectorAgent:
             "hookHeadline": hook.get("headline", "AI VS HUMANS"),
             "hookSubheadline": hook.get("subheadline", "Why AI is superior in every engineering area"),
             "hookTag": hook.get("tag", "⚠️ REAL TALK"),
-            "explainerTitle": script_data.get("explainerTitle", "AI Speed & Cost Superiority"),
+            "explainerTitle": card_title,
             "comparisonRows": script_data.get("comparisonRows"),
             "leftHeader": script_data.get("leftHeader", "Anthropic Claude"),
             "rightHeader": script_data.get("rightHeader", "Google Antigravity"),
-            "badge": script_data.get("badge", "$0 VERIFIED"),
+            "badge": card_badge,
             "cardType": script_data.get("cardType", "job_posting"),
             "cardUrl": script_data.get("cardUrl", "job-boards.greenhouse.io/anthropic/fellowship"),
-            "cardData": script_data.get("cardData", {}),
+            "cardData": compiled_card_data,
+            "cardStartFrame": card_start_frame,
+            "cardEndFrame": card_end_frame,
+            "toastData": script_data.get("toastData"),
+            "endCard": script_data.get("endCard"),
             "winner": script_data.get("winner", "Winner: Google Antigravity & Gemini 2.5 (100% Free Local Setup)"),
             "buttonText": script_data.get("buttonText", "Run `agy` Free"),
             "hasDad": any("dad" in str(c.get("type", "")).lower() or "dad" in str(c.get("name", "")).lower() for c in script_data.get("characters", [])) or any("dad" in t.get("speaker", "").lower() for t in subs_data.get("turns", [])),
