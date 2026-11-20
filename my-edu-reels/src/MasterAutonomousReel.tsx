@@ -4,6 +4,7 @@ import {
   staticFile,
   useCurrentFrame,
   useVideoConfig,
+  spring,
 } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import { CozyDiner3D } from "./components/environments3d/CozyDiner3D";
@@ -58,6 +59,8 @@ export interface MasterAutonomousReelProps {
     left?: "junior_dev" | "dad";
     right?: "claude" | "gemini" | "grok" | "antigravity_bot";
   };
+  leftCharacterId?: "junior_dev" | "dad";
+  rightCharacterId?: "claude" | "gemini" | "grok" | "antigravity_bot";
   cardData?: DynamicCardData | null;
   cardStartFrame?: number;
   cardEndFrame?: number;
@@ -65,6 +68,8 @@ export interface MasterAutonomousReelProps {
   hookSubheadline?: string;
   hookTag?: string;
   forcedCameraShot?: CameraShotType;
+  ctaKeyword?: string;
+  ctaText?: string;
 }
 
 type CharacterRegistry = Record<
@@ -89,12 +94,16 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   audioSrc = "voice.mp3",
   characters,
   cast,
+  leftCharacterId,
+  rightCharacterId,
   cardData = null,
   cardStartFrame = 430,
   forcedCameraShot,
+  ctaKeyword,
+  ctaText,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, durationInFrames } = useVideoConfig();
 
   // 1. Resolve timeline and turns
   const activeTimeline: TimelineData = timeline || DEFAULT_TIMELINE;
@@ -116,18 +125,25 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     environment.toLowerCase().includes("home");
 
   // 3. Resolve Cast (Left Human + Right AI Orb)
-  let leftCharId: "junior_dev" | "dad" = cast?.left || "junior_dev";
+  let leftCharId: "junior_dev" | "dad" =
+    leftCharacterId || cast?.left || "junior_dev";
   let rightCharId: "claude" | "gemini" | "grok" | "antigravity_bot" =
-    cast?.right || "claude";
+    rightCharacterId || cast?.right || "claude";
 
   // Auto-detect from characters array or turns if not explicitly set in cast
-  if (!cast?.left && characters && characters.length > 0) {
+  if (!leftCharacterId && !cast?.left && characters && characters.length > 0) {
     const charNames = characters.map((c) =>
       typeof c === "string" ? c.toLowerCase() : (c.id || c.name || "").toLowerCase()
     );
     if (charNames.some((n) => n.includes("dad"))) {
       leftCharId = "dad";
     }
+  }
+
+  if (!rightCharacterId && !cast?.right && characters && characters.length > 0) {
+    const charNames = characters.map((c) =>
+      typeof c === "string" ? c.toLowerCase() : (c.id || c.name || "").toLowerCase()
+    );
     if (charNames.some((n) => n.includes("gemini"))) {
       rightCharId = "gemini";
     } else if (charNames.some((n) => n.includes("grok"))) {
@@ -140,13 +156,16 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   }
 
   // 4. Resolve Speaker State & Mouth Envelopes (30fps RMS Envelope from timeline)
-  const isLeftSpeaking = activeTurn?.character_id === leftCharId;
-  const isRightSpeaking = activeTurn?.character_id === rightCharId;
+  // Strictly lock speaking to active turn character
+  const isLeftSpeaking = !!activeTurn && activeTurn.character_id === leftCharId;
+  const isRightSpeaking = !!activeTurn && activeTurn.character_id === rightCharId;
 
-  const mouthOpenLeft =
-    activeTimeline.mouth_envelopes?.[leftCharId]?.[frame] ?? 0;
-  const mouthOpenRight =
-    activeTimeline.mouth_envelopes?.[rightCharId]?.[frame] ?? 0;
+  const mouthOpenLeft = isLeftSpeaking
+    ? (activeTimeline.mouth_envelopes?.[leftCharId]?.[frame] ?? 0)
+    : 0;
+  const mouthOpenRight = isRightSpeaking
+    ? (activeTimeline.mouth_envelopes?.[rightCharId]?.[frame] ?? 0)
+    : 0;
 
   // Emotion mapping
   const mapEmotion = (
@@ -183,21 +202,13 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   const isProofCardActive =
     !!cardData && frame >= effectiveCardStart && frame <= effectiveCardEnd;
 
-  // Speaker side for camera cutting
-  const speakerSide: "left" | "right" | "wide" = isProofCardActive
-    ? "wide"
-    : isRightSpeaking
-    ? "right"
-    : isLeftSpeaking
-    ? "left"
-    : "wide";
-
   // 6. Camera Rig Parameters (Persistent, 0 remount)
   const cameraParams = getCameraRigParams(
     frame,
     activeTurn,
     isProofCardActive,
-    speakerSide,
+    leftCharId,
+    rightCharId,
     forcedCameraShot
   );
 
@@ -208,7 +219,37 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   const speakerAccentColor =
     (activeCharConfig?.palette as any)?.accent ||
     (isRightSpeaking ? "#F59E0B" : "#38BDF8");
-  const speakerDisplayName = activeCharConfig?.badge_label || activeTurn?.character_id;
+  const speakerDisplayName =
+    activeCharConfig?.display_name ||
+    activeCharConfig?.badge_label ||
+    (activeTurn?.character_id === "junior_dev" ? "Junior Dev" : activeTurn?.character_id);
+
+  // 7. End-Screen Auto-DM CTA Banner (Final 2.5s / 75 frames)
+  const totalFrames = durationInFrames || activeTimeline.duration_in_frames || 450;
+  const ctaDurationFrames = Math.round(2.5 * fps);
+  const ctaStartFrame = Math.max(0, totalFrames - ctaDurationFrames);
+  const isCtaActive = frame >= ctaStartFrame;
+
+  // Auto-detect CTA keyword from last turn if not explicitly passed
+  const resolvedKeyword = (
+    ctaKeyword ||
+    (turns.length > 0
+      ? turns[turns.length - 1].text.match(/comment\s+([A-Z0-9_]+)/i)?.[1]
+      : null) ||
+    "LINK"
+  ).toUpperCase();
+
+  const ctaSpring = isCtaActive
+    ? spring({
+        frame: frame - ctaStartFrame,
+        fps,
+        config: {
+          damping: 14,
+          mass: 0.8,
+          stiffness: 140,
+        },
+      })
+    : 0;
 
   return (
     <div
@@ -226,9 +267,9 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
       {/* 2. Top Progress Bar */}
       <ProgressBar color="#38BDF8" height={8} />
 
-      {/* 3. Single Persistent Three.js Canvas (Never Remounted) */}
+      {/* 3. Single Persistent Three.js Canvas (Never Remounted, Native DPR 1 for Max Quality) */}
       <ThreeCanvas
-        dpr={0.75}
+        dpr={1}
         width={1080}
         height={1920}
         camera={{
@@ -249,7 +290,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
         <CameraRig3D
           activeTurn={activeTurn}
           isProofCardActive={isProofCardActive}
-          speakerSide={speakerSide}
+          leftCharId={leftCharId}
+          rightCharId={rightCharId}
           forcedShot={forcedCameraShot}
         />
 
@@ -262,13 +304,13 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               isSpeaking={isLeftSpeaking}
               mouthOpen={mouthOpenLeft}
               emotion={leftEmotion}
-              position={[-0.45, -0.36, -0.3]}
+              position={[-1.15, 0.22, 0.0]}
               rotation={[
                 0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
-                isLeftSpeaking ? 0.16 : 0.28,
+                isLeftSpeaking ? 0.20 : 0.28,
                 0,
               ]}
-              scale={1.08}
+              scale={0.65}
             />
 
             {/* Right Side: AI Orb hovering by Desk */}
@@ -277,9 +319,9 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               isSpeaking={isRightSpeaking}
               mouthOpen={mouthOpenRight}
               emotion={rightEmotion}
-              position={[1.22, 0.22, -0.1]}
-              rotation={[0.02, isRightSpeaking ? -0.12 : -0.22, 0]}
-              scale={1.10}
+              position={[1.05, 0.45, 0.05]}
+              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
+              scale={0.46}
             />
           </SunsetDesk3D>
         ) : (
@@ -290,13 +332,13 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               isSpeaking={isLeftSpeaking}
               mouthOpen={mouthOpenLeft}
               emotion={leftEmotion}
-              position={[-1.28, -0.38, -0.1]}
+              position={[-1.15, 0.22, 0.0]}
               rotation={[
                 0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
-                isLeftSpeaking ? 0.22 : 0.32,
+                isLeftSpeaking ? 0.20 : 0.28,
                 0,
               ]}
-              scale={1.12}
+              scale={0.65}
             />
 
             {/* Right Side: AI Orb Floating Across Diner Table */}
@@ -305,9 +347,9 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               isSpeaking={isRightSpeaking}
               mouthOpen={mouthOpenRight}
               emotion={rightEmotion}
-              position={[1.28, 0.15, -0.1]}
-              rotation={[0.02, isRightSpeaking ? -0.14 : -0.24, 0]}
-              scale={1.05}
+              position={[1.05, 0.45, 0.05]}
+              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
+              scale={0.46}
             />
           </CozyDiner3D>
         )}
@@ -328,10 +370,75 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
         isProofCardActive={isProofCardActive}
         speakerAccentColor={speakerAccentColor}
         speakerDisplayName={speakerDisplayName}
-        isAI={isRightSpeaking}
+        isAI={isRightSpeaking || activeCharConfig?.type === "ai_orb"}
       />
 
-      {/* 6. Subtle Cinematic Edge Vignette */}
+      {/* 6. End-Screen Auto-DM CTA Banner (Pulsing-free deterministic spring pill) */}
+      {isCtaActive && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 340,
+            left: "50%",
+            transform: `translateX(-50%) translateY(${(1 - ctaSpring) * 36}px) scale(${0.88 + 0.12 * ctaSpring})`,
+            opacity: Math.min(1, ctaSpring * 1.6),
+            zIndex: 110,
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            padding: "16px 36px",
+            borderRadius: 9999,
+            backgroundColor: "rgba(10, 15, 29, 0.94)",
+            border: "2px solid rgba(56, 189, 248, 0.75)",
+            boxShadow:
+              "0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(56, 189, 248, 0.35)",
+            backdropFilter: "blur(16px)",
+            pointerEvents: "none",
+          }}
+        >
+          <span style={{ fontSize: 34, lineHeight: 1 }}>💬</span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+            <span
+              style={{
+                fontFamily: "Inter, -apple-system, system-ui, sans-serif",
+                fontSize: 28,
+                fontWeight: 800,
+                color: "#FFFFFF",
+                letterSpacing: "0.02em",
+                textTransform: "uppercase",
+              }}
+            >
+              Comment
+            </span>
+            <span
+              style={{
+                fontFamily: "Inter, -apple-system, system-ui, sans-serif",
+                fontSize: 32,
+                fontWeight: 900,
+                color: "#38BDF8",
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+                textShadow: "0 0 16px rgba(56, 189, 248, 0.6)",
+              }}
+            >
+              {resolvedKeyword}
+            </span>
+            <span
+              style={{
+                fontFamily: "Inter, -apple-system, system-ui, sans-serif",
+                fontSize: 28,
+                fontWeight: 800,
+                color: "#E2E8F0",
+                letterSpacing: "0.02em",
+              }}
+            >
+              for the link
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* 7. Subtle Cinematic Edge Vignette */}
       <div
         style={{
           position: "absolute",

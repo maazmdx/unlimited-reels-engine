@@ -61,26 +61,34 @@ class SceneDirectorAgent:
         dialogue_turns = script_data.get("dialogue", [])
         fps = 30.0
 
-        # Resolve 3D scenePreset and cast
+        # Resolve 3D scenePreset and cast (Strict 2-character cast: left human + right AI orb)
         env_raw = str(script_data.get("environment", "diner")).lower()
         scene_preset = script_data.get("scenePreset") or ("desk" if "desk" in env_raw or "sunset" in env_raw else "diner")
 
-        cast = script_data.get("cast")
-        if not cast:
-            speakers = [str(t.get("speaker", "")).lower() for t in dialogue_turns]
-            left = "dad" if any("dad" in s for s in speakers) else "junior_dev"
-            right = "claude"
-            for s in speakers:
+        cast = script_data.get("cast") or {}
+        speakers = [str(t.get("speaker", "")).lower() for t in dialogue_turns]
+        char_ids = [str(t.get("character_id", "")).lower() for t in dialogue_turns]
+        all_speaker_tokens = speakers + char_ids
+
+        left_char = script_data.get("leftCharacterId") or cast.get("left")
+        if not left_char:
+            left_char = "dad" if any("dad" in s for s in all_speaker_tokens) else "junior_dev"
+
+        right_char = script_data.get("rightCharacterId") or cast.get("right")
+        if not right_char:
+            right_char = "claude"
+            for s in all_speaker_tokens:
                 if "gemini" in s:
-                    right = "gemini"
+                    right_char = "gemini"
                     break
                 elif "grok" in s:
-                    right = "grok"
+                    right_char = "grok"
                     break
                 elif "antigravity" in s:
-                    right = "antigravity_bot"
+                    right_char = "antigravity_bot"
                     break
-            cast = {"left": left, "right": right}
+
+        cast = {"left": left_char, "right": right_char}
 
         # Construct camera zoom cues
         camera_cues = []
@@ -107,9 +115,13 @@ class SceneDirectorAgent:
         props_data = {
             "scenePreset": scene_preset,
             "cast": cast,
+            "leftCharacterId": left_char,
+            "rightCharacterId": right_char,
             "timeline": timeline_data,
             "subtitles": subs_data,
             "audioSrc": "voice.mp3",
+            "ctaKeyword": script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK"),
+            "ctaText": script_data.get("cta_text") or script_data.get("ctaText") or f"💬 Comment {script_data.get('cta_keyword', 'LINK')} for the link",
             "environment": script_data.get("environment", "diner"),
             "weather": script_data.get("weather", "raining"),
             "characters": script_data.get("characters", []),
@@ -212,9 +224,9 @@ class SceneDirectorAgent:
                 f"--concurrency={concurrency}",
                 "--codec=h264",
                 "--pixel-format=yuv420p",
-                "--x264-preset=veryfast",
-                "--crf=23",
-                "--jpeg-quality=85",
+                "--x264-preset=medium",
+                "--crf=18",
+                "--jpeg-quality=95",
                 "--timeout=180000"
             ]
             code, out = self._stream_remotion_render(cmd_gpu)
@@ -233,7 +245,9 @@ class SceneDirectorAgent:
                 f"--concurrency={concurrency}",
                 "--codec=h264",
                 "--pixel-format=yuv420p",
-                "--jpeg-quality=85",
+                "--x264-preset=medium",
+                "--crf=18",
+                "--jpeg-quality=95",
                 "--timeout=180000"
             ]
             code, out = self._stream_remotion_render(cmd_cpu)

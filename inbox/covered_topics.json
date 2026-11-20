@@ -1,0 +1,130 @@
+[
+  {
+    "slug": "gta_vice_city_web",
+    "title": "GTA Vice City Running 100% in Browser",
+    "date": "2026-11-14",
+    "auto_dm_keyword": "VICE",
+    "pillar_style": "Retro & Browser Games"
+  },
+  {
+    "slug": "project_igi_browser",
+    "title": "Project IGI Remastered in Your Browser",
+    "date": "2026-11-14",
+    "auto_dm_keyword": "IGI",
+    "pillar_style": "Retro & Browser Games"
+  },
+  {
+    "slug": "notebooklm_deep_dive",
+    "title": "Google NotebookLM Turning 200-Page PDFs into Deep Dive Podcasts",
+    "date": "2026-11-15",
+    "auto_dm_keyword": "NOTEBOOK",
+    "pillar_style": "Underrated AI & App Workflows"
+  },
+  {
+    "slug": "obsidian_ai_second_brain",
+    "title": "The Zero-Dollar Offline Second Brain in Obsidian",
+    "date": "2026-11-15",
+    "auto_dm_keyword": "APPS",
+    "pillar_style": "Underrated AI & App Workflows"
+  },
+  {
+    "slug": "humanoid_robot_kitchen",
+    "title": "Humanoid Robots Folding Laundry & Making Omelettes",
+    "date": "2026-11-16",
+    "auto_dm_keyword": "TECH",
+    "pillar_style": "New Tech in the World"
+  },
+  {
+    "slug": "open_source_deepseek_reasoning",
+    "title": "The $6 Million Open Weights Model Humbling $100M Labs",
+    "date": "2026-11-16",
+    "auto_dm_keyword": "TECH",
+    "pillar_style": "New Tech in the World"
+  },
+  {
+    "slug": "nvidia_margin_teardown",
+    "title": "How NVIDIA Makes 75% Gross Margin on Sand",
+    "date": "2026-11-17",
+    "auto_dm_keyword": "MODEL",
+    "pillar_style": "How Companies Actually Earn"
+  },
+  {
+    "slug": "costco_membership_model",
+    "title": "Costco Sells Chickens at a Loss to Take Your Wallet",
+    "date": "2026-11-17",
+    "auto_dm_keyword": "BIZ",
+    "pillar_style": "How Companies Actually Earn"
+  },
+  {
+    "slug": "openrouter_pros_and_cons",
+    "title": "OpenRouter Honest Review: 3 Real Pros vs 3 Nasty Cons",
+    "date": "2026-11-18",
+    "auto_dm_keyword": "ROUTER",
+    "pillar_style": "Hype vs. Reality"
+  },
+  {
+    "slug": "local_llm_vs_cloud_api",
+    "title": "Local Mac Mini LLMs vs Cloud APIs: The Unspoken Truth",
+    "date": "2026-11-18",
+    "auto_dm_keyword": "TRUTH",
+    "pillar_style": "Hype vs. Reality"
+  },
+  {
+    "slug": "friday_prod_deploy_panic",
+    "title": "Deploying directly to Production at 4:58 PM on Friday",
+    "date": "2026-11-19",
+    "auto_dm_keyword": "CODE",
+    "pillar_style": "Relatable Tech Memes"
+  },
+  {
+    "slug": "dad_vs_cloud_backup",
+    "title": "Dad Discovers Cloud Storage Subscription on Credit Card",
+    "date": "2026-11-19",
+    "auto_dm_keyword": "MEME",
+    "pillar_style": "Relatable Tech Memes"
+  },
+  {
+    "slug": "gta_vice_city_running_100__in_browser",
+    "title": "GTA Vice City Running 100% in Browser",
+    "date": "2026-11-20",
+    "auto_dm_keyword": "VICE",
+    "pillar_style": "Retro & Browser Games"
+  },
+  {
+    "slug": "project_igi_remastered_in_your_browser",
+    "title": "Project IGI Remastered in Your Browser",
+    "date": "2026-11-20",
+    "auto_dm_keyword": "IGI",
+    "pillar_style": "Retro & Browser Games"
+  },
+  {
+    "slug": "ai_solves_40_year_old_sokoban_puzzles_in_ms",
+    "title": "AI Solves 40-Year-Old Sokoban Puzzles in MS",
+    "date": "2026-11-20",
+    "auto_dm_keyword": "SOLVE",
+    "pillar_style": "Retro & Browser Games / Underrated AI Workflows"
+  },
+  {
+    "slug": "the_billion_dollar_decision__why_tcp_ip_is_fr",
+    "title": "The Billion-Dollar Decision: Why TCP/IP is FREE",
+    "date": "2026-11-20",
+    "auto_dm_keyword": "FREEWEB",
+    "pillar_style": "How Companies Actually Earn / Breaking Tech & World Hardware"
+  },
+  {
+    "slug": "play_skate_3___black_ops_in_your_browser_now",
+    "title": "Play Skate 3 & Black Ops in Your Browser NOW!",
+    "date": "2026-11-20",
+    "auto_dm_keyword": "PLAYNOW",
+    "category": "Retro & Browser Games",
+    "viral_score": 99
+  },
+  {
+    "slug": "apple_s_secret_ai_agent__it_codes_your_apps",
+    "title": "Apple's Secret AI Agent: It Codes Your Apps!",
+    "date": "2026-11-20",
+    "auto_dm_keyword": "APPLEAGENT",
+    "category": "Underrated AI Apps | Breaking Tech",
+    "viral_score": 94
+  }
+]

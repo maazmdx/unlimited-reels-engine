@@ -1,0 +1,501 @@
+{
+  "version": "2.0.0",
+  "role": "few_shot_inspiration_and_offline_emergency_fallback",
+  "description": "Few-shot style archetypes and emergency offline fallback matrix. Dynamic daily production is driven live by TrendScoutAgent via public feeds and Gemini 2.5 Flash.",
+  "archetype_styles": [
+    "Retro & Browser Games",
+    "Underrated AI & App Workflows",
+    "New Tech in the World",
+    "How Companies Actually Earn",
+    "Hype vs. Reality (Pros & Cons)",
+    "Relatable Tech / Dev / Indian Dad Memes"
+  ],
+  "pillars": [
+    {
+      "id": "retro_browser_games",
+      "name": "Retro & Browser Games",
+      "description": "Playing classic PC and console games directly inside modern web browsers with zero installation.",
+      "default_keyword": "VICE",
+      "keywords": ["VICE", "IGI", "PLAY"],
+      "topics": [
+        {
+          "id": "gta_vice_city_web",
+          "title": "GTA Vice City Running 100% in Browser",
+          "hook": "You can play full GTA Vice City directly inside Google Chrome without installing a single file.",
+          "core_topic": "WebAssembly GTA Vice City Port",
+          "pillar_id": "retro_browser_games",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "claude",
+          "core_conflict": "Dev nostalgia vs WebAssembly emulator engineering",
+          "punchline": "Tommy Vercetti is doing drive-bys at 60 FPS on a school Chromebook while your corporate laptop struggles with Slack.",
+          "cta_keyword": "VICE",
+          "cta_phrase": "Comment VICE and I'll DM you the direct playable browser link.",
+          "card_title": "WebAssembly Vice City Benchmark",
+          "card_type": "benchmark",
+          "badge": "60 FPS WEB",
+          "card_data": {
+            "engine": "WebAssembly + WebGL2",
+            "download_size": "0 MB (Streamed Assets)",
+            "framerate": "Locked 60 FPS in Chrome",
+            "controller": "Full Bluetooth Gamepad Support"
+          },
+          "seo_keywords": [
+            "play GTA Vice City in browser",
+            "GTA Vice City WebAssembly",
+            "play retro games online free",
+            "unblocked school games 2026",
+            "browser ports of classic games"
+          ],
+          "hashtags": [
+            "#GTAViceCity", "#RetroGaming", "#WebAssembly", "#BrowserGames",
+            "#CodingLife", "#TechHacks", "#DeveloperHumor", "#GamingReels",
+            "#PCGaming", "#WebDev"
+          ],
+          "dm_message": "Here is the direct browser port for GTA Vice City! Open it in Chrome or Brave with hardware acceleration enabled. Enjoy the nostalgia! 🚗🌴"
+        },
+        {
+          "id": "project_igi_browser",
+          "title": "Project IGI Remastered in Your Browser",
+          "hook": "Remember sneaking into military bases in Project IGI? It now runs inside any browser tab.",
+          "core_topic": "Project IGI Browser Port",
+          "pillar_id": "retro_browser_games",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "grok",
+          "core_conflict": "Childhood tactical shooter memories vs AI pointing out AI guard vision cone bugs",
+          "punchline": "David Jones survived Soviet snow bases just to get run in a JavaScript V8 worker thread.",
+          "cta_keyword": "IGI",
+          "cta_phrase": "Comment IGI and I'll send you the instant browser link.",
+          "card_title": "Project IGI Web Tech Stack",
+          "card_type": "breakdown",
+          "badge": "RETRO CLASSIC",
+          "card_data": {
+            "source": "Direct C++ WebAssembly Compilation",
+            "load_time": "3.8 Seconds on Fiber",
+            "audio": "Original Sound Effects & Theme",
+            "status": "100% Playable in Tab"
+          },
+          "seo_keywords": [
+            "Project IGI browser port",
+            "play Project IGI online free",
+            "retro PC games in Chrome",
+            "nostalgic 2000s PC games",
+            "WebAssembly retro ports"
+          ],
+          "hashtags": [
+            "#ProjectIGI", "#RetroPCGames", "#NostalgiaGaming", "#BrowserGames",
+            "#TechReels", "#GamerLife", "#WebAssembly", "#TechMemes",
+            "#GamingCommunity", "#ClassicGames"
+          ],
+          "dm_message": "Mission orders received! 🎯 Here is the instant browser link for Project IGI. Works on desktop Chrome and Edge. Good luck, Jones!"
+        }
+      ]
+    },
+    {
+      "id": "underrated_ai_workflows",
+      "name": "Underrated AI & App Workflows",
+      "description": "Genuine high-utility, hidden workflows in everyday software that save 10+ hours a week.",
+      "default_keyword": "NOTEBOOK",
+      "keywords": ["NOTEBOOK", "APPS", "WORKFLOW"],
+      "topics": [
+        {
+          "id": "notebooklm_deep_dive",
+          "title": "Google NotebookLM Turning 200-Page PDFs into Deep Dive Podcasts",
+          "hook": "Stop reading 200-page corporate PDF documents when Google will turn them into a Joe Rogan style podcast.",
+          "core_topic": "NotebookLM Audio Overviews",
+          "pillar_id": "underrated_ai_workflows",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "gemini",
+          "core_conflict": "Junior dev manual skimming panic vs AI generating 2-host banter breakdown",
+          "punchline": "Two AI hosts argued about Section 4.2 of my lease agreement with more passion than my landlord.",
+          "cta_keyword": "NOTEBOOK",
+          "cta_phrase": "Comment NOTEBOOK and I'll DM you the exact prompt template and source workflow.",
+          "card_title": "NotebookLM Audio Synthesis Workflow",
+          "card_type": "checklist",
+          "badge": "100% FREE",
+          "card_data": {
+            "source_capacity": "50 Sources (PDF, YouTube, URLs)",
+            "output_format": "Interactive Two-Host Audio Discussion",
+            "hallucination_rate": "0% Grounded to Uploaded Docs",
+            "cost": "$0.00 (Included in Google Account)"
+          },
+          "seo_keywords": [
+            "NotebookLM audio overview tricks",
+            "turn PDF into podcast NotebookLM",
+            "best free AI study tools 2026",
+            "NotebookLM exam prep workflow",
+            "Google AI underrated tools"
+          ],
+          "hashtags": [
+            "#NotebookLM", "#GoogleAI", "#AIWorkflows", "#ProductivityHacks",
+            "#StudyTools", "#StudentHacks", "#DeveloperTools", "#TechTips",
+            "#AIUpdates", "#Efficiency"
+          ],
+          "dm_message": "Here is the exact NotebookLM master guide! Includes step-by-step setup, custom audio overview prompts, and how to feed 50 research papers at once. 📚🎙️"
+        },
+        {
+          "id": "obsidian_ai_second_brain",
+          "title": "The Zero-Dollar Offline Second Brain in Obsidian",
+          "hook": "People pay Notion $20 a month while Obsidian with local AI runs circles around it completely offline.",
+          "core_topic": "Obsidian Local AI Knowledge Base",
+          "pillar_id": "underrated_ai_workflows",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "claude",
+          "core_conflict": "SaaS monthly subscription trap vs private local markdown vault",
+          "punchline": "Your cloud notes disappear when the startup folds. My markdown files will survive the heat death of the universe.",
+          "cta_keyword": "APPS",
+          "cta_phrase": "Comment APPS and I'll DM you the free offline second brain vault setup.",
+          "card_title": "Offline Second Brain Comparison",
+          "card_type": "comparison",
+          "badge": "$0 FOREVER",
+          "card_data": {
+            "privacy": "100% Local (Zero Telemetry)",
+            "speed": "Instant (0 ms Cloud Latency)",
+            "ai_integration": "Local Ollama + Smart Connections",
+            "monthly_cost": "$0 vs $240/yr Notion"
+          },
+          "seo_keywords": [
+            "Obsidian vs Notion 2026",
+            "free second brain app",
+            "Obsidian local AI setup",
+            "underrated productivity apps",
+            "offline markdown knowledge base"
+          ],
+          "hashtags": [
+            "#ObsidianApp", "#SecondBrain", "#ProductivityTools", "#NotionAlternatives",
+            "#OpenSourceSoftware", "#TechHacks", "#DeveloperLife", "#SoftwareTools",
+            "#PrivacyFirst", "#PKM"
+          ],
+          "dm_message": "Vault files dispatched! 🧠 Here is the free starter template for Obsidian + offline local AI integration. Your data stays 100% on your machine."
+        }
+      ]
+    },
+    {
+      "id": "new_tech_world",
+      "name": "New Tech in the World",
+      "description": "Breaking hardware drops, wild robotics, open-source weight releases, and next-gen tech.",
+      "default_keyword": "TECH",
+      "keywords": ["TECH", "LINK", "DROP"],
+      "topics": [
+        {
+          "id": "humanoid_robot_kitchen",
+          "title": "Humanoid Robots Folding Laundry & Making Omelettes",
+          "hook": "We thought robots would solve cold fusion, but Unitree just taught their robot to flip sunny-side up eggs.",
+          "core_topic": "Next-Gen Humanoid Dexterity",
+          "pillar_id": "new_tech_world",
+          "format_type": "ai_vs_dad",
+          "left_character": "dad",
+          "right_character": "claude",
+          "core_conflict": "High-tech humanoid kinematics vs Dad critiquing egg masala proportions",
+          "punchline": "A sixteen thousand dollar robot made tea and my father complained there wasn't enough ginger.",
+          "cta_keyword": "TECH",
+          "cta_phrase": "Comment TECH and I'll DM you the breakdown of the newest humanoid robots.",
+          "card_title": "Humanoid Robot Specs & Pricing",
+          "card_type": "benchmark",
+          "badge": "$16,000 MSRP",
+          "card_data": {
+            "actuators": "47 Degrees of Freedom",
+            "vision_model": "End-to-End VLA Neural Net",
+            "payload": "12 kg Dynamic Lifting",
+            "battery_life": "4.5 Hours Continuous Duty"
+          },
+          "seo_keywords": [
+            "new humanoid robots 2026",
+            "Unitree G1 vs Tesla Optimus",
+            "robotics breakthroughs",
+            "home assistant robots",
+            "next gen technology"
+          ],
+          "hashtags": [
+            "#HumanoidRobots", "#Robotics", "#FutureTech", "#TeslaOptimus",
+            "#Unitree", "#ArtificialIntelligence", "#TechTrends", "#Innovation",
+            "#TechNews", "#IndianDad"
+          ],
+          "dm_message": "Robotics blueprint on its way! 🤖 Here is the complete breakdown comparing the top 4 affordable humanoid robots dropping this year."
+        },
+        {
+          "id": "open_source_deepseek_reasoning",
+          "title": "The $6 Million Open Weights Model Humbling $100M Labs",
+          "hook": "A small team trained a reasoning model for $6 million that matches models costing half a billion dollars.",
+          "core_topic": "Open Source AI Efficiency Revolution",
+          "pillar_id": "new_tech_world",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "grok",
+          "core_conflict": "Massive corporate compute moats evaporating overnight",
+          "punchline": "Big tech spent 80 billion on GPUs just for an open weights repo to run on two Mac Studios.",
+          "cta_keyword": "TECH",
+          "cta_phrase": "Comment TECH and I'll send you the local install guide for reasoning models.",
+          "card_title": "Reasoning Model Training Cost Battle",
+          "card_type": "comparison",
+          "badge": "94% COST CUT",
+          "card_data": {
+            "closed_lab_spend": "$100M - $500M Training Run",
+            "open_weights_spend": "$5.8M Total Compute",
+            "math_benchmark": "91.2% AIME Pass Rate",
+            "license": "Fully Open MIT / Weights Downloadable"
+          },
+          "seo_keywords": [
+            "open source reasoning models",
+            "DeepSeek vs OpenAI cost",
+            "local LLM benchmarks 2026",
+            "AI hardware efficiency",
+            "breakthrough AI models"
+          ],
+          "hashtags": [
+            "#OpenSourceAI", "#DeepSeek", "#ArtificialIntelligence", "#TechNews",
+            "#MachineLearning", "#OpenWeights", "#LLM", "#TechDisruption",
+            "#Grok", "#Developer"
+          ],
+          "dm_message": "Here is the direct GitHub repo and Ollama command to run this reasoning model locally on your laptop! Zero API fees. ⚡💻"
+        }
+      ]
+    },
+    {
+      "id": "how_companies_earn",
+      "name": "How Companies Actually Earn",
+      "description": "Shocking, counter-intuitive business model breakdowns and hidden profit levers.",
+      "default_keyword": "MODEL",
+      "keywords": ["MODEL", "BIZ", "MONEY"],
+      "topics": [
+        {
+          "id": "nvidia_margin_teardown",
+          "title": "How NVIDIA Makes 75% Gross Margin on Sand",
+          "hook": "NVIDIA pays TSMC $3,000 to make an H100 chip, then sells it to Meta for $40,000.",
+          "core_topic": "NVIDIA Hardware & CUDA Monopoly Margin",
+          "pillar_id": "how_companies_earn",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "claude",
+          "core_conflict": "Believing hardware is low margin vs understanding the software CUDA moat",
+          "punchline": "Jensen Huang is selling digital shovels during a gold rush, and the shovels require a proprietary subscription handle.",
+          "cta_keyword": "MODEL",
+          "cta_phrase": "Comment MODEL and I'll DM you the complete revenue teardown infographic.",
+          "card_title": "NVIDIA H100 Chip Unit Economics",
+          "card_type": "breakdown",
+          "badge": "74.8% MARGIN",
+          "card_data": {
+            "tsmc_wafer_cost": "~$3,200 Per Die Package",
+            "r_and_d_amortization": "~$1,800 Per Unit",
+            "enterprise_street_price": "$38,000 - $42,000",
+            "real_secret_sauce": "CUDA Software Lock-in"
+          },
+          "seo_keywords": [
+            "how NVIDIA makes money",
+            "NVIDIA H100 cost to build",
+            "NVIDIA profit margin breakdown",
+            "CUDA software moat explained",
+            "business model teardowns"
+          ],
+          "hashtags": [
+            "#NVIDIA", "#JensenHuang", "#BusinessStrategy", "#TechEconomics",
+            "#Hardware", "#Semiconductors", "#StockMarket", "#StartupBusiness",
+            "#TechNews", "#AIHardware"
+          ],
+          "dm_message": "Here is the full 1-page financial breakdown of NVIDIA's revenue streams and the CUDA ecosystem moat. Insightful read! 📊💵"
+        },
+        {
+          "id": "costco_membership_model",
+          "title": "Costco Sells Chickens at a Loss to Take Your Wallet",
+          "hook": "Costco loses $40 million a year on $4.99 rotisserie chickens, yet makes $4.5 billion in pure net income.",
+          "core_topic": "Costco Membership Subscription Engine",
+          "pillar_id": "how_companies_earn",
+          "format_type": "ai_vs_dad",
+          "left_character": "dad",
+          "right_character": "claude",
+          "core_conflict": "Dad's obsession with wholesale deals vs Costco's 100% subscription profit engine",
+          "punchline": "Dad thought he outsmarted wholesale retail while Costco booked 65 dollars before he even touched the shopping cart.",
+          "cta_keyword": "BIZ",
+          "cta_phrase": "Comment BIZ and I'll send you the breakdown of membership subscription business models.",
+          "card_title": "Costco Profit Engine Breakdown",
+          "card_type": "breakdown",
+          "badge": "72% OF PROFIT",
+          "card_data": {
+            "rotisserie_chicken_margin": "-$40M Loss Leader",
+            "merchandise_gross_markup": "Capped at Strict 14%",
+            "membership_fee_revenue": "$4.58 Billion / Year",
+            "annual_renewal_rate": "92.7% North America"
+          },
+          "seo_keywords": [
+            "how Costco makes money",
+            "Costco business model teardown",
+            "rotisserie chicken loss leader",
+            "membership subscription businesses",
+            "smart retail business strategies"
+          ],
+          "hashtags": [
+            "#Costco", "#BusinessModels", "#FinanceTips", "#RetailStrategy",
+            "#IndianDad", "#MoneyHacks", "#EconomicsExplained", "#BusinessNews",
+            "#Investing", "#PassiveIncome"
+          ],
+          "dm_message": "Business teardown sent! 🛒 Here is the breakdown on how Costco, Amazon Prime, and Gym memberships use loss-leaders to print billions in subscription profit."
+        }
+      ]
+    },
+    {
+      "id": "hype_vs_reality",
+      "name": "Hype vs. Reality (Pros & Cons)",
+      "description": "Honest, balanced, non-sponsored teardowns of hyped developer tools and infrastructure.",
+      "default_keyword": "ROUTER",
+      "keywords": ["ROUTER", "TRUTH", "GUIDE"],
+      "topics": [
+        {
+          "id": "openrouter_pros_and_cons",
+          "title": "OpenRouter Honest Review: 3 Real Pros vs 3 Nasty Cons",
+          "hook": "Everyone on Twitter is hyping OpenRouter as the ultimate AI tool, but nobody mentions the hidden markup and latency spikes.",
+          "core_topic": "OpenRouter Pros and Cons Teardown",
+          "pillar_id": "hype_vs_reality",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "claude",
+          "core_conflict": "Twitter developer hype vs production latency and billing reality",
+          "punchline": "One unified API key is heaven until an upstream routing provider goes down and takes your whole frontend with it.",
+          "cta_keyword": "ROUTER",
+          "cta_phrase": "Comment ROUTER and I'll DM you the unbiased routing cheat sheet with latency comparisons.",
+          "card_title": "OpenRouter: Hype vs Reality",
+          "card_type": "comparison",
+          "badge": "HONEST AUDIT",
+          "card_data": {
+            "pro_1": "Single API for 200+ Models (Claude, Llama, DeepSeek)",
+            "pro_2": "Zero monthly minimum commitments",
+            "con_1": "50-150ms Added Proxy Latency Overhead",
+            "con_2": "Upstream rate limit throttling during peak US hours"
+          },
+          "seo_keywords": [
+            "OpenRouter pros and cons",
+            "is OpenRouter worth it 2026",
+            "OpenRouter latency vs direct API",
+            "OpenRouter pricing markup",
+            "best AI model routing tools"
+          ],
+          "hashtags": [
+            "#OpenRouter", "#AIModels", "#WebDevelopment", "#SoftwareEngineering",
+            "#TechReviews", "#ClaudeAI", "#FullStack", "#DevCommunity",
+            "#APITools", "#CodingLife"
+          ],
+          "dm_message": "Here is the honest OpenRouter cheat sheet! ⚡ Shows direct latency benchmarks vs Anthropic/OpenAI direct APIs, fallback configurations, and when to use direct keys instead."
+        },
+        {
+          "id": "local_llm_vs_cloud_api",
+          "title": "Local Mac Mini LLMs vs Cloud APIs: The Unspoken Truth",
+          "hook": "Influencers told you to buy a $2,000 M4 Mac to run local AI for free. Here is the math they didn't show you.",
+          "core_topic": "Local LLM vs Cloud API Cost Reality",
+          "pillar_id": "hype_vs_reality",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "gemini",
+          "core_conflict": "Local hardware obsession vs cloud API token pennies",
+          "punchline": "You spent two grand on unified memory to avoid paying forty-three cents to Gemini Flash.",
+          "cta_keyword": "TRUTH",
+          "cta_phrase": "Comment TRUTH and I'll send you the hardware breakeven calculator.",
+          "card_title": "Local LLM Hardware Breakeven",
+          "card_type": "comparison",
+          "badge": "REAL MATH",
+          "card_data": {
+            "hardware_outlay": "$1,999 (Mac Mini 64GB Unified)",
+            "token_equivalent": "2.8 Billion Gemini Flash Tokens",
+            "breakeven_time": "14 Years at Normal Developer Usage",
+            "electricity_heat": "35W Continuous Draw"
+          },
+          "seo_keywords": [
+            "local LLM vs cloud API cost",
+            "is running local AI worth it",
+            "Mac Mini M4 for local LLMs",
+            "Ollama hardware requirements",
+            "AI token pricing comparison"
+          ],
+          "hashtags": [
+            "#LocalAI", "#MacMiniM4", "#Ollama", "#TechTruth",
+            "#HardwareHacks", "#CloudComputing", "#DeveloperMemes", "#CodingHumor",
+            "#TechAdvice", "#AITools"
+          ],
+          "dm_message": "Breakeven calculator sent! 🧮 Compare your monthly token usage against local hardware upgrades to see if buying a high-RAM machine actually pays off."
+        }
+      ]
+    },
+    {
+      "id": "relatable_tech_memes",
+      "name": "Relatable Tech / Dev / Indian Dad Memes",
+      "description": "High-comment, relatable developer culture and generational Indian Dad technology clashes.",
+      "default_keyword": "PROMPT",
+      "keywords": ["PROMPT", "MEME", "CODE"],
+      "topics": [
+        {
+          "id": "friday_prod_deploy_panic",
+          "title": "Deploying directly to Production at 4:58 PM on Friday",
+          "hook": "The senior dev left at 4:30 PM. The ticket says urgent. You hit `git push origin main`.",
+          "core_topic": "Friday Afternoon Production Disasters",
+          "pillar_id": "relatable_tech_memes",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "claude",
+          "core_conflict": "Junior dev reckless confidence vs Claude sounding the five-alarm fire bell",
+          "punchline": "Claude reverted the migration, wiped the Redis cache, and clocked out before the PagerDuty alerts started singing.",
+          "cta_keyword": "CODE",
+          "cta_phrase": "Comment CODE and I'll DM you our automated pre-commit safety hook script.",
+          "card_title": "Friday 4:58 PM Deployment Audit",
+          "card_type": "breakdown",
+          "badge": "CRITICAL INCIDENT",
+          "card_data": {
+            "tests_run": "0 (Skipped with --no-verify)",
+            "migration_type": "DROP COLUMN in Customer Table",
+            "senior_dev_status": "Status: Out of Office (Hiking)",
+            "pagerduty_alerts": "47 Pings in 12 Seconds"
+          },
+          "seo_keywords": [
+            "deploy on Friday meme",
+            "developer humor reels",
+            "production down at 5pm",
+            "software engineering memes",
+            "junior dev mistakes"
+          ],
+          "hashtags": [
+            "#DevHumor", "#ProgrammerMemes", "#CodingHumor", "#SoftwareEngineer",
+            "#TechLife", "#DeveloperLife", "#GitPushMain", "#PagerDuty",
+            "#RelatableTech", "#CodeHumor"
+          ],
+          "dm_message": "Pre-commit safety hook delivered! 🛡️ Install this in your `.git/hooks/pre-push` to automatically block Friday afternoon main-branch pushes and save your weekend."
+        },
+        {
+          "id": "dad_vs_cloud_backup",
+          "title": "Dad Discovers Cloud Storage Subscription on Credit Card",
+          "hook": "Why are you paying Google two hundred rupees every month for clouds?! Clouds are in the sky for free!",
+          "core_topic": "Indian Dad Cloud Storage Outrage",
+          "pillar_id": "relatable_tech_memes",
+          "format_type": "ai_vs_dad",
+          "left_character": "dad",
+          "right_character": "claude",
+          "core_conflict": "Google One 100GB monthly fee vs Dad's 2008 Kingston 4GB USB drive",
+          "punchline": "Dad has 14 backup copies of the 2011 Diwali family photo spread across seven pen drives in the refrigerator drawer.",
+          "cta_keyword": "MEME",
+          "cta_phrase": "Comment MEME and I'll DM you the free unlimited self-hosted photo backup guide.",
+          "card_title": "Indian Dad Storage Economics",
+          "card_type": "comparison",
+          "badge": "FREE FOREVER",
+          "card_data": {
+            "google_cloud_fee": "₹130/month Recurring",
+            "dad_solution": "4GB Kingston Pen Drive in Cupboard",
+            "storage_reliability": "Survives Water Damage & Monsoon",
+            "encryption": "Password is Date of Birth of Eldest Son"
+          },
+          "seo_keywords": [
+            "Indian dad technology memes",
+            "cloud storage funny reaction",
+            "desi tech humor reels",
+            "family tech support comedy",
+            "relatable programmer reels"
+          ],
+          "hashtags": [
+            "#IndianDad", "#DesiMemes", "#TechHumor", "#IndianHumor",
+            "#CloudStorage", "#FunnyReels", "#RelatableMemes", "#FamilyHumor",
+            "#ComedyReels", "#TrendingReels"
+          ],
+          "dm_message": "Self-hosted photo backup guide incoming! 📸 Here is how to set up Immich on an old laptop so your family never pays Google or Apple storage subscriptions again."
+        }
+      ]
+    }
+  ]
+}

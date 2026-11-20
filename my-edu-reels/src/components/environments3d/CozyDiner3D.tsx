@@ -24,10 +24,20 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
 
   return (
     <group name="CozyDiner3D">
-      {/* 1. AMBIENT & SCENE LIGHTING */}
-      <ambientLight intensity={0.55} color="#E2E8F0" />
-      <directionalLight position={[3, 5, 4]} intensity={0.65} color="#FEF3C7" />
-      <directionalLight position={[-4, 3, -2]} intensity={0.35} color="#38BDF8" />
+      {/* 1. AMBIENT & SCENE LIGHTING (Bright Warm Cozy Diner) */}
+      <hemisphereLight
+        args={["#E2E8F0", "#78350F", 1.25]}
+      />
+      <directionalLight
+        position={[2.5, 4.5, 4]}
+        intensity={0.9}
+        color="#FEF3C7"
+      />
+      <directionalLight
+        position={[-3.5, 3.0, 2]}
+        intensity={0.45}
+        color="#FDE68A"
+      />
 
       {/* 2. OVERHEAD VINTAGE PENDANT LAMP & WARM POOL LIGHT */}
       <group position={[0, 1.35, 0]} rotation={[0, 0, lampSway]}>
@@ -268,24 +278,39 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
         </group>
       </group>
 
-      {/* 6. BACK WALL & LARGE NIGHT SKYLINE WINDOW */}
+      {/* 6. BACK WALL & LARGE NIGHT SKYLINE WINDOW (Warm Cream-Beige & Indigo Twilight) */}
       <group position={[0, 0.8, -3.2]}>
-        {/* Wall panels (warm diner beige-brick) */}
-        <mesh position={[-2.4, 0, 0]}>
-          <boxGeometry args={[1.6, 3.6, 0.2]} />
-          <meshStandardMaterial color="#332A26" flatShading roughness={0.9} />
+        {/* Upper wall panels (warm cream-beige for high character contrast) */}
+        <mesh position={[-2.4, 0.45, 0]}>
+          <boxGeometry args={[1.6, 2.7, 0.2]} />
+          <meshStandardMaterial color="#D6C7B2" flatShading roughness={0.85} />
         </mesh>
-        <mesh position={[2.4, 0, 0]}>
-          <boxGeometry args={[1.6, 3.6, 0.2]} />
-          <meshStandardMaterial color="#332A26" flatShading roughness={0.9} />
+        <mesh position={[2.4, 0.45, 0]}>
+          <boxGeometry args={[1.6, 2.7, 0.2]} />
+          <meshStandardMaterial color="#D6C7B2" flatShading roughness={0.85} />
         </mesh>
         <mesh position={[0, 1.45, 0]}>
           <boxGeometry args={[3.2, 0.7, 0.2]} />
-          <meshStandardMaterial color="#332A26" flatShading roughness={0.9} />
+          <meshStandardMaterial color="#D6C7B2" flatShading roughness={0.85} />
+        </mesh>
+
+        {/* Lower dark wood wainscoting */}
+        <mesh position={[-2.4, -1.25, 0.02]}>
+          <boxGeometry args={[1.6, 1.1, 0.22]} />
+          <meshStandardMaterial color="#3E2723" flatShading roughness={0.7} />
+        </mesh>
+        <mesh position={[2.4, -1.25, 0.02]}>
+          <boxGeometry args={[1.6, 1.1, 0.22]} />
+          <meshStandardMaterial color="#3E2723" flatShading roughness={0.7} />
         </mesh>
         <mesh position={[0, -1.45, 0]}>
           <boxGeometry args={[3.2, 0.7, 0.2]} />
-          <meshStandardMaterial color="#332A26" flatShading roughness={0.9} />
+          <meshStandardMaterial color="#3E2723" flatShading roughness={0.7} />
+        </mesh>
+        {/* Dark wood chair rail moulding */}
+        <mesh position={[0, -0.7, 0.12]}>
+          <boxGeometry args={[6.4, 0.06, 0.06]} />
+          <meshStandardMaterial color="#1C1917" flatShading roughness={0.6} />
         </mesh>
 
         {/* Big window frame (Dark mahogany wood) */}
@@ -297,9 +322,9 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
         <mesh position={[0, 0, 0.08]}>
           <planeGeometry args={[3.0, 2.0]} />
           <meshStandardMaterial
-            color="#0F172A"
+            color="#3B4C7A"
             transparent
-            opacity={0.35}
+            opacity={0.22}
             roughness={0.1}
             metalness={0.2}
           />
@@ -314,53 +339,79 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
           <meshStandardMaterial color="#292524" flatShading />
         </mesh>
 
-        {/* NIGHT SKYLINE OUTSIDE WINDOW (z = -1.2 behind window) */}
+        {/* BRIGHT INDIGO TWILIGHT SKYLINE OUTSIDE WINDOW (z = -1.2 behind window) */}
         <group position={[0, -0.3, -1.2]}>
-          {/* Deep midnight sky background */}
+          {/* Brighter indigo twilight sky background */}
           <mesh position={[0, 0.6, -0.5]}>
-            <planeGeometry args={[5.5, 3.5]} />
-            <meshBasicMaterial color="#050814" />
+            <planeGeometry args={[6.5, 4.2]} />
+            <meshBasicMaterial color="#3B4C7A" />
           </mesh>
 
-          {/* Low-poly Skyscraper Silhouettes */}
+          {/* Low-poly Skyscraper Silhouettes in deep slate/indigo */}
           <mesh position={[-1.6, 0.2, -0.1]}>
             <boxGeometry args={[0.65, 1.8, 0.2]} />
-            <meshStandardMaterial color="#0B0F19" flatShading roughness={0.9} />
+            <meshStandardMaterial color="#1E293B" flatShading roughness={0.85} />
           </mesh>
           <mesh position={[-0.9, 0.5, -0.2]}>
             <boxGeometry args={[0.7, 2.3, 0.2]} />
-            <meshStandardMaterial color="#070A12" flatShading roughness={0.9} />
+            <meshStandardMaterial color="#0F172A" flatShading roughness={0.85} />
           </mesh>
           <mesh position={[0, 0.1, -0.3]}>
             <boxGeometry args={[0.8, 1.6, 0.2]} />
-            <meshStandardMaterial color="#090E1A" flatShading roughness={0.9} />
+            <meshStandardMaterial color="#1E293B" flatShading roughness={0.85} />
           </mesh>
           <mesh position={[0.85, 0.6, -0.15]}>
             <boxGeometry args={[0.65, 2.5, 0.2]} />
-            <meshStandardMaterial color="#070A12" flatShading roughness={0.9} />
+            <meshStandardMaterial color="#0F172A" flatShading roughness={0.85} />
           </mesh>
           <mesh position={[1.5, 0.3, -0.2]}>
             <boxGeometry args={[0.55, 1.9, 0.2]} />
-            <meshStandardMaterial color="#0B0F19" flatShading roughness={0.9} />
+            <meshStandardMaterial color="#1E293B" flatShading roughness={0.85} />
           </mesh>
 
-          {/* Glowing skyscraper window dots */}
+          {/* Abundant warm glowing apartment windows */}
           {[
-            [-1.5, 0.6], [-1.7, 0.4], [-1.55, 0.2],
-            [-0.8, 0.9], [-1.0, 0.7], [-0.85, 0.4], [-0.95, 0.1],
-            [-0.1, 0.5], [0.1, 0.3], [0.0, 0.1],
-            [0.8, 1.1], [0.95, 0.8], [0.75, 0.5], [0.9, 0.2],
-            [1.45, 0.6], [1.55, 0.4],
+            [-1.5, 0.6], [-1.7, 0.4], [-1.55, 0.2], [-1.65, 0.8],
+            [-0.8, 0.9], [-1.0, 0.7], [-0.85, 0.4], [-0.95, 0.1], [-0.75, 1.2],
+            [-0.1, 0.5], [0.1, 0.3], [0.0, 0.1], [0.15, 0.7],
+            [0.8, 1.1], [0.95, 0.8], [0.75, 0.5], [0.9, 0.2], [0.85, 1.4],
+            [1.45, 0.6], [1.55, 0.4], [1.4, 0.9],
           ].map(([wx, wy], wIdx) => (
             <mesh key={`win-${wIdx}`} position={[wx, wy, 0.05]}>
-              <boxGeometry args={[0.045, 0.045, 0.02]} />
+              <boxGeometry args={[0.05, 0.05, 0.02]} />
               <meshBasicMaterial
-                color={wIdx % 3 === 0 ? "#FEF08A" : wIdx % 3 === 1 ? "#38BDF8" : "#F59E0B"}
+                color={wIdx % 3 === 0 ? "#FEF08A" : wIdx % 3 === 1 ? "#FCD34D" : "#F59E0B"}
               />
             </mesh>
           ))}
 
-          {/* Retro Cozy Neon Sign: "OPEN 24H" */}
+          {/* Retro Neon Sign Left: "LAUNDRY" / "MOTEL" Cyan & Pink */}
+          <group position={[-1.3, 0.4, 0.15]}>
+            <mesh>
+              <boxGeometry args={[0.6, 0.22, 0.03]} />
+              <meshStandardMaterial color="#0F172A" flatShading roughness={0.8} />
+            </mesh>
+            <mesh position={[0, 0.03, 0.02]}>
+              <boxGeometry args={[0.48, 0.05, 0.02]} />
+              <meshStandardMaterial
+                color="#EC4899"
+                emissive="#F43F5E"
+                emissiveIntensity={1.8 * neonGlow}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh position={[0, -0.04, 0.02]}>
+              <boxGeometry args={[0.38, 0.04, 0.02]} />
+              <meshStandardMaterial
+                color="#38BDF8"
+                emissive="#06B6D4"
+                emissiveIntensity={1.6 * neonGlow}
+                toneMapped={false}
+              />
+            </mesh>
+          </group>
+
+          {/* Retro Cozy Neon Sign Right: "OPEN 24H" */}
           <group position={[0.7, 0.25, 0.2]}>
             {/* Neon back backing */}
             <mesh>
@@ -370,7 +421,7 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
             {/* Pink glowing border frame */}
             <mesh position={[0, 0, 0.03]}>
               <boxGeometry args={[0.8, 0.34, 0.02]} />
-              <meshBasicMaterial color="#EC4899" transparent opacity={0.25} />
+              <meshBasicMaterial color="#EC4899" transparent opacity={0.35} />
             </mesh>
             {/* Cyan "OPEN" glowing bar */}
             <mesh position={[0, 0.06, 0.04]}>
@@ -378,7 +429,7 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
               <meshStandardMaterial
                 color="#38BDF8"
                 emissive="#00F0FF"
-                emissiveIntensity={1.6 * neonGlow}
+                emissiveIntensity={2.0 * neonGlow}
                 toneMapped={false}
               />
             </mesh>
@@ -388,7 +439,7 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
               <meshStandardMaterial
                 color="#FDE047"
                 emissive="#EAB308"
-                emissiveIntensity={1.4 * neonGlow}
+                emissiveIntensity={1.8 * neonGlow}
                 toneMapped={false}
               />
             </mesh>

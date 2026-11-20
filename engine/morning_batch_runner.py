@@ -27,6 +27,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from engine.agents.topic_master import TopicMasterAgent
+from engine.agents.hook_master import HookMasterAgent
+from engine.agents.seo_master import SEOMasterAgent
 from engine.agents.insta_analyzer import InstaAnalyzerAgent
 from engine.agents.recreation_director import RecreationDirectorAgent
 from engine.agents.audio_director import AudioDirectorAgent
@@ -37,59 +40,89 @@ from engine.agents.drive_dispatcher import DriveDispatcherAgent
 BANNER = r"""
 ======================================================================
   🌅 ANTIGRAVITY MORNING BATCH VIDEO ENGINE (2-3 DAILY REELS)
-  Pipeline  : Instagram Ingestion -> AI Viral Remix -> 3D Remotion -> Multi-Check
-  Auditor   : 5-Stage Autonomous Broadcast Quality Watchdog
-  Delivery  : out/morning_YYYY_MM_DD/ + Captions + Drive Sync
+  Intelligence: TopicMaster -> HookMaster -> SEOMaster
+  Production  : AudioDirector -> SceneDirector -> QualityAuditor
+  Delivery    : out/morning_YYYY_MM_DD/ + Captions + Drive Sync
 ======================================================================
 """
 
-CURATED_MORNING_POOL = [
-    {
-        "style": "diner_ai",
-        "topic": "Anthropic Fellow $3,850/Week (No Experience Required)",
-        "hook": "When a $3,850/week AI job says 'no experience required' but you only know Python.",
-        "core_topic": "Absurd AI Job Salaries & Credentials",
-        "format_type": "ai_vs_dev",
-        "core_conflict": "Human CV submission vs AI proof of automated experiments",
-        "punchline": "One fellow taught an AI to love owls with numbers. Now he works there."
-    },
-    {
-        "style": "ai_vs_dad",
-        "topic": "Dad vs The 5G Wi-Fi Router",
-        "hook": "Why does every Dad believe slapping the router fixes the internet?",
-        "core_topic": "Generational Tech Clash",
-        "format_type": "ai_vs_dad",
-        "core_conflict": "Fiber optic TCP/IP packet routing vs Dad's right hand slap",
-        "punchline": "Thirty years of Indian engineering beats artificial intelligence every day of the week."
-    },
-    {
-        "style": "diner_ai",
-        "topic": "The 101st Rejection: Bypassing HR at 2 AM",
-        "hook": "Rejected after 4 rounds while the guy hired never even applied.",
-        "core_topic": "Broken HR Automation",
-        "format_type": "ai_vs_dev",
-        "core_conflict": "Traditional ATS black hole vs DMing founders before job posts",
-        "punchline": "Founders post 'we are hiring' on X at 2 AM. The job board comes with 100 people days later."
-    },
-    {
-        "style": "ai_vs_dad",
-        "topic": "Dad Catches Son Running 4 GPUs Overnight",
-        "hook": "Are you running a steel factory in your bedroom?!",
-        "core_topic": "AI Hardware Electricity Trauma",
-        "format_type": "ai_vs_dad",
-        "core_conflict": "Local LLM training watts vs Dad's electric meter trauma",
-        "punchline": "Back in my day we calculated square roots with pencil and shut off the fan to save power."
-    },
-    {
-        "style": "ai_arena",
-        "topic": "Claude vs Gemini vs Grok: The Benchmark Smackdown",
-        "hook": "Which AI actually writes production code without hallucinating?",
-        "core_topic": "AI Model Wars",
-        "format_type": "ai_arena",
-        "core_conflict": "Academic philosophy vs unhinged roasts vs practical terminal agents",
-        "punchline": "Antigravity ran the entire unit test suite while Claude and Grok were arguing."
-    }
-]
+def load_content_pillars_pool() -> List[Dict[str, Any]]:
+    """Loads rich rotating viral matrix across all 6 content pillars from content_pillars.json."""
+    pillars_file = PROJECT_ROOT / "engine" / "config" / "content_pillars.json"
+    if pillars_file.exists():
+        try:
+            with open(pillars_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            pool = []
+            for pillar in data.get("pillars", []):
+                for topic in pillar.get("topics", []):
+                    item = dict(topic)
+                    item["pillar_name"] = pillar.get("name")
+                    item["style"] = "diner_ai" if topic.get("format_type") != "ai_vs_dad" else "ai_vs_dad"
+                    pool.append(item)
+            if pool:
+                return pool
+        except Exception as e:
+            print(f"⚠️ Failed loading content_pillars.json: {e}")
+
+    # Fallback minimal pool if config missing
+    return [
+        {
+            "id": "gta_vice_city_web",
+            "title": "GTA Vice City Running 100% in Browser",
+            "hook": "You can play full GTA Vice City directly inside Google Chrome without installing a single file.",
+            "core_topic": "WebAssembly GTA Vice City Port",
+            "format_type": "ai_vs_dev",
+            "left_character": "junior_dev",
+            "right_character": "claude",
+            "cta_keyword": "VICE",
+            "cta_phrase": "Comment VICE and I'll DM you the direct playable browser link.",
+            "card_title": "WebAssembly Vice City Benchmark",
+            "card_data": {"engine": "WebAssembly + WebGL2", "framerate": "Locked 60 FPS", "download": "0 MB"}
+        },
+        {
+            "id": "notebooklm_deep_dive",
+            "title": "Google NotebookLM Turning 200-Page PDFs into Deep Dive Podcasts",
+            "hook": "Stop reading 200-page corporate PDF documents when Google will turn them into a Joe Rogan style podcast.",
+            "core_topic": "NotebookLM Audio Overviews",
+            "format_type": "ai_vs_dev",
+            "left_character": "junior_dev",
+            "right_character": "gemini",
+            "cta_keyword": "NOTEBOOK",
+            "cta_phrase": "Comment NOTEBOOK and I'll DM you the exact prompt template and workflow.",
+            "card_title": "NotebookLM Audio Synthesis",
+            "card_data": {"source_capacity": "50 Sources", "hallucination": "0% Grounded", "cost": "$0.00"}
+        },
+        {
+            "id": "openrouter_pros_and_cons",
+            "title": "OpenRouter Honest Review: 3 Real Pros vs 3 Nasty Cons",
+            "hook": "Everyone on Twitter is hyping OpenRouter as the ultimate AI tool, but nobody mentions the hidden markup and latency spikes.",
+            "core_topic": "OpenRouter Pros and Cons Teardown",
+            "format_type": "ai_vs_dev",
+            "left_character": "junior_dev",
+            "right_character": "claude",
+            "cta_keyword": "ROUTER",
+            "cta_phrase": "Comment ROUTER and I'll DM you the unbiased routing cheat sheet.",
+            "card_title": "OpenRouter: Hype vs Reality",
+            "card_data": {"pro": "Single API for 200+ Models", "con": "50-150ms Added Latency", "cost": "0 Monthly Minimum"}
+        },
+        {
+            "id": "dad_vs_cloud_backup",
+            "title": "Dad Discovers Cloud Storage Subscription on Credit Card",
+            "hook": "Why are you paying Google two hundred rupees every month for clouds?! Clouds are in the sky for free!",
+            "core_topic": "Indian Dad Cloud Storage Outrage",
+            "format_type": "ai_vs_dad",
+            "left_character": "dad",
+            "right_character": "claude",
+            "cta_keyword": "MEME",
+            "cta_phrase": "Comment MEME and I'll DM you the free unlimited self-hosted photo backup guide.",
+            "card_title": "Indian Dad Storage Economics",
+            "card_data": {"google_fee": "₹130/month Recurring", "dad_fix": "4GB Kingston Pen Drive in Cupboard", "cost": "₹0 Forever"}
+        }
+    ]
+
+
+CURATED_MORNING_POOL = load_content_pillars_pool()
 
 
 def load_inbox_queue(queue_file: Path) -> List[str]:
@@ -126,19 +159,83 @@ def archive_processed_urls(queue_file: Path, processed: List[str]):
 
 
 def generate_social_caption(script_data: Dict[str, Any]) -> str:
-    """Generates an engaging, algorithm-optimized Instagram Reel caption."""
+    """
+    Generates an algorithm-optimized, searchable Instagram Reel caption:
+    - Searchable hook headline
+    - 2-3 bullet value summary with natural keywords
+    - Comment [KEYWORD] for Auto-DM CTA
+    - 8-12 targeted niche + mid-volume hashtags
+    """
     title = script_data.get("title", "AI vs Humans")
-    hook_tag = script_data.get("hook", {}).get("tag", "⚠️ REAL TALK")
-    hook_headline = script_data.get("hook", {}).get("headline", title)
+    hook_data = script_data.get("hook", {})
+    if isinstance(hook_data, dict):
+        hook_tag = hook_data.get("tag", "⚠️ REAL TALK")
+        hook_headline = hook_data.get("headline", title)
+        hook_sub = hook_data.get("subheadline", "")
+    else:
+        hook_tag = "⚠️ REAL TALK"
+        hook_headline = title
+        hook_sub = str(hook_data)
+
+    cta_kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
+
+    # Generate 2-3 value bullets from cardData or dialogue
+    card_data = script_data.get("cardData") or {}
+    bullets = []
+    if isinstance(card_data, dict):
+        for k, v in list(card_data.items())[:3]:
+            clean_k = k.replace("_", " ").title()
+            bullets.append(f"• {clean_k}: {v}")
+
+    if not bullets:
+        bullets = [
+            "• Tested live in production with real metrics",
+            "• Zero-cost setup vs overpriced cloud tools",
+            "• Complete workflow breakdown & prompt template"
+        ]
+
+    bullets_text = "\n".join(bullets)
+
+    # SEO Keywords line for Instagram Search indexing
+    seo_keywords = script_data.get("seo_keywords", [])
+    seo_str = " | ".join(seo_keywords[:4]) if seo_keywords else title
+
+    # Targeted niche & mid-volume hashtags (8-12 tags)
+    hashtags = script_data.get("hashtags", [])
+    if not hashtags or len(hashtags) < 8:
+        hashtags = [
+            "#TechReels", "#DeveloperLife", "#SoftwareEngineering", "#CodingHumor",
+            "#AIUpdates", "#DevCommunity", "#TechHacks", "#WebDevelopment",
+            "#ArtificialIntelligence", "#Programming"
+        ]
+    hashtags_str = " ".join(hashtags[:12])
 
     caption = (
         f"{hook_tag} {hook_headline}\n\n"
-        f"{script_data.get('hook', {}).get('subheadline', '')}\n\n"
-        f"Drop your thoughts below 👇 Is AI taking over or are humans still winning the argument?\n\n"
-        f"Follow for daily AI breakdowns, developer humor & zero-dollar tools!\n\n"
-        f"#AI #TechHumor #Developer #Coding #SoftwareEngineering #ProgrammerLife #Claude #Gemini #TechReels #AITools"
+        f"{hook_sub}\n\n"
+        f"Key Breakdown:\n"
+        f"{bullets_text}\n\n"
+        f"🔍 Search keywords: {seo_str}\n\n"
+        f"💬 Comment \"{cta_kw}\" below and I'll send you the link right to your DMs!\n\n"
+        f"Follow @antigravity for daily zero-dollar AI workflows, developer humor & deep breakdowns!\n\n"
+        f"{hashtags_str}"
     )
     return caption
+
+
+def generate_autodm_config(script_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Generates structured config for ManyChat or Instagram Auto-DM automation."""
+    cta_kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
+    title = script_data.get("title", "Resource Guide")
+    dm_msg = script_data.get("dm_message") or f"Hey! Here is the direct link and guide for {title}: https://antigravity.run/r/{cta_kw.lower()}"
+
+    return {
+        "keyword": cta_kw,
+        "reply_comment_text": "Check your DMs! 🚀 Sent the full guide.",
+        "dm_message_template": dm_msg,
+        "resource_topic": title,
+        "created_at": datetime.now().isoformat()
+    }
 
 
 def run_morning_batch(
@@ -164,9 +261,12 @@ def run_morning_batch(
     if queued_urls:
         print(f"📥 Found {len(queued_urls)} URLs queued in inbox/insta_queue.txt")
     else:
-        print("ℹ️ Inbox queue empty. Drawing from curated high-retention viral daily pool.")
+        print("ℹ️ Inbox queue empty. Defaulting to 3-Master Agent Chain (TopicMaster -> HookMaster -> SEOMaster).")
 
-    # Initialize subagents
+    # Initialize specialist master agents & production directors
+    topic_master = TopicMasterAgent(project_root=PROJECT_ROOT)
+    hook_master = HookMasterAgent(project_root=PROJECT_ROOT)
+    seo_master = SEOMasterAgent(project_root=PROJECT_ROOT)
     insta_analyzer = InstaAnalyzerAgent(project_root=PROJECT_ROOT)
     recreation_director = RecreationDirectorAgent(project_root=PROJECT_ROOT)
     audio_director = AudioDirectorAgent(project_root=PROJECT_ROOT)
@@ -177,7 +277,7 @@ def run_morning_batch(
     processed_urls = []
     generated_reels = []
 
-    # Select candidate items
+    # Priority 1: Queued URLs from inbox/insta_queue.txt
     items_to_process = []
     if insta_url and insta_url.strip():
         print(f"🎯 Target URL Override: {insta_url.strip()}")
@@ -187,40 +287,82 @@ def run_morning_batch(
             items_to_process.append({"type": "url", "data": u})
             processed_urls.append(u)
 
-    # Supplement from curated pool if less than count
-    pool_index = datetime.now().timetuple().tm_yday
-    while len(items_to_process) < count:
-        candidate = CURATED_MORNING_POOL[pool_index % len(CURATED_MORNING_POOL)]
-        if candidate not in [it["data"] for it in items_to_process if it["type"] == "pool"]:
-            items_to_process.append({"type": "pool", "data": candidate})
-        pool_index += 1
+    # Priority 2: TopicMasterAgent (Consumer Tech, AI Apps, Browser Games, Business Models)
+    needed = count - len(items_to_process)
+    if needed > 0:
+        print(f"📡 [Intelligence: TopicMaster] Curating {needed} mass-appeal viral topic(s)...")
+        try:
+            fresh_topics = topic_master.curate_fresh_topics(count=needed)
+            for topic in fresh_topics:
+                items_to_process.append({"type": "dynamic", "data": topic})
+        except Exception as e:
+            print(f"⚠️ TopicMaster curation notice: {e}")
 
-    # Execute generation for each item
+    # Priority 3: Emergency Offline Fallback from content_pillars.json
+    if len(items_to_process) < count:
+        print("⚠️ Falling back to offline emergency content pillars matrix.")
+        pool_index = datetime.now().timetuple().tm_yday
+        while len(items_to_process) < count:
+            candidate = CURATED_MORNING_POOL[pool_index % len(CURATED_MORNING_POOL)]
+            if candidate not in [it["data"] for it in items_to_process if it["type"] == "pool"]:
+                items_to_process.append({"type": "pool", "data": candidate})
+            pool_index += 1
+
+    # Execute sequential generation chain for each item
     for idx, item in enumerate(items_to_process, 1):
         print(f"\n" + "=" * 70)
         print(f"  🎬 PRODUCING MORNING REEL #{idx} OF {len(items_to_process)}")
+        print("  Sequential Chain: TopicMaster -> HookMaster -> SEOMaster -> Audio -> Scene -> Audit")
         print("=" * 70)
 
-        # Step 1: Ingestion / Topic Analysis
+        # 1. Topic Master / Ingestion Stage
         if item["type"] == "url":
-            print(f"🔗 Source: Queued URL -> {item['data']}")
+            print(f"🔗 [Topic Ingestion] Queued URL -> {item['data']}")
             analysis = insta_analyzer.analyze_from_url_or_query(item["data"])
-            target_style = None
+            topic_payload = {
+                "title": analysis.get("title", "Remixed Viral Reel"),
+                "topic_title": analysis.get("title", "Remixed Viral Reel"),
+                "category": analysis.get("category", "Trending Social Remix"),
+                "auto_dm_keyword": analysis.get("cta_keyword", "LINK"),
+                "left_character": analysis.get("left_character", "junior_dev"),
+                "right_character": analysis.get("right_character", "claude"),
+                "scene_preset": scene_preset if (scene_preset and scene_preset != "auto") else "diner",
+                "core_conflict": analysis.get("core_conflict", "Social hype vs engineering facts"),
+                "viral_score": 85,
+                "card_data": analysis.get("card_data") or analysis.get("cardData", {}),
+            }
+        elif item["type"] == "dynamic":
+            topic_payload = item["data"]
+            print(f"🔥 [TopicMaster] Curated: {topic_payload.get('title')} | Score: {topic_payload.get('viral_score', 85)}/100 [{topic_payload.get('category')}]")
         else:
             pool_data = item["data"]
-            print(f"🎯 Source: Curated Viral Matrix -> {pool_data['topic']}")
-            analysis = pool_data
-            target_style = pool_data.get("style")
+            print(f"🎯 [Offline Fallback] Picked: {pool_data.get('title') or pool_data.get('topic')}")
+            topic_payload = {
+                "title": pool_data.get("title", "Offline Tech Breakdown"),
+                "topic_title": pool_data.get("title", "Offline Tech Breakdown"),
+                "category": pool_data.get("pillar_style") or pool_data.get("category", "Retro Tech"),
+                "auto_dm_keyword": pool_data.get("cta_keyword", "TECH"),
+                "left_character": pool_data.get("left_character", "junior_dev"),
+                "right_character": pool_data.get("right_character", "claude"),
+                "scene_preset": scene_preset if (scene_preset and scene_preset != "auto") else "diner",
+                "core_conflict": pool_data.get("core_conflict", "Dev nostalgia vs reality"),
+                "viral_score": 82,
+                "card_data": pool_data.get("card_data", {}),
+            }
 
-        # Step 2: Viral AI Recreation & Remix Screenplay
-        script_data = recreation_director.recreate_reel(analysis, target_style=target_style)
+        # 2. HookMaster Stage (0-3s Hook Battle + Tight 6-turn Screenplay)
+        print("⚡ [HookMaster] Conducting 0-3s Hook Battle and writing tight 6-turn screenplay...")
+        script_data = hook_master.craft_reel_screenplay(topic_payload)
         if scene_preset and scene_preset != "auto":
             script_data["scenePreset"] = scene_preset
+        elif topic_payload.get("scene_preset"):
+            script_data["scenePreset"] = topic_payload.get("scene_preset")
 
-        # Step 3: Neural Character Voices & DSP Mastering
+        # 3. AudioDirector Stage (Neural character voices & DSP mastering)
+        print("🎙️ [AudioDirector] Synthesizing neural character voices & audio mastering...")
         audio_res = audio_director.synthesize_soundtrack(script_data)
 
-        # Step 4 & 5: Remotion Render & Multi-Check Quality Loop
+        # 4 & 5. SceneDirector & QualityAuditor Stages (Remotion Render & 5-Stage Audit Loop)
         safe_title = "".join(c if c.isalnum() else "_" for c in script_data["title"].lower()).strip("_")[:30]
         output_filename = f"reel_{idx:02d}_{safe_title}.mp4"
 
@@ -229,7 +371,7 @@ def run_morning_batch(
         audit_res = None
 
         for attempt in range(1, max_attempts + 1):
-            print(f"\n🔄 Render & Quality Check Attempt {attempt}/{max_attempts}...")
+            print(f"\n🔄 [SceneDirector & QualityAuditor] Render & Audit Attempt {attempt}/{max_attempts}...")
             rendered_mp4 = scene_director.compile_and_render(
                 script_data=script_data,
                 audio_result=audio_res,
@@ -256,11 +398,16 @@ def run_morning_batch(
                 if os.path.realpath(str(src_kf)) != os.path.realpath(str(dst_kf)):
                     shutil.copy2(src_kf, dst_kf)
 
-        # Generate Caption & Posting metadata
-        caption_text = generate_social_caption(script_data)
-        caption_file = batch_dir / f"reel_{idx:02d}_{safe_title}_caption.txt"
-        with open(caption_file, "w", encoding="utf-8") as f:
-            f.write(caption_text)
+        # 6. SEOMaster Stage (Instagram Discovery, Pinned Debate Bait, Anti-Throttle Auto-DM)
+        print("🔍 [SEOMaster] Generating SEO headline, pinned comment bait, and 3-reply Auto-DM config...")
+        file_prefix = f"reel_{idx:02d}_{safe_title}"
+        seo_assets = seo_master.generate_seo_assets(
+            script_data=script_data,
+            batch_dir=batch_dir,
+            file_prefix=file_prefix,
+        )
+        caption_file = seo_assets["caption_path"]
+        autodm_file = seo_assets["autodm_path"]
 
         # Optional Cloud Drive Sync
         drive_status = "SKIPPED"
@@ -297,6 +444,8 @@ def run_morning_batch(
             "title": script_data["title"],
             "video_path": str(final_video_dest),
             "caption_path": str(caption_file),
+            "autodm_path": str(autodm_file),
+            "cta_keyword": autodm_data.get("keyword"),
             "duration": audit_res.get("duration", 0),
             "quality_score": audit_res.get("score", 100),
             "status": audit_res.get("status", "PASS"),
@@ -327,7 +476,7 @@ def run_morning_batch(
     print(f"  📁 Output Directory : {batch_dir}")
     print(f"  ⏱️ Total Batch Time : {elapsed:.1f}s")
     for r in generated_reels:
-        print(f"  🎬 Reel #{r['index']:02d}: {r['title']} [{r['duration']:.1f}s | Score: {r['quality_score']}/100]")
+        print(f"  🎬 Reel #{r['index']:02d}: {r['title']} [{r['duration']:.1f}s | Score: {r['quality_score']}/100 | Auto-DM: {r.get('cta_keyword')}]")
     print("=" * 70)
 
     return batch_report
