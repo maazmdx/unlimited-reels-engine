@@ -30,7 +30,7 @@ class RecreationDirectorAgent:
         self.client = None
         if genai and os.environ.get("GEMINI_API_KEY"):
             try:
-                self.client = genai.Client()
+                self.client = genai.Client(http_options={"api_version": "v1beta"})
             except Exception as e:
                 print(f"⚠️ Gemini Client init notice in Recreation Director: {e}")
 
@@ -135,11 +135,22 @@ Produce a complete Remotion screenplay JSON with:
 Return ONLY valid JSON.
 """
 
-        response = self.client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[prompt],
-            config=dict(system_instruction=system_instruction)
-        )
+        response = None
+        for model_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+            try:
+                response = self.client.models.generate_content(
+                    model=model_name,
+                    contents=[prompt],
+                    config=dict(system_instruction=system_instruction)
+                )
+                if response and response.text:
+                    break
+            except Exception as e:
+                print(f"⚠️ Gemini model {model_name} attempt: {e}")
+                continue
+
+        if not response or not response.text:
+            raise RuntimeError("Gemini generate_content returned empty response across models.")
 
         raw_text = response.text.strip().strip("`").replace("json\n", "", 1)
         screenplay = json.loads(raw_text)

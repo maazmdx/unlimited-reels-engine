@@ -38,7 +38,7 @@ class InstaAnalyzerAgent:
         self.client = None
         if genai and os.environ.get("GEMINI_API_KEY"):
             try:
-                self.client = genai.Client()
+                self.client = genai.Client(http_options={"api_version": "v1beta"})
             except Exception as e:
                 print(f"⚠️ Gemini Client init notice: {e}")
 
@@ -130,10 +130,21 @@ class InstaAnalyzerAgent:
                 "Return ONLY the JSON object, no markdown codeblocks or extra text."
             )
 
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=[uploaded_file, prompt]
-            )
+            response = None
+            for model_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+                try:
+                    response = self.client.models.generate_content(
+                        model=model_name,
+                        contents=[uploaded_file, prompt]
+                    )
+                    if response and response.text:
+                        break
+                except Exception as ex:
+                    print(f"⚠️ Gemini model {model_name} attempt: {ex}")
+                    continue
+
+            if not response or not response.text:
+                raise RuntimeError("Gemini generate_content returned empty response across models.")
 
             raw_text = response.text.strip()
             # Clean possible markdown formatting
@@ -197,10 +208,19 @@ class InstaAnalyzerAgent:
             "}\nReturn ONLY JSON."
         )
         try:
-            res = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
+            res = None
+            for model_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+                try:
+                    res = self.client.models.generate_content(
+                        model=model_name,
+                        contents=prompt
+                    )
+                    if res and res.text:
+                        break
+                except Exception:
+                    continue
+            if not res or not res.text:
+                return self._heuristic_fallback(url)
             raw = res.text.strip().strip("`").replace("json\n", "", 1)
             data = json.loads(raw)
             data["source_url"] = url
@@ -219,10 +239,19 @@ class InstaAnalyzerAgent:
             "characters, core_conflict, visual_hook, punchline, viral_trigger."
         )
         try:
-            res = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
+            res = None
+            for model_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+                try:
+                    res = self.client.models.generate_content(
+                        model=model_name,
+                        contents=prompt
+                    )
+                    if res and res.text:
+                        break
+                except Exception:
+                    continue
+            if not res or not res.text:
+                return self._heuristic_fallback(query)
             raw = res.text.strip().strip("`").replace("json\n", "", 1)
             return json.loads(raw)
         except Exception:

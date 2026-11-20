@@ -199,7 +199,8 @@ def trim_silence(input_audio: str, output_audio: str) -> bool:
         subprocess.run(cmd, capture_output=True, check=True)
         return True
     except Exception as e:
-        shutil.copy2(input_audio, output_audio)
+        if os.path.realpath(str(input_audio)) != os.path.realpath(str(output_audio)):
+            shutil.copy2(input_audio, output_audio)
         return False
 
 
@@ -375,7 +376,8 @@ def apply_broadcast_mastering(
             subprocess.run(simple_cmd, capture_output=True, check=True)
             return True
         except Exception:
-            shutil.copy2(input_vocal_audio, output_audio)
+            if os.path.realpath(str(input_vocal_audio)) != os.path.realpath(str(output_audio)):
+                shutil.copy2(input_vocal_audio, output_audio)
             return False
 
 
@@ -564,7 +566,8 @@ def generate_dialogue_speech(
 
             # Store turn audio file path for envelope analysis
             persistent_turn_audio = os.path.join(tmpdir, f"turn_{idx:03d}_final.wav")
-            shutil.copy2(turn_wav_trimmed, persistent_turn_audio)
+            if os.path.realpath(str(turn_wav_trimmed)) != os.path.realpath(str(persistent_turn_audio)):
+                shutil.copy2(turn_wav_trimmed, persistent_turn_audio)
 
             # Global word timestamps
             turn_words_obj = []
@@ -708,7 +711,7 @@ def generate_dialogue_speech(
     for d in set(out_dirs):
         for audio_name in ["voice.mp3", "voiceover.mp3", "master.mp3"]:
             dest_audio = os.path.join(d, audio_name)
-            if os.path.abspath(out_audio) != os.path.abspath(dest_audio):
+            if os.path.realpath(str(out_audio)) != os.path.realpath(str(dest_audio)):
                 shutil.copy2(out_audio, dest_audio)
 
     # 5. Write video metadata

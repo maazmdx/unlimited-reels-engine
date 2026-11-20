@@ -54,7 +54,7 @@ class AudioDirectorAgent:
         for fname in ["voice.mp3", "voiceover.mp3", "master.mp3", "subs.vtt", "subs.json", "video-meta.json", "timeline.json"]:
             src = self.public_dir / fname
             dst = self.remotion_public / fname
-            if src.exists():
+            if src.exists() and os.path.realpath(str(src)) != os.path.realpath(str(dst)):
                 shutil.copy2(str(src), str(dst))
 
         print(f"✅ [Agent 3] Audio soundtrack generated: {result['duration']:.2f}s ({result['frames']} frames @ 30fps)")

@@ -245,13 +245,16 @@ def run_morning_batch(
 
         # Copy finalized video & thumbnails into morning batch directory
         final_video_dest = batch_dir / output_filename
-        if Path(rendered_mp4).exists():
+        if Path(rendered_mp4).exists() and os.path.realpath(str(rendered_mp4)) != os.path.realpath(str(final_video_dest)):
             shutil.copy2(rendered_mp4, final_video_dest)
 
         # Copy audit keyframes to thumbs directory
         for kf in audit_res.get("keyframes", []):
             if kf.get("path") and Path(kf["path"]).exists():
-                shutil.copy2(kf["path"], thumbs_dir / Path(kf["path"]).name)
+                src_kf = kf["path"]
+                dst_kf = thumbs_dir / Path(kf["path"]).name
+                if os.path.realpath(str(src_kf)) != os.path.realpath(str(dst_kf)):
+                    shutil.copy2(src_kf, dst_kf)
 
         # Generate Caption & Posting metadata
         caption_text = generate_social_caption(script_data)
