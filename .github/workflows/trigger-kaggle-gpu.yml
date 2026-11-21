@@ -1,0 +1,67 @@
+name: Trigger Daily Kaggle GPU Reels
+
+on:
+  schedule:
+    # Daily run at 08:30 AM IST (03:00 UTC)
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: kaggle-gpu-pipeline
+  cancel-in-progress: false
+
+jobs:
+  trigger-kaggle:
+    name: Push & Trigger Kaggle T4 GPU Runner
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Install Kaggle CLI
+        run: |
+          pip install --upgrade kaggle
+
+      - name: 🔑 Configure Kaggle API Credentials
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          if [ -z "$KAGGLE_USERNAME" ] || [ -z "$KAGGLE_KEY" ]; then
+            echo "❌ Error: KAGGLE_USERNAME or KAGGLE_KEY secret is not set!"
+            echo "Please configure KAGGLE_USERNAME and KAGGLE_KEY in GitHub Repository Secrets."
+            exit 1
+          fi
+          mkdir -p ~/.kaggle
+          echo "{\"username\":\"$KAGGLE_USERNAME\",\"key\":\"$KAGGLE_KEY\"}" > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+          echo "✅ Kaggle API credentials configured."
+
+      - name: 🚀 Push & Trigger Kaggle GPU Kernel
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+        run: |
+          # Substitute username in metadata
+          sed -i "s/__KAGGLE_USERNAME__/$KAGGLE_USERNAME/g" kaggle/kernel-metadata.json
+          echo "📋 Prepared kernel-metadata.json:"
+          cat kaggle/kernel-metadata.json
+          
+          echo "☁️ Pushing notebook to Kaggle GPU..."
+          kaggle kernels push -p kaggle/
+          
+          echo "⏳ Checking kernel status..."
+          sleep 5
+          kaggle kernels status "$KAGGLE_USERNAME/daily-reels-gpu-runner" || true
+          
+          echo ""
+          echo "=========================================================================="
+          echo "🎉 Kaggle GPU Kernel triggered successfully!"
+          echo "👉 Monitor progress: https://www.kaggle.com/code/$KAGGLE_USERNAME/daily-reels-gpu-runner"
+          echo "=========================================================================="

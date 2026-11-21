@@ -1,0 +1,14 @@
+{
+  "id": "__KAGGLE_USERNAME__/daily-reels-gpu-runner",
+  "title": "Daily Reels GPU Runner",
+  "code_file": "daily_reels_gpu_runner.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": []
+}
