@@ -48,8 +48,15 @@ jobs:
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
         run: |
-          # Substitute username in metadata
-          sed -i "s/__KAGGLE_USERNAME__/$KAGGLE_USERNAME/g" kaggle/kernel-metadata.json
+          # Substitute username in metadata safely via Python JSON
+          python3 -c '
+          import json, os
+          p = "kaggle/kernel-metadata.json"
+          d = json.load(open(p))
+          d["id"] = d["id"].replace("__KAGGLE_USERNAME__", os.environ["KAGGLE_USERNAME"].strip())
+          json.dump(d, open(p, "w"), indent=2)
+          print("Target kernel:", d["id"])
+          '
           echo "📋 Prepared kernel-metadata.json:"
           cat kaggle/kernel-metadata.json
           
