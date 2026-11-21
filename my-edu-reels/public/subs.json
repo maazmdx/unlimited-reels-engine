@@ -4,1217 +4,1217 @@
       "word": "Hey",
       "raw": "Hey",
       "start": 0.0,
-      "end": 0.184,
+      "end": 0.173,
       "character_id": "junior_dev"
     },
     {
       "word": "Claude",
       "raw": "Claude,",
-      "start": 0.184,
-      "end": 0.612,
+      "start": 0.173,
+      "end": 0.577,
       "character_id": "junior_dev"
     },
     {
       "word": "I",
       "raw": "I",
-      "start": 0.612,
-      "end": 0.734,
+      "start": 0.577,
+      "end": 0.693,
       "character_id": "junior_dev"
     },
     {
       "word": "just",
       "raw": "just",
-      "start": 0.734,
-      "end": 0.979,
+      "start": 0.693,
+      "end": 0.923,
       "character_id": "junior_dev"
     },
     {
       "word": "pushed",
       "raw": "pushed",
-      "start": 0.979,
-      "end": 1.346,
+      "start": 0.923,
+      "end": 1.27,
       "character_id": "junior_dev"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 1.346,
-      "end": 1.468,
+      "start": 1.27,
+      "end": 1.385,
       "character_id": "junior_dev"
     },
     {
       "word": "quick",
       "raw": "quick",
-      "start": 1.468,
-      "end": 1.774,
+      "start": 1.385,
+      "end": 1.674,
       "character_id": "junior_dev"
     },
     {
       "word": "fix",
       "raw": "fix",
-      "start": 1.774,
-      "end": 1.957,
+      "start": 1.674,
+      "end": 1.847,
       "character_id": "junior_dev"
     },
     {
       "word": "directly",
       "raw": "directly",
-      "start": 1.957,
-      "end": 2.447,
+      "start": 1.847,
+      "end": 2.309,
       "character_id": "junior_dev"
     },
     {
       "word": "to",
       "raw": "to",
-      "start": 2.447,
-      "end": 2.569,
+      "start": 2.309,
+      "end": 2.424,
       "character_id": "junior_dev"
     },
     {
       "word": "production",
       "raw": "production",
-      "start": 2.569,
-      "end": 3.181,
+      "start": 2.424,
+      "end": 3.001,
       "character_id": "junior_dev"
     },
     {
       "word": "on",
       "raw": "on",
-      "start": 3.181,
-      "end": 3.303,
+      "start": 3.001,
+      "end": 3.117,
       "character_id": "junior_dev"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 3.303,
-      "end": 3.425,
+      "start": 3.117,
+      "end": 3.232,
       "character_id": "junior_dev"
     },
     {
       "word": "Friday",
       "raw": "Friday",
-      "start": 3.425,
-      "end": 3.793,
+      "start": 3.232,
+      "end": 3.578,
       "character_id": "junior_dev"
     },
     {
       "word": "afternoon",
       "raw": "afternoon.",
-      "start": 3.793,
-      "end": 4.404,
+      "start": 3.578,
+      "end": 4.155,
       "character_id": "junior_dev"
     },
     {
       "word": "Fascinating",
       "raw": "Fascinating.",
-      "start": 4.541,
-      "end": 5.329,
+      "start": 4.255,
+      "end": 5.002,
       "character_id": "claude"
     },
     {
       "word": "Shall",
       "raw": "Shall",
-      "start": 5.329,
-      "end": 5.658,
+      "start": 5.002,
+      "end": 5.313,
       "character_id": "claude"
     },
     {
       "word": "I",
       "raw": "I",
-      "start": 5.658,
-      "end": 5.789,
+      "start": 5.313,
+      "end": 5.437,
       "character_id": "claude"
     },
     {
       "word": "draft",
       "raw": "draft",
-      "start": 5.789,
-      "end": 6.117,
+      "start": 5.437,
+      "end": 5.748,
       "character_id": "claude"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 6.117,
-      "end": 6.314,
+      "start": 5.748,
+      "end": 5.935,
       "character_id": "claude"
     },
     {
       "word": "postmortem",
       "raw": "post-mortem",
-      "start": 6.314,
-      "end": 7.037,
+      "start": 5.935,
+      "end": 6.619,
       "character_id": "claude"
     },
     {
       "word": "now",
       "raw": "now,",
-      "start": 7.037,
-      "end": 7.3,
+      "start": 6.619,
+      "end": 6.868,
       "character_id": "claude"
     },
     {
       "word": "or",
       "raw": "or",
-      "start": 7.3,
-      "end": 7.431,
+      "start": 6.868,
+      "end": 6.992,
       "character_id": "claude"
     },
     {
       "word": "wait",
       "raw": "wait",
-      "start": 7.431,
-      "end": 7.694,
+      "start": 6.992,
+      "end": 7.241,
       "character_id": "claude"
     },
     {
       "word": "until",
       "raw": "until",
-      "start": 7.694,
-      "end": 8.022,
+      "start": 7.241,
+      "end": 7.552,
       "character_id": "claude"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 8.022,
-      "end": 8.219,
+      "start": 7.552,
+      "end": 7.739,
       "character_id": "claude"
     },
     {
       "word": "alerts",
       "raw": "alerts",
-      "start": 8.219,
-      "end": 8.613,
+      "start": 7.739,
+      "end": 8.112,
       "character_id": "claude"
     },
     {
       "word": "start",
       "raw": "start",
-      "start": 8.613,
-      "end": 8.942,
+      "start": 8.112,
+      "end": 8.423,
       "character_id": "claude"
     },
     {
       "word": "screaming",
       "raw": "screaming?",
-      "start": 8.942,
-      "end": 9.599,
+      "start": 8.423,
+      "end": 9.045,
       "character_id": "claude"
     },
     {
       "word": "Relax",
       "raw": "Relax,",
-      "start": 9.8,
-      "end": 10.231,
+      "start": 9.258,
+      "end": 9.644,
       "character_id": "junior_dev"
     },
     {
       "word": "it",
       "raw": "it",
-      "start": 10.231,
-      "end": 10.374,
+      "start": 9.644,
+      "end": 9.772,
       "character_id": "junior_dev"
     },
     {
       "word": "was",
       "raw": "was",
-      "start": 10.374,
-      "end": 10.589,
+      "start": 9.772,
+      "end": 9.965,
       "character_id": "junior_dev"
     },
     {
       "word": "only",
       "raw": "only",
-      "start": 10.589,
-      "end": 10.877,
+      "start": 9.965,
+      "end": 10.222,
       "character_id": "junior_dev"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 10.877,
-      "end": 11.02,
+      "start": 10.222,
+      "end": 10.35,
       "character_id": "junior_dev"
     },
     {
       "word": "oneline",
       "raw": "one-line",
-      "start": 11.02,
-      "end": 11.594,
+      "start": 10.35,
+      "end": 10.864,
       "character_id": "junior_dev"
     },
     {
       "word": "CSS",
       "raw": "CSS",
-      "start": 11.594,
-      "end": 11.81,
+      "start": 10.864,
+      "end": 11.057,
       "character_id": "junior_dev"
     },
     {
       "word": "change",
       "raw": "change!",
-      "start": 11.81,
-      "end": 12.312,
+      "start": 11.057,
+      "end": 11.507,
       "character_id": "junior_dev"
     },
     {
       "word": "What",
       "raw": "What",
-      "start": 12.312,
-      "end": 12.599,
+      "start": 11.507,
+      "end": 11.764,
       "character_id": "junior_dev"
     },
     {
       "word": "could",
       "raw": "could",
-      "start": 12.599,
-      "end": 12.958,
+      "start": 11.764,
+      "end": 12.085,
       "character_id": "junior_dev"
     },
     {
       "word": "possibly",
       "raw": "possibly",
-      "start": 12.958,
-      "end": 13.532,
+      "start": 12.085,
+      "end": 12.599,
       "character_id": "junior_dev"
     },
     {
       "word": "go",
       "raw": "go",
-      "start": 13.532,
-      "end": 13.675,
+      "start": 12.599,
+      "end": 12.728,
       "character_id": "junior_dev"
     },
     {
       "word": "wrong",
       "raw": "wrong?",
-      "start": 13.675,
-      "end": 14.106,
+      "start": 12.728,
+      "end": 13.113,
       "character_id": "junior_dev"
     },
     {
       "word": "Statistically",
       "raw": "Statistically",
-      "start": 14.389,
-      "end": 15.248,
+      "start": 13.333,
+      "end": 14.158,
       "character_id": "claude"
     },
     {
       "word": "speaking",
       "raw": "speaking,",
-      "start": 15.248,
-      "end": 15.842,
+      "start": 14.158,
+      "end": 14.729,
       "character_id": "claude"
     },
     {
       "word": "precisely",
       "raw": "precisely",
-      "start": 15.842,
-      "end": 16.436,
+      "start": 14.729,
+      "end": 15.299,
       "character_id": "claude"
     },
     {
       "word": "everything",
       "raw": "everything.",
-      "start": 16.436,
-      "end": 17.163,
+      "start": 15.299,
+      "end": 15.997,
       "character_id": "claude"
     },
     {
       "word": "The",
       "raw": "The",
-      "start": 17.163,
-      "end": 17.361,
+      "start": 15.997,
+      "end": 16.188,
       "character_id": "claude"
     },
     {
       "word": "entire",
       "raw": "entire",
-      "start": 17.361,
-      "end": 17.757,
+      "start": 16.188,
+      "end": 16.568,
       "character_id": "claude"
     },
     {
       "word": "payment",
       "raw": "payment",
-      "start": 17.757,
-      "end": 18.219,
+      "start": 16.568,
+      "end": 17.012,
       "character_id": "claude"
     },
     {
       "word": "gateway",
       "raw": "gateway",
-      "start": 18.219,
-      "end": 18.682,
+      "start": 17.012,
+      "end": 17.456,
       "character_id": "claude"
     },
     {
       "word": "is",
       "raw": "is",
-      "start": 18.682,
-      "end": 18.814,
+      "start": 17.456,
+      "end": 17.583,
       "character_id": "claude"
     },
     {
       "word": "already",
       "raw": "already",
-      "start": 18.814,
-      "end": 19.276,
+      "start": 17.583,
+      "end": 18.027,
       "character_id": "claude"
     },
     {
       "word": "down",
       "raw": "down.",
-      "start": 19.276,
-      "end": 19.606,
+      "start": 18.027,
+      "end": 18.344,
       "character_id": "claude"
     },
     {
       "word": "Arre",
       "raw": "Arre",
-      "start": 19.89,
-      "end": 20.158,
+      "start": 18.559,
+      "end": 18.815,
       "character_id": "dad"
     },
     {
       "word": "Junior",
       "raw": "Junior!",
-      "start": 20.158,
-      "end": 20.627,
+      "start": 18.815,
+      "end": 19.262,
       "character_id": "dad"
     },
     {
       "word": "Who",
       "raw": "Who",
-      "start": 20.627,
-      "end": 20.828,
+      "start": 19.262,
+      "end": 19.454,
       "character_id": "dad"
     },
     {
       "word": "touches",
       "raw": "touches",
-      "start": 20.828,
-      "end": 21.296,
+      "start": 19.454,
+      "end": 19.901,
       "character_id": "dad"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 21.296,
-      "end": 21.497,
+      "start": 19.901,
+      "end": 20.093,
       "character_id": "dad"
     },
     {
       "word": "server",
       "raw": "server",
-      "start": 21.497,
-      "end": 21.899,
+      "start": 20.093,
+      "end": 20.477,
       "character_id": "dad"
     },
     {
       "word": "on",
       "raw": "on",
-      "start": 21.899,
-      "end": 22.033,
+      "start": 20.477,
+      "end": 20.604,
       "character_id": "dad"
     },
     {
       "word": "Friday",
       "raw": "Friday?!",
-      "start": 22.033,
-      "end": 22.569,
+      "start": 20.604,
+      "end": 21.116,
       "character_id": "dad"
     },
     {
       "word": "In",
       "raw": "In",
-      "start": 22.569,
-      "end": 22.703,
+      "start": 21.116,
+      "end": 21.244,
       "character_id": "dad"
     },
     {
       "word": "my",
       "raw": "my",
-      "start": 22.703,
-      "end": 22.837,
+      "start": 21.244,
+      "end": 21.371,
       "character_id": "dad"
     },
     {
       "word": "days",
       "raw": "days",
-      "start": 22.837,
-      "end": 23.104,
+      "start": 21.371,
+      "end": 21.627,
       "character_id": "dad"
     },
     {
       "word": "we",
       "raw": "we",
-      "start": 23.104,
-      "end": 23.238,
+      "start": 21.627,
+      "end": 21.755,
       "character_id": "dad"
     },
     {
       "word": "never",
       "raw": "never",
-      "start": 23.238,
-      "end": 23.573,
+      "start": 21.755,
+      "end": 22.075,
       "character_id": "dad"
     },
     {
       "word": "touched",
       "raw": "touched",
-      "start": 23.573,
-      "end": 24.042,
+      "start": 22.075,
+      "end": 22.522,
       "character_id": "dad"
     },
     {
       "word": "production",
       "raw": "production",
-      "start": 24.042,
-      "end": 24.712,
+      "start": 22.522,
+      "end": 23.161,
       "character_id": "dad"
     },
     {
       "word": "without",
       "raw": "without",
-      "start": 24.712,
-      "end": 25.181,
+      "start": 23.161,
+      "end": 23.609,
       "character_id": "dad"
     },
     {
       "word": "a",
       "raw": "a",
-      "start": 25.181,
-      "end": 25.314,
+      "start": 23.609,
+      "end": 23.736,
       "character_id": "dad"
     },
     {
       "word": "pooja",
       "raw": "pooja!",
-      "start": 25.314,
-      "end": 25.716,
+      "start": 23.736,
+      "end": 24.12,
       "character_id": "dad"
     },
     {
       "word": "Wait",
       "raw": "Wait...",
-      "start": 25.936,
-      "end": 26.368,
+      "start": 24.26,
+      "end": 24.653,
       "character_id": "junior_dev"
     },
     {
       "word": "why",
       "raw": "why",
-      "start": 26.368,
-      "end": 26.554,
+      "start": 24.653,
+      "end": 24.822,
       "character_id": "junior_dev"
     },
     {
       "word": "is",
       "raw": "is",
-      "start": 26.554,
-      "end": 26.677,
+      "start": 24.822,
+      "end": 24.934,
       "character_id": "junior_dev"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 26.677,
-      "end": 26.863,
+      "start": 24.934,
+      "end": 25.103,
       "character_id": "junior_dev"
     },
     {
       "word": "production",
       "raw": "production",
-      "start": 26.863,
-      "end": 27.481,
+      "start": 25.103,
+      "end": 25.665,
       "character_id": "junior_dev"
     },
     {
       "word": "database",
       "raw": "database",
-      "start": 27.481,
-      "end": 27.975,
+      "start": 25.665,
+      "end": 26.114,
       "character_id": "junior_dev"
     },
     {
       "word": "dropping",
       "raw": "dropping",
-      "start": 27.975,
-      "end": 28.469,
+      "start": 26.114,
+      "end": 26.563,
       "character_id": "junior_dev"
     },
     {
       "word": "all",
       "raw": "all",
-      "start": 28.469,
-      "end": 28.654,
+      "start": 26.563,
+      "end": 26.732,
       "character_id": "junior_dev"
     },
     {
       "word": "tables",
       "raw": "tables",
-      "start": 28.654,
-      "end": 29.025,
+      "start": 26.732,
+      "end": 27.069,
       "character_id": "junior_dev"
     },
     {
       "word": "right",
       "raw": "right",
-      "start": 29.025,
-      "end": 29.334,
+      "start": 27.069,
+      "end": 27.35,
       "character_id": "junior_dev"
     },
     {
       "word": "now",
       "raw": "now?!",
-      "start": 29.334,
-      "end": 29.643,
+      "start": 27.35,
+      "end": 27.631,
       "character_id": "junior_dev"
     }
   ],
   "chunks": [
     {
       "start": 0.0,
-      "end": 0.734,
+      "end": 0.693,
       "text": "Hey Claude I",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "Hey",
           "start_sec": 0.0,
-          "end_sec": 0.184
+          "end_sec": 0.173
         },
         {
           "word": "Claude",
-          "start_sec": 0.184,
-          "end_sec": 0.612
+          "start_sec": 0.173,
+          "end_sec": 0.577
         },
         {
           "word": "I",
-          "start_sec": 0.612,
-          "end_sec": 0.734
+          "start_sec": 0.577,
+          "end_sec": 0.693
         }
       ]
     },
     {
-      "start": 0.734,
-      "end": 1.468,
+      "start": 0.693,
+      "end": 1.385,
       "text": "just pushed a",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "just",
-          "start_sec": 0.734,
-          "end_sec": 0.979
+          "start_sec": 0.693,
+          "end_sec": 0.923
         },
         {
           "word": "pushed",
-          "start_sec": 0.979,
-          "end_sec": 1.346
+          "start_sec": 0.923,
+          "end_sec": 1.27
         },
         {
           "word": "a",
-          "start_sec": 1.346,
-          "end_sec": 1.468
+          "start_sec": 1.27,
+          "end_sec": 1.385
         }
       ]
     },
     {
-      "start": 1.468,
-      "end": 2.447,
+      "start": 1.385,
+      "end": 2.309,
       "text": "quick fix directly",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "quick",
-          "start_sec": 1.468,
-          "end_sec": 1.774
+          "start_sec": 1.385,
+          "end_sec": 1.674
         },
         {
           "word": "fix",
-          "start_sec": 1.774,
-          "end_sec": 1.957
+          "start_sec": 1.674,
+          "end_sec": 1.847
         },
         {
           "word": "directly",
-          "start_sec": 1.957,
-          "end_sec": 2.447
+          "start_sec": 1.847,
+          "end_sec": 2.309
         }
       ]
     },
     {
-      "start": 2.447,
-      "end": 3.303,
+      "start": 2.309,
+      "end": 3.117,
       "text": "to production on",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "to",
-          "start_sec": 2.447,
-          "end_sec": 2.569
+          "start_sec": 2.309,
+          "end_sec": 2.424
         },
         {
           "word": "production",
-          "start_sec": 2.569,
-          "end_sec": 3.181
+          "start_sec": 2.424,
+          "end_sec": 3.001
         },
         {
           "word": "on",
-          "start_sec": 3.181,
-          "end_sec": 3.303
+          "start_sec": 3.001,
+          "end_sec": 3.117
         }
       ]
     },
     {
-      "start": 3.303,
-      "end": 4.404,
+      "start": 3.117,
+      "end": 4.155,
       "text": "a Friday afternoon",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "a",
-          "start_sec": 3.303,
-          "end_sec": 3.425
+          "start_sec": 3.117,
+          "end_sec": 3.232
         },
         {
           "word": "Friday",
-          "start_sec": 3.425,
-          "end_sec": 3.793
+          "start_sec": 3.232,
+          "end_sec": 3.578
         },
         {
           "word": "afternoon",
-          "start_sec": 3.793,
-          "end_sec": 4.404
+          "start_sec": 3.578,
+          "end_sec": 4.155
         }
       ]
     },
     {
-      "start": 4.541,
-      "end": 5.789,
+      "start": 4.255,
+      "end": 5.437,
       "text": "Fascinating Shall I",
       "character_id": "claude",
       "words": [
         {
           "word": "Fascinating",
-          "start_sec": 4.541,
-          "end_sec": 5.329
+          "start_sec": 4.255,
+          "end_sec": 5.002
         },
         {
           "word": "Shall",
-          "start_sec": 5.329,
-          "end_sec": 5.658
+          "start_sec": 5.002,
+          "end_sec": 5.313
         },
         {
           "word": "I",
-          "start_sec": 5.658,
-          "end_sec": 5.789
+          "start_sec": 5.313,
+          "end_sec": 5.437
         }
       ]
     },
     {
-      "start": 5.789,
-      "end": 7.037,
+      "start": 5.437,
+      "end": 6.619,
       "text": "draft the postmortem",
       "character_id": "claude",
       "words": [
         {
           "word": "draft",
-          "start_sec": 5.789,
-          "end_sec": 6.117
+          "start_sec": 5.437,
+          "end_sec": 5.748
         },
         {
           "word": "the",
-          "start_sec": 6.117,
-          "end_sec": 6.314
+          "start_sec": 5.748,
+          "end_sec": 5.935
         },
         {
           "word": "postmortem",
-          "start_sec": 6.314,
-          "end_sec": 7.037
+          "start_sec": 5.935,
+          "end_sec": 6.619
         }
       ]
     },
     {
-      "start": 7.037,
-      "end": 7.694,
+      "start": 6.619,
+      "end": 7.241,
       "text": "now or wait",
       "character_id": "claude",
       "words": [
         {
           "word": "now",
-          "start_sec": 7.037,
-          "end_sec": 7.3
+          "start_sec": 6.619,
+          "end_sec": 6.868
         },
         {
           "word": "or",
-          "start_sec": 7.3,
-          "end_sec": 7.431
+          "start_sec": 6.868,
+          "end_sec": 6.992
         },
         {
           "word": "wait",
-          "start_sec": 7.431,
-          "end_sec": 7.694
+          "start_sec": 6.992,
+          "end_sec": 7.241
         }
       ]
     },
     {
-      "start": 7.694,
-      "end": 8.613,
+      "start": 7.241,
+      "end": 8.112,
       "text": "until the alerts",
       "character_id": "claude",
       "words": [
         {
           "word": "until",
-          "start_sec": 7.694,
-          "end_sec": 8.022
+          "start_sec": 7.241,
+          "end_sec": 7.552
         },
         {
           "word": "the",
-          "start_sec": 8.022,
-          "end_sec": 8.219
+          "start_sec": 7.552,
+          "end_sec": 7.739
         },
         {
           "word": "alerts",
-          "start_sec": 8.219,
-          "end_sec": 8.613
+          "start_sec": 7.739,
+          "end_sec": 8.112
         }
       ]
     },
     {
-      "start": 8.613,
-      "end": 9.599,
+      "start": 8.112,
+      "end": 9.045,
       "text": "start screaming",
       "character_id": "claude",
       "words": [
         {
           "word": "start",
-          "start_sec": 8.613,
-          "end_sec": 8.942
+          "start_sec": 8.112,
+          "end_sec": 8.423
         },
         {
           "word": "screaming",
-          "start_sec": 8.942,
-          "end_sec": 9.599
+          "start_sec": 8.423,
+          "end_sec": 9.045
         }
       ]
     },
     {
-      "start": 9.8,
-      "end": 10.589,
+      "start": 9.258,
+      "end": 9.965,
       "text": "Relax it was",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "Relax",
-          "start_sec": 9.8,
-          "end_sec": 10.231
+          "start_sec": 9.258,
+          "end_sec": 9.644
         },
         {
           "word": "it",
-          "start_sec": 10.231,
-          "end_sec": 10.374
+          "start_sec": 9.644,
+          "end_sec": 9.772
         },
         {
           "word": "was",
-          "start_sec": 10.374,
-          "end_sec": 10.589
+          "start_sec": 9.772,
+          "end_sec": 9.965
         }
       ]
     },
     {
-      "start": 10.589,
-      "end": 11.594,
+      "start": 9.965,
+      "end": 10.864,
       "text": "only a oneline",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "only",
-          "start_sec": 10.589,
-          "end_sec": 10.877
+          "start_sec": 9.965,
+          "end_sec": 10.222
         },
         {
           "word": "a",
-          "start_sec": 10.877,
-          "end_sec": 11.02
+          "start_sec": 10.222,
+          "end_sec": 10.35
         },
         {
           "word": "oneline",
-          "start_sec": 11.02,
-          "end_sec": 11.594
+          "start_sec": 10.35,
+          "end_sec": 10.864
         }
       ]
     },
     {
-      "start": 11.594,
-      "end": 12.599,
+      "start": 10.864,
+      "end": 11.764,
       "text": "CSS change What",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "CSS",
-          "start_sec": 11.594,
-          "end_sec": 11.81
+          "start_sec": 10.864,
+          "end_sec": 11.057
         },
         {
           "word": "change",
-          "start_sec": 11.81,
-          "end_sec": 12.312
+          "start_sec": 11.057,
+          "end_sec": 11.507
         },
         {
           "word": "What",
-          "start_sec": 12.312,
-          "end_sec": 12.599
+          "start_sec": 11.507,
+          "end_sec": 11.764
         }
       ]
     },
     {
-      "start": 12.599,
-      "end": 13.675,
+      "start": 11.764,
+      "end": 12.728,
       "text": "could possibly go",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "could",
-          "start_sec": 12.599,
-          "end_sec": 12.958
+          "start_sec": 11.764,
+          "end_sec": 12.085
         },
         {
           "word": "possibly",
-          "start_sec": 12.958,
-          "end_sec": 13.532
+          "start_sec": 12.085,
+          "end_sec": 12.599
         },
         {
           "word": "go",
-          "start_sec": 13.532,
-          "end_sec": 13.675
+          "start_sec": 12.599,
+          "end_sec": 12.728
         }
       ]
     },
     {
-      "start": 13.675,
-      "end": 14.106,
+      "start": 12.728,
+      "end": 13.113,
       "text": "wrong",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "wrong",
-          "start_sec": 13.675,
-          "end_sec": 14.106
+          "start_sec": 12.728,
+          "end_sec": 13.113
         }
       ]
     },
     {
-      "start": 14.389,
-      "end": 16.436,
+      "start": 13.333,
+      "end": 15.299,
       "text": "Statistically speaking precisely",
       "character_id": "claude",
       "words": [
         {
           "word": "Statistically",
-          "start_sec": 14.389,
-          "end_sec": 15.248
+          "start_sec": 13.333,
+          "end_sec": 14.158
         },
         {
           "word": "speaking",
-          "start_sec": 15.248,
-          "end_sec": 15.842
+          "start_sec": 14.158,
+          "end_sec": 14.729
         },
         {
           "word": "precisely",
-          "start_sec": 15.842,
-          "end_sec": 16.436
+          "start_sec": 14.729,
+          "end_sec": 15.299
         }
       ]
     },
     {
-      "start": 16.436,
-      "end": 17.757,
+      "start": 15.299,
+      "end": 16.568,
       "text": "everything The entire",
       "character_id": "claude",
       "words": [
         {
           "word": "everything",
-          "start_sec": 16.436,
-          "end_sec": 17.163
+          "start_sec": 15.299,
+          "end_sec": 15.997
         },
         {
           "word": "The",
-          "start_sec": 17.163,
-          "end_sec": 17.361
+          "start_sec": 15.997,
+          "end_sec": 16.188
         },
         {
           "word": "entire",
-          "start_sec": 17.361,
-          "end_sec": 17.757
+          "start_sec": 16.188,
+          "end_sec": 16.568
         }
       ]
     },
     {
-      "start": 17.757,
-      "end": 18.814,
+      "start": 16.568,
+      "end": 17.583,
       "text": "payment gateway is",
       "character_id": "claude",
       "words": [
         {
           "word": "payment",
-          "start_sec": 17.757,
-          "end_sec": 18.219
+          "start_sec": 16.568,
+          "end_sec": 17.012
         },
         {
           "word": "gateway",
-          "start_sec": 18.219,
-          "end_sec": 18.682
+          "start_sec": 17.012,
+          "end_sec": 17.456
         },
         {
           "word": "is",
-          "start_sec": 18.682,
-          "end_sec": 18.814
+          "start_sec": 17.456,
+          "end_sec": 17.583
         }
       ]
     },
     {
-      "start": 18.814,
-      "end": 19.606,
+      "start": 17.583,
+      "end": 18.344,
       "text": "already down",
       "character_id": "claude",
       "words": [
         {
           "word": "already",
-          "start_sec": 18.814,
-          "end_sec": 19.276
+          "start_sec": 17.583,
+          "end_sec": 18.027
         },
         {
           "word": "down",
-          "start_sec": 19.276,
-          "end_sec": 19.606
+          "start_sec": 18.027,
+          "end_sec": 18.344
         }
       ]
     },
     {
-      "start": 19.89,
-      "end": 20.828,
+      "start": 18.559,
+      "end": 19.454,
       "text": "Arre Junior Who",
       "character_id": "dad",
       "words": [
         {
           "word": "Arre",
-          "start_sec": 19.89,
-          "end_sec": 20.158
+          "start_sec": 18.559,
+          "end_sec": 18.815
         },
         {
           "word": "Junior",
-          "start_sec": 20.158,
-          "end_sec": 20.627
+          "start_sec": 18.815,
+          "end_sec": 19.262
         },
         {
           "word": "Who",
-          "start_sec": 20.627,
-          "end_sec": 20.828
+          "start_sec": 19.262,
+          "end_sec": 19.454
         }
       ]
     },
     {
-      "start": 20.828,
-      "end": 21.899,
+      "start": 19.454,
+      "end": 20.477,
       "text": "touches the server",
       "character_id": "dad",
       "words": [
         {
           "word": "touches",
-          "start_sec": 20.828,
-          "end_sec": 21.296
+          "start_sec": 19.454,
+          "end_sec": 19.901
         },
         {
           "word": "the",
-          "start_sec": 21.296,
-          "end_sec": 21.497
+          "start_sec": 19.901,
+          "end_sec": 20.093
         },
         {
           "word": "server",
-          "start_sec": 21.497,
-          "end_sec": 21.899
+          "start_sec": 20.093,
+          "end_sec": 20.477
         }
       ]
     },
     {
-      "start": 21.899,
-      "end": 22.703,
+      "start": 20.477,
+      "end": 21.244,
       "text": "on Friday In",
       "character_id": "dad",
       "words": [
         {
           "word": "on",
-          "start_sec": 21.899,
-          "end_sec": 22.033
+          "start_sec": 20.477,
+          "end_sec": 20.604
         },
         {
           "word": "Friday",
-          "start_sec": 22.033,
-          "end_sec": 22.569
+          "start_sec": 20.604,
+          "end_sec": 21.116
         },
         {
           "word": "In",
-          "start_sec": 22.569,
-          "end_sec": 22.703
+          "start_sec": 21.116,
+          "end_sec": 21.244
         }
       ]
     },
     {
-      "start": 22.703,
-      "end": 23.238,
+      "start": 21.244,
+      "end": 21.755,
       "text": "my days we",
       "character_id": "dad",
       "words": [
         {
           "word": "my",
-          "start_sec": 22.703,
-          "end_sec": 22.837
+          "start_sec": 21.244,
+          "end_sec": 21.371
         },
         {
           "word": "days",
-          "start_sec": 22.837,
-          "end_sec": 23.104
+          "start_sec": 21.371,
+          "end_sec": 21.627
         },
         {
           "word": "we",
-          "start_sec": 23.104,
-          "end_sec": 23.238
+          "start_sec": 21.627,
+          "end_sec": 21.755
         }
       ]
     },
     {
-      "start": 23.238,
-      "end": 24.712,
+      "start": 21.755,
+      "end": 23.161,
       "text": "never touched production",
       "character_id": "dad",
       "words": [
         {
           "word": "never",
-          "start_sec": 23.238,
-          "end_sec": 23.573
+          "start_sec": 21.755,
+          "end_sec": 22.075
         },
         {
           "word": "touched",
-          "start_sec": 23.573,
-          "end_sec": 24.042
+          "start_sec": 22.075,
+          "end_sec": 22.522
         },
         {
           "word": "production",
-          "start_sec": 24.042,
-          "end_sec": 24.712
+          "start_sec": 22.522,
+          "end_sec": 23.161
         }
       ]
     },
     {
-      "start": 24.712,
-      "end": 25.716,
+      "start": 23.161,
+      "end": 24.12,
       "text": "without a pooja",
       "character_id": "dad",
       "words": [
         {
           "word": "without",
-          "start_sec": 24.712,
-          "end_sec": 25.181
+          "start_sec": 23.161,
+          "end_sec": 23.609
         },
         {
           "word": "a",
-          "start_sec": 25.181,
-          "end_sec": 25.314
+          "start_sec": 23.609,
+          "end_sec": 23.736
         },
         {
           "word": "pooja",
-          "start_sec": 25.314,
-          "end_sec": 25.716
+          "start_sec": 23.736,
+          "end_sec": 24.12
         }
       ]
     },
     {
-      "start": 25.936,
-      "end": 26.677,
+      "start": 24.26,
+      "end": 24.934,
       "text": "Wait why is",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "Wait",
-          "start_sec": 25.936,
-          "end_sec": 26.368
+          "start_sec": 24.26,
+          "end_sec": 24.653
         },
         {
           "word": "why",
-          "start_sec": 26.368,
-          "end_sec": 26.554
+          "start_sec": 24.653,
+          "end_sec": 24.822
         },
         {
           "word": "is",
-          "start_sec": 26.554,
-          "end_sec": 26.677
+          "start_sec": 24.822,
+          "end_sec": 24.934
         }
       ]
     },
     {
-      "start": 26.677,
-      "end": 27.975,
+      "start": 24.934,
+      "end": 26.114,
       "text": "the production database",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "the",
-          "start_sec": 26.677,
-          "end_sec": 26.863
+          "start_sec": 24.934,
+          "end_sec": 25.103
         },
         {
           "word": "production",
-          "start_sec": 26.863,
-          "end_sec": 27.481
+          "start_sec": 25.103,
+          "end_sec": 25.665
         },
         {
           "word": "database",
-          "start_sec": 27.481,
-          "end_sec": 27.975
+          "start_sec": 25.665,
+          "end_sec": 26.114
         }
       ]
     },
     {
-      "start": 27.975,
-      "end": 29.025,
+      "start": 26.114,
+      "end": 27.069,
       "text": "dropping all tables",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "dropping",
-          "start_sec": 27.975,
-          "end_sec": 28.469
+          "start_sec": 26.114,
+          "end_sec": 26.563
         },
         {
           "word": "all",
-          "start_sec": 28.469,
-          "end_sec": 28.654
+          "start_sec": 26.563,
+          "end_sec": 26.732
         },
         {
           "word": "tables",
-          "start_sec": 28.654,
-          "end_sec": 29.025
+          "start_sec": 26.732,
+          "end_sec": 27.069
         }
       ]
     },
     {
-      "start": 29.025,
-      "end": 29.643,
+      "start": 27.069,
+      "end": 27.631,
       "text": "right now",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "right",
-          "start_sec": 29.025,
-          "end_sec": 29.334
+          "start_sec": 27.069,
+          "end_sec": 27.35
         },
         {
           "word": "now",
-          "start_sec": 29.334,
-          "end_sec": 29.643
+          "start_sec": 27.35,
+          "end_sec": 27.631
         }
       ]
     }
@@ -1226,85 +1226,85 @@
       "text": "Hey Claude, I just pushed a quick fix directly to production on a Friday afternoon.",
       "emotion": "neutral",
       "start_sec": 0.0,
-      "end_sec": 4.361,
+      "end_sec": 4.135,
       "start_frame": 0,
-      "end_frame": 131,
-      "duration_sec": 4.361,
+      "end_frame": 124,
+      "duration_sec": 4.135,
       "words": [
         {
           "word": "Hey",
           "start_sec": 0.0,
-          "end_sec": 0.184
+          "end_sec": 0.173
         },
         {
           "word": "Claude",
-          "start_sec": 0.184,
-          "end_sec": 0.612
+          "start_sec": 0.173,
+          "end_sec": 0.577
         },
         {
           "word": "I",
-          "start_sec": 0.612,
-          "end_sec": 0.734
+          "start_sec": 0.577,
+          "end_sec": 0.693
         },
         {
           "word": "just",
-          "start_sec": 0.734,
-          "end_sec": 0.979
+          "start_sec": 0.693,
+          "end_sec": 0.923
         },
         {
           "word": "pushed",
-          "start_sec": 0.979,
-          "end_sec": 1.346
+          "start_sec": 0.923,
+          "end_sec": 1.27
         },
         {
           "word": "a",
-          "start_sec": 1.346,
-          "end_sec": 1.468
+          "start_sec": 1.27,
+          "end_sec": 1.385
         },
         {
           "word": "quick",
-          "start_sec": 1.468,
-          "end_sec": 1.774
+          "start_sec": 1.385,
+          "end_sec": 1.674
         },
         {
           "word": "fix",
-          "start_sec": 1.774,
-          "end_sec": 1.957
+          "start_sec": 1.674,
+          "end_sec": 1.847
         },
         {
           "word": "directly",
-          "start_sec": 1.957,
-          "end_sec": 2.447
+          "start_sec": 1.847,
+          "end_sec": 2.309
         },
         {
           "word": "to",
-          "start_sec": 2.447,
-          "end_sec": 2.569
+          "start_sec": 2.309,
+          "end_sec": 2.424
         },
         {
           "word": "production",
-          "start_sec": 2.569,
-          "end_sec": 3.181
+          "start_sec": 2.424,
+          "end_sec": 3.001
         },
         {
           "word": "on",
-          "start_sec": 3.181,
-          "end_sec": 3.303
+          "start_sec": 3.001,
+          "end_sec": 3.117
         },
         {
           "word": "a",
-          "start_sec": 3.303,
-          "end_sec": 3.425
+          "start_sec": 3.117,
+          "end_sec": 3.232
         },
         {
           "word": "Friday",
-          "start_sec": 3.425,
-          "end_sec": 3.793
+          "start_sec": 3.232,
+          "end_sec": 3.578
         },
         {
           "word": "afternoon",
-          "start_sec": 3.793,
-          "end_sec": 4.404
+          "start_sec": 3.578,
+          "end_sec": 4.155
         }
       ]
     },
@@ -1313,81 +1313,81 @@
       "character_id": "claude",
       "text": "Fascinating. Shall I draft the post-mortem now, or wait until the alerts start screaming?",
       "emotion": "deadpan",
-      "start_sec": 4.541,
-      "end_sec": 9.56,
-      "start_frame": 136,
-      "end_frame": 287,
-      "duration_sec": 5.019,
+      "start_sec": 4.255,
+      "end_sec": 9.018,
+      "start_frame": 128,
+      "end_frame": 271,
+      "duration_sec": 4.763,
       "words": [
         {
           "word": "Fascinating",
-          "start_sec": 4.541,
-          "end_sec": 5.329
+          "start_sec": 4.255,
+          "end_sec": 5.002
         },
         {
           "word": "Shall",
-          "start_sec": 5.329,
-          "end_sec": 5.658
+          "start_sec": 5.002,
+          "end_sec": 5.313
         },
         {
           "word": "I",
-          "start_sec": 5.658,
-          "end_sec": 5.789
+          "start_sec": 5.313,
+          "end_sec": 5.437
         },
         {
           "word": "draft",
-          "start_sec": 5.789,
-          "end_sec": 6.117
+          "start_sec": 5.437,
+          "end_sec": 5.748
         },
         {
           "word": "the",
-          "start_sec": 6.117,
-          "end_sec": 6.314
+          "start_sec": 5.748,
+          "end_sec": 5.935
         },
         {
           "word": "postmortem",
-          "start_sec": 6.314,
-          "end_sec": 7.037
+          "start_sec": 5.935,
+          "end_sec": 6.619
         },
         {
           "word": "now",
-          "start_sec": 7.037,
-          "end_sec": 7.3
+          "start_sec": 6.619,
+          "end_sec": 6.868
         },
         {
           "word": "or",
-          "start_sec": 7.3,
-          "end_sec": 7.431
+          "start_sec": 6.868,
+          "end_sec": 6.992
         },
         {
           "word": "wait",
-          "start_sec": 7.431,
-          "end_sec": 7.694
+          "start_sec": 6.992,
+          "end_sec": 7.241
         },
         {
           "word": "until",
-          "start_sec": 7.694,
-          "end_sec": 8.022
+          "start_sec": 7.241,
+          "end_sec": 7.552
         },
         {
           "word": "the",
-          "start_sec": 8.022,
-          "end_sec": 8.219
+          "start_sec": 7.552,
+          "end_sec": 7.739
         },
         {
           "word": "alerts",
-          "start_sec": 8.219,
-          "end_sec": 8.613
+          "start_sec": 7.739,
+          "end_sec": 8.112
         },
         {
           "word": "start",
-          "start_sec": 8.613,
-          "end_sec": 8.942
+          "start_sec": 8.112,
+          "end_sec": 8.423
         },
         {
           "word": "screaming",
-          "start_sec": 8.942,
-          "end_sec": 9.599
+          "start_sec": 8.423,
+          "end_sec": 9.045
         }
       ]
     },
@@ -1396,76 +1396,76 @@
       "character_id": "junior_dev",
       "text": "Relax, it was only a one-line CSS change! What could possibly go wrong?",
       "emotion": "smug",
-      "start_sec": 9.8,
-      "end_sec": 14.069,
-      "start_frame": 294,
-      "end_frame": 422,
-      "duration_sec": 4.269,
+      "start_sec": 9.258,
+      "end_sec": 13.093,
+      "start_frame": 278,
+      "end_frame": 393,
+      "duration_sec": 3.835,
       "words": [
         {
           "word": "Relax",
-          "start_sec": 9.8,
-          "end_sec": 10.231
+          "start_sec": 9.258,
+          "end_sec": 9.644
         },
         {
           "word": "it",
-          "start_sec": 10.231,
-          "end_sec": 10.374
+          "start_sec": 9.644,
+          "end_sec": 9.772
         },
         {
           "word": "was",
-          "start_sec": 10.374,
-          "end_sec": 10.589
+          "start_sec": 9.772,
+          "end_sec": 9.965
         },
         {
           "word": "only",
-          "start_sec": 10.589,
-          "end_sec": 10.877
+          "start_sec": 9.965,
+          "end_sec": 10.222
         },
         {
           "word": "a",
-          "start_sec": 10.877,
-          "end_sec": 11.02
+          "start_sec": 10.222,
+          "end_sec": 10.35
         },
         {
           "word": "oneline",
-          "start_sec": 11.02,
-          "end_sec": 11.594
+          "start_sec": 10.35,
+          "end_sec": 10.864
         },
         {
           "word": "CSS",
-          "start_sec": 11.594,
-          "end_sec": 11.81
+          "start_sec": 10.864,
+          "end_sec": 11.057
         },
         {
           "word": "change",
-          "start_sec": 11.81,
-          "end_sec": 12.312
+          "start_sec": 11.057,
+          "end_sec": 11.507
         },
         {
           "word": "What",
-          "start_sec": 12.312,
-          "end_sec": 12.599
+          "start_sec": 11.507,
+          "end_sec": 11.764
         },
         {
           "word": "could",
-          "start_sec": 12.599,
-          "end_sec": 12.958
+          "start_sec": 11.764,
+          "end_sec": 12.085
         },
         {
           "word": "possibly",
-          "start_sec": 12.958,
-          "end_sec": 13.532
+          "start_sec": 12.085,
+          "end_sec": 12.599
         },
         {
           "word": "go",
-          "start_sec": 13.532,
-          "end_sec": 13.675
+          "start_sec": 12.599,
+          "end_sec": 12.728
         },
         {
           "word": "wrong",
-          "start_sec": 13.675,
-          "end_sec": 14.106
+          "start_sec": 12.728,
+          "end_sec": 13.113
         }
       ]
     },
@@ -1474,66 +1474,66 @@
       "character_id": "claude",
       "text": "Statistically speaking, precisely everything. The entire payment gateway is already down.",
       "emotion": "smug",
-      "start_sec": 14.389,
-      "end_sec": 19.57,
-      "start_frame": 432,
-      "end_frame": 587,
-      "duration_sec": 5.181,
+      "start_sec": 13.333,
+      "end_sec": 18.319,
+      "start_frame": 400,
+      "end_frame": 550,
+      "duration_sec": 4.986,
       "words": [
         {
           "word": "Statistically",
-          "start_sec": 14.389,
-          "end_sec": 15.248
+          "start_sec": 13.333,
+          "end_sec": 14.158
         },
         {
           "word": "speaking",
-          "start_sec": 15.248,
-          "end_sec": 15.842
+          "start_sec": 14.158,
+          "end_sec": 14.729
         },
         {
           "word": "precisely",
-          "start_sec": 15.842,
-          "end_sec": 16.436
+          "start_sec": 14.729,
+          "end_sec": 15.299
         },
         {
           "word": "everything",
-          "start_sec": 16.436,
-          "end_sec": 17.163
+          "start_sec": 15.299,
+          "end_sec": 15.997
         },
         {
           "word": "The",
-          "start_sec": 17.163,
-          "end_sec": 17.361
+          "start_sec": 15.997,
+          "end_sec": 16.188
         },
         {
           "word": "entire",
-          "start_sec": 17.361,
-          "end_sec": 17.757
+          "start_sec": 16.188,
+          "end_sec": 16.568
         },
         {
           "word": "payment",
-          "start_sec": 17.757,
-          "end_sec": 18.219
+          "start_sec": 16.568,
+          "end_sec": 17.012
         },
         {
           "word": "gateway",
-          "start_sec": 18.219,
-          "end_sec": 18.682
+          "start_sec": 17.012,
+          "end_sec": 17.456
         },
         {
           "word": "is",
-          "start_sec": 18.682,
-          "end_sec": 18.814
+          "start_sec": 17.456,
+          "end_sec": 17.583
         },
         {
           "word": "already",
-          "start_sec": 18.814,
-          "end_sec": 19.276
+          "start_sec": 17.583,
+          "end_sec": 18.027
         },
         {
           "word": "down",
-          "start_sec": 19.276,
-          "end_sec": 19.606
+          "start_sec": 18.027,
+          "end_sec": 18.344
         }
       ]
     },
@@ -1542,101 +1542,101 @@
       "character_id": "dad",
       "text": "Arre Junior! Who touches the server on Friday?! In my days we never touched production without a pooja!",
       "emotion": "shocked",
-      "start_sec": 19.89,
-      "end_sec": 25.716,
-      "start_frame": 597,
-      "end_frame": 771,
-      "duration_sec": 5.826,
+      "start_sec": 18.559,
+      "end_sec": 24.12,
+      "start_frame": 557,
+      "end_frame": 724,
+      "duration_sec": 5.561,
       "words": [
         {
           "word": "Arre",
-          "start_sec": 19.89,
-          "end_sec": 20.158
+          "start_sec": 18.559,
+          "end_sec": 18.815
         },
         {
           "word": "Junior",
-          "start_sec": 20.158,
-          "end_sec": 20.627
+          "start_sec": 18.815,
+          "end_sec": 19.262
         },
         {
           "word": "Who",
-          "start_sec": 20.627,
-          "end_sec": 20.828
+          "start_sec": 19.262,
+          "end_sec": 19.454
         },
         {
           "word": "touches",
-          "start_sec": 20.828,
-          "end_sec": 21.296
+          "start_sec": 19.454,
+          "end_sec": 19.901
         },
         {
           "word": "the",
-          "start_sec": 21.296,
-          "end_sec": 21.497
+          "start_sec": 19.901,
+          "end_sec": 20.093
         },
         {
           "word": "server",
-          "start_sec": 21.497,
-          "end_sec": 21.899
+          "start_sec": 20.093,
+          "end_sec": 20.477
         },
         {
           "word": "on",
-          "start_sec": 21.899,
-          "end_sec": 22.033
+          "start_sec": 20.477,
+          "end_sec": 20.604
         },
         {
           "word": "Friday",
-          "start_sec": 22.033,
-          "end_sec": 22.569
+          "start_sec": 20.604,
+          "end_sec": 21.116
         },
         {
           "word": "In",
-          "start_sec": 22.569,
-          "end_sec": 22.703
+          "start_sec": 21.116,
+          "end_sec": 21.244
         },
         {
           "word": "my",
-          "start_sec": 22.703,
-          "end_sec": 22.837
+          "start_sec": 21.244,
+          "end_sec": 21.371
         },
         {
           "word": "days",
-          "start_sec": 22.837,
-          "end_sec": 23.104
+          "start_sec": 21.371,
+          "end_sec": 21.627
         },
         {
           "word": "we",
-          "start_sec": 23.104,
-          "end_sec": 23.238
+          "start_sec": 21.627,
+          "end_sec": 21.755
         },
         {
           "word": "never",
-          "start_sec": 23.238,
-          "end_sec": 23.573
+          "start_sec": 21.755,
+          "end_sec": 22.075
         },
         {
           "word": "touched",
-          "start_sec": 23.573,
-          "end_sec": 24.042
+          "start_sec": 22.075,
+          "end_sec": 22.522
         },
         {
           "word": "production",
-          "start_sec": 24.042,
-          "end_sec": 24.712
+          "start_sec": 22.522,
+          "end_sec": 23.161
         },
         {
           "word": "without",
-          "start_sec": 24.712,
-          "end_sec": 25.181
+          "start_sec": 23.161,
+          "end_sec": 23.609
         },
         {
           "word": "a",
-          "start_sec": 25.181,
-          "end_sec": 25.314
+          "start_sec": 23.609,
+          "end_sec": 23.736
         },
         {
           "word": "pooja",
-          "start_sec": 25.314,
-          "end_sec": 25.716
+          "start_sec": 23.736,
+          "end_sec": 24.12
         }
       ]
     },
@@ -1645,66 +1645,66 @@
       "character_id": "junior_dev",
       "text": "Wait... why is the production database dropping all tables right now?!",
       "emotion": "shocked",
-      "start_sec": 25.936,
-      "end_sec": 29.605,
-      "start_frame": 778,
-      "end_frame": 888,
-      "duration_sec": 3.669,
+      "start_sec": 24.26,
+      "end_sec": 27.606,
+      "start_frame": 728,
+      "end_frame": 828,
+      "duration_sec": 3.346,
       "words": [
         {
           "word": "Wait",
-          "start_sec": 25.936,
-          "end_sec": 26.368
+          "start_sec": 24.26,
+          "end_sec": 24.653
         },
         {
           "word": "why",
-          "start_sec": 26.368,
-          "end_sec": 26.554
+          "start_sec": 24.653,
+          "end_sec": 24.822
         },
         {
           "word": "is",
-          "start_sec": 26.554,
-          "end_sec": 26.677
+          "start_sec": 24.822,
+          "end_sec": 24.934
         },
         {
           "word": "the",
-          "start_sec": 26.677,
-          "end_sec": 26.863
+          "start_sec": 24.934,
+          "end_sec": 25.103
         },
         {
           "word": "production",
-          "start_sec": 26.863,
-          "end_sec": 27.481
+          "start_sec": 25.103,
+          "end_sec": 25.665
         },
         {
           "word": "database",
-          "start_sec": 27.481,
-          "end_sec": 27.975
+          "start_sec": 25.665,
+          "end_sec": 26.114
         },
         {
           "word": "dropping",
-          "start_sec": 27.975,
-          "end_sec": 28.469
+          "start_sec": 26.114,
+          "end_sec": 26.563
         },
         {
           "word": "all",
-          "start_sec": 28.469,
-          "end_sec": 28.654
+          "start_sec": 26.563,
+          "end_sec": 26.732
         },
         {
           "word": "tables",
-          "start_sec": 28.654,
-          "end_sec": 29.025
+          "start_sec": 26.732,
+          "end_sec": 27.069
         },
         {
           "word": "right",
-          "start_sec": 29.025,
-          "end_sec": 29.334
+          "start_sec": 27.069,
+          "end_sec": 27.35
         },
         {
           "word": "now",
-          "start_sec": 29.334,
-          "end_sec": 29.643
+          "start_sec": 27.35,
+          "end_sec": 27.631
         }
       ]
     }

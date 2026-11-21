@@ -1,11 +1,12 @@
 """
 Antigravity Unlimited Video Engine - Neural Voice & Lip-Sync Timeline Generator
 Features:
-- Primary Engine: Kokoro-82M (kokoro-onnx) CPU-friendly, free neural voice synthesis
+- Primary Engine (GPU): Chatterbox-Turbo / Chatterbox-TTS on CUDA GPU with per-turn emotion exaggeration
+- Primary Engine (CPU): Kokoro-82M (kokoro-onnx) high-energy neural voice synthesis (speed 1.06 - 1.16)
 - Fallback & Per-Character Engine: Edge-TTS (with strict pitch="+0Hz", no metallic artifacts)
 - Auto model caching in .cache/kokoro/ (kokoro-v1.0.onnx + voices-v1.0.bin)
-- Leading/trailing silence trimming (dead air <= 0.08s) via FFmpeg silenceremove
-- Snappy comedic turn pauses (0.15s - 0.28s, punchline max 0.35s)
+- Leading/trailing silence trimming (dead air <= 0.05s) via FFmpeg silenceremove
+- Snappy comedic turn pauses (0.10s - 0.18s, punchline max 0.24s)
 - Clean broadcast DSP mastering (highpass=75, warmth EQ, transparent compressor, -14.0 LUFS loudnorm)
 - Subtle lo-fi ambient music bed ducked at -22 dB
 - Multi-character 30fps lip-sync envelopes exported to timeline.json & subs.json
@@ -50,8 +51,59 @@ CACHE_DIR = PROJECT_ROOT / ".cache" / "kokoro"
 KOKORO_MODEL_URL = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx"
 KOKORO_VOICES_URL = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin"
 
-# Global Kokoro singleton instance
+# Global Singletons
 _KOKORO_INSTANCE = None
+_CHATTERBOX_INSTANCE = None
+
+# Emotion to Chatterbox Exaggeration & CFG Weight mapping
+EMOTION_EXAGGERATION_MAP: Dict[str, Dict[str, float]] = {
+    "neutral": {"exaggeration": 0.55, "cfg_weight": 0.50},
+    "shocked": {"exaggeration": 0.88, "cfg_weight": 0.40},
+    "excited": {"exaggeration": 0.88, "cfg_weight": 0.40},
+    "angry": {"exaggeration": 0.80, "cfg_weight": 0.45},
+    "sarcastic": {"exaggeration": 0.80, "cfg_weight": 0.45},
+    "smug": {"exaggeration": 0.65, "cfg_weight": 0.55},
+    "deadpan": {"exaggeration": 0.65, "cfg_weight": 0.55},
+}
+
+
+def is_cuda_available() -> bool:
+    """Detects whether CUDA GPU is available for accelerated neural voice synthesis."""
+    try:
+        import torch
+        return bool(torch.cuda.is_available())
+    except Exception:
+        return False
+
+
+def get_chatterbox():
+    """Returns initialized ChatterboxTurboTTS / ChatterboxTTS singleton on CUDA GPU."""
+    global _CHATTERBOX_INSTANCE
+    if _CHATTERBOX_INSTANCE is not None:
+        return _CHATTERBOX_INSTANCE
+
+    if not is_cuda_available():
+        return None
+
+    try:
+        ChatterboxClass = None
+        try:
+            from chatterbox import ChatterboxTurboTTS as ChatterboxClass
+        except ImportError:
+            try:
+                from chatterbox import ChatterboxTTS as ChatterboxClass
+            except ImportError:
+                pass
+
+        if ChatterboxClass:
+            print("🚀 [Chatterbox-Turbo] Initializing GPU Neural TTS with CUDA...")
+            _CHATTERBOX_INSTANCE = ChatterboxClass()
+            print("✅ [Chatterbox-Turbo] GPU Engine initialized.")
+            return _CHATTERBOX_INSTANCE
+    except Exception as e:
+        print(f"⚠️ [Chatterbox-TTS] Notice: {e}")
+
+    return None
 
 
 def ensure_kokoro_model(cache_dir: Optional[Path] = None) -> Tuple[Path, Path]:
@@ -141,9 +193,19 @@ def detect_language(text: str) -> str:
     return "en"
 
 
-def clean_text_for_speech(text: str) -> str:
-    """Cleans text of Markdown formatting, asterisks, brackets for clean TTS synthesis."""
-    text = re.sub(r'[*#_~`>\[\]\(\)]', ' ', text)
+def clean_text_for_speech(text: str, is_chatterbox: bool = False) -> str:
+    """
+    Cleans text of Markdown formatting, asterisks, brackets for clean TTS synthesis.
+    - Preserves expressive punctuation (!, ?, ..., Wait—).
+    - If is_chatterbox is True, preserves vocal cues like [chuckle], [sigh].
+    - For Kokoro/Edge-TTS, softens [cues] to natural pauses '... ' so words aren't read aloud.
+    """
+    if not is_chatterbox:
+        text = re.sub(r'\[(?:chuckle|sigh|gasp|giggle|laughter|pause)\]', '... ', text, flags=re.IGNORECASE)
+        text = re.sub(r'[*#_~`>\[\]\(\)]', ' ', text)
+    else:
+        text = re.sub(r'[*#_~`>]', ' ', text)
+
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
@@ -186,9 +248,9 @@ def get_audio_duration(file_path: str) -> float:
 def trim_silence(input_audio: str, output_audio: str) -> bool:
     """
     Trims leading and trailing silence via FFmpeg silenceremove
-    so no line has dead air > 0.08s.
+    so no line has dead air > 0.05s.
     """
-    filter_str = "silenceremove=start_periods=1:start_duration=0.03:start_threshold=-42dB:stop_periods=-1:stop_duration=0.05:stop_threshold=-42dB"
+    filter_str = "silenceremove=start_periods=1:start_duration=0.02:start_threshold=-42dB:stop_periods=-1:stop_duration=0.04:stop_threshold=-42dB"
     cmd = [
         "ffmpeg", "-y",
         "-i", input_audio,
@@ -299,6 +361,85 @@ def _synthesize_kokoro(
     word_timings = []
 
     for i, w in enumerate(words):
+        dur = (weights[i] / total_w) * duration
+        word_timings.append({
+            "word": re.sub(r'[^\w]', '', w) or w,
+            "raw": w,
+            "start": round(current_t, 3),
+            "end": round(current_t + dur, 3)
+        })
+        current_t += dur
+
+    return word_timings, duration
+
+
+def _synthesize_chatterbox(
+    text: str,
+    voice_id: str = "junior_dev",
+    emotion: str = "neutral",
+    out_audio: str = "temp.wav"
+) -> Tuple[List[Dict[str, Any]], float]:
+    """
+    Synthesizes speech using Chatterbox GPU TTS on CUDA with emotion-mapped exaggeration & cfg_weight.
+    Returns (word_timings, duration).
+    """
+    model = get_chatterbox()
+    if model is None:
+        raise RuntimeError("Chatterbox GPU engine unavailable.")
+
+    emo_cfg = EMOTION_EXAGGERATION_MAP.get(emotion.lower(), EMOTION_EXAGGERATION_MAP["neutral"])
+    exaggeration = emo_cfg["exaggeration"]
+    cfg_weight = emo_cfg["cfg_weight"]
+
+    # Synthesize audio with model (ChatterboxTurboTTS / ChatterboxTTS)
+    if hasattr(model, "generate"):
+        audio_out = model.generate(
+            text=text,
+            voice=voice_id,
+            exaggeration=exaggeration,
+            cfg_weight=cfg_weight
+        )
+    elif callable(model):
+        audio_out = model(
+            text,
+            voice=voice_id,
+            exaggeration=exaggeration,
+            cfg_weight=cfg_weight
+        )
+    else:
+        raise RuntimeError("Chatterbox model has no recognized generate or callable interface")
+
+    os.makedirs(os.path.dirname(os.path.abspath(out_audio)), exist_ok=True)
+    if isinstance(audio_out, tuple):
+        samples, sr = audio_out
+    elif hasattr(audio_out, "numpy"):
+        samples = audio_out.cpu().numpy()
+        sr = 24000
+    elif isinstance(audio_out, np.ndarray):
+        samples = audio_out
+        sr = 24000
+    else:
+        samples = np.array(audio_out)
+        sr = 24000
+
+    sf.write(out_audio, samples, sr, subtype="PCM_16")
+
+    # Trim leading/trailing dead air using FFmpeg
+    trimmed_audio = out_audio + ".trim.wav"
+    if trim_silence(out_audio, trimmed_audio):
+        if os.path.exists(trimmed_audio) and os.path.getsize(trimmed_audio) > 1000:
+            shutil.move(trimmed_audio, out_audio)
+
+    duration = get_audio_duration(out_audio)
+
+    # Build proportional word boundaries
+    clean_words = [w for w in text.split() if not (w.startswith("[") and w.endswith("]"))]
+    weights = [max(len(w), 2) for w in clean_words]
+    total_w = sum(weights) or 1.0
+    current_t = 0.0
+    word_timings = []
+
+    for i, w in enumerate(clean_words):
         dur = (weights[i] / total_w) * duration
         word_timings.append({
             "word": re.sub(r'[^\w]', '', w) or w,
@@ -539,11 +680,30 @@ def generate_dialogue_speech(
 
             synthesis_success = False
 
-            # Primary Engine: Kokoro-82M
-            if engine_type == "kokoro":
+            # 1. Primary Engine (GPU): Chatterbox-Turbo / Chatterbox-TTS (if CUDA GPU is active)
+            chatterbox_voice = voice_prof.get("chatterbox_voice") or canonical_char
+            if is_cuda_available() and engine_type != "edge_tts":
                 try:
+                    c_text = clean_text_for_speech(turn.get("text", ""), is_chatterbox=True)
+                    word_timings, turn_dur = _synthesize_chatterbox(
+                        text=c_text,
+                        voice_id=chatterbox_voice,
+                        emotion=emotion,
+                        out_audio=turn_wav_raw
+                    )
+                    trim_silence(turn_wav_raw, turn_wav_trimmed)
+                    turn_dur = get_audio_duration(turn_wav_trimmed)
+                    synthesis_success = True
+                except Exception as e_chatterbox:
+                    print(f"⚠️ Chatterbox GPU notice for turn {idx} ({canonical_char}): {e_chatterbox}. Falling back to Kokoro ONNX...")
+                    engine_type = "kokoro"
+
+            # 2. Primary Engine (CPU Fallback): Kokoro-82M High-Energy ONNX
+            if not synthesis_success and engine_type == "kokoro":
+                try:
+                    k_text = clean_text_for_speech(turn.get("text", ""), is_chatterbox=False)
                     word_timings, turn_dur = _synthesize_kokoro(
-                        text=text,
+                        text=k_text,
                         voice_id=voice_id,
                         speed=speed,
                         out_audio=turn_wav_raw
@@ -555,7 +715,7 @@ def generate_dialogue_speech(
                     print(f"⚠️ Kokoro fallback for turn {idx} ({canonical_char}): {e_kokoro}")
                     engine_type = "edge_tts"
 
-            # Fallback or Specific Engine: Edge-TTS
+            # 3. Fallback or Specific Engine: Edge-TTS
             if not synthesis_success:
                 fallback_voice = voice_prof.get("fallback_edge_voice") or voice_prof.get("voice_id") or "en-US-AndrewNeural"
                 edge_rate = voice_prof.get("rate") or "+0%"
@@ -642,18 +802,18 @@ def generate_dialogue_speech(
 
             turn_audio_files.append(persistent_turn_audio)
 
-            # Comedic Snappy Pausing (0.15s - 0.28s, punchline max 0.35s)
+            # Snappy conversational pausing (0.10s - 0.18s, punchline beat max 0.24s)
             if idx < len(dialogue) - 1:
-                if emotion == "smug":
-                    turn_pause = 0.32  # Punchline pause after roast
-                elif emotion == "shocked":
-                    turn_pause = 0.22  # Brief disbelief
-                elif emotion == "angry":
-                    turn_pause = 0.16  # Snappy, heated cut-in
+                if emotion in ["smug", "deadpan"]:
+                    turn_pause = 0.24  # Punchline beat after smug roast
+                elif emotion in ["shocked", "excited"]:
+                    turn_pause = 0.14  # Snappy disbelief reaction
+                elif emotion in ["angry", "sarcastic"]:
+                    turn_pause = 0.10  # Rapid, heated cut-in
                 elif "?" in text:
-                    turn_pause = 0.24  # Prompt question pause
+                    turn_pause = 0.18  # Prompt question beat
                 else:
-                    turn_pause = 0.18  # Natural conversational flow
+                    turn_pause = 0.12  # Fast natural conversational flow
 
                 pause_file = os.path.join(tmpdir, f"pause_{idx:03d}.wav")
                 sf.write(pause_file, np.zeros(int(turn_pause * 24000), dtype=np.float32), 24000)

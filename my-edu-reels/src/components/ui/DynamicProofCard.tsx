@@ -1,5 +1,5 @@
 import React from "react";
-import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 
 export interface CardProofItem {
   label: string;
@@ -19,6 +19,7 @@ export interface DynamicCardData {
   items?: CardProofItem[];
   rows?: CardProofItem[];
   highlight?: string;
+  topicLogoPath?: string;
   durationSeconds?: number;
   startFrame?: number;
   durationFrames?: number;
@@ -29,6 +30,50 @@ export interface DynamicProofCardProps {
   startFrame?: number;
   durationFrames?: number;
   activeStepIndex?: number;
+  topicLogoPath?: string;
+}
+
+/**
+ * Highlights key power words / numbers ($19.99, 60 FPS, 100%, FREE, ZERO, etc.)
+ * with bold glowing pills (#FEF08A / #DBEAFE).
+ */
+function renderHighlightedValue(value: string, isCurrent: boolean) {
+  const powerWordRegex = /(\$?\d+[\d,.]*(?:\s*(?:FPS|DOWNLOADS?|K|M|B|X|%|ms|s|GB|TB))?|\bFREE\b|\bZERO\b|\bNATIVE\b|\bINSTANT\b|\bOFFICIAL\b|\bVERIFIED\b|100%|\$\d+(?:\.\d{2})?)/gi;
+
+  const parts = value.split(powerWordRegex);
+  if (parts.length <= 1) {
+    return value;
+  }
+
+  return parts.map((part, i) => {
+    if (!part) return null;
+    const isPowerMatch = part.match(powerWordRegex);
+    if (isPowerMatch) {
+      return (
+        <span
+          key={i}
+          style={{
+            backgroundColor: isCurrent ? "#FEF08A" : "#DBEAFE",
+            color: isCurrent ? "#854D0E" : "#1E40AF",
+            padding: "2px 8px",
+            borderRadius: 6,
+            fontWeight: 900,
+            boxShadow: isCurrent
+              ? "0 0 10px rgba(254, 240, 138, 0.7)"
+              : "0 0 8px rgba(219, 234, 254, 0.6)",
+            border: isCurrent
+              ? "1px solid rgba(250, 204, 21, 0.8)"
+              : "1px solid rgba(147, 197, 253, 0.7)",
+            display: "inline-block",
+            margin: "0 2px",
+          }}
+        >
+          {part}
+        </span>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
 }
 
 /**
@@ -44,11 +89,14 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   startFrame = 90,
   durationFrames = 360, // default ~12.0s @ 30fps for 3-turn interactive proof
   activeStepIndex,
+  topicLogoPath,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   if (!cardData) return null;
+
+  const effectiveLogo = topicLogoPath || cardData.topicLogoPath;
 
   // Strict duration capping: allow interactive multi-step proof up to 14.0s (420 frames @ 30fps)
   const effectiveStart = cardData.startFrame ?? startFrame;
@@ -186,9 +234,12 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
             </span>
           </div>
 
-          {/* Window Center Title */}
+          {/* Window Center Title with optional Topic Logo */}
           <div
             style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
               fontSize: 16,
               fontWeight: 800,
               color: "#0F172A",
@@ -196,7 +247,22 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
               textTransform: "uppercase",
             }}
           >
-            {title}
+            {effectiveLogo && (
+              <Img
+                src={staticFile(effectiveLogo)}
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 6,
+                  objectFit: "contain",
+                  backgroundColor: "#FFFFFF",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
+                  border: "1px solid rgba(203, 213, 225, 0.8)",
+                  padding: 2,
+                }}
+              />
+            )}
+            <span>{title}</span>
           </div>
 
           {/* Badge Pill */}
@@ -328,7 +394,7 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
                           letterSpacing: "-0.5px",
                         }}
                       >
-                        {item.value}
+                        {renderHighlightedValue(item.value, isCurrent)}
                       </span>
                     </div>
                     <span

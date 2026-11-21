@@ -174,6 +174,18 @@ class SceneDirectorAgent:
                 {"label": "Setup Speed", "value": "Instant Execution Under 60s", "badge": "FAST", "status": "FAST", "isPositive": True},
             ]
 
+        topic_logo = script_data.get("topicLogoPath")
+        if not topic_logo:
+            try:
+                from engine.agents.media_fetcher import fetch_topic_logo
+                topic_logo = fetch_topic_logo(
+                    script_data.get("title", ""),
+                    script_data.get("entity_name") or script_data.get("entity"),
+                )
+            except Exception as e:
+                print(f"⚠️ SceneDirector: media fetcher notice: {e}")
+                topic_logo = None
+
         compiled_card_data = {
             "title": card_title,
             "subtitle": script_data.get("title", ""),
@@ -184,6 +196,7 @@ class SceneDirectorAgent:
             "startFrame": card_start_frame,
             "durationSeconds": card_duration_frames / fps,
             "durationFrames": card_duration_frames,
+            "topicLogoPath": topic_logo,
         }
 
         props_data = {
@@ -194,6 +207,7 @@ class SceneDirectorAgent:
             "timeline": timeline_data,
             "subtitles": subs_data,
             "audioSrc": "voice.mp3",
+            "topicLogoPath": topic_logo,
             "ctaKeyword": script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK"),
             "ctaText": script_data.get("cta_text") or script_data.get("ctaText") or f"💬 Comment {script_data.get('cta_keyword', 'LINK')} for the link",
             "environment": script_data.get("environment", "diner"),

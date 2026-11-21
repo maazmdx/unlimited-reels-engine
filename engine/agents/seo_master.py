@@ -168,13 +168,37 @@ class SEOMasterAgent:
         kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
         category = script_data.get("category", "Tech Innovation")
 
-        # 1. Generate 3 crisp value bullets from cardData or dialogue
+        # 1. Generate 3 crisp value bullets from cardData rows (not raw metadata keys)
         card_data = script_data.get("cardData") or {}
         bullets = []
         if isinstance(card_data, dict):
-            for k, v in list(card_data.items())[:3]:
-                clean_k = k.replace("_", " ").title()
-                bullets.append(f"• {clean_k}: {v}")
+            raw_rows = card_data.get("rows") or card_data.get("items")
+            if isinstance(raw_rows, list) and len(raw_rows) > 0:
+                for item in raw_rows[:3]:
+                    if isinstance(item, dict):
+                        lbl = str(item.get("label") or item.get("name") or "").strip()
+                        val = str(item.get("value") or item.get("desc") or "").strip()
+                        if lbl and val:
+                            bullets.append(f"• {lbl}: {val}")
+                        elif lbl:
+                            bullets.append(f"• {lbl}")
+                        elif val:
+                            bullets.append(f"• {val}")
+                    elif isinstance(item, str):
+                        bullets.append(f"• {item.strip()}")
+            else:
+                # Filter out raw metadata keys (title, subtitle, badge, etc.)
+                ignored_keys = {
+                    "title", "subtitle", "badge", "type", "highlight",
+                    "durationseconds", "durationframes", "startframe",
+                    "toastdata", "topiclogopath", "rows", "items", "codesnippet", "language"
+                }
+                for k, v in card_data.items():
+                    if k.lower() not in ignored_keys and not isinstance(v, (dict, list)):
+                        clean_k = k.replace("_", " ").title()
+                        bullets.append(f"• {clean_k}: {v}")
+                        if len(bullets) >= 3:
+                            break
 
         if not bullets:
             bullets = [

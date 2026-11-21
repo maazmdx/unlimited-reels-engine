@@ -138,10 +138,21 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     []
   );
 
+  const toothMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#F8FAFC", // Clean off-white upper tooth bar (reel_DeIwE1-sxVr.mp4)
+        roughness: 0.35,
+        metalness: 0.05,
+        flatShading: true,
+      }),
+    []
+  );
+
   const innerMouthMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#2A0808",
+        color: "#2A0808", // Dark-brown / maroon mouth recess
         roughness: 0.90,
         flatShading: true,
       }),
@@ -207,9 +218,11 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   // Blink overrides eyelid position
   const activeTopEyelid = isBlinking ? 1.0 : topEyelidDrop;
 
-  // Mouth articulation: slit when silent, drops open with visible upper teeth
-  const effectiveMouthOpen = isSpeaking ? Math.max(0.08, mouthOpen) : 0.02;
-  const mouthScaleY = THREE.MathUtils.lerp(0.18, 2.2, effectiveMouthOpen);
+  // Mouth articulation: clean low-poly style (matching reel_DeIwE1-sxVr.mp4)
+  // Slim horizontal dark recess (width: 0.20, height lerping 0.02 closed to 0.11 max open)
+  const currentMouthOpen = isSpeaking ? Math.max(0.12, mouthOpen) : mouthOpen;
+  const mouthHeight = THREE.MathUtils.lerp(0.02, 0.11, Math.min(1.0, Math.max(0.0, currentMouthOpen)));
+  const isToothVisible = currentMouthOpen > 0.18;
 
   const flipX = flipHorizontal ? -1 : 1;
 
@@ -459,16 +472,16 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
             <mesh position={[0.22, -0.28, 0.25]} rotation={[0, -0.32, 0.08]} material={hairMat}>
               <boxGeometry args={[0.16, 0.14, 0.30]} />
             </mesh>
-            {/* Subtle Soul Patch / Lip Accent */}
-            <mesh position={[0, -0.20, 0.60]} material={hairMat}>
-              <boxGeometry args={[0.10, 0.04, 0.04]} />
+            {/* Clean Sub-Lip Soul Patch Accent (safely below lower lip, zero mouth clipping) */}
+            <mesh position={[0, -0.31, 0.57]} material={hairMat}>
+              <boxGeometry args={[0.08, 0.03, 0.03]} />
             </mesh>
           </group>
         ) : (
-          // Dad Sculpted Curved Mustache
-          <group position={[0, -0.20, 0.63]}>
+          // Dad Sculpted Curved Mustache (Sits cleanly right above upper lip line)
+          <group position={[0, -0.19, 0.63]}>
             <mesh material={darkMat}>
-              <boxGeometry args={[0.32, 0.08, 0.07]} />
+              <boxGeometry args={[0.32, 0.07, 0.06]} />
             </mesh>
             {[-0.15, 0.15].map((x, i) => (
               <mesh key={i} position={[x, -0.02, 0]} rotation={[0, 0, (i === 0 ? 1 : -1) * 0.65]} material={darkMat}>
@@ -527,15 +540,15 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
         {/* ================================================================= */}
         {/* 9. ARTICULATED MOUTH & TEETH CAVITY                               */}
         {/* ================================================================= */}
-        <group position={[0, isDad ? -0.30 : -0.25, 0.59]}>
-          {/* Inner Cavity */}
-          <mesh scale={[1, mouthScaleY, 1]} material={innerMouthMat}>
-            <boxGeometry args={[0.18, 0.05, 0.06]} />
+        <group position={[0, isDad ? -0.27 : -0.24, 0.59]}>
+          {/* Inner Cavity: Slim horizontal dark-brown/maroon mouth recess */}
+          <mesh scale={[1, mouthHeight / 0.05, 1]} material={innerMouthMat}>
+            <boxGeometry args={[0.20, 0.05, 0.06]} />
           </mesh>
-          {/* Visible Upper Teeth */}
-          {(isSpeaking || mouthOpen > 0.05) && (
-            <mesh position={[0, 0.015, 0.02]} material={whiteMat}>
-              <boxGeometry args={[0.14, 0.022, 0.02]} />
+          {/* Single Clean Thin Off-White Upper-Tooth Bar (Visible only when mouthOpen > 0.18, ZERO barcode lines!) */}
+          {isToothVisible && (
+            <mesh position={[0, mouthHeight * 0.5 - 0.0125, 0.018]} material={toothMat}>
+              <boxGeometry args={[0.16, 0.025, 0.02]} />
             </mesh>
           )}
         </group>

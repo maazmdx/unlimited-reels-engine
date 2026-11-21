@@ -1,8 +1,10 @@
 import React from "react";
 import { useCurrentFrame } from "remotion";
+import * as THREE from "three";
 
 export interface CozyDiner3DProps {
   children?: React.ReactNode;
+  weatherMode?: "rain" | "sunny" | "sunset";
 }
 
 /**
@@ -10,29 +12,53 @@ export interface CozyDiner3DProps {
  * - Reference-accurate 3D low-poly diner environment (matching reel_DeIwE1-sxVr.mp4).
  * - Warm cream-beige walls (#D6C7B2) extended all the way to ceiling (y = +4.8) with retro blue trim stripe,
  *   completely eliminating any top black void in 9:16 vertical view.
- * - Proper window aperture with open Z-ordering:
- *   - Dark mahogany outer frame + warm wooden windowsill (#78350F)
- *   - Thin mullion crossbars + tinted glass pane
- *   - Indigo twilight sky (#3B4C7A)
- *   - Deep slate skyscraper silhouettes (#1E293B & #0F172A)
- *   - 21+ glowing warm apartment window dots (emissiveIntensity: 1.5)
- *   - Glowing neon "LAUNDRY" (Pink/Cyan) and "OPEN 24H" (Pink/Cyan/Amber) signs
+ * - Live Animated Weather in Diner Window:
+ *   - "rain" (default): 28 sleek translucent angled rain streaks continuously falling diagonally outside glass,
+ *     subtle drifting distant city storm clouds, softly pulsing neon LAUNDRY/OPEN 24H signs.
+ *   - "sunny": Warm golden morning sky gradient, slowly drifting low-poly white clouds, soft diagonal warm sunbeams across table.
+ *   - Driven 100% deterministically by useCurrentFrame() (0 Math.random()).
  * - Wide deep red ribbed booth positioned directly beneath the left seated character.
  * - Under 3,500 triangles total, zero shadow maps, flatShading: true everywhere, CPU-render friendly.
  */
-export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
+export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({
+  children,
+  weatherMode = "rain",
+}) => {
   const frame = useCurrentFrame();
 
+  const isSunny = weatherMode === "sunny";
+  const isSunset = weatherMode === "sunset";
+  const isRain = !isSunny && !isSunset;
+
   // Subtle deterministic flicker/hum on neon sign (continuous sine, 0 random)
-  const neonGlow = 0.88 + 0.12 * Math.sin(frame * 0.12);
+  const neonGlow = isRain
+    ? 0.88 + 0.12 * Math.sin(frame * 0.12)
+    : isSunset
+    ? 0.70 + 0.10 * Math.sin(frame * 0.12)
+    : 0.35; // Dimmer unlit appearance in daytime
+
   const lampSway = Math.sin(frame * 0.03) * 0.015;
 
   return (
     <group name="CozyDiner3D">
       {/* 1. AMBIENT & SCENE LIGHTING (Bright Warm Cozy Diner) */}
-      <hemisphereLight args={["#E2E8F0", "#78350F", 1.25]} />
-      <directionalLight position={[2.5, 4.5, 4]} intensity={0.9} color="#FEF3C7" />
-      <directionalLight position={[-3.5, 3.0, 2]} intensity={0.45} color="#FDE68A" />
+      <hemisphereLight
+        args={[
+          isSunny ? "#FEF9C3" : isSunset ? "#FED7AA" : "#E2E8F0",
+          isSunny ? "#A16207" : isSunset ? "#7C2D12" : "#78350F",
+          isSunny ? 1.35 : 1.25,
+        ]}
+      />
+      <directionalLight
+        position={[2.5, 4.5, 4]}
+        intensity={isSunny ? 1.30 : isSunset ? 1.10 : 0.9}
+        color={isSunny ? "#FEF08A" : isSunset ? "#FB923C" : "#FEF3C7"}
+      />
+      <directionalLight
+        position={[-3.5, 3.0, 2]}
+        intensity={isSunny ? 0.65 : 0.45}
+        color={isSunny ? "#FDE68A" : isSunset ? "#F97316" : "#FDE68A"}
+      />
 
       {/* 2. OVERHEAD VINTAGE PENDANT LAMP & WARM POOL LIGHT */}
       <group position={[0, 1.35, 0]} rotation={[0, 0, lampSway]}>
@@ -359,9 +385,9 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
         <mesh position={[0, 0, 0.06]}>
           <planeGeometry args={[3.2, 2.16]} />
           <meshStandardMaterial
-            color="#3B4C7A"
+            color={isSunny ? "#93C5FD" : "#3B4C7A"}
             transparent
-            opacity={0.10}
+            opacity={isSunny ? 0.06 : 0.10}
             roughness={0.1}
             metalness={0.1}
           />
@@ -371,35 +397,57 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
         {/* 4. SKYLINE & NEONS (Positioned cleanly inside window opening)     */}
         {/* ================================================================= */}
         <group position={[0, -0.05, -0.22]}>
-          {/* Indigo Twilight Sky Background (#3B4C7A) */}
+          {/* Sky Background Plane (Golden morning sky for sunny vs indigo twilight for rain) */}
           <mesh position={[0, 0.45, -0.35]}>
             <planeGeometry args={[6.8, 4.4]} />
-            <meshBasicMaterial color="#3B4C7A" />
+            <meshBasicMaterial
+              color={isSunny ? "#FDE68A" : isSunset ? "#9A3412" : "#3B4C7A"}
+            />
           </mesh>
 
-          {/* Low-Poly Skyscraper Silhouettes (#1E293B & #0F172A) */}
+          {/* Low-Poly Skyscraper Silhouettes (#1E293B & #0F172A / slate in daylight) */}
           <mesh position={[-1.35, 0.22, -0.18]}>
             <boxGeometry args={[0.62, 1.85, 0.15]} />
-            <meshStandardMaterial color="#1E293B" flatShading roughness={0.8} />
+            <meshStandardMaterial
+              color={isSunny ? "#475569" : "#1E293B"}
+              flatShading
+              roughness={0.8}
+            />
           </mesh>
           <mesh position={[-0.72, 0.58, -0.22]}>
             <boxGeometry args={[0.66, 2.4, 0.15]} />
-            <meshStandardMaterial color="#0F172A" flatShading roughness={0.8} />
+            <meshStandardMaterial
+              color={isSunny ? "#334155" : "#0F172A"}
+              flatShading
+              roughness={0.8}
+            />
           </mesh>
           <mesh position={[0.05, 0.28, -0.20]}>
             <boxGeometry args={[0.76, 1.9, 0.15]} />
-            <meshStandardMaterial color="#1E293B" flatShading roughness={0.8} />
+            <meshStandardMaterial
+              color={isSunny ? "#475569" : "#1E293B"}
+              flatShading
+              roughness={0.8}
+            />
           </mesh>
           <mesh position={[0.82, 0.65, -0.16]}>
             <boxGeometry args={[0.65, 2.5, 0.15]} />
-            <meshStandardMaterial color="#0F172A" flatShading roughness={0.8} />
+            <meshStandardMaterial
+              color={isSunny ? "#334155" : "#0F172A"}
+              flatShading
+              roughness={0.8}
+            />
           </mesh>
           <mesh position={[1.44, 0.32, -0.20]}>
             <boxGeometry args={[0.54, 1.95, 0.15]} />
-            <meshStandardMaterial color="#1E293B" flatShading roughness={0.8} />
+            <meshStandardMaterial
+              color={isSunny ? "#475569" : "#1E293B"}
+              flatShading
+              roughness={0.8}
+            />
           </mesh>
 
-          {/* Glowing Warm Apartment Window Dots (emissiveIntensity: 1.5) */}
+          {/* Glowing Warm Apartment Window Dots (emissiveIntensity: 1.5 in rain, 0.35 in sunny) */}
           {[
             [-1.45, 0.65], [-1.25, 0.45], [-1.4, 0.25], [-1.3, 0.85],
             [-0.82, 0.95], [-0.62, 0.75], [-0.80, 0.45], [-0.65, 0.15], [-0.75, 1.25],
@@ -412,7 +460,7 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
               <meshStandardMaterial
                 color={wIdx % 3 === 0 ? "#FEF08A" : wIdx % 3 === 1 ? "#FCD34D" : "#F59E0B"}
                 emissive={wIdx % 3 === 0 ? "#FEF08A" : "#F59E0B"}
-                emissiveIntensity={1.5}
+                emissiveIntensity={isSunny ? 0.35 : 1.5}
                 toneMapped={false}
               />
             </mesh>
@@ -477,7 +525,119 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({ children }) => {
             </mesh>
           </group>
         </group>
+
+        {/* ================================================================= */}
+        {/* 5. WEATHER EFFECTS: RAIN MODE vs SUNNY MODE                      */}
+        {/* ================================================================= */}
+        {/* RAIN MODE: 28 sleek translucent angled rain streaks + city storm clouds */}
+        {isRain && (
+          <group position={[0, 0, 0.02]}>
+            {/* Subtle drifting distant city storm clouds */}
+            <mesh position={[(((frame * 0.005 + 1.2) % 7.2) - 3.6), 0.85, -0.26]}>
+              <boxGeometry args={[1.8, 0.45, 0.10]} />
+              <meshBasicMaterial color="#1E293B" transparent opacity={0.38} />
+            </mesh>
+            <mesh position={[(((frame * 0.0035 + 4.5) % 7.2) - 3.6), 1.05, -0.24]}>
+              <boxGeometry args={[1.4, 0.35, 0.10]} />
+              <meshBasicMaterial color="#334155" transparent opacity={0.32} />
+            </mesh>
+
+            {/* 28 Sleek Translucent Angled Falling Rain Streaks (Zero Math.random()) */}
+            {Array.from({ length: 28 }).map((_, i) => {
+              const xBase = -1.50 + (((i * 47) % 100) / 100) * 3.0;
+              const speed = 0.09 + ((i * 17) % 7) * 0.012;
+              const offset = (((i * 61) % 100) / 100) * 3.4;
+              const spanY = 3.2;
+              const cycleY = (frame * speed + offset) % spanY;
+              const yPos = 1.6 - cycleY;
+              const xPos = xBase - cycleY * 0.18; // Angled diagonal drift
+              const zPos = -0.02 - ((i % 4) * 0.02);
+
+              return (
+                <mesh
+                  key={`rain-streak-${i}`}
+                  position={[xPos, yPos, zPos]}
+                  rotation={[0, 0, -0.20]}
+                >
+                  <boxGeometry args={[0.016, 0.28, 0.008]} />
+                  <meshBasicMaterial
+                    color="#93C5FD"
+                    transparent
+                    opacity={0.45}
+                    depthWrite={false}
+                  />
+                </mesh>
+              );
+            })}
+          </group>
+        )}
+
+        {/* SUNNY MODE: Golden sky glow + slowly drifting low-poly white clouds */}
+        {isSunny && (
+          <group position={[0, 0, 0.02]}>
+            {/* Golden Horizon Morning Glow */}
+            <mesh position={[0, -0.15, -0.32]}>
+              <planeGeometry args={[6.8, 2.0]} />
+              <meshBasicMaterial color="#FDBA74" transparent opacity={0.55} />
+            </mesh>
+
+            {/* Drifting Low-Poly White Clouds Outside Window */}
+            {[
+              { baseOffset: 0.8, y: 0.82, z: -0.22, speed: 0.006, scale: 0.85 },
+              { baseOffset: 3.2, y: 1.05, z: -0.20, speed: 0.0045, scale: 1.10 },
+              { baseOffset: 5.6, y: 0.65, z: -0.24, speed: 0.0055, scale: 0.75 },
+            ].map((cloud, ci) => {
+              const cloudX = (((frame * cloud.speed + cloud.baseOffset) % 7.2) - 3.6);
+              return (
+                <group
+                  key={`sunny-cloud-${ci}`}
+                  position={[cloudX, cloud.y, cloud.z]}
+                  scale={cloud.scale}
+                >
+                  <mesh position={[-0.22, 0, 0]}>
+                    <dodecahedronGeometry args={[0.22, 0]} />
+                    <meshStandardMaterial color="#FFFFFF" flatShading roughness={0.9} />
+                  </mesh>
+                  <mesh position={[0, 0.06, 0.02]}>
+                    <dodecahedronGeometry args={[0.28, 0]} />
+                    <meshStandardMaterial color="#FFFFFF" flatShading roughness={0.9} />
+                  </mesh>
+                  <mesh position={[0.24, -0.02, -0.01]}>
+                    <dodecahedronGeometry args={[0.20, 0]} />
+                    <meshStandardMaterial color="#FFFFFF" flatShading roughness={0.9} />
+                  </mesh>
+                </group>
+              );
+            })}
+          </group>
+        )}
       </group>
+
+      {/* 6. WARM SUNBEAMS ACROSS DINER TABLE (Sunny Mode Only) */}
+      {isSunny && (
+        <group position={[0.15, -0.20, 0.50]} rotation={[-0.32, 0.28, -0.48]}>
+          <mesh position={[0, 0, 0]}>
+            <planeGeometry args={[1.5, 3.4]} />
+            <meshBasicMaterial
+              color="#FEF08A"
+              transparent
+              opacity={0.075}
+              depthWrite={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          <mesh position={[0.25, 0.1, 0.08]}>
+            <planeGeometry args={[1.0, 3.0]} />
+            <meshBasicMaterial
+              color="#FDE047"
+              transparent
+              opacity={0.045}
+              depthWrite={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        </group>
+      )}
 
       {/* 7. NESTED CHARACTERS / EXTRAS */}
       {children}

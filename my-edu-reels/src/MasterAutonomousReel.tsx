@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Audio,
+  Img,
   interpolate,
   Sequence,
   staticFile,
@@ -79,6 +80,7 @@ export interface MasterAutonomousReelProps {
   hookHeadline?: string;
   hookSubheadline?: string;
   hookTag?: string;
+  topicLogoPath?: string;
   forcedCameraShot?: CameraShotType;
   ctaKeyword?: string;
   ctaText?: string;
@@ -112,6 +114,10 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   cardStartFrame = 430,
   toastData = null,
   endCard = null,
+  topicLogoPath,
+  hookHeadline,
+  hookSubheadline,
+  hookTag,
   forcedCameraShot,
   ctaKeyword,
   ctaText,
@@ -245,6 +251,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
 
   // 6. Animated iOS Notification Toast (Act 4: Turn 9, 3.5s duration)
   const effectiveToastData = toastData || (cardData as any)?.toastData || null;
+  const effectiveTopicLogo = topicLogoPath || (cardData as any)?.topicLogoPath || null;
+  const turn0EndFrame = turns && turns.length > 0 ? turns[0].end_frame : 90;
   const turn9StartFrame = turns && turns.length > 9 ? turns[9].start_frame : Math.max(0, totalFrames - 240);
   const toastDurationFrames = 105; // 3.5s @ 30fps
   const effectiveToastEnd = turn9StartFrame + toastDurationFrames;
@@ -436,7 +444,86 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           startFrame={effectiveCardStart}
           durationFrames={cappedCardDuration}
           activeStepIndex={activeStepIndex}
+          topicLogoPath={effectiveTopicLogo}
         />
+      )}
+
+      {/* 4b. 0-3s Opening Hook Pill (Official App/Game Logo + Headline Badge during Turn 0) */}
+      {effectiveTopicLogo && frame < Math.min(turn0EndFrame, 95) && (
+        <div
+          style={{
+            position: "absolute",
+            top: 150,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 110,
+            opacity: interpolate(
+              frame,
+              [0, 8, Math.min(turn0EndFrame, 95) - 10, Math.min(turn0EndFrame, 95)],
+              [0, 1, 1, 0],
+              { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+            ),
+            transform: `scale(${interpolate(frame, [0, 10], [0.85, 1.0], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            })})`,
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 16,
+              padding: "10px 24px",
+              borderRadius: 9999,
+              backgroundColor: "rgba(15, 23, 42, 0.94)",
+              border: "2px solid rgba(56, 189, 248, 0.8)",
+              boxShadow: "0 12px 36px rgba(0, 0, 0, 0.8), 0 0 24px rgba(56, 189, 248, 0.4)",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <Img
+              src={staticFile(effectiveTopicLogo)}
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 14,
+                objectFit: "contain",
+                backgroundColor: "#FFFFFF",
+                padding: 4,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
+              }}
+            />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 800,
+                  letterSpacing: "0.15em",
+                  color: "#38BDF8",
+                  textTransform: "uppercase",
+                }}
+              >
+                {hookTag || "FEATURED SHOWCASE"}
+              </span>
+              <span
+                style={{
+                  fontSize: 22,
+                  fontWeight: 900,
+                  color: "#F8FAFC",
+                  letterSpacing: "-0.2px",
+                  lineHeight: 1.2,
+                }}
+              >
+                {hookHeadline || (cardData as any)?.title || "VERIFIED PROOF"}
+              </span>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* 5. Animated iOS Notification Toast (Act 4: Turn 9, 3.5s duration) */}

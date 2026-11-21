@@ -17,10 +17,11 @@
     "default_position": [-1.4, -0.7, 0.1],
     "voice_profile": {
       "engine": "kokoro",
-      "voice_id": "am_michael",
-      "speed": 1.03,
+      "voice_id": "am_puck",
+      "speed": 1.15,
       "pitch": "+0Hz",
-      "fallback_edge_voice": "en-US-AndrewNeural"
+      "fallback_edge_voice": "en-US-AndrewNeural",
+      "chatterbox_voice": "junior_dev"
     }
   },
   "dad": {
@@ -42,11 +43,12 @@
     "voice_profile": {
       "engine": "edge_tts",
       "voice_id": "en-IN-PrabhatNeural",
-      "speed": 1.04,
+      "speed": 1.10,
       "pitch": "+0Hz",
-      "rate": "+4%",
+      "rate": "+8%",
       "fallback_kokoro_voice": "am_onyx",
-      "fallback_edge_voice": "en-IN-PrabhatNeural"
+      "fallback_edge_voice": "en-IN-PrabhatNeural",
+      "chatterbox_voice": "dad"
     }
   },
   "claude": {
@@ -68,9 +70,10 @@
     "voice_profile": {
       "engine": "kokoro",
       "voice_id": "bm_george",
-      "speed": 0.98,
+      "speed": 1.06,
       "pitch": "+0Hz",
-      "fallback_edge_voice": "en-GB-RyanNeural"
+      "fallback_edge_voice": "en-GB-RyanNeural",
+      "chatterbox_voice": "claude"
     }
   },
   "gemini": {
@@ -92,9 +95,10 @@
     "voice_profile": {
       "engine": "kokoro",
       "voice_id": "af_bella",
-      "speed": 1.04,
+      "speed": 1.12,
       "pitch": "+0Hz",
-      "fallback_edge_voice": "en-US-AriaNeural"
+      "fallback_edge_voice": "en-US-AriaNeural",
+      "chatterbox_voice": "gemini"
     }
   },
   "grok": {
@@ -116,9 +120,10 @@
     "voice_profile": {
       "engine": "kokoro",
       "voice_id": "am_fenrir",
-      "speed": 1.08,
+      "speed": 1.16,
       "pitch": "+0Hz",
-      "fallback_edge_voice": "en-US-ChristopherNeural"
+      "fallback_edge_voice": "en-US-ChristopherNeural",
+      "chatterbox_voice": "grok"
     }
   },
   "antigravity_bot": {
@@ -140,9 +145,10 @@
     "voice_profile": {
       "engine": "kokoro",
       "voice_id": "bm_lewis",
-      "speed": 1.00,
+      "speed": 1.08,
       "pitch": "+0Hz",
-      "fallback_edge_voice": "en-US-BrianNeural"
+      "fallback_edge_voice": "en-US-BrianNeural",
+      "chatterbox_voice": "antigravity_bot"
     }
   }
 }

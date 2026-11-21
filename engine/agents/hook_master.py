@@ -283,7 +283,7 @@ JSON Schema:
             "   - Act 3 (Turns 5-7, 16-30s): Upper-third proof card open! Row 1 explained on Turn 5, Row 2 on Turn 6, Row 3 on Turn 7.\n"
             "   - Act 4 (Turns 8-10, 30-43s): Relatable twist & real consequence backed by an iOS Notification Toast sliding in on Turn 9.\n"
             "   - Act 5 (Turns 11-12, 43-50s): Final punchline + spoken: 'Comment " + kw + " and I'll DM you the link.'\n"
-            "5. NO ROBOTIC FLUFF: Concrete numbers, memory limits, real SaaS fees, or hilarious developer truths.\n"
+            "5. NO ROBOTIC FLUFF & NATURAL EMOTION: Concrete numbers, memory limits, real SaaS fees, or hilarious developer truths. Insert subtle natural cues ('!', '...', 'Wait—', '[chuckle]', '[sigh]') on emotional turns so the spoken delivery sounds genuinely alive.\n"
             "6. TOAST DATA: Supply toastData (app_name, sender, message, icon) triggered on Turn 9.\n"
             "7. END-CARD: Supply endCard question (e.g. 'Would you switch to OpenRouter?') for the 2.5s black cliffhanger."
         )
