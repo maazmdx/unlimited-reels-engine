@@ -310,8 +310,9 @@ def clean_text_for_speech(text: str, is_chatterbox: bool = False) -> str:
     Cleans text of Markdown formatting, asterisks, brackets for clean TTS synthesis.
     - Replaces em-dash / en-dash (— / –) with a natural pause comma (, ).
     - Converts 4-digit years (1993 -> nineteen ninety-three) in TTS text only.
-    - If is_chatterbox is True, preserves vocal cues like [chuckle], [sigh].
-    - For Kokoro/Edge-TTS, strips [cues] cleanly without leaving leading/trailing ellipses (...).
+    - Strips ALL bracketed cues ([chuckle], [sigh], [laugh], [gasp], [groan], etc.)
+      BEFORE passing text to Chatterbox, Kokoro, or Edge-TTS so it NEVER speaks
+      the word "chuckle" or "sigh" aloud!
     """
     # Replace em-dash and en-dash with comma pause
     text = text.replace("—", ", ").replace("–", ", ")
@@ -319,12 +320,12 @@ def clean_text_for_speech(text: str, is_chatterbox: bool = False) -> str:
     # Convert 4-digit years into spoken words
     text = convert_years_to_words(text)
 
-    if not is_chatterbox:
-        # Strip emotional tags cleanly without leaving standalone ellipses
-        text = re.sub(r'\[(?:chuckle|sigh|gasp|giggle|laughter|pause)\]', '', text, flags=re.IGNORECASE)
-        text = re.sub(r'[*#_~`>\[\]\(\)]', ' ', text)
-    else:
-        text = re.sub(r'[*#_~`>]', ' ', text)
+    # Strip ALL bracketed cues ([chuckle], [sigh], [laugh], [gasp], [groan], [snicker], etc.)
+    text = re.sub(r'\[(?:chuckle|sigh|gasp|giggle|laughter|laugh|groan|snicker|cough|pause)\]', '', text, flags=re.IGNORECASE)
+    # Strip any remaining bracketed tokens [anything]
+    text = re.sub(r'\[.*?\]', '', text)
+    # Strip markdown and bracket characters
+    text = re.sub(r'[*#_~`>\[\]\(\)]', ' ', text)
 
     # Clean up excess punctuation and leading ellipses
     text = re.sub(r'^\s*\.{2,}\s*', '', text)
@@ -518,7 +519,6 @@ def _synthesize_chatterbox(
 
     gen_kwargs: Dict[str, Any] = {
         "text": text,
-        "voice": voice_id,
         "exaggeration": exaggeration,
         "cfg_weight": cfg_weight,
     }
@@ -563,7 +563,8 @@ def _synthesize_chatterbox(
         samples = np.array(audio_out)
         sr = 24000
 
-    sf.write(out_audio, samples, sr, subtype="PCM_16")
+    samples = np.asarray(samples, dtype=np.float32).squeeze()
+    sf.write(out_audio, samples, int(sr), format="WAV", subtype="PCM_16")
 
     # Trim leading/trailing dead air using FFmpeg
     trimmed_audio = out_audio + ".trim.wav"

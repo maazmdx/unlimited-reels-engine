@@ -1,0 +1,42 @@
+{
+  "format_history": [
+    {
+      "date": "2026-11-20",
+      "format_type": "informative_roast",
+      "topic_title": "Run a 1993 Intel 486 PC emulator in browser",
+      "category": "Retro & Browser Games",
+      "auto_dm_keyword": "PLAY",
+      "has_resource_link": true
+    },
+    {
+      "date": "2026-11-21",
+      "format_type": "informative_roast",
+      "topic_title": "NFS Underground 2: FREE in Your Browser!",
+      "category": "Retro & Browser Games",
+      "auto_dm_keyword": "RACE",
+      "has_resource_link": true
+    },
+    {
+      "date": "2026-11-21",
+      "format_type": "discovery_doc",
+      "topic_title": "GTA V In Browser: AI Built It, DMCA Nuked It",
+      "category": "Wildlife Dev Doc",
+      "auto_dm_keyword": "",
+      "has_resource_link": false
+    }
+  ],
+  "covered_topics": [
+    "Run a 1993 Intel 486 PC emulator in browser",
+    "NFS Underground 2: FREE in Your Browser!",
+    "GTA V In Browser: AI Built It, DMCA Nuked It"
+  ],
+  "format_counts": {
+    "informative_roast": 2,
+    "discovery_doc": 1,
+    "dad_clash": 0,
+    "dev_meme": 0,
+    "tech_secrets": 0
+  },
+  "last_used_format": "discovery_doc",
+  "last_updated": "2026-11-21T16:16:07.469913"
+}

@@ -76,7 +76,12 @@ export interface MasterAutonomousReelProps {
     keyword?: string;
     cta_text?: string;
     subtext?: string;
+    has_resource_link?: boolean;
+    hasResourceLink?: boolean;
+    cta_type?: "dm" | "share" | string;
   } | null;
+  hasResourceLink?: boolean;
+  has_resource_link?: boolean;
   hookHeadline?: string;
   hookSubheadline?: string;
   hookTag?: string;
@@ -118,6 +123,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   cardStartFrame = 430,
   toastData = null,
   endCard = null,
+  hasResourceLink,
+  has_resource_link,
   topicLogoPath,
   hookHeadline,
   hookSubheadline,
@@ -336,6 +343,13 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
       : null) ||
     "LINK"
   ).toUpperCase();
+
+  const effectiveHasResourceLink =
+    (hasResourceLink !== undefined ? hasResourceLink : null) ??
+    (has_resource_link !== undefined ? has_resource_link : null) ??
+    (endCard?.hasResourceLink !== undefined ? endCard.hasResourceLink : null) ??
+    (endCard?.has_resource_link !== undefined ? endCard.has_resource_link : null) ??
+    (endCard?.cta_type !== "share" && Boolean(resolvedKeyword && resolvedKeyword !== "NONE" && resolvedKeyword !== "SHARE"));
 
   const resolvedEndCardQuestion =
     endCard?.question ||
@@ -626,75 +640,123 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
             {stripEmojis(resolvedEndCardQuestion)}
           </div>
 
-          {/* Middle Highlight Auto-DM Pill */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              padding: "20px 48px",
-              borderRadius: 9999,
-              backgroundColor: "rgba(15, 23, 42, 0.96)",
-              border: "2px solid #38BDF8",
-              boxShadow:
-                "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 36px rgba(56, 189, 248, 0.45)",
-              marginBottom: 36,
-            }}
-          >
+          {/* Middle Highlight Auto-DM or Viral Tag/Share Pill */}
+          {effectiveHasResourceLink ? (
             <div
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                backgroundColor: "#38BDF8",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                fontSize: 16,
-                fontWeight: 900,
-                color: "#030712",
-                letterSpacing: "-0.5px",
+                gap: 16,
+                padding: "20px 48px",
+                borderRadius: 9999,
+                backgroundColor: "rgba(15, 23, 42, 0.96)",
+                border: "2px solid #38BDF8",
+                boxShadow:
+                  "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 36px rgba(56, 189, 248, 0.45)",
+                marginBottom: 36,
               }}
             >
-              DM
-            </div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-              <span
+              <div
                 style={{
-                  fontSize: 30,
-                  fontWeight: 800,
-                  color: "#FFFFFF",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                Comment
-              </span>
-              <span
-                style={{
-                  fontSize: 36,
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  backgroundColor: "#38BDF8",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 16,
                   fontWeight: 900,
-                  color: "#38BDF8",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  textShadow: "0 0 20px rgba(56, 189, 248, 0.7)",
+                  color: "#030712",
+                  letterSpacing: "-0.5px",
                 }}
               >
-                {resolvedKeyword}
-              </span>
-              <span
-                style={{
-                  fontSize: 30,
-                  fontWeight: 800,
-                  color: "#E2E8F0",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                for the link
-              </span>
+                DM
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                <span
+                  style={{
+                    fontSize: 30,
+                    fontWeight: 800,
+                    color: "#FFFFFF",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  Comment
+                </span>
+                <span
+                  style={{
+                    fontSize: 36,
+                    fontWeight: 900,
+                    color: "#38BDF8",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    textShadow: "0 0 20px rgba(56, 189, 248, 0.7)",
+                  }}
+                >
+                  {resolvedKeyword}
+                </span>
+                <span
+                  style={{
+                    fontSize: 30,
+                    fontWeight: 800,
+                    color: "#E2E8F0",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  for the link
+                </span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                padding: "20px 48px",
+                borderRadius: 9999,
+                backgroundColor: "rgba(15, 23, 42, 0.96)",
+                border: "2px solid #F59E0B",
+                boxShadow:
+                  "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 36px rgba(245, 158, 11, 0.45)",
+                marginBottom: 36,
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  backgroundColor: "#F59E0B",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 18,
+                  fontWeight: 900,
+                  color: "#030712",
+                }}
+              >
+                🔥
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                <span
+                  style={{
+                    fontSize: 32,
+                    fontWeight: 900,
+                    color: "#FCD34D",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
+                    textShadow: "0 0 20px rgba(245, 158, 11, 0.6)",
+                  }}
+                >
+                  {endCard?.cta_text || ctaText || "TAG THAT DEV BELOW"}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Bottom Subtle Follow Prompt */}
           <div

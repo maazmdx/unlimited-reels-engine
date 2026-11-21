@@ -135,6 +135,9 @@ class TopicMasterAgent:
 
         self.covered_topics_file = self.project_root / "inbox" / "covered_topics.json"
         self.pillars_file = self.project_root / "engine" / "config" / "content_pillars.json"
+        self.rss_config_file = self.project_root / "engine" / "config" / "rss_feeds.json"
+        self.channel_memory_file = self.project_root / "inbox" / "channel_memory.json"
+        self.rss_config = self._load_rss_config()
 
         self.api_key = gemini_api_key or os.environ.get("GEMINI_API_KEY")
         self.client = None
@@ -147,6 +150,82 @@ class TopicMasterAgent:
             except Exception as e:
                 print(f"⚠️ TopicMaster: Gemini client init notice: {e}")
 
+    def _load_rss_config(self) -> Dict[str, Any]:
+        """Loads live RSS feeds and endpoints from engine/config/rss_feeds.json."""
+        if self.rss_config_file.exists():
+            try:
+                with open(self.rss_config_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"⚠️ TopicMaster: RSS feeds config read notice: {e}")
+        return {
+            "google_news_queries": [
+                "free+open+source+tool",
+                "github+trending+repo",
+                "free+browser+game+webassembly",
+                "underrated+free+ai+tool",
+                "free+developer+alternative",
+            ],
+            "tech_rss": [
+                {"url": "https://www.theverge.com/rss/index.xml", "label": "The Verge"},
+                {"url": "https://lobste.rs/rss", "label": "Lobsters"},
+                {"url": "https://dev.to/feed", "label": "Dev.to"},
+            ],
+            "product_hunt": {"feed_url": "https://www.producthunt.com/feed", "source_label": "Product Hunt"},
+            "github_trending": {
+                "search_url": "https://api.github.com/search/repositories?q=stars:>1000+pushed:>2026-01-01&sort=updated&order=desc",
+                "source_label": "GitHub Trending (Open Source)",
+            },
+            "reddit_subreddits": ["webdev", "programming", "InternetIsBeautiful", "technology"],
+        }
+
+    def load_channel_memory(self) -> Dict[str, Any]:
+        """Loads channel memory tracking formats, covered topics, and frequency."""
+        if not self.channel_memory_file.exists():
+            return {
+                "format_history": [],
+                "covered_topics": [],
+                "format_counts": {"informative_roast": 0, "discovery_doc": 0, "dad_clash": 0, "dev_meme": 0, "tech_secrets": 0},
+                "last_used_format": None,
+                "last_updated": datetime.now().isoformat()
+            }
+        try:
+            with open(self.channel_memory_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {
+                "format_history": [],
+                "covered_topics": [],
+                "format_counts": {"informative_roast": 0, "discovery_doc": 0, "dad_clash": 0, "dev_meme": 0, "tech_secrets": 0},
+                "last_used_format": None,
+                "last_updated": datetime.now().isoformat()
+            }
+
+    def update_channel_memory(self, record: Dict[str, Any]):
+        """Updates channel memory with newly generated topic and format."""
+        mem = self.load_channel_memory()
+        mem.setdefault("format_history", []).append({
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "format_type": record.get("format_type", "informative_roast"),
+            "topic_title": record.get("title", ""),
+            "category": record.get("category", ""),
+            "auto_dm_keyword": record.get("auto_dm_keyword", ""),
+            "has_resource_link": record.get("has_resource_link", True)
+        })
+        mem.setdefault("covered_topics", []).append(record.get("title", ""))
+        fmt = record.get("format_type", "informative_roast")
+        mem.setdefault("format_counts", {})
+        mem["format_counts"][fmt] = mem["format_counts"].get(fmt, 0) + 1
+        mem["last_used_format"] = fmt
+        mem["last_updated"] = datetime.now().isoformat()
+        try:
+            self.channel_memory_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.channel_memory_file, "w", encoding="utf-8") as f:
+                json.dump(mem, f, indent=2)
+            print(f"🧠 [Channel Memory] Tracked format '{fmt}' in inbox/channel_memory.json")
+        except Exception as e:
+            print(f"⚠️ Failed to update channel_memory.json: {e}")
+
     # =========================================================================
     # 1. LIVE SIGNAL HARVESTING (Consumer Tech, Games, AI Apps, Business)
     # =========================================================================
@@ -157,12 +236,18 @@ class TopicMasterAgent:
         viral tech launches, and company business model teardowns.
         """
         signals = []
-        queries = [
-            ("AI+tools+apps", "GoogleNews: AI Apps"),
-            ("retro+games+browser", "GoogleNews: Browser Games"),
-            ("tech+business+model+margin", "GoogleNews: Tech Business"),
-            ("viral+tech+hardware", "GoogleNews: Viral Tech"),
-        ]
+        raw_queries = self.rss_config.get("google_news_queries", [])
+        queries = []
+        for q in raw_queries:
+            clean_lbl = q.replace("+", " ").replace("%20", " ").title()
+            queries.append((q, f"GoogleNews: {clean_lbl}"))
+        if not queries:
+            queries = [
+                ("AI+tools+apps", "GoogleNews: AI Apps"),
+                ("retro+games+browser", "GoogleNews: Browser Games"),
+                ("tech+business+model+margin", "GoogleNews: Tech Business"),
+                ("viral+tech+hardware", "GoogleNews: Viral Tech"),
+            ]
 
         for query, label in queries:
             url = f"https://news.google.com/rss/search?q={query}&hl=en-US&gl=US&ceid=US:en"
@@ -248,13 +333,10 @@ class TopicMasterAgent:
     def fetch_reddit_signals(self) -> List[Dict[str, Any]]:
         """Queries trending subreddits with graceful skip on 403 / 429."""
         signals = []
-        subreddits = [
-            "InternetIsBeautiful",
-            "ChatGPT",
-            "ArtificialInteligence",
-            "webgames",
-            "technology",
-        ]
+        subreddits = self.rss_config.get(
+            "reddit_subreddits",
+            ["InternetIsBeautiful", "ChatGPT", "webdev", "technology"]
+        )
         reddit_headers = {
             "User-Agent": "AntigravityTopicMaster/3.0 (compatible; research; Linux x86_64)"
         }
@@ -280,14 +362,20 @@ class TopicMasterAgent:
         return signals
 
     def fetch_tech_rss_and_github_signals(self) -> List[Dict[str, Any]]:
-        """Queries The Verge RSS, Lobsters, Dev.to, and GitHub Search."""
+        """Queries RSS feeds and GitHub Trending Search configured in rss_feeds.json."""
         signals = []
-        # Tech RSS
-        feeds = [
-            ("https://www.theverge.com/rss/index.xml", "The Verge"),
-            ("https://lobste.rs/rss", "Lobsters"),
-            ("https://dev.to/feed", "Dev.to"),
-        ]
+        # Tech RSS configured in rss_feeds.json
+        feeds = []
+        for feed in self.rss_config.get("tech_rss", []):
+            if isinstance(feed, dict) and feed.get("url"):
+                feeds.append((feed["url"], feed.get("label", "Tech RSS")))
+        if not feeds:
+            feeds = [
+                ("https://www.theverge.com/rss/index.xml", "The Verge"),
+                ("https://lobste.rs/rss", "Lobsters"),
+                ("https://dev.to/feed", "Dev.to"),
+            ]
+
         for url, label in feeds:
             try:
                 r = self.session.get(url, timeout=3.0)
@@ -305,16 +393,18 @@ class TopicMasterAgent:
             except Exception:
                 continue
 
-        # GitHub Trending Repos
+        # GitHub Trending Repos configured in rss_feeds.json
+        gh_cfg = self.rss_config.get("github_trending", {})
+        gh_url = gh_cfg.get("search_url", "https://api.github.com/search/repositories?q=stars:>1000+pushed:>2026-01-01&sort=updated&order=desc")
+        gh_label = gh_cfg.get("source_label", "GitHub Trending (Open Source)")
         try:
-            gh_url = "https://api.github.com/search/repositories?q=stars:>1000+pushed:>2026-01-01&sort=updated&order=desc"
             r_gh = self.session.get(gh_url, timeout=3.0)
             if r_gh.status_code == 200:
                 for it in r_gh.json().get("items", [])[:6]:
                     name = it.get("full_name") or it.get("name")
                     desc = it.get("description") or "Open source project"
                     signals.append({
-                        "source": "GitHub Trending (Open Source)",
+                        "source": gh_label,
                         "title": f"[Free Open-Source Repo] {name}: {desc[:80]}",
                         "url": it.get("html_url", ""),
                     })
@@ -536,6 +626,11 @@ class TopicMasterAgent:
             "- MINIMUM PASSING SCORE: 78/100. Any topic scoring < 78 or requiring payment/credit card is automatically REJECTED."
         )
 
+        mem = self.load_channel_memory()
+        f_counts = mem.get("format_counts", {})
+        funny_options = ["discovery_doc", "dad_clash", "dev_meme", "tech_secrets"]
+        suggested_funny = min(funny_options, key=lambda f: f_counts.get(f, 0))
+
         prompt = f"""
 Today's Date: {today_str}
 
@@ -545,21 +640,40 @@ LIVE SOURCE SIGNALS TODAY:
 PREVIOUSLY COVERED (DO NOT REPEAT):
 {excluded_text}
 
+MANDATORY DYNAMIC 2-REEL DAILY MIX (WHEN COUNT >= 2):
+If count >= 2:
+- Reel #1 MUST BE 'informative_roast': A 100% FREE tool, underrated AI app, free browser game, or open-source GitHub repo.
+  * format_type: 'informative_roast'
+  * has_resource_link: true
+  * auto_dm_keyword: Single real English word (e.g. 'PLAY', 'FREE', 'REPO', 'MAC', 'TOOL')
+  * Explanation: topic-accurate 3-step explanation of what it is and how it works.
+- Reel #2 MUST BE 'funny_story' with rotation style '{suggested_funny}':
+  * format_type: '{suggested_funny}'
+  * has_resource_link: false
+  * auto_dm_keyword: '' (empty string, NO DM link keyword)
+  * cta_phrase: Viral share/tag CTA (e.g. 'Tag that dev in your group whose credits just ran out.' if discovery_doc, or 'Send this to your friend who still codes without AI.')
+  * Core humor:
+    - If discovery_doc: British documentary narrator (claude) observing the frantic junior developer in his natural habitat whose free AI tier just expired!
+    - If dad_clash: Indian Dad vs Tech (Dad investigating the tech bill / 5G router).
+    - If dev_meme: Developer survival meme / coding without AI.
+
 TASK:
-1. Brainstorm 8 diverse candidate reel angles inspired by the live signals and our core categories. Never lock to static examples—always synthesize fresh angles from live feeds + historical covered topics deduplication.
+1. Brainstorm 8 diverse candidate reel angles inspired by the live signals and our core categories.
 2. HARD REJECT GATE: Reject any angle that promotes or recommends a paid tool or subscription. Paid tools may only be the punching bag while revealing a 100% FREE alternative.
 3. Prioritize topics with maximum Roast & Ragebait Potential where the AI can brutally humble human laziness or overpaying for software.
 4. Score each candidate across the 4 rubric criteria (Curiosity 0-25, Save/DM Demand 0-25, Meme/Debate 0-25, Roast/Ragebait 0-25).
 5. Compute total `viral_score` (0-100) as the sum of all 4 criteria.
 6. Strictly filter out anything scoring < 78 or promoting paid software.
-7. Rank by total score descending, and return the candidates in valid JSON.
+7. Return candidates in valid JSON matching schema.
 
 JSON Schema:
 {{
   "candidates": [
     {{
       "topic_title": "Punchy title under 55 characters",
-      "category": "Free Open-Source GitHub Repos | Retro & Browser Games | Underrated AI Apps | Tech Business Model | Breaking Tech | Relatable Culture",
+      "format_type": "informative_roast | discovery_doc | dad_clash | dev_meme | tech_secrets",
+      "has_resource_link": true,
+      "category": "Free Open-Source GitHub Repos | Retro & Browser Games | Underrated AI Apps | Wildlife Dev Doc | Indian Dad vs Tech | Developer Survival",
       "curiosity_score": 24,
       "save_demand_score": 24,
       "debate_potential_score": 22,
@@ -599,7 +713,6 @@ JSON Schema:
             try:
                 parsed = json.loads(cleaned)
             except Exception as e:
-                # Try finding outermost JSON object/array
                 start_idx = cleaned.find("{")
                 end_idx = cleaned.rfind("}")
                 if start_idx != -1 and end_idx != -1:
@@ -617,7 +730,6 @@ JSON Schema:
             re.IGNORECASE
         )
 
-        # Filter candidates by score gate (>= 78) and Hard Zero-Paid-Tools Gate
         valid_candidates = []
         for c in candidates:
             score = c.get("viral_score", 0)
@@ -627,7 +739,6 @@ JSON Schema:
                 valid_candidates.append(c)
 
         if not valid_candidates and candidates:
-            # If all were strictly below 78, pick highest scoring non-paid candidate
             candidates.sort(key=lambda x: x.get("viral_score", 0), reverse=True)
             valid_candidates = [c for c in candidates if not paid_promo_re.search(f"{c.get('topic_title', '')} {c.get('why_viral', '')}")]
             if not valid_candidates:
@@ -635,11 +746,53 @@ JSON Schema:
 
         valid_candidates.sort(key=lambda x: x.get("viral_score", 0), reverse=True)
 
-        # Sanitize top N winners
-        winners = []
-        for item in valid_candidates[:count]:
-            sanitized = self._sanitize_topic(item)
-            winners.append(sanitized)
+        # Dynamic 2-Reel Mix Selection: 1 Informative Roast + 1 Funny Story / Wildlife Doc
+        if count >= 2:
+            info_picks = [c for c in valid_candidates if c.get("has_resource_link") is not False and c.get("format_type") not in ["discovery_doc", "dad_clash", "dev_meme"]]
+            funny_picks = [c for c in valid_candidates if c.get("has_resource_link") is False or c.get("format_type") in ["discovery_doc", "dad_clash", "dev_meme", "tech_secrets", "funny_story"]]
+            selected = []
+            if info_picks:
+                selected.append(info_picks[0])
+            elif valid_candidates:
+                selected.append(valid_candidates[0])
+
+            if funny_picks:
+                for fp in funny_picks:
+                    if not selected or fp.get("topic_title") != selected[0].get("topic_title"):
+                        selected.append(fp)
+                        break
+
+            if len(selected) < 2 and len(valid_candidates) > 1:
+                cand2 = dict(valid_candidates[1])
+                cand2["format_type"] = suggested_funny
+                cand2["has_resource_link"] = False
+                cand2["auto_dm_keyword"] = ""
+                cand2["right_character"] = "claude" if suggested_funny == "discovery_doc" else cand2.get("right_character", "claude")
+                cand2["left_character"] = "dad" if suggested_funny == "dad_clash" else "junior_dev"
+                selected.append(cand2)
+            elif len(selected) < 2:
+                selected.append({
+                    "topic_title": "A Day in the Life of a Dev After Free AI Credits Run Out",
+                    "category": "Wildlife Dev Doc",
+                    "format_type": "discovery_doc",
+                    "has_resource_link": False,
+                    "auto_dm_keyword": "",
+                    "viral_score": 96,
+                    "curiosity_score": 25,
+                    "save_demand_score": 22,
+                    "debate_potential_score": 24,
+                    "roast_ragebait_score": 25,
+                    "why_viral": "Wildlife documentary parody of a junior dev panicking without AI autocomplete.",
+                    "roast_angle": "Calm British Claude voice narrates the dev struggling to remember basic syntax.",
+                    "left_character": "junior_dev",
+                    "right_character": "claude",
+                    "scene_preset": "diner",
+                    "resource_link_or_query": "",
+                    "core_conflict": "Nature documentary narrator vs frantic developer specimen",
+                })
+            winners = [self._sanitize_topic(it) for it in selected[:count]]
+        else:
+            winners = [self._sanitize_topic(it) for it in valid_candidates[:count]]
 
         return winners
 
@@ -664,10 +817,33 @@ JSON Schema:
 
         scene_preset = "desk" if "desk" in str(item.get("scene_preset", "")).lower() else "diner"
 
-        # Enforce single pronounceable English words for auto_dm_keyword (never RETROPC)
+        # Format type and smart context-aware CTA routing
+        format_type = str(item.get("format_type") or ("dad_clash" if left_char == "dad" else "informative_roast")).lower()
+        has_res = item.get("has_resource_link")
+        if has_res is None:
+            has_res = not any(k in format_type for k in ["doc", "dad", "meme", "funny", "secret"])
+
         category = item.get("category", "Viral Tech")
-        raw_kw = str(item.get("auto_dm_keyword", "FREE")).strip().upper()
-        clean_kw = sanitize_auto_dm_keyword(raw_kw, category, title)
+        if has_res:
+            raw_kw = str(item.get("auto_dm_keyword", "FREE")).strip().upper()
+            clean_kw = sanitize_auto_dm_keyword(raw_kw, category, title)
+            is_github_repo = any(term in str(category).lower() or term in str(title).lower() for term in ["github", "repo", "open-source", "open source"])
+            cta_phrase = f"Comment {clean_kw} and I'll DM you the GitHub repo link." if is_github_repo else f"Comment {clean_kw} and I'll DM you the free link."
+            end_card_cta = f"Comment {clean_kw} for the free link"
+        else:
+            clean_kw = ""
+            if "doc" in format_type or "discovery" in format_type:
+                cta_phrase = "Tag that dev in your group whose credits just ran out."
+                end_card_cta = "TAG THAT DEV BELOW"
+                category = "Wildlife Dev Doc"
+            elif "dad" in format_type:
+                cta_phrase = "Send this to your Dad or dev friend."
+                end_card_cta = "SEND TO YOUR DAD OR FRIEND"
+                category = "Indian Dad vs Tech"
+            else:
+                cta_phrase = "Tag that dev in your group who still codes without AI."
+                end_card_cta = "TAG THAT DEV IN YOUR GROUP"
+                category = "Developer Survival Memes"
 
         score = int(item.get("viral_score") or 85)
         breakdown = {
@@ -677,13 +853,9 @@ JSON Schema:
             "roast_ragebait": int(item.get("roast_ragebait_score") or 22),
         }
 
-        category = item.get("category", "Viral Tech")
-        why_viral = item.get("why_viral", "High curiosity gap and immediate viewer DM demand.")
-        roast_angle = item.get("roast_angle", f"{right_char} brutally humbles human effort with instant zero-dollar tech.")
-        conflict = item.get("core_conflict", f"{left_char} human denial vs {right_char} savage roast facts")
-
-        is_github_repo = any(term in str(category).lower() or term in str(title).lower() for term in ["github", "repo", "open-source", "open source"])
-        cta_phrase = f"Comment {clean_kw} and I'll DM you the GitHub repo link." if is_github_repo else f"Comment {clean_kw} and I'll DM you the free link."
+        why_viral = item.get("why_viral", "High curiosity gap and immediate viewer engagement.")
+        roast_angle = item.get("roast_angle", f"{right_char} brutally humbles human effort with savage comedy.")
+        conflict = item.get("core_conflict", f"{left_char} human struggle vs {right_char} savage roast facts")
 
         return {
             "id": slug,
@@ -693,6 +865,8 @@ JSON Schema:
             "core_topic": title,
             "category": category,
             "pillar_style": category,
+            "format_type": format_type,
+            "has_resource_link": has_res,
             "viral_score": score,
             "score_breakdown": breakdown,
             "why_viral": why_viral,
@@ -701,6 +875,7 @@ JSON Schema:
             "cta_keyword": clean_kw,
             "ctaKeyword": clean_kw,
             "cta_phrase": cta_phrase,
+            "end_card_cta": end_card_cta,
             "is_100_percent_free": True,
             "left_character": left_char,
             "right_character": right_char,
@@ -709,7 +884,6 @@ JSON Schema:
             "resource_link_or_query": item.get("resource_link_or_query", "https://antigravity.run"),
             "core_conflict": conflict,
             "style": "ai_vs_dad" if left_char == "dad" else "diner_ai",
-            "format_type": "ai_vs_dad" if left_char == "dad" else "ai_vs_dev",
         }
 
     # =========================================================================
@@ -738,9 +912,12 @@ JSON Schema:
         winners = []
         for i in range(count):
             pick = candidates[i % len(candidates)] if candidates else {}
+            is_informative = (i == 0)
             sanitized = self._sanitize_topic({
                 "topic_title": pick.get("title", f"Tech Breakthrough #{i+1}"),
-                "category": pick.get("category", "Retro Tech"),
+                "category": pick.get("category", "Free Tools & Repos") if is_informative else "Wildlife Dev Doc",
+                "format_type": "informative_roast" if is_informative else "discovery_doc",
+                "has_resource_link": is_informative,
                 "viral_score": 88,
                 "curiosity_score": 23,
                 "save_demand_score": 22,
@@ -748,7 +925,7 @@ JSON Schema:
                 "roast_ragebait_score": 22,
                 "why_viral": "Proven high-retention evergreen ragebait archetype.",
                 "roast_angle": "AI roasts human wasting hours on manual effort vs instant automated tools.",
-                "auto_dm_keyword": pick.get("cta_keyword", "TECH"),
+                "auto_dm_keyword": pick.get("cta_keyword", "TECH") if is_informative else "",
                 "left_character": pick.get("left_character", "junior_dev"),
                 "right_character": pick.get("right_character", "claude"),
                 "scene_preset": "diner",
@@ -766,8 +943,8 @@ JSON Schema:
     def curate_fresh_topics(self, count: int = 2) -> List[Dict[str, Any]]:
         """
         Main entry point for TopicMasterAgent:
-        Harvests live signals -> Evaluates 8 candidates against 0-100 rubric ->
-        Selects top N winners (score >= 78) -> Saves to covered history.
+        Harvests live signals -> Evaluates candidates against 0-100 rubric ->
+        Selects top N winners (score >= 78) -> Saves to covered history and channel memory.
         """
         print(f"\n🧠 [TopicMaster] Scouting mass-appeal signals for {count} viral reel concept(s)...")
         covered = self.get_last_covered_topics(limit=50)
@@ -777,20 +954,23 @@ JSON Schema:
         print(f"🌐 [TopicMaster] Gathered {len(signals)} live headlines (Google News, Product Hunt, HN, Tech RSS).")
 
         winners = []
-        if self.api_key:
+        if self.api_key or os.environ.get("GROQ_API_KEY"):
             try:
                 winners = self.curate_and_score_topics(signals, count, covered)
                 print(f"🏆 [TopicMaster] Viral gate passed! Selected {len(winners)} top-scoring concept(s).")
                 for w in winners:
-                    print(f"   ★ {w['title']} | Score: {w['viral_score']}/100 [{w['category']}] | Keyword: {w['auto_dm_keyword']}")
+                    kw_disp = w['auto_dm_keyword'] if w.get('has_resource_link') else f"NO-DM (CTA: {w.get('end_card_cta')})"
+                    print(f"   ★ {w['title']} | Score: {w['viral_score']}/100 [{w['format_type']}] | Keyword: {kw_disp}")
             except Exception as e:
-                print(f"⚠️ [TopicMaster] Gemini scoring pass warning: {e}")
+                print(f"⚠️ [TopicMaster] LLM scoring pass warning: {e}")
 
         if not winners:
             winners = self._offline_fallback(count, covered)
 
         if winners:
             self.record_covered_topics(winners)
+            for w in winners:
+                self.update_channel_memory(w)
 
         return winners
 

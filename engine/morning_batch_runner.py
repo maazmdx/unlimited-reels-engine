@@ -145,7 +145,7 @@ def load_covered_topics_history(covered_file: Path) -> List[Dict[str, Any]]:
 
 
 def record_covered_topic(covered_file: Path, record: Dict[str, Any]):
-    """Appends covered topic with episode tracking to inbox/covered_topics.json."""
+    """Appends covered topic with episode tracking to inbox/covered_topics.json and channel_memory.json."""
     history = load_covered_topics_history(covered_file)
     history.append(record)
     try:
@@ -155,6 +155,12 @@ def record_covered_topic(covered_file: Path, record: Dict[str, Any]):
         print(f"💾 [Covered Topics] Recorded {record.get('episode_str', 'Ep')} into inbox/covered_topics.json")
     except Exception as e:
         print(f"⚠️ Failed to update covered_topics.json: {e}")
+
+    try:
+        tm = TopicMasterAgent(project_root=PROJECT_ROOT)
+        tm.update_channel_memory(record)
+    except Exception as e:
+        print(f"⚠️ Failed to update channel_memory.json from runner: {e}")
 
 
 def load_inbox_queue(queue_file: Path) -> List[str]:

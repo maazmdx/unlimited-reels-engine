@@ -104,7 +104,7 @@ export const ViralHook: React.FC<ViralHookProps> = ({
       >
         <h1
           style={{
-            fontSize: 54,
+            fontSize: headline && headline.length > 32 ? (headline.length > 45 ? 38 : 44) : 52,
             fontWeight: 900,
             color: "#FFFFFF",
             margin: "0 0 12px 0",
@@ -112,6 +112,7 @@ export const ViralHook: React.FC<ViralHookProps> = ({
             letterSpacing: "-0.02em",
             textTransform: "uppercase",
             textShadow: "0 4px 16px rgba(0,0,0,0.8)",
+            wordBreak: "break-word",
           }}
         >
           {headline}

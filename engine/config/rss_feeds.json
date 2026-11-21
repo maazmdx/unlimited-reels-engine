@@ -1,0 +1,37 @@
+{
+  "google_news_queries": [
+    "free+open+source+tool",
+    "github+trending+repo",
+    "free+browser+game+webassembly",
+    "underrated+free+ai+tool",
+    "free+developer+alternative"
+  ],
+  "tech_rss": [
+    {
+      "url": "https://www.theverge.com/rss/index.xml",
+      "label": "The Verge"
+    },
+    {
+      "url": "https://lobste.rs/rss",
+      "label": "Lobsters"
+    },
+    {
+      "url": "https://dev.to/feed",
+      "label": "Dev.to"
+    }
+  ],
+  "product_hunt": {
+    "feed_url": "https://www.producthunt.com/feed",
+    "source_label": "Product Hunt"
+  },
+  "github_trending": {
+    "search_url": "https://api.github.com/search/repositories?q=stars:>1000+pushed:>2026-01-01&sort=updated&order=desc",
+    "source_label": "GitHub Trending (Open Source)"
+  },
+  "reddit_subreddits": [
+    "webdev",
+    "programming",
+    "InternetIsBeautiful",
+    "technology"
+  ]
+}

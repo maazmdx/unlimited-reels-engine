@@ -379,27 +379,37 @@ class SEOMasterAgent:
         tiered_hashtags = self._build_tiered_hashtags(title, category, kw)
         hashtags_str = " ".join(tiered_hashtags)
 
+        has_res = script_data.get("has_resource_link", script_data.get("hasResourceLink", True))
+        cta_phrase = script_data.get("cta_phrase") or script_data.get("ctaText") or "Tag that dev in your group who needs to see this! 👇"
+        if has_res and kw:
+            cta_line = f"💬 Comment \"{kw}\" below and I'll DM you the free link!\n\n"
+        else:
+            cta_line = f"💬 {cta_phrase}\n\n"
+
         # 7. Full Caption Text (Simple, direct, searchable)
         caption_text = (
             f"{seo_headline}\n\n"
             f"{subheadline}\n\n"
             f"Key Breakdown:\n"
             f"{bullets_text}\n\n"
-            f"💬 Comment \"{kw}\" below and I'll DM you the free link!\n\n"
+            f"{cta_line}"
             f"📌 PINNED DEBATE: {pinned_comment}\n\n"
             f"Follow @antigravity for daily zero-dollar workflows, retro hacks & unfiltered tech truth!\n\n"
             f"{hashtags_str}"
         )
         caption_text = sanitize_simple_spoken_english(caption_text)
 
-        dm_msg = script_data.get("dm_message") or (
-            f"Hey! 🚀 Here is the verified link and guide for {title}: https://antigravity.run/r/{kw.lower()}\n"
-            f"Enjoy exploring, and drop any questions!"
-        )
-        dm_msg = sanitize_simple_spoken_english(dm_msg)
+        dm_msg = ""
+        if has_res and kw:
+            dm_msg = script_data.get("dm_message") or (
+                f"Hey! 🚀 Here is the verified link and guide for {title}: https://antigravity.run/r/{kw.lower()}\n"
+                f"Enjoy exploring, and drop any questions!"
+            )
+            dm_msg = sanitize_simple_spoken_english(dm_msg)
 
         autodm_payload = {
-            "keyword": kw,
+            "keyword": kw if has_res else "",
+            "has_resource_link": has_res,
             "resource_topic": title,
             "public_comment_replies": comment_replies,
             "dm_message_template": dm_msg,

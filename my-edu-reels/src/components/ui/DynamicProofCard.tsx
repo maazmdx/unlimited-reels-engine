@@ -78,6 +78,14 @@ function renderHighlightedValue(value: string, isCurrent: boolean) {
   });
 }
 
+function cleanTitleTruncation(text: string, maxChars: number = 32): string {
+  if (!text) return "";
+  const trimmed = text.trim();
+  if (trimmed.length <= maxChars) return trimmed;
+  const lastSpace = trimmed.lastIndexOf(" ", maxChars);
+  return lastSpace > 10 ? trimmed.slice(0, lastSpace) : trimmed.slice(0, maxChars);
+}
+
 /**
  * DynamicProofCard:
  * - High-contrast light-mode frosted browser card (#F8FAFC with dark #0F172A text).
@@ -173,16 +181,19 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
     }
   }
 
-  const title = cardData.title || (cardData.subtitle ? `${cardData.subtitle.slice(0, 26)} Specs` : "Verified Tech Specs");
+  const title = cardData.title
+    ? cleanTitleTruncation(cardData.title, 34)
+    : (cardData.subtitle ? `${cleanTitleTruncation(cardData.subtitle, 26)} Specs` : "Verified Tech Specs");
   const badge = cardData.badge || "VERIFIED PROOF";
   const type = cardData.type || (cardData.codeSnippet ? "code" : "comparison");
 
   // Deterministic Typing & Click Search Bar (Turn 5 Typing, Turns 6-7 Click + Verified Pill)
+  const cleanSearchTitle = cleanTitleTruncation(cardData.title || "", 30);
   const rawSearchText =
     cardData.searchQuery ||
     cardData.command ||
-    (cardData.title
-      ? `verify --inspect "${cardData.title.slice(0, 26)}"`
+    (cleanSearchTitle
+      ? `verify --inspect "${cleanSearchTitle}"`
       : "benchmark --live --official");
 
   const typingAge = Math.max(0, age - 8);

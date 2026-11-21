@@ -93,6 +93,15 @@ def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -
     return cleaned
 
 
+def clean_headline_truncation(text: str, max_chars: int = 40) -> str:
+    """Truncates text at a word boundary without cutting off mid-word."""
+    text = (text or "").strip()
+    if len(text) <= max_chars:
+        return text
+    truncated = text[:max_chars].rsplit(" ", 1)[0]
+    return truncated if len(truncated) > 10 else text[:max_chars]
+
+
 def call_groq_api(prompt: str, system_instruction: str, timeout: float = 35.0) -> Optional[str]:
     """
     Calls Groq Cloud API with llama-3.3-70b-versatile for ultra-fast, zero-cost JSON completions.
@@ -411,13 +420,43 @@ JSON Schema:
         right_char = topic.get("right_character", "claude")
         scene_preset = topic.get("scene_preset", "diner")
         category = topic.get("category", "Tech")
-        # Enforce single pronounceable English words for auto_dm_keyword (never RETROPC)
-        raw_kw = str(topic.get("auto_dm_keyword", "FREE")).strip().upper()
-        kw = sanitize_auto_dm_keyword(raw_kw, category, title)
-        winning_hook = sanitize_simple_spoken_english(hook_battle_result.get("winning_hook", f"Look at {title}."))
+
+        format_type = str(topic.get("format_type") or "informative_roast").lower()
+        has_res = topic.get("has_resource_link")
+        if has_res is None:
+            has_res = not any(k in format_type for k in ["doc", "dad", "meme", "funny", "secret"])
+
+        is_doc = "doc" in format_type or "discovery" in format_type
+        is_dad = "dad" in format_type or left_char == "dad"
         is_gh = any(term in str(category).lower() or term in str(title).lower() for term in ["github", "repo", "open-source", "open source"])
         link_target = "GitHub repo link" if is_gh else "free link"
-        cta_phrase = topic.get("cta_phrase") or f"Comment {kw} and I'll DM you the {link_target}."
+
+        if has_res:
+            raw_kw = str(topic.get("auto_dm_keyword", "FREE")).strip().upper()
+            kw = sanitize_auto_dm_keyword(raw_kw, category, title)
+            cta_phrase = topic.get("cta_phrase") or f"Comment {kw} and I'll DM you the {link_target}."
+            final_turn_cta = f"Stop crying, human. Comment {kw} and I'll DM you the {link_target}."
+            end_card_cta = f"Comment {kw} for the {link_target}"
+            end_card_question = "Still paying for this in 2026? Be honest"
+        else:
+            kw = ""
+            if is_doc:
+                cta_phrase = topic.get("cta_phrase") or "Tag that dev in your group whose credits just ran out."
+                final_turn_cta = "Nature is cruel, human. Tag that dev in your group whose credits just ran out."
+                end_card_cta = "TAG THAT DEV BELOW"
+                end_card_question = "Could you survive 24 hours coding without AI?"
+            elif is_dad:
+                cta_phrase = topic.get("cta_phrase") or "Send this to your Dad or dev friend."
+                final_turn_cta = "Send this to your Dad or friend who still fixes routers with a shoe."
+                end_card_cta = "SEND TO YOUR DAD OR FRIEND"
+                end_card_question = "Would you trust your dad to fix your tech?"
+            else:
+                cta_phrase = topic.get("cta_phrase") or "Tag that dev in your group who still codes without AI."
+                final_turn_cta = "Tag that dev in your group who still codes without AI."
+                end_card_cta = "TAG THAT DEV IN YOUR GROUP"
+                end_card_question = "Who in your group is this developer?"
+
+        winning_hook = sanitize_simple_spoken_english(hook_battle_result.get("winning_hook", f"Look at {title}."))
 
         system_instruction = (
             "You are HookMaster: Screenplay & Dialogue Specialist for 9:16 vertical 3D dialogue reels.\n"
@@ -429,19 +468,23 @@ JSON Schema:
             "- The AI orb (claude, gemini, or grok) acts smug, brutally honest, and effortlessly superior—roasting the human's slow speed, bad habits, potato laptop, procrastination, or overpaying for tools.\n"
             "- Roasts must be clever, savage, and funny (roast human laziness, coding struggles, procrastination, overpaying, and slow reaction time—never hateful or abusive!).\n"
             "- The human character (junior_dev or dad) defends, denies, asks dumb questions, or panics as their effort gets humbled.\n"
-            "- NATURAL EXPRESSIVE CUES: Include cues like 'Wait—', '[chuckle]', '[sigh]', 'Bro...', 'Seriously?' on emotional turns so neural TTS delivers real comedic emotion.\n\n"
+            "- If format is 'discovery_doc', right character (claude) speaks as a calm British wildlife documentary narrator observing the junior developer specimen in his natural habitat as his free AI tier expires!\n"
+            "- BANNED PLACEHOLDERS: NEVER use generic rows like 'Instant In Browser (0 Installs)' or 'Saves 10 Hours & $240/yr'.\n"
+            "- REQUIRED: Write topic-accurate, crystal-clear 3-step explanations showing EXACTLY what the tool/repo/game does and how it works (Step 1: Setup/Action, Step 2: Live Engine, Step 3: Free Payoff).\n\n"
             "STRICT 5-ACT SCREENPLAY STRUCTURE (EXACTLY 11 TO 12 SNAPPY TURNS, 40-50 SECONDS):\n"
-            "1. Turn 0 (0-4s): Call out what people are wasting money or hours on + drop the 100% free shock reveal (<= 10 words).\n"
-            "2. Turns 1-4 (4-16s): Brutal roast & denial. AI ruthlessly roasts the human for still paying subscriptions, downloading 80GB bloatware, or doing slow manual work like it's 2008.\n"
-            "3. Turns 5-7 (16-30s): 3-Step Interactive Proof Card. Turn 5 highlights Row 1, Turn 6 reacts to Row 2, Turn 7 delivers Row 3 (contrasting exact '$0 / 100% FREE' vs 'What you're still paying for').\n"
-            "4. Turns 8-10 (30-42s): Human realization/panic + Savage iOS Notification Twist on Turn 9 (brutal personal roast toast: bank alert for wasted subscription, storage 99% full, or boss/mom catching them—ZERO Slack templates!).\n"
-            "5. Final Turn (Turn 11): Final savage burn + exact spoken CTA: 'Comment " + kw + " and I'll DM you the " + link_target + ".'\n"
-            "6. 2.5s BLACK END-CARD: Supply endCard question with a spicy ragebait debate question (e.g., 'Still paying for this in 2026? Be honest 💀' or 'Still downloading 80GB games on a potato laptop? 💀')."
+            "1. Turn 0 (0-4s): Call out what people are wasting money or hours on + drop the shock reveal (<= 10 words).\n"
+            "2. Turns 1-4 (4-16s): Brutal roast & denial. AI ruthlessly roasts the human for still paying subscriptions, downloading 80GB bloatware, or slow manual coding.\n"
+            "3. Turns 5-7 (16-30s): 3-Step Interactive Proof Card. Turn 5 highlights Step 1, Turn 6 reacts to Step 2, Turn 7 delivers Step 3.\n"
+            "4. Turns 8-10 (30-42s): Human realization/panic + Savage iOS Notification Twist on Turn 9 (personal roast toast: bank alert, storage 99% full, quota depleted, or boss catching them—ZERO Slack templates!).\n"
+            f"5. Final Turn (Turn 11): Final savage burn + exact spoken CTA: '{final_turn_cta}'\n"
+            f"6. 2.5s BLACK END-CARD: Supply endCard question with a spicy ragebait debate question and CTA '{end_card_cta}'."
         )
 
         prompt = f"""
 Topic: {title}
 Category: {category}
+Format Type: {format_type}
+Has Resource Link: {has_res}
 Winning Hook (Turn 0 line): "{winning_hook}"
 Cast: Left={left_char}, Right={right_char}
 Scene Preset: {scene_preset}
@@ -450,10 +493,10 @@ Auto-DM Keyword: {kw}
 TASK:
 Write the complete 5-act Remotion screenplay JSON with 11-12 snappy dialogue turns.
 - Turn 0 MUST be {left_char} speaking: "{winning_hook}"
-- Turns 1-4 MUST have the AI ruthlessly roast the human for overpaying, procrastination, or slow manual work.
-- Turns 5, 6, 7 MUST sequentially explain and highlight Rows 1, 2, and 3 of the Proof Card (showing exact $0 / 100% FREE vs paid tools).
-- Turn 9 MUST introduce the Meme Twist supported by the iOS Notification Toast (personal roast: bank alert, storage full, boss catching them—NO Slack).
-- Final Turn MUST end with: "Comment {kw} and I'll DM you the {link_target}."
+- Turns 1-4 MUST have the AI ruthlessly roast the human.
+- Turns 5, 6, 7 MUST sequentially explain and highlight Steps 1, 2, and 3 of the Proof Card (topic-accurate crystal-clear explanation).
+- Turn 9 MUST introduce the Meme Twist supported by the iOS Notification Toast.
+- Final Turn MUST end with: "{final_turn_cta}"
 
 JSON Schema:
 {{
@@ -468,30 +511,31 @@ JSON Schema:
     "right": "{right_char}"
   }},
   "cta_keyword": "{kw}",
-  "cta_phrase": "Comment {kw} and I'll DM you the {link_target}.",
+  "cta_phrase": "{cta_phrase}",
+  "has_resource_link": {str(has_res).lower()},
   "cardType": "comparison",
   "badge": "VERIFIED PROOF",
-  "explainerTitle": "{title[:24]} Specs",
+  "explainerTitle": "{clean_headline_truncation(title, 26)} Specs",
   "cardData": {{
-    "title": "{title[:24]} Breakdown",
+    "title": "{clean_headline_truncation(title, 26)} Breakdown",
     "subtitle": "Step-by-step verified specs",
     "badge": "VERIFIED PROOF",
     "rows": [
       {{
-        "label": "Step 1: Cost",
-        "value": "$0 / 100% FREE (vs $20/mo)",
+        "label": "Step 1: Setup",
+        "value": "Exact 1-click action, URL, or command",
         "status": "VERIFIED",
         "isPositive": true
       }},
       {{
-        "label": "Step 2: Setup / Speed",
-        "value": "Instant In Browser (0 Installs)",
+        "label": "Step 2: Execution",
+        "value": "What happens live under the hood",
         "status": "VERIFIED",
         "isPositive": true
       }},
       {{
-        "label": "Step 3: Bottom Line",
-        "value": "Saves 10 Hours & $240/yr",
+        "label": "Step 3: Payoff",
+        "value": "$0 / 100% Free (replaces paid tools)",
         "status": "PROVEN",
         "isPositive": true
       }}
@@ -501,36 +545,37 @@ JSON Schema:
     "durationSeconds": 12.0
   }},
   "toastData": {{
-    "app_name": "Bank Alert",
-    "sender": "Chase / Apple Pay",
-    "message": "$20/mo recurring subscription charge declined. You saved $240 this year.",
-    "icon": "💳",
+    "app_name": "System Alert",
+    "sender": "Security / Usage",
+    "message": "Relevant punchy notification twist.",
+    "icon": "ALERT",
     "time": "now"
   }},
   "endCard": {{
-    "question": "Still paying for this in 2026? Be honest 💀",
+    "question": "{end_card_question}",
     "keyword": "{kw}",
-    "cta_text": "Comment {kw} for the free link",
-    "subtext": "Follow for Part 2"
+    "cta_text": "{end_card_cta}",
+    "subtext": "Follow for Part 2",
+    "has_resource_link": {str(has_res).lower()}
   }},
   "hook": {{
-    "headline": "{title.upper()[:35]}",
+    "headline": "{clean_headline_truncation(title.upper(), 38)}",
     "subheadline": "{winning_hook}",
     "tag": "⚠️ VIRAL REAL TALK"
   }},
   "dialogue": [
     {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "{winning_hook}", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "[chuckle] Bro, your slow workflow is finally getting humbled.", "emotion": "smug", "pause_after": 0.30}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait—there is no way a free app replaces four hours of work.", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "[sigh] Humans love doing things the hard way just to feel busy.", "emotion": "smug", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Bro, your slow workflow is finally getting humbled.", "emotion": "smug", "pause_after": 0.30}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait—there is no way this replaces hours of manual work.", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Humans love doing things the hard way just to feel busy.", "emotion": "smug", "pause_after": 0.30}},
     {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Seriously? Prove it right now before I waste another morning.", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Look at step one: it boots in two seconds with zero installs.", "emotion": "smug", "pause_after": 0.35}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, step two says it cuts my entire workload down to seconds?", "emotion": "shocked", "pause_after": 0.35}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "And step three: it runs locally so nobody charges you fifty dollars.", "emotion": "smug", "pause_after": 0.35}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Bro... I have been paying monthly fees like an amateur.", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Look at your screen: your coworker is already using it to beat you.", "emotion": "smug", "pause_after": 0.35}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "I am opening this right now before my boss finds out.", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "[chuckle] Stop crying, human. Comment {kw} and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}}
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Look at step one: it launches in seconds with zero complicated setup.", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, step two says it runs directly on my own machine?", "emotion": "shocked", "pause_after": 0.35}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "And step three: zero dollar cost so nobody charges you fifty dollars.", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Bro... I have been doing this like an amateur.", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Look at your screen: your lead engineer already sent you five tickets.", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "I am opening this right now before I get exposed.", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "{final_turn_cta}", "emotion": "smug", "pause_after": 0.40}}
   ]
 }}
 """
@@ -558,17 +603,19 @@ JSON Schema:
         screenplay["cast"] = {"left": left_char, "right": right_char}
         screenplay["scenePreset"] = scene_preset
         screenplay["style"] = scene_preset
+        screenplay["has_resource_link"] = has_res
+        screenplay["hasResourceLink"] = has_res
         screenplay["cta_keyword"] = kw
         screenplay["ctaKeyword"] = kw
         screenplay["cta_phrase"] = cta_phrase
-        screenplay["cta_text"] = f"💬 Comment {kw} for the {link_target}"
-        screenplay["ctaText"] = f"💬 Comment {kw} for the {link_target}"
+        screenplay["cta_text"] = f"💬 Comment {kw} for the {link_target}" if has_res else f"💬 {cta_phrase}"
+        screenplay["ctaText"] = f"💬 Comment {kw} for the {link_target}" if has_res else f"💬 {cta_phrase}"
 
         # Ensure cardData exists and has multi-step structure in simple English
         if not screenplay.get("cardData") or not isinstance(screenplay["cardData"], dict):
             screenplay["cardData"] = {}
         card_d = screenplay["cardData"]
-        card_d.setdefault("title", f"{title[:24]} Breakdown")
+        card_d.setdefault("title", f"{clean_headline_truncation(title, 26)} Breakdown")
         card_d.setdefault("subtitle", "Step-by-step verified specs")
         card_d.setdefault("badge", "VERIFIED PROOF")
         card_d.setdefault("startTurn", 5)
@@ -576,9 +623,9 @@ JSON Schema:
         card_d.setdefault("durationSeconds", 12.0)
         if "rows" not in card_d or not isinstance(card_d["rows"], list) or len(card_d["rows"]) < 3:
             card_d["rows"] = [
-                {"label": "Step 1: Cost", "value": "$0 / 100% FREE (vs $20/mo)", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Speed", "value": "Runs 10x Faster In Seconds", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: Bottom Line", "value": "Zero Monthly Fees Needed", "status": "PROVEN", "isPositive": True},
+                {"label": "Step 1: Setup", "value": "1-Click Launch In Seconds", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 2: Execution", "value": "Direct Local Performance", "status": "VERIFIED", "isPositive": True},
+                {"label": "Step 3: Payoff", "value": "$0 / 100% Free Forever", "status": "PROVEN", "isPositive": True},
             ]
         card_d["items"] = card_d["rows"]
 
@@ -587,7 +634,7 @@ JSON Schema:
             screenplay["toastData"] = {
                 "app_name": "Bank Alert",
                 "sender": "Card Alert",
-                "message": f"Monthly subscription declined. You saved $240 on {title[:16]}.",
+                "message": f"Monthly subscription declined. You saved $240 on {clean_headline_truncation(title, 16)}.",
                 "icon": "CARD",
                 "time": "now",
             }
@@ -596,22 +643,26 @@ JSON Schema:
                 screenplay["toastData"]["app_name"] = "Bank Alert"
             screenplay["toastData"].setdefault("app_name", "Bank Alert")
             screenplay["toastData"].setdefault("sender", "Card Alert")
-            screenplay["toastData"].setdefault("message", f"Monthly fee declined. You saved $240 on {title[:16]}!")
+            screenplay["toastData"].setdefault("message", f"Monthly fee declined. You saved $240 on {clean_headline_truncation(title, 16)}!")
             screenplay["toastData"].setdefault("icon", "CARD")
             screenplay["toastData"].setdefault("time", "now")
 
-        # Ensure endCard exists with ragebait question
+        # Ensure endCard exists with ragebait question and context-aware CTA
         if not screenplay.get("endCard") or not isinstance(screenplay["endCard"], dict):
             screenplay["endCard"] = {
-                "question": f"Still paying for this in 2026? Be honest",
+                "question": end_card_question,
                 "keyword": kw,
-                "cta_text": f"Comment {kw} for the {link_target}",
+                "cta_text": end_card_cta,
                 "subtext": "Follow for Part 2",
+                "has_resource_link": has_res,
+                "hasResourceLink": has_res,
             }
         else:
-            screenplay["endCard"].setdefault("question", f"Still paying for this in 2026? Be honest")
+            screenplay["endCard"].setdefault("question", end_card_question)
             screenplay["endCard"]["keyword"] = kw
-            screenplay["endCard"]["cta_text"] = f"Comment {kw} for the {link_target}"
+            screenplay["endCard"]["cta_text"] = end_card_cta
+            screenplay["endCard"]["has_resource_link"] = has_res
+            screenplay["endCard"]["hasResourceLink"] = has_res
             screenplay["endCard"].setdefault("subtext", "Follow for Part 2")
 
         # STRICT VOCABULARY & EMOJI SANITIZATION PASS: Remove all fancy words & emojis
@@ -637,6 +688,10 @@ JSON Schema:
             if "question" in screenplay["endCard"]:
                 screenplay["endCard"]["question"] = sanitize_simple_spoken_english(screenplay["endCard"]["question"])
 
+        if "hook" in screenplay and isinstance(screenplay["hook"], dict):
+            raw_h = screenplay["hook"].get("headline", title)
+            screenplay["hook"]["headline"] = clean_headline_truncation(raw_h.upper(), 38)
+
         # Attach metadata
         screenplay["hook_battle"] = hook_battle_result
         screenplay["winning_hook"] = winning_hook
@@ -658,10 +713,42 @@ JSON Schema:
         title = topic.get("title") or topic.get("topic_title") or "Daily Tech Breakdown"
         category = topic.get("category", "")
         cat_lower = (str(category) + " " + str(title)).lower()
+        format_type = topic.get("format_type", "")
+        has_res = topic.get("has_resource_link", not (format_type in ["discovery_doc", "funny_story"] or "discovery" in cat_lower))
         is_gh = any(term in cat_lower for term in ["repo", "github", "open-source", "open source"])
         link_desc = "GitHub repo link" if is_gh else "free link"
 
-        if "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
+        if format_type == "discovery_doc" or "discovery" in cat_lower:
+            badge = "WILDLIFE STUDY"
+            card_title = f"{title[:22]} Specimen"
+            rows = [
+                {"label": "Step 1: Specimen Status", "value": "AI API Credits Exhausted ($0 Left)", "status": "OBSERVED", "isPositive": False},
+                {"label": "Step 2: Panic Response", "value": "Sweating Furiously At 2 AM In Terminal", "status": "OBSERVED", "isPositive": False},
+                {"label": "Step 3: Nature's Verdict", "value": "The Wild Junior Dev Survives On Stack Overflow", "status": "PROVEN", "isPositive": True},
+            ]
+            toast = {
+                "app_name": "Wildlife Watch",
+                "sender": "Field Researcher",
+                "message": "Specimen is opening vim in desperation. It cannot exit.",
+                "icon": "ALERT",
+                "time": "now",
+            }
+            end_question = "Have you ever run out of AI credits mid-push at 2 AM? Tell me why"
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Notice how the specimen frantically mashes keys as his free AI quota hits zero.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Wait—why are you whispering like a nature documentary?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Shh... we must not startle him in his natural habitat. His terminal is on fire.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Seriously? I have forty bugs and my pull request is due in ten minutes!", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: the specimen has zero dollars left in his developer account.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two: sweating furiously in front of a dying laptop monitor?", "emotion": "shocked", "pause_after": 0.35},
+                {"speaker": right_char, "character_id": right_char, "text": "And step three: surviving on ancient answers copied from Stack Overflow.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "Bro... my boss is pinging me right now on Slack asking for the demo.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "The wild junior dev realizes he must code with his actual brain today.", "emotion": "smug", "pause_after": 0.35},
+                {"speaker": left_char, "character_id": left_char, "text": "I forgot how to write a simple for loop without auto-complete!", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Nature is truly unforgiving. Tag that dev in your group who needs to see this.", "emotion": "smug", "pause_after": 0.40},
+            ]
+        elif "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
             badge = "BROWSER STATS"
             card_title = f"{title[:22]} Specs"
             rows = [
@@ -679,9 +766,9 @@ JSON Schema:
             end_question = "Still downloading 80GB games on a dying laptop in 2026? Tell me why"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Bro... your potato laptop can finally run a game without smoking.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Bro... your potato laptop can finally run a game without smoking.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait—there is no way a full 3D game runs inside a tab.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[sigh] It compiles straight to your browser. Your Chrome tab is now a console.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "It compiles straight to your browser. Your Chrome tab is now a console.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Seriously? Prove it right now before I open this at my desk.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at step one: 100% free with zero file downloads.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait, step two says zero megabytes instead of eighty gigabytes?", "emotion": "shocked", "pause_after": 0.35},
@@ -689,7 +776,7 @@ JSON Schema:
                 {"speaker": left_char, "character_id": left_char, "text": "Bro... my boss thinks I am typing code while I am driving.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Check your screen: your teammate just messaged asking for your screen share.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait, close the tab before he catches Tommy Vercetti on screen!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"[chuckle] Too slow, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": right_char, "character_id": right_char, "text": f"Too slow, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
             ]
         elif is_gh:
             badge = "FREE GITHUB REPO"
@@ -709,9 +796,9 @@ JSON Schema:
             end_question = "Still paying $20/mo subscriptions when free GitHub repos exist? Tell me why"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Humans pay twenty bucks a month for what a free GitHub repo does in two seconds.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Humans pay twenty bucks a month for what a free GitHub repo does in two seconds.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait—there is no way an open-source project replaces my paid subscription!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[sigh] It has thirty thousand stars because it crushes the paid version without charging you a dime.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "It has thirty thousand stars because it crushes the paid version without charging you a dime.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Seriously? Prove it right now before I cancel my credit card.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at step one: one hundred percent free open-source code with zero hidden fees.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait, step two runs straight on my laptop with zero cloud delays?", "emotion": "shocked", "pause_after": 0.35},
@@ -719,7 +806,7 @@ JSON Schema:
                 {"speaker": left_char, "character_id": left_char, "text": "Bro... I wasted hundreds of dollars paying software companies like a clown.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Check your phone: your bank alert for another useless renewal is waiting.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "I am deleting my paid account and starring this repo immediately.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"[chuckle] Finally woke up, human. Comment {kw} and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": right_char, "character_id": right_char, "text": f"Finally woke up, human. Comment {kw} and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40},
             ]
         elif "ai" in cat_lower or "llm" in cat_lower or "model" in cat_lower:
             badge = "AI COST AUDIT"
@@ -739,9 +826,9 @@ JSON Schema:
             end_question = "Still paying $20/mo for AI in 2026? Be honest"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[chuckle] And you spent six months paying for tools you barely use.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "And you spent six months paying for tools you barely use.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait—every free tool is usually completely broken garbage that hallucinates.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[sigh] Keep coping. This runs straight on your machine and beats paid apps.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Keep coping. This runs straight on your machine and beats paid apps.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Seriously? Prove it before I cancel my fifty dollar monthly subscription.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at step one: completely free with zero shady credit card traps.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait, step two says zero credit card needed forever?", "emotion": "shocked", "pause_after": 0.35},
@@ -749,7 +836,7 @@ JSON Schema:
                 {"speaker": left_char, "character_id": left_char, "text": "Bro... I literally wasted hundreds of dollars doing everything by hand.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at your phone: your bank app just cheered for your wallet.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "My credit card bill feels personally attacked right now.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"[chuckle] Stop crying, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": right_char, "character_id": right_char, "text": f"Stop crying, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
             ]
         elif "money" in cat_lower or "business" in cat_lower or "earn" in cat_lower or "margin" in cat_lower:
             badge = "PROFIT TEARDOWN"
@@ -769,9 +856,9 @@ JSON Schema:
             end_question = "Did you think this app was free or did you just realize you are the product?"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[chuckle] You really thought they gave that away out of pure kindness?", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "You really thought they gave that away out of pure kindness?", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait—if the entire app is free, how are they swimming in money?", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[sigh] You are the free bait they use to sell massive team contracts.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "You are the free bait they use to sell massive team contracts.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Seriously? Break down the math before I believe they outsmarted everyone.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at step one: normal users get 100% free access forever.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait, step two shows huge profits the second a company signs up?", "emotion": "shocked", "pause_after": 0.35},
@@ -779,7 +866,7 @@ JSON Schema:
                 {"speaker": left_char, "character_id": left_char, "text": "Bro... I was basically an unpaid salesperson and I had no idea.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Check your phone: a billing alert just proved my point completely.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "I am never looking at a free software download the same way.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"[chuckle] At least you learned today. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": right_char, "character_id": right_char, "text": f"At least you learned today. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
             ]
         elif "dad" in cat_lower:
             badge = "VERIFIED FIX"
@@ -799,9 +886,9 @@ JSON Schema:
             end_question = "Would you trust your dad to fix your Wi-Fi or pay $100 for a technician?"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Your dad hit the plastic box with his shoe, didn't he?", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Your dad hit the plastic box with his shoe, didn't he?", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait—he restarted the modem twelve times and wrapped antennas in foil!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[sigh] Humans will wrap gadgets in foil before changing one simple free setting.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Humans will wrap gadgets in foil before changing one simple free setting.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Seriously? Show me the real fix before he takes apart the TV.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at step one: 100% free with zero replacement junk.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait, step two says changing this free address fixes it in seconds?", "emotion": "shocked", "pause_after": 0.35},
@@ -809,7 +896,7 @@ JSON Schema:
                 {"speaker": left_char, "character_id": left_char, "text": "Bro... he spent four hours yelling at customer support yesterday.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at your messages: your dad is already bragging that he fixed it.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "He is going to bring this up at every family dinner forever.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"[chuckle] Let him have his win. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": right_char, "character_id": right_char, "text": f"Let him have his win. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
             ]
         else:
             badge = "TECH TEARDOWN"
@@ -829,9 +916,9 @@ JSON Schema:
             end_question = "Still paying for outdated tools in 2026? Be honest"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Humans spend four years learning what takes two clicks now.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Humans spend four years learning what takes two clicks now.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait—there is no way a free tool replaces years of hard practice.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "[sigh] People said the exact same thing about horses before cars showed up.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "People said the exact same thing about horses before cars showed up.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "Seriously? Check the numbers before I throw away my entire degree.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Look at step one: 100% free right in your browser.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "Wait, step two shows instant execution with zero complicated setup?", "emotion": "shocked", "pause_after": 0.35},
@@ -839,7 +926,7 @@ JSON Schema:
                 {"speaker": left_char, "character_id": left_char, "text": "Bro... I feel like I just worked five years for nothing.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Check your screen: your browser just finished before you even started typing.", "emotion": "smug", "pause_after": 0.35},
                 {"speaker": left_char, "character_id": left_char, "text": "I am grabbing this immediately before my coworker replaces me.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"[chuckle] Don't panic, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": right_char, "character_id": right_char, "text": f"Don't panic, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
             ]
 
         card_data = {
@@ -855,10 +942,14 @@ JSON Schema:
 
         end_card = {
             "question": end_question,
-            "keyword": kw,
-            "cta_text": f"Comment {kw} for the {link_desc}",
+            "keyword": kw if has_res else "",
+            "cta_text": f"Comment {kw} for the {link_desc}" if has_res else "Tag that dev in your group who needs to see this!",
             "subtext": "Follow for Part 2",
+            "has_resource_link": has_res,
+            "hasResourceLink": has_res,
         }
+
+        headline_text = clean_headline_truncation(title.upper(), 38)
 
         return {
             "title": title[:50],
@@ -868,8 +959,10 @@ JSON Schema:
             "leftCharacterId": left_char,
             "rightCharacterId": right_char,
             "cast": {"left": left_char, "right": right_char},
-            "cta_keyword": kw,
-            "cta_phrase": f"Comment {kw} and I'll DM you the {link_desc}.",
+            "cta_keyword": kw if has_res else "",
+            "cta_phrase": f"Comment {kw} and I'll DM you the {link_desc}." if has_res else "Tag that dev in your group who needs to see this!",
+            "has_resource_link": has_res,
+            "hasResourceLink": has_res,
             "cardType": "comparison",
             "badge": badge,
             "explainerTitle": card_title,
@@ -877,7 +970,7 @@ JSON Schema:
             "toastData": toast,
             "endCard": end_card,
             "hook": {
-                "headline": title.upper()[:35],
+                "headline": headline_text,
                 "subheadline": hook,
                 "tag": "⚠️ REAL TALK",
             },

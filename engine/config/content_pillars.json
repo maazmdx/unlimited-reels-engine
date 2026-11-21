@@ -80,9 +80,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop emailing photos to your own laptop.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Humans buy two-thousand-dollar machines just to email screenshots to themselves.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Humans buy two-thousand-dollar machines just to email screenshots to themselves.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—AirDrop never finds my Windows PC or Android phone!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] Because Apple wants you trapped in their walled garden forever.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Because Apple wants you trapped in their walled garden forever.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me how a free GitHub repo fixes this right now.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: sends files at full Wi-Fi speed with zero cloud servers.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two works on Mac, Windows, Linux, iPhone, and Android?", "emotion": "shocked", "pause_after": 0.35},
@@ -90,7 +90,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my inbox has five hundred emails sent to my own address.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Check your phone: your inbox is ninety percent files you sent to yourself.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am deleting my email drafts and downloading this repo tonight.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] About time, human. Comment REPO and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "About time, human. Comment REPO and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "LocalSend open source AirDrop alternative",
@@ -166,9 +166,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop paying twenty dollars a month for photo enhancers.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Humans pay twenty bucks a month just to unblur a twenty-year-old JPEG.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Humans pay twenty bucks a month just to unblur a twenty-year-old JPEG.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—every top AI photo enhancer online charges twenty dollars a month!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[sigh] Because they know you will pay for what an open-source model does for free.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Because they know you will pay for what an open-source model does for free.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Prove to me a free GitHub tool can sharpen blurry photos.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "gemini", "character_id": "gemini", "text": "Look at step one: runs straight on your graphics card with zero internet needed.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two upscales images up to sixteen times without losing detail?", "emotion": "shocked", "pause_after": 0.35},
@@ -176,7 +176,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... I am canceling my photo subscription right this second.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "gemini", "character_id": "gemini", "text": "Check your notifications: your bank alert for another useless renewal is waiting.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Saved two hundred dollars a year with one single repo.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Smarter choices, human. Comment GITHUB and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "gemini", "character_id": "gemini", "text": "Smarter choices, human. Comment GITHUB and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "Upscayl free AI image upscaler",
@@ -261,9 +261,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Play full GTA Vice City in Chrome right now.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Bro... your potato laptop can finally run a game without smoking.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Bro... your potato laptop can finally run a game without smoking.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—there is no way a full 3D game runs inside a tab.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] It compiles straight to your browser. Your Chrome tab is now a console.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "It compiles straight to your browser. Your Chrome tab is now a console.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Prove it right now before I open this at my desk.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: boots in three seconds with zero file downloads.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says locked sixty frames per second without lag?", "emotion": "shocked", "pause_after": 0.35},
@@ -271,7 +271,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my boss thinks I am typing code while I am driving.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Check your screen: your teammate just messaged asking for your screen share.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, close the tab before he catches Tommy Vercetti on screen!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Too slow, human. Comment VICE and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Too slow, human. Comment VICE and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "play GTA Vice City in browser",
@@ -347,9 +347,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Project IGI now runs inside a browser tab.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Finally, a tactical shooter where the guards are as blind as you.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "Finally, a tactical shooter where the guards are as blind as you.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—I spent three years of my childhood sneaking into those military bases!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "grok", "character_id": "grok", "text": "[sigh] And now you can fail the exact same stealth mission inside Google Chrome.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "And now you can fail the exact same stealth mission inside Google Chrome.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me the proof before I reload my sniper rifle.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "grok", "character_id": "grok", "text": "Look at step one: runs straight in your tab with zero downloads required.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says it loads every level in under three seconds?", "emotion": "shocked", "pause_after": 0.35},
@@ -357,7 +357,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my productivity today just dropped to zero percent.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "grok", "character_id": "grok", "text": "Look at Discord: your teammate just caught you crouching behind a hangar.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Tell him I am doing tactical research for our company servers!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Good luck with that excuse. Comment IGI and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "grok", "character_id": "grok", "text": "Good luck with that excuse. Comment IGI and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "Project IGI browser port",
@@ -442,9 +442,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Turn 200-page PDF files into funny podcasts instantly.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] While you spent six hours reading two pages and falling asleep.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "While you spent six hours reading two pages and falling asleep.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—there is no way an AI can explain my boring school textbook.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[sigh] It creates two hosts who joke about your exact notes like a podcast.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "It creates two hosts who joke about your exact notes like a podcast.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Prove it right now before I fail my exam tomorrow.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "gemini", "character_id": "gemini", "text": "Look at step one: drop fifty huge files at once with zero cost.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says two AI hosts argue and teach the material?", "emotion": "shocked", "pause_after": 0.35},
@@ -452,7 +452,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... I wasted my entire weekend highlighting text like a clown.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "gemini", "character_id": "gemini", "text": "Look at your notifications: your audio overview just finished playing your homework.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am never reading a massive corporate PDF by hand again.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Work smarter, human. Comment NOTEBOOK and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "gemini", "character_id": "gemini", "text": "Work smarter, human. Comment NOTEBOOK and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "NotebookLM audio overview tricks",
@@ -528,9 +528,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop paying twenty dollars a month for Notion.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Humans love paying monthly fees just to write plain text lists.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Humans love paying monthly fees just to write plain text lists.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—Notion has all my pretty databases and aesthetic templates!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] And when your Wi-Fi drops, you cannot even read your grocery list.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "And when your Wi-Fi drops, you cannot even read your grocery list.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me how an offline app beats my cloud setup.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: every single file stays one hundred percent on your machine.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two opens instantly with zero cloud lag or loading spinners?", "emotion": "shocked", "pause_after": 0.35},
@@ -538,7 +538,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my wallet is literally hurting from all these useless app bills.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Check your phone: your banking app just confirmed your canceled subscription.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am moving all my files to local markdown tonight.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Welcome to freedom, human. Comment APPS and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Welcome to freedom, human. Comment APPS and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "Obsidian vs Notion 2026",
@@ -623,9 +623,9 @@
           },
           "dialogue": [
             {"speaker": "dad", "character_id": "dad", "text": "This humanoid robot just cooked breakfast by itself.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] And it did not burn the toast like you did yesterday.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "And it did not burn the toast like you did yesterday.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "dad", "character_id": "dad", "text": "Wait—a robot can never understand proper Indian spices in an omelette!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] It measures spices by milligrams. Its cooking is mathematically perfect.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "It measures spices by milligrams. Its cooking is mathematically perfect.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "dad", "character_id": "dad", "text": "Seriously? Show me how this expensive metal box moves its hands.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: forty-seven joint motors copy human finger dexterity.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "dad", "character_id": "dad", "text": "Wait, step two says it flips eggs without dropping a single shell?", "emotion": "shocked", "pause_after": 0.35},
@@ -633,7 +633,7 @@
             {"speaker": "dad", "character_id": "dad", "text": "Bro... if it cleans the kitchen, maybe we can buy two of them.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at WhatsApp: your family group chat is already demanding one for dinner.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "dad", "character_id": "dad", "text": "I am telling everyone I taught this machine how to cook.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Of course you will, Dad. Comment TECH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Of course you will, Dad. Comment TECH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "new humanoid robots 2026",
@@ -709,9 +709,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "This cheap free model humbles multi-million dollar labs.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Big tech spent billions on chips just to get embarrassed.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "Big tech spent billions on chips just to get embarrassed.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—there is no way a tiny team built something that smart.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "grok", "character_id": "grok", "text": "[sigh] They trained smarter instead of throwing piles of cash at servers.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "They trained smarter instead of throwing piles of cash at servers.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me the real numbers before I believe the hype.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "grok", "character_id": "grok", "text": "Look at step one: the big labs burned five hundred million dollars.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says this free model cost six million total?", "emotion": "shocked", "pause_after": 0.35},
@@ -719,7 +719,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... all those overpriced tech subscriptions look like a giant joke now.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "grok", "character_id": "grok", "text": "Check your screen: your local terminal is running the model right now.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am deleting my paid API keys immediately.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Keep saving that money, human. Comment TECH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "grok", "character_id": "grok", "text": "Keep saving that money, human. Comment TECH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "open source reasoning models",
@@ -804,9 +804,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "NVIDIA makes seventy-five percent pure profit on sand.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] And tech companies line up to give them billions anyway.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "And tech companies line up to give them billions anyway.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—hardware has tiny margins! Everyone knows electronics are cheap to make.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] Normal electronics, yes. Monopoly AI chips? They print money at will.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Normal electronics, yes. Monopoly AI chips? They print money at will.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Break down the math before I buy their stock.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: the factory makes the chip for three thousand dollars.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says they sell it for forty thousand dollars?", "emotion": "shocked", "pause_after": 0.35},
@@ -814,7 +814,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... they are basically selling sand at diamond prices.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at your financial alerts: another twenty billion just rolled in.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am never questioning their leather jacket CEO again.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Smart choice, human. Comment MODEL and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Smart choice, human. Comment MODEL and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "how NVIDIA makes money",
@@ -890,9 +890,9 @@
           },
           "dialogue": [
             {"speaker": "dad", "character_id": "dad", "text": "Costco loses forty million selling cheap roast chickens.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] And they took two hundred dollars from you at the checkout.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "And they took two hundred dollars from you at the checkout.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "dad", "character_id": "dad", "text": "Wait—I bought a giant chicken for five dollars! I outsmarted wholesale retail!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] That cheap chicken is bait to make you walk past giant televisions.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "That cheap chicken is bait to make you walk past giant televisions.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "dad", "character_id": "dad", "text": "Seriously? Show me where their actual profit comes from then.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: they lose forty million on chickens on purpose.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "dad", "character_id": "dad", "text": "Wait, step two caps their merchandise markup at fourteen percent?", "emotion": "shocked", "pause_after": 0.35},
@@ -900,7 +900,7 @@
             {"speaker": "dad", "character_id": "dad", "text": "Bro... they charged me sixty-five dollars before I even touched a cart.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Check your phone: your annual membership just automatically renewed.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "dad", "character_id": "dad", "text": "I am still eating the cheap chicken tonight no matter what.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Enjoy your chicken, Dad. Comment BIZ and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Enjoy your chicken, Dad. Comment BIZ and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "how Costco makes money",
@@ -985,9 +985,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop trusting hyped AI model routing tools blindly.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] But Twitter told you one magical key solves all your problems.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "But Twitter told you one magical key solves all your problems.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—switching between every top AI model in one place sounds amazing!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] Until their middle proxy server lags and doubles your response time.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Until their middle proxy server lags and doubles your response time.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Give me the real breakdown before I deploy this in production.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: accessing two hundred models on one bill is great.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two adds over one hundred milliseconds of extra delay?", "emotion": "shocked", "pause_after": 0.35},
@@ -995,7 +995,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my production app would have been completely dead.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at Discord: other developers are already complaining about proxy downtime.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am keeping my direct provider keys for real users.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Finally some common sense. Comment ROUTER and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Finally some common sense. Comment ROUTER and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "OpenRouter pros and cons",
@@ -1071,9 +1071,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Buying a two thousand dollar Mac for AI is crazy.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] But influencers told you local AI is totally free forever.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "But influencers told you local AI is totally free forever.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—running models offline means I never pay another monthly subscription fee!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[sigh] Yes, by spending two thousand dollars upfront on shiny aluminum hardware.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Yes, by spending two thousand dollars upfront on shiny aluminum hardware.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Do the real math before my return window closes.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "gemini", "character_id": "gemini", "text": "Look at step one: you spent two grand on extra memory chips.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two buys two billion tokens on fast cloud models?", "emotion": "shocked", "pause_after": 0.35},
@@ -1081,7 +1081,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... I spent two thousand dollars to save forty cents a month.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "gemini", "character_id": "gemini", "text": "Look at your bank notification: your credit card bill is laughing at you.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am returning this computer to the store tomorrow morning.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Good decision, human. Comment TRUTH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "gemini", "character_id": "gemini", "text": "Good decision, human. Comment TRUTH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "local LLM vs cloud cost",
@@ -1166,9 +1166,9 @@
           },
           "dialogue": [
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Never push code directly to production on Friday.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Bro... you literally hit push at four fifty-eight PM.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Bro... you literally hit push at four fifty-eight PM.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—it was just one tiny button color change in CSS!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] That one color change broke the customer checkout in eight countries.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "That one color change broke the customer checkout in eight countries.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me the damage before the senior engineer wakes up.", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: zero tests were run because you skipped them.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says the senior dev is already on vacation?", "emotion": "shocked", "pause_after": 0.35},
@@ -1176,7 +1176,7 @@
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my hands are shaking. How do I roll this back?", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at Discord: your boss just sent a message asking who broke checkout.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am putting my laptop in the microwave and moving to Tibet.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Too late, human. Comment CODE and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Too late, human. Comment CODE and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "deploy on Friday meme",
@@ -1252,9 +1252,9 @@
           },
           "dialogue": [
             {"speaker": "dad", "character_id": "dad", "text": "My dad went wild over twenty-rupee cloud fees.", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Why pay for clouds when the sky is completely free, right?", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Why pay for clouds when the sky is completely free, right?", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "dad", "character_id": "dad", "text": "Wait—clouds are water vapor! Why is Apple charging me money for water?", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[sigh] It is remote hard drives in a data center, not actual rain clouds.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "It is remote hard drives in a data center, not actual rain clouds.", "emotion": "smug", "pause_after": 0.30},
             {"speaker": "dad", "character_id": "dad", "text": "Seriously? I have twenty pen drives in the kitchen cupboard right now!", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at step one: cloud storage bills you every single month forever.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "dad", "character_id": "dad", "text": "Wait, step two says my old pen drive stores everything for zero rupees?", "emotion": "shocked", "pause_after": 0.35},
@@ -1262,7 +1262,7 @@
             {"speaker": "dad", "character_id": "dad", "text": "Bro... that password has protected our family photos since 2008!", "emotion": "shocked", "pause_after": 0.30},
             {"speaker": "claude", "character_id": "claude", "text": "Look at WhatsApp: your dad just shared photos from a drive in the freezer.", "emotion": "smug", "pause_after": 0.35},
             {"speaker": "dad", "character_id": "dad", "text": "Cold storage keeps the computer chips fresh! It is basic science!", "emotion": "shocked", "pause_after": 0.30},
-            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Keep dreaming, Dad. Comment MEME and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+            {"speaker": "claude", "character_id": "claude", "text": "Keep dreaming, Dad. Comment MEME and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
           ],
           "seo_keywords": [
             "Indian dad technology memes",
