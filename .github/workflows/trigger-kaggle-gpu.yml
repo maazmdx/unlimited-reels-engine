@@ -47,6 +47,7 @@ jobs:
       - name: 🚀 Push & Trigger Kaggle GPU Kernel
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: |
           # Substitute username in metadata safely via Python JSON
           python3 -c '
@@ -59,6 +60,19 @@ jobs:
           '
           echo "📋 Prepared kernel-metadata.json:"
           cat kaggle/kernel-metadata.json
+          
+          # Write ~/.kaggle/kaggle.json safely via Python
+          python3 -c '
+          import json, os, pathlib
+          p = pathlib.Path.home() / ".kaggle" / "kaggle.json"
+          p.parent.mkdir(parents=True, exist_ok=True)
+          p.write_text(json.dumps({
+              "username": os.environ["KAGGLE_USERNAME"].strip(),
+              "key": os.environ["KAGGLE_KEY"].strip()
+          }))
+          p.chmod(0o600)
+          print("✅ Wrote ~/.kaggle/kaggle.json")
+          '
           
           echo "☁️ Pushing notebook to Kaggle GPU..."
           kaggle kernels push -p kaggle/
