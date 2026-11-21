@@ -56,12 +56,23 @@ VOCABULARY_REPLACEMENTS = [
 ]
 
 
+def strip_emojis(text: str) -> str:
+    """Strips Unicode emoji characters so Linux/Kaggle renders without □ glyph boxes."""
+    if not text:
+        return ""
+    emoji_pattern = re.compile(
+        r"[\U00010000-\U0010FFFF\u2600-\u27BF\uFE00-\uFE0F\uD83C-\uDBFF\uDC00-\uDFFF]",
+        flags=re.UNICODE
+    )
+    return emoji_pattern.sub("", text).strip()
+
+
 def sanitize_simple_spoken_english(text: str) -> str:
-    """Replaces corporate buzzwords with simple, 6th-8th grade conversational English."""
+    """Replaces corporate buzzwords with simple, 6th-8th grade conversational English and strips emojis."""
     cleaned = text
     for pattern, repl in VOCABULARY_REPLACEMENTS:
         cleaned = pattern.sub(repl, cleaned)
-    return cleaned
+    return strip_emojis(cleaned)
 
 
 class HookMasterAgent:
@@ -185,14 +196,15 @@ class HookMasterAgent:
             "STRICT VOCABULARY RULE (SIMPLE SPOKEN ENGLISH ONLY - 6th to 8th GRADE LEVEL):\n"
             "- Explicitly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem'.\n"
             "- Write in short, punchy, everyday spoken English that anyone on Instagram understands instantly.\n\n"
-            "DIABOLICAL AI-ROASTS-HUMAN RAGEBAIT DYNAMIC:\n"
-            "- The hook must trigger instant shock, curiosity, or call out human laziness/struggle.\n"
+            "STORY-FIRST DRAMATIC HOOK MANDATE (ZERO AD/INFOMERCIAL OPENERS):\n"
+            "- STRICTLY BANNED: Ad lines, infomercial openers, or generic pitches like 'Run X in your browser', 'Look at X', 'Why is nobody talking about X', 'Check this tool out', 'Stop doing X by hand'.\n"
+            "- MANDATORY: Start mid-conversation with raw human pain, shock, disbelief, financial embarrassment, or broken hardware (e.g., 'Bro... my laptop literally died just opening Chrome.', 'Claude... my card just got charged twenty dollars for what?', 'Wait... why is my computer smoking right now?').\n"
             "- MAXIMUM 10 WORDS. Zero exceptions.\n"
-            "- ZERO FILLER: Never start with 'Hey guys', 'Did you know', 'Check this out', 'So today'.\n\n"
+            "- ZERO FILLER: Never start with 'Hey guys', 'Did you know', 'So today'.\n\n"
             "You must write and score 3 distinct hooks:\n"
-            "1. 'curiosity_gap': Teases a shocking capability, hidden secret, or zero-dollar workaround.\n"
-            "2. 'contrarian_callout': Calls out overpaying for software, corporate hype vs reality, or broken norms.\n"
-            "3. 'relatable_shock': Roasts human struggle, broken laptops, or hilarious developer panic."
+            "1. 'curiosity_gap': Mid-conversation human shock uncovering a ridiculous zero-dollar trick.\n"
+            "2. 'contrarian_callout': Human complaining about an expensive tool, slow laptop, or wasted bill.\n"
+            "3. 'relatable_shock': Comedic panic about dying laptops, broken apps, or angry bosses."
         )
 
         prompt = f"""
@@ -202,7 +214,7 @@ Core Conflict: {conflict}
 Auto-DM Keyword: {kw}
 
 TASK:
-Write 3 competing opening hooks (each <= 10 words, simple spoken English only).
+Write 3 competing opening hooks (each <= 10 words, simple spoken English only, story-first human shock mid-conversation).
 Score each hook from 0 to 100 on thumb-stopping power, and explain why one won.
 
 JSON Schema:
@@ -251,28 +263,32 @@ JSON Schema:
             except Exception as e:
                 print(f"⚠️ HookMaster: Hook battle parse error: {e}")
 
-        # Deterministic fallback battle in simple spoken English
+        # Deterministic fallback battle in story-first spoken English
         cat_lower = str(category).lower() + " " + str(title).lower()
         if "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
-            fallback_h1 = f"Play full {title[:16]} in your browser right now."
-            fallback_h2 = f"Zero downloads. Your potato laptop can run this."
-            fallback_h3 = f"Why did nobody tell me about this browser trick?"
+            fallback_h1 = "Bro... my laptop literally starts smoking when I open Steam."
+            fallback_h2 = "Wait... my fan sounds like a dying jet engine right now."
+            fallback_h3 = "Bro... I am not downloading eighty gigabytes just to play."
+        elif "repo" in cat_lower or "github" in cat_lower or "open-source" in cat_lower:
+            fallback_h1 = "Bro... my credit card just got charged twenty dollars again."
+            fallback_h2 = "Wait... why am I paying twenty bucks a month for this?"
+            fallback_h3 = "Claude... I am officially broke from all these software tools."
         elif "ai" in cat_lower or "llm" in cat_lower or "model" in cat_lower:
-            fallback_h1 = f"This free tool replaces fifty dollar monthly software."
-            fallback_h2 = f"Stop overpaying fifty dollars for useless monthly apps."
-            fallback_h3 = f"How is this free tool beating paid software?"
+            fallback_h1 = "Bro... I spent three hours on this and it looks awful."
+            fallback_h2 = "Wait... my bank just charged me twenty dollars for an AI tool."
+            fallback_h3 = "Claude... I think I just got scammed by another subscription."
         elif "money" in cat_lower or "business" in cat_lower or "earn" in cat_lower or "margin" in cat_lower:
-            fallback_h1 = f"The secret way this free app prints billions."
-            fallback_h2 = f"Their free plan is actually a genius money trap."
-            fallback_h3 = f"Why every competitor went broke copying this app."
+            fallback_h1 = "Wait... why did my bank balance drop fifty bucks this morning?"
+            fallback_h2 = "Bro... this free app made twenty billion dollars off us."
+            fallback_h3 = "Claude... tell me why everyone is going broke on subscriptions."
         elif "dad" in cat_lower:
-            fallback_h1 = f"Your dad's craziest tech fix actually worked."
-            fallback_h2 = f"Never call customer support for broken internet again."
-            fallback_h3 = f"My dad fixed this in ninety seconds flat."
+            fallback_h1 = "Bro... my Wi-Fi is completely dead and support put me on hold."
+            fallback_h2 = "Dad... why did you just hit the router with a shoe?"
+            fallback_h3 = "Bro... my internet went down right before my meeting."
         else:
-            fallback_h1 = f"Why is nobody talking about this free tool?"
-            fallback_h2 = f"This zero-dollar tool makes old skills look prehistoric."
-            fallback_h3 = f"Stop doing this by hand when this tool exists."
+            fallback_h1 = "Bro... my laptop literally froze trying to do this."
+            fallback_h2 = "Claude... tell me I didn't just waste fifty dollars on this."
+            fallback_h3 = "Bro... I spent all morning doing this by hand like an idiot."
 
         return {
             "hooks": [
@@ -307,7 +323,12 @@ JSON Schema:
         left_char = topic.get("left_character", "junior_dev")
         right_char = topic.get("right_character", "claude")
         scene_preset = topic.get("scene_preset", "diner")
-        kw = str(topic.get("auto_dm_keyword", "LINK")).strip().upper()
+        # Clean auto_dm_keyword to single pronounceable dictionary word
+        raw_kw = str(topic.get("auto_dm_keyword", "LINK")).strip().upper()
+        clean_kw = re.sub(r"[^A-Z]", "", raw_kw)
+        if not clean_kw or len(clean_kw) < 3 or len(clean_kw) > 8:
+            clean_kw = "REPO" if "github" in str(category).lower() or "repo" in str(category).lower() else ("RETRO" if "game" in str(category).lower() else "FREE")
+        kw = clean_kw
         winning_hook = sanitize_simple_spoken_english(hook_battle_result.get("winning_hook", f"Look at {title}."))
         category = topic.get("category", "Tech")
         is_gh = any(term in str(category).lower() or term in str(title).lower() for term in ["github", "repo", "open-source", "open source"])
@@ -483,7 +504,7 @@ JSON Schema:
                 "app_name": "Bank Alert",
                 "sender": "Card Alert",
                 "message": f"Monthly subscription declined. You saved $240 on {title[:16]}.",
-                "icon": "💳",
+                "icon": "CARD",
                 "time": "now",
             }
         else:
@@ -492,24 +513,24 @@ JSON Schema:
             screenplay["toastData"].setdefault("app_name", "Bank Alert")
             screenplay["toastData"].setdefault("sender", "Card Alert")
             screenplay["toastData"].setdefault("message", f"Monthly fee declined. You saved $240 on {title[:16]}!")
-            screenplay["toastData"].setdefault("icon", "💳")
+            screenplay["toastData"].setdefault("icon", "CARD")
             screenplay["toastData"].setdefault("time", "now")
 
         # Ensure endCard exists with ragebait question
         if not screenplay.get("endCard") or not isinstance(screenplay["endCard"], dict):
             screenplay["endCard"] = {
-                "question": f"Still paying for this in 2026? Be honest 💀",
+                "question": f"Still paying for this in 2026? Be honest",
                 "keyword": kw,
                 "cta_text": f"Comment {kw} for the {link_target}",
                 "subtext": "Follow for Part 2",
             }
         else:
-            screenplay["endCard"].setdefault("question", f"Still paying for this in 2026? Be honest 💀")
+            screenplay["endCard"].setdefault("question", f"Still paying for this in 2026? Be honest")
             screenplay["endCard"]["keyword"] = kw
             screenplay["endCard"]["cta_text"] = f"Comment {kw} for the {link_target}"
             screenplay["endCard"].setdefault("subtext", "Follow for Part 2")
 
-        # STRICT VOCABULARY SANITIZATION PASS: Remove all fancy/corporate words
+        # STRICT VOCABULARY & EMOJI SANITIZATION PASS: Remove all fancy words & emojis
         if "dialogue" in screenplay and isinstance(screenplay["dialogue"], list):
             for d in screenplay["dialogue"]:
                 if "text" in d:
@@ -525,6 +546,8 @@ JSON Schema:
         if "toastData" in screenplay and isinstance(screenplay["toastData"], dict):
             if "message" in screenplay["toastData"]:
                 screenplay["toastData"]["message"] = sanitize_simple_spoken_english(screenplay["toastData"]["message"])
+            if "icon" in screenplay["toastData"]:
+                screenplay["toastData"]["icon"] = strip_emojis(screenplay["toastData"]["icon"]) or "ALERT"
 
         if "endCard" in screenplay and isinstance(screenplay["endCard"], dict):
             if "question" in screenplay["endCard"]:
@@ -566,10 +589,10 @@ JSON Schema:
                 "app_name": "Steam",
                 "sender": "Gamer Friend",
                 "message": "Bro are you really running full Vice City inside Chrome at work?",
-                "icon": "🎮",
+                "icon": "GAME",
                 "time": "now",
             }
-            end_question = "Still downloading 80GB games on a dying laptop in 2026? Drop your excuse below 👇"
+            end_question = "Still downloading 80GB games on a dying laptop in 2026? Tell me why"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Bro... your potato laptop can finally run a game without smoking.", "emotion": "smug", "pause_after": 0.30},
@@ -596,10 +619,10 @@ JSON Schema:
                 "app_name": "GitHub",
                 "sender": "Repo Star",
                 "message": "Saved $240/yr replacing paid SaaS with this open-source repo.",
-                "icon": "⭐",
+                "icon": "STAR",
                 "time": "now",
             }
-            end_question = "Still paying $20/mo subscriptions when free GitHub repos exist? Tell me why 👇"
+            end_question = "Still paying $20/mo subscriptions when free GitHub repos exist? Tell me why"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Humans pay twenty bucks a month for what a free GitHub repo does in two seconds.", "emotion": "smug", "pause_after": 0.30},
@@ -626,10 +649,10 @@ JSON Schema:
                 "app_name": "Bank of America",
                 "sender": "Card Alert",
                 "message": "Monthly $20 AI tool charge declined. You saved $240 this year.",
-                "icon": "💳",
+                "icon": "CARD",
                 "time": "now",
             }
-            end_question = "Still paying $20/mo for AI in 2026? Be honest 💀"
+            end_question = "Still paying $20/mo for AI in 2026? Be honest"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "[chuckle] And you spent six months paying for tools you barely use.", "emotion": "smug", "pause_after": 0.30},
@@ -656,10 +679,10 @@ JSON Schema:
                 "app_name": "Stripe",
                 "sender": "Billing Alert",
                 "message": "New $20,000 team plan bought because free users shared the tool.",
-                "icon": "💰",
+                "icon": "MONEY",
                 "time": "now",
             }
-            end_question = "Did you think this app was free or did you just realize you're the product? 💀"
+            end_question = "Did you think this app was free or did you just realize you are the product?"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "[chuckle] You really thought they gave that away out of pure kindness?", "emotion": "smug", "pause_after": 0.30},
@@ -686,10 +709,10 @@ JSON Schema:
                 "app_name": "WhatsApp",
                 "sender": "Dad",
                 "message": "Wi-Fi is blazing fast! I told you hitting the box works.",
-                "icon": "👨‍👧",
+                "icon": "WIFI",
                 "time": "now",
             }
-            end_question = "Would you trust your dad to fix your Wi-Fi or pay $100 for a technician? 😂👇"
+            end_question = "Would you trust your dad to fix your Wi-Fi or pay $100 for a technician?"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Your dad hit the plastic box with his shoe, didn't he?", "emotion": "smug", "pause_after": 0.30},
@@ -716,10 +739,10 @@ JSON Schema:
                 "app_name": "Chrome",
                 "sender": "Speed Alert",
                 "message": "Task finished in 1.4 seconds. What took you 4 hours?",
-                "icon": "⚡",
+                "icon": "SPEED",
                 "time": "now",
             }
-            end_question = "Still paying for outdated tools in 2026? Drop your excuse below 👇"
+            end_question = "Still paying for outdated tools in 2026? Be honest"
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "[chuckle] Humans spend four years learning what takes two clicks now.", "emotion": "smug", "pause_after": 0.30},

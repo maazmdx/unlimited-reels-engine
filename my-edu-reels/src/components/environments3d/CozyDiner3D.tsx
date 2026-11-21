@@ -151,6 +151,114 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({
         </mesh>
       </group>
 
+      {/* 4B. LEFT DINER COUNTER & 2 RED SWIVEL BARSTOOLS (3/4 Room Depth) */}
+      <group position={[-2.4, -0.65, 0.6]}>
+        {/* Dark wood counter base */}
+        <mesh position={[0, -0.45, 0]}>
+          <boxGeometry args={[0.7, 0.75, 2.8]} />
+          <meshStandardMaterial color="#3E2723" flatShading roughness={0.8} />
+        </mesh>
+        {/* Laminated counter top with chrome rim */}
+        <mesh position={[0.02, -0.06, 0]}>
+          <boxGeometry args={[0.78, 0.08, 2.9]} />
+          <meshStandardMaterial color="#F8FAFC" flatShading roughness={0.3} metalness={0.05} />
+        </mesh>
+        <mesh position={[0.40, -0.06, 0]}>
+          <boxGeometry args={[0.04, 0.09, 2.92]} />
+          <meshStandardMaterial color="#CBD5E1" metalness={0.8} roughness={0.2} flatShading />
+        </mesh>
+
+        {/* 2 Red Swivel Barstools with Chrome Poles */}
+        {[-0.65, 0.65].map((zPos, sIdx) => (
+          <group key={`barstool-${sIdx}`} position={[0.62, 0, zPos]}>
+            {/* Chrome pedestal base */}
+            <mesh position={[0, -0.82, 0]}>
+              <cylinderGeometry args={[0.22, 0.24, 0.04, 12]} />
+              <meshStandardMaterial color="#94A3B8" metalness={0.8} roughness={0.2} flatShading />
+            </mesh>
+            {/* Chrome pole */}
+            <mesh position={[0, -0.45, 0]}>
+              <cylinderGeometry args={[0.04, 0.04, 0.72, 8]} />
+              <meshStandardMaterial color="#CBD5E1" metalness={0.8} roughness={0.2} flatShading />
+            </mesh>
+            {/* Footrest ring */}
+            <mesh position={[0, -0.55, 0]}>
+              <torusGeometry args={[0.14, 0.015, 6, 12]} />
+              <meshStandardMaterial color="#94A3B8" metalness={0.8} roughness={0.2} flatShading />
+            </mesh>
+            {/* Red vinyl round seat cushion */}
+            <mesh position={[0, -0.08, 0]}>
+              <cylinderGeometry args={[0.22, 0.20, 0.12, 12]} />
+              <meshStandardMaterial color="#DC2626" flatShading roughness={0.5} />
+            </mesh>
+            {/* Chrome seat rim ring */}
+            <mesh position={[0, -0.13, 0]}>
+              <cylinderGeometry args={[0.23, 0.23, 0.03, 12]} />
+              <meshStandardMaterial color="#E2E8F0" metalness={0.85} roughness={0.2} flatShading />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* 4C. WOODEN WALL SHELVES WITH COFFEE CUPS (Mounted behind red booth for rich close-up depth) */}
+      <group position={[-1.75, 1.05, -3.05]}>
+        {/* Upper Shelf */}
+        <mesh position={[0, 0.45, 0]}>
+          <boxGeometry args={[1.65, 0.06, 0.28]} />
+          <meshStandardMaterial color="#5C3A21" flatShading roughness={0.7} />
+        </mesh>
+        {/* Upper Shelf Metal Brackets */}
+        {[-0.6, 0.6].map((bx, i) => (
+          <mesh key={`bk-u-${i}`} position={[bx, 0.32, -0.05]}>
+            <boxGeometry args={[0.04, 0.22, 0.16]} />
+            <meshStandardMaterial color="#1E293B" flatShading metalness={0.7} />
+          </mesh>
+        ))}
+        {/* Upper Shelf Cups (Yellow, Turquoise, Cream, Coral) */}
+        {[
+          { x: -0.48, color: "#FBBF24" },
+          { x: -0.16, color: "#06B6D4" },
+          { x: 0.16, color: "#FEF08A" },
+          { x: 0.48, color: "#F43F5E" },
+        ].map((cup, i) => (
+          <group key={`cup-u-${i}`} position={[cup.x, 0.58, 0.02]}>
+            <mesh>
+              <cylinderGeometry args={[0.07, 0.06, 0.15, 8]} />
+              <meshStandardMaterial color={cup.color} flatShading roughness={0.4} />
+            </mesh>
+            <mesh position={[0.08, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+              <torusGeometry args={[0.035, 0.012, 5, 8, Math.PI]} />
+              <meshStandardMaterial color={cup.color} flatShading roughness={0.4} />
+            </mesh>
+          </group>
+        ))}
+
+        {/* Lower Shelf */}
+        <mesh position={[0, -0.15, 0]}>
+          <boxGeometry args={[1.65, 0.06, 0.28]} />
+          <meshStandardMaterial color="#5C3A21" flatShading roughness={0.7} />
+        </mesh>
+        {/* Lower Shelf Brackets */}
+        {[-0.6, 0.6].map((bx, i) => (
+          <mesh key={`bk-l-${i}`} position={[bx, -0.28, -0.05]}>
+            <boxGeometry args={[0.04, 0.22, 0.16]} />
+            <meshStandardMaterial color="#1E293B" flatShading metalness={0.7} />
+          </mesh>
+        ))}
+        {/* Lower Shelf Glass Syrup Jars & Mugs */}
+        {[
+          { x: -0.42, color: "#E2E8F0" },
+          { x: -0.12, color: "#F97316" },
+          { x: 0.22, color: "#E0E7FF" },
+          { x: 0.50, color: "#10B981" },
+        ].map((jar, i) => (
+          <mesh key={`jar-l-${i}`} position={[jar.x, -0.04, 0.02]}>
+            <cylinderGeometry args={[0.065, 0.06, 0.14, 8]} />
+            <meshStandardMaterial color={jar.color} flatShading roughness={0.35} />
+          </mesh>
+        ))}
+      </group>
+
       {/* 5. CENTER PEDESTAL DINER TABLE */}
       <group position={[0, -0.55, 0]}>
         {/* White tabletop with chrome beveled rim */}
@@ -352,40 +460,42 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({
         {/* 1. Hollow Window Perimeter Frame (Zero solid blockers!) */}
         {/* Top window frame bar */}
         <mesh position={[0, 1.12, 0.08]}>
-          <boxGeometry args={[3.36, 0.08, 0.14]} />
+          <boxGeometry args={[4.28, 0.08, 0.14]} />
           <meshStandardMaterial color="#1C1917" flatShading roughness={0.8} />
         </mesh>
         {/* Left window frame bar */}
-        <mesh position={[-1.64, 0, 0.08]}>
+        <mesh position={[-2.10, 0, 0.08]}>
           <boxGeometry args={[0.08, 2.24, 0.14]} />
           <meshStandardMaterial color="#1C1917" flatShading roughness={0.8} />
         </mesh>
         {/* Right window frame bar */}
-        <mesh position={[1.64, 0, 0.08]}>
+        <mesh position={[2.10, 0, 0.08]}>
           <boxGeometry args={[0.08, 2.24, 0.14]} />
           <meshStandardMaterial color="#1C1917" flatShading roughness={0.8} />
         </mesh>
         {/* Warm Wooden Windowsill (Extended forward for depth) */}
         <mesh position={[0, -1.12, 0.15]}>
-          <boxGeometry args={[3.48, 0.10, 0.28]} />
+          <boxGeometry args={[4.40, 0.10, 0.28]} />
           <meshStandardMaterial color="#78350F" flatShading roughness={0.65} />
         </mesh>
 
         {/* 2. Thin Window Mullion Crossbars */}
-        <mesh position={[0, 0, 0.09]}>
-          <boxGeometry args={[0.045, 2.16, 0.06]} />
-          <meshStandardMaterial color="#292524" flatShading />
-        </mesh>
+        {[-1.05, 0.0, 1.05].map((mx, mi) => (
+          <mesh key={`mullion-v-${mi}`} position={[mx, 0, 0.09]}>
+            <boxGeometry args={[0.045, 2.16, 0.06]} />
+            <meshStandardMaterial color="#292524" flatShading />
+          </mesh>
+        ))}
         <mesh position={[0, 0.15, 0.09]}>
-          <boxGeometry args={[3.2, 0.045, 0.06]} />
+          <boxGeometry args={[4.16, 0.045, 0.06]} />
           <meshStandardMaterial color="#292524" flatShading />
         </mesh>
 
         {/* 3. Transparent Tinted Window Glass Pane */}
         <mesh position={[0, 0, 0.06]}>
-          <planeGeometry args={[3.2, 2.16]} />
+          <planeGeometry args={[4.16, 2.16]} />
           <meshStandardMaterial
-            color={isSunny ? "#93C5FD" : "#3B4C7A"}
+            color={isSunny ? "#93C5FD" : "#2E3B63"}
             transparent
             opacity={isSunny ? 0.06 : 0.10}
             roughness={0.1}
@@ -397,11 +507,11 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({
         {/* 4. SKYLINE & NEONS (Positioned cleanly inside window opening)     */}
         {/* ================================================================= */}
         <group position={[0, -0.05, -0.22]}>
-          {/* Sky Background Plane (Golden morning sky for sunny vs indigo twilight for rain) */}
+          {/* Sky Background Plane (Deep indigo night sky #2E3B63 / sunset orange / golden morning) */}
           <mesh position={[0, 0.45, -0.35]}>
-            <planeGeometry args={[6.8, 4.4]} />
+            <planeGeometry args={[7.4, 4.4]} />
             <meshBasicMaterial
-              color={isSunny ? "#FDE68A" : isSunset ? "#9A3412" : "#3B4C7A"}
+              color={isSunny ? "#FDE68A" : isSunset ? "#9A3412" : "#2E3B63"}
             />
           </mesh>
 
@@ -527,24 +637,24 @@ export const CozyDiner3D: React.FC<CozyDiner3DProps> = ({
         </group>
 
         {/* ================================================================= */}
-        {/* 5. WEATHER EFFECTS: RAIN MODE vs SUNNY MODE                      */}
+        {/* 5. WEATHER EFFECTS: RAIN/TWILIGHT MODE vs SUNNY MODE              */}
         {/* ================================================================= */}
-        {/* RAIN MODE: 28 sleek translucent angled rain streaks + city storm clouds */}
-        {isRain && (
+        {/* RAIN & SUNSET: 35 sleek translucent angled rain streaks + city storm clouds (Window always alive) */}
+        {(isRain || isSunset) && (
           <group position={[0, 0, 0.02]}>
             {/* Subtle drifting distant city storm clouds */}
             <mesh position={[(((frame * 0.005 + 1.2) % 7.2) - 3.6), 0.85, -0.26]}>
-              <boxGeometry args={[1.8, 0.45, 0.10]} />
+              <boxGeometry args={[2.2, 0.50, 0.10]} />
               <meshBasicMaterial color="#1E293B" transparent opacity={0.38} />
             </mesh>
             <mesh position={[(((frame * 0.0035 + 4.5) % 7.2) - 3.6), 1.05, -0.24]}>
-              <boxGeometry args={[1.4, 0.35, 0.10]} />
+              <boxGeometry args={[1.6, 0.38, 0.10]} />
               <meshBasicMaterial color="#334155" transparent opacity={0.32} />
             </mesh>
 
-            {/* 28 Sleek Translucent Angled Falling Rain Streaks (Zero Math.random()) */}
-            {Array.from({ length: 28 }).map((_, i) => {
-              const xBase = -1.50 + (((i * 47) % 100) / 100) * 3.0;
+            {/* 35 Sleek Translucent Angled Falling Rain Streaks (Zero Math.random()) */}
+            {Array.from({ length: 35 }).map((_, i) => {
+              const xBase = -2.05 + (((i * 47) % 100) / 100) * 4.1;
               const speed = 0.09 + ((i * 17) % 7) * 0.012;
               const offset = (((i * 61) % 100) / 100) * 3.4;
               const spanY = 3.2;

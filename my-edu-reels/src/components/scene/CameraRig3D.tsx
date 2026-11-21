@@ -24,19 +24,19 @@ export interface CameraShotCoords {
 
 export const SHOT_COORDINATES: Record<CameraShotType, CameraShotCoords> = {
   wide: {
-    position: [0.0, 0.55, 7.6],
-    target: [0.0, 0.22, 0.0],
-    fov: 46,
+    position: [1.65, 0.95, 7.2],
+    target: [-0.15, 0.15, 0.0],
+    fov: 44,
   },
   closeup_left: {
-    position: [-0.85, 0.48, 3.8],
-    target: [-1.15, 0.36, 0.0],
-    fov: 38,
+    position: [-0.55, 0.52, 3.8],
+    target: [-1.20, 0.38, 0.0],
+    fov: 39,
   },
   closeup_right: {
-    position: [0.85, 0.52, 3.4],
-    target: [1.05, 0.45, 0.05],
-    fov: 38,
+    position: [0.75, 0.56, 3.5],
+    target: [1.10, 0.46, 0.05],
+    fov: 39,
   },
 };
 
@@ -160,13 +160,13 @@ export function getCameraRigParams(
   const getBaseZ = (shot: CameraShotType, isPrev: boolean): number => {
     if (shot === "wide") {
       if (isTurn0 && !isPrev) {
-        return interpolate(frame, [0, turn0End], [8.4, 7.6], {
+        return interpolate(frame, [0, turn0End], [7.9, 7.2], {
           easing: Easing.out(Easing.cubic),
           extrapolateLeft: "clamp",
           extrapolateRight: "clamp",
         });
       }
-      return 7.6;
+      return 7.2;
     }
     return SHOT_COORDINATES[shot].position[2];
   };

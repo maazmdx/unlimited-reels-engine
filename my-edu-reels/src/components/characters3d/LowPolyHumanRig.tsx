@@ -184,6 +184,18 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     [pantsColor]
   );
 
+  const lipColor = isDad ? "#8A5738" : "#9E6B50";
+  const lipMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: lipColor,
+        roughness: 0.8,
+        metalness: 0.05,
+        flatShading: true,
+      }),
+    [lipColor]
+  );
+
   const boothSeatMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -196,30 +208,37 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   );
 
   // =========================================================================
-  // 4. EMOTION DYNAMICS (Angled Eyebrows, Top Eyelids, Mouth Open)
+  // 4. EMOTION DYNAMICS & BODY ACTING POSTURE
   // =========================================================================
   let browL_Y = 0.16;
   let browR_Y = 0.16;
   let browL_RotZ = 0.0;
   let browR_RotZ = 0.0;
   let topEyelidDrop = 0.10; // 0.0 = wide open, 1.0 = fully closed
+  let emotionSlumpRotX = 0.0;
+  let gazeRotX = 0.0;
+  let headOrientRotY = 0.0;
 
-  if (emotion === "tired") {
+  if (emotion === "tired" || emotion === "sad") {
     browL_Y = 0.12;
     browR_Y = 0.12;
     topEyelidDrop = 0.55; // Cozy half-lidded sleepy expression
+    emotionSlumpRotX = 0.12; // Slight forward slump
+    gazeRotX = 0.08; // Downward gaze
   } else if (emotion === "shocked") {
     browL_Y = 0.25;
     browR_Y = 0.25;
     browL_RotZ = 0.15;
     browR_RotZ = -0.15;
-    topEyelidDrop = 0.0;
+    topEyelidDrop = 0.0; // Wide open eyes
+    emotionSlumpRotX = -0.08; // Sudden upright lean-back
   } else if (emotion === "angry") {
     browL_Y = 0.10;
     browR_Y = 0.10;
     browL_RotZ = -0.26;
     browR_RotZ = 0.26;
     topEyelidDrop = 0.35;
+    emotionSlumpRotX = 0.06;
   } else if (emotion === "smug") {
     browL_Y = 0.22;
     browR_Y = 0.13;
@@ -228,14 +247,23 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     topEyelidDrop = 0.40;
   }
 
+  // Listening posture: when not speaking, angle head toward the AI orb (+0.28 rad)
+  if (!isSpeaking) {
+    headOrientRotY = 0.28;
+  }
+
   // Blink overrides eyelid position
   const activeTopEyelid = isBlinking ? 1.0 : topEyelidDrop;
 
-  // Mouth articulation: clean low-poly style (matching reel_DeIwE1-sxVr.mp4)
-  // Slim horizontal dark recess (width: 0.20, height lerping 0.02 closed to 0.11 max open)
-  const currentMouthOpen = isSpeaking ? Math.max(0.12, mouthOpen) : mouthOpen;
-  const mouthHeight = THREE.MathUtils.lerp(0.02, 0.11, Math.min(1.0, Math.max(0.0, currentMouthOpen)));
-  const isToothVisible = currentMouthOpen > 0.18;
+  // Mouth articulation: clean low-poly natural lip-sync (matching reel_DeIwE1-sxVr.mp4)
+  const isSilent = mouthOpen < 0.08;
+  const mouthWidthFlex = isSpeaking
+    ? 0.195 + 0.025 * Math.sin(frame * 0.45)
+    : 0.18;
+  const mouthHeight = isSilent
+    ? 0.018
+    : THREE.MathUtils.lerp(0.025, 0.13, Math.min(1.0, Math.max(0.0, mouthOpen)));
+  const isToothVisible = !isSilent && mouthOpen > 0.15;
 
   const flipX = flipHorizontal ? -1 : 1;
 
@@ -260,7 +288,7 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
       {/* =================================================================== */}
       {/* 1. SLIMMER, TAPERED NATURAL TORSO & COLLAR                          */}
       {/* =================================================================== */}
-      <group position={[0, -1.25, 0]}>
+      <group position={[0, -1.25, 0]} rotation={[emotionSlumpRotX, 0, 0]}>
         {/* Tapered Beveled Low-Poly Torso (Narrower shoulders, beveled chest) */}
         <mesh scale={[1.18, 1.0, 0.72]} material={clothPrimaryMat}>
           <cylinderGeometry args={[0.50, 0.44, 1.15, 8]} />
@@ -397,7 +425,7 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
       {/* =================================================================== */}
       {/* 3. HEAD & NECK ASSEMBLY (Articulated Nodding & Disbelief Shaking)   */}
       {/* =================================================================== */}
-      <group position={[0, -0.05, 0.05]} rotation={[speakNodX, headShakeY, speakHeadTiltZ]}>
+      <group position={[0, -0.05, 0.05]} rotation={[speakNodX + gazeRotX, headShakeY + headOrientRotY, speakHeadTiltZ]}>
         {/* Proper Low-Poly Connecting Neck */}
         <mesh position={[0, -0.42, 0.0]} material={skinMat}>
           <cylinderGeometry args={[0.24, 0.28, 0.35, 7]} />
@@ -471,23 +499,19 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
         {/* 5. JAW BEARD (Junior Dev) vs MUSTACHE (Dad)                       */}
         {/* ================================================================= */}
         {!isDad ? (
-          // Junior Dev Clean Low-Poly Sculpted Beard Along the Jaw
+          // Junior Dev Clean Low-Poly Sculpted Beard Along Bottom Jaw Edge Only (Zero mouth clipping)
           <group>
-            {/* Chin Beard */}
-            <mesh position={[0, -0.37, 0.46]} material={hairMat}>
-              <boxGeometry args={[0.26, 0.14, 0.20]} />
+            {/* Bottom Chin Edge Contour (Well below mouth, zero goatee block) */}
+            <mesh position={[0, -0.39, 0.44]} material={hairMat}>
+              <boxGeometry args={[0.22, 0.08, 0.16]} />
             </mesh>
-            {/* Left Jaw Beard */}
-            <mesh position={[-0.22, -0.28, 0.25]} rotation={[0, 0.32, -0.08]} material={hairMat}>
-              <boxGeometry args={[0.16, 0.14, 0.30]} />
+            {/* Left Jaw Edge Contour */}
+            <mesh position={[-0.22, -0.31, 0.25]} rotation={[0, 0.32, -0.08]} material={hairMat}>
+              <boxGeometry args={[0.13, 0.08, 0.28]} />
             </mesh>
-            {/* Right Jaw Beard */}
-            <mesh position={[0.22, -0.28, 0.25]} rotation={[0, -0.32, 0.08]} material={hairMat}>
-              <boxGeometry args={[0.16, 0.14, 0.30]} />
-            </mesh>
-            {/* Clean Sub-Lip Soul Patch Accent (safely below lower lip, zero mouth clipping) */}
-            <mesh position={[0, -0.31, 0.57]} material={hairMat}>
-              <boxGeometry args={[0.08, 0.03, 0.03]} />
+            {/* Right Jaw Edge Contour */}
+            <mesh position={[0.22, -0.31, 0.25]} rotation={[0, -0.32, 0.08]} material={hairMat}>
+              <boxGeometry args={[0.13, 0.08, 0.28]} />
             </mesh>
           </group>
         ) : (
@@ -551,18 +575,36 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
         </mesh>
 
         {/* ================================================================= */}
-        {/* 9. ARTICULATED MOUTH & TEETH CAVITY                               */}
+        {/* 9. ARTICULATED NATURAL LIP-SYNC MOUTH & TEETH                     */}
         {/* ================================================================= */}
         <group position={[0, isDad ? -0.27 : -0.24, 0.59]}>
-          {/* Inner Cavity: Slim horizontal dark-brown/maroon mouth recess */}
-          <mesh scale={[1, mouthHeight / 0.05, 1]} material={innerMouthMat}>
-            <boxGeometry args={[0.20, 0.05, 0.06]} />
-          </mesh>
-          {/* Single Clean Thin Off-White Upper-Tooth Bar (Visible only when mouthOpen > 0.18, ZERO barcode lines!) */}
-          {isToothVisible && (
-            <mesh position={[0, mouthHeight * 0.5 - 0.0125, 0.018]} material={toothMat}>
-              <boxGeometry args={[0.16, 0.025, 0.02]} />
+          {isSilent ? (
+            /* When silent (mouthOpen < 0.08): clean subtle closed mouth line */
+            <mesh position={[0, 0, 0.01]} material={lipMat}>
+              <boxGeometry args={[0.18, 0.018, 0.02]} />
             </mesh>
+          ) : (
+            /* When speaking: lower jaw drops, width flexes with Math.sin, teeth revealed */
+            <group>
+              {/* Upper Lip Line */}
+              <mesh position={[0, mouthHeight * 0.5 + 0.007, 0.01]} material={lipMat}>
+                <boxGeometry args={[mouthWidthFlex, 0.014, 0.02]} />
+              </mesh>
+              {/* Inner Dark Mouth Cavity */}
+              <mesh scale={[mouthWidthFlex / 0.20, mouthHeight / 0.05, 1]} material={innerMouthMat}>
+                <boxGeometry args={[0.20, 0.05, 0.06]} />
+              </mesh>
+              {/* Crisp White Upper Tooth Bar */}
+              {isToothVisible && (
+                <mesh position={[0, mouthHeight * 0.5 - 0.012, 0.018]} material={toothMat}>
+                  <boxGeometry args={[mouthWidthFlex * 0.78, 0.024, 0.02]} />
+                </mesh>
+              )}
+              {/* Lower Jaw Line moving with jaw drop */}
+              <mesh position={[0, -mouthHeight * 0.5 - 0.007, 0.01]} material={lipMat}>
+                <boxGeometry args={[mouthWidthFlex * 0.9, 0.014, 0.02]} />
+              </mesh>
+            </group>
           )}
         </group>
       </group>

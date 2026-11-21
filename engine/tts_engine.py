@@ -54,17 +54,87 @@ KOKORO_VOICES_URL = "https://github.com/thewh1teagle/kokoro-onnx/releases/downlo
 # Global Singletons
 _KOKORO_INSTANCE = None
 _CHATTERBOX_INSTANCE = None
+VOICE_REFS_DIR = PROJECT_ROOT / ".cache" / "voice_refs"
 
 # Emotion to Chatterbox Exaggeration & CFG Weight mapping
+# 0.45 tired/sad, 0.65 deadpan/smug, 0.85 shocked/roast, 0.95 angry/screaming
 EMOTION_EXAGGERATION_MAP: Dict[str, Dict[str, float]] = {
-    "neutral": {"exaggeration": 0.55, "cfg_weight": 0.50},
-    "shocked": {"exaggeration": 0.88, "cfg_weight": 0.40},
-    "excited": {"exaggeration": 0.88, "cfg_weight": 0.40},
-    "angry": {"exaggeration": 0.80, "cfg_weight": 0.45},
-    "sarcastic": {"exaggeration": 0.80, "cfg_weight": 0.45},
-    "smug": {"exaggeration": 0.65, "cfg_weight": 0.55},
-    "deadpan": {"exaggeration": 0.65, "cfg_weight": 0.55},
+    "neutral": {"exaggeration": 0.65, "cfg_weight": 0.50},
+    "tired": {"exaggeration": 0.45, "cfg_weight": 0.55},
+    "sad": {"exaggeration": 0.45, "cfg_weight": 0.55},
+    "deadpan": {"exaggeration": 0.65, "cfg_weight": 0.50},
+    "smug": {"exaggeration": 0.65, "cfg_weight": 0.50},
+    "sarcastic": {"exaggeration": 0.75, "cfg_weight": 0.45},
+    "roast": {"exaggeration": 0.85, "cfg_weight": 0.40},
+    "shocked": {"exaggeration": 0.85, "cfg_weight": 0.40},
+    "excited": {"exaggeration": 0.85, "cfg_weight": 0.40},
+    "angry": {"exaggeration": 0.95, "cfg_weight": 0.35},
+    "screaming": {"exaggeration": 0.95, "cfg_weight": 0.35},
 }
+
+CHARACTER_VOICE_REF_SPECS = {
+    "junior_dev": {
+        "engine": "kokoro",
+        "voice": "am_puck",
+        "text": "Hello there. I am ready to test this project on my computer today without any delay.",
+    },
+    "claude": {
+        "engine": "kokoro",
+        "voice": "bm_george",
+        "text": "Greetings. Let us examine the technical architecture and the verified facts objectively.",
+    },
+    "gemini": {
+        "engine": "kokoro",
+        "voice": "af_bella",
+        "text": "Welcome. Here is the verified technical breakdown and what you need to know.",
+    },
+    "grok": {
+        "engine": "kokoro",
+        "voice": "am_fenrir",
+        "text": "Look at the numbers. The data shows this runs faster and smoother than you think.",
+    },
+    "dad": {
+        "engine": "edge_tts",
+        "voice": "en-IN-PrabhatNeural",
+        "text": "Listen to me, check this carefully and do not waste any more money on useless things.",
+    },
+}
+
+
+def ensure_voice_reference(character_id: str) -> Optional[str]:
+    """
+    Returns path to cached 5-second clean neutral reference WAV for the character.
+    Generates and caches in .cache/voice_refs/<character_id>.wav if not already present.
+    """
+    VOICE_REFS_DIR.mkdir(parents=True, exist_ok=True)
+    ref_path = VOICE_REFS_DIR / f"{character_id}.wav"
+    if ref_path.exists() and ref_path.stat().st_size > 10000:
+        return str(ref_path)
+
+    spec = CHARACTER_VOICE_REF_SPECS.get(character_id, CHARACTER_VOICE_REF_SPECS["junior_dev"])
+    print(f"🎙️ [VoiceRef] Generating 5s reference audio for {character_id} ({spec['voice']})...")
+    try:
+        if spec["engine"] == "kokoro":
+            _synthesize_kokoro(
+                text=spec["text"],
+                voice_id=spec["voice"],
+                speed=1.0,
+                out_audio=str(ref_path)
+            )
+        else:
+            asyncio.run(_synthesize_edge_tts(
+                text=spec["text"],
+                voice_name=spec["voice"],
+                rate="+0%",
+                out_audio=str(ref_path)
+            ))
+        if ref_path.exists() and ref_path.stat().st_size > 5000:
+            print(f"✅ [VoiceRef] Cached reference audio: {ref_path}")
+            return str(ref_path)
+    except Exception as e:
+        print(f"⚠️ [VoiceRef] Generation notice for {character_id}: {e}")
+
+    return None
 
 
 def is_cuda_available() -> bool:
@@ -193,19 +263,51 @@ def detect_language(text: str) -> str:
     return "en"
 
 
+def convert_years_to_words(text: str) -> str:
+    """Converts 4-digit years (e.g. 1993, 2026, 2008) into spoken words."""
+    def _rep(m):
+        y = int(m.group(0))
+        ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"]
+        tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+        if 2000 <= y <= 2009:
+            return f"two thousand {ones[y - 2000]}".strip()
+        c1, c2 = y // 100, y % 100
+        w1 = f"{tens[c1 // 10]} {ones[c1 % 10]}".strip() if c1 >= 20 else ones[c1]
+        if c2 == 0:
+            w2 = "hundred"
+        elif c2 < 20:
+            w2 = ones[c2]
+        else:
+            w2 = f"{tens[c2 // 10]} {ones[c2 % 10]}".strip()
+        return f"{w1} {w2}".strip()
+
+    return re.sub(r'\b(19\d{2}|20\d{2})\b', _rep, text)
+
+
 def clean_text_for_speech(text: str, is_chatterbox: bool = False) -> str:
     """
     Cleans text of Markdown formatting, asterisks, brackets for clean TTS synthesis.
-    - Preserves expressive punctuation (!, ?, ..., Wait—).
+    - Replaces em-dash / en-dash (— / –) with a natural pause comma (, ).
+    - Converts 4-digit years (1993 -> nineteen ninety-three) in TTS text only.
     - If is_chatterbox is True, preserves vocal cues like [chuckle], [sigh].
-    - For Kokoro/Edge-TTS, softens [cues] to natural pauses '... ' so words aren't read aloud.
+    - For Kokoro/Edge-TTS, strips [cues] cleanly without leaving leading/trailing ellipses (...).
     """
+    # Replace em-dash and en-dash with comma pause
+    text = text.replace("—", ", ").replace("–", ", ")
+
+    # Convert 4-digit years into spoken words
+    text = convert_years_to_words(text)
+
     if not is_chatterbox:
-        text = re.sub(r'\[(?:chuckle|sigh|gasp|giggle|laughter|pause)\]', '... ', text, flags=re.IGNORECASE)
+        # Strip emotional tags cleanly without leaving standalone ellipses
+        text = re.sub(r'\[(?:chuckle|sigh|gasp|giggle|laughter|pause)\]', '', text, flags=re.IGNORECASE)
         text = re.sub(r'[*#_~`>\[\]\(\)]', ' ', text)
     else:
         text = re.sub(r'[*#_~`>]', ' ', text)
 
+    # Clean up excess punctuation and leading ellipses
+    text = re.sub(r'^\s*\.{2,}\s*', '', text)
+    text = re.sub(r'\s+,', ',', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
@@ -377,10 +479,12 @@ def _synthesize_chatterbox(
     text: str,
     voice_id: str = "junior_dev",
     emotion: str = "neutral",
-    out_audio: str = "temp.wav"
+    out_audio: str = "temp.wav",
+    audio_prompt_path: Optional[str] = None
 ) -> Tuple[List[Dict[str, Any]], float]:
     """
     Synthesizes speech using Chatterbox GPU TTS on CUDA with emotion-mapped exaggeration & cfg_weight.
+    Supports audio_prompt_path reference voice cloning for consistent character identities.
     Returns (word_timings, duration).
     """
     model = get_chatterbox()
@@ -391,23 +495,39 @@ def _synthesize_chatterbox(
     exaggeration = emo_cfg["exaggeration"]
     cfg_weight = emo_cfg["cfg_weight"]
 
+    gen_kwargs: Dict[str, Any] = {
+        "text": text,
+        "voice": voice_id,
+        "exaggeration": exaggeration,
+        "cfg_weight": cfg_weight,
+    }
+    if audio_prompt_path and os.path.exists(audio_prompt_path):
+        gen_kwargs["audio_prompt_path"] = audio_prompt_path
+
     # Synthesize audio with model (ChatterboxTurboTTS / ChatterboxTTS)
-    if hasattr(model, "generate"):
-        audio_out = model.generate(
-            text=text,
-            voice=voice_id,
-            exaggeration=exaggeration,
-            cfg_weight=cfg_weight
-        )
-    elif callable(model):
-        audio_out = model(
-            text,
-            voice=voice_id,
-            exaggeration=exaggeration,
-            cfg_weight=cfg_weight
-        )
-    else:
-        raise RuntimeError("Chatterbox model has no recognized generate or callable interface")
+    try:
+        if hasattr(model, "generate"):
+            audio_out = model.generate(**gen_kwargs)
+        elif callable(model):
+            audio_out = model(**gen_kwargs)
+        else:
+            raise RuntimeError("Chatterbox model has no recognized generate or callable interface")
+    except TypeError:
+        # Fallback if audio_prompt_path keyword has different name (e.g. ref_audio) or not accepted
+        gen_kwargs.pop("audio_prompt_path", None)
+        if audio_prompt_path and os.path.exists(audio_prompt_path):
+            gen_kwargs["ref_audio"] = audio_prompt_path
+        try:
+            if hasattr(model, "generate"):
+                audio_out = model.generate(**gen_kwargs)
+            else:
+                audio_out = model(**gen_kwargs)
+        except TypeError:
+            gen_kwargs.pop("ref_audio", None)
+            if hasattr(model, "generate"):
+                audio_out = model.generate(**gen_kwargs)
+            else:
+                audio_out = model(**gen_kwargs)
 
     os.makedirs(os.path.dirname(os.path.abspath(out_audio)), exist_ok=True)
     if isinstance(audio_out, tuple):
@@ -695,16 +815,20 @@ def generate_dialogue_speech(
             chatterbox_voice = voice_prof.get("chatterbox_voice") or canonical_char
             if is_cuda_available() and engine_type != "edge_tts":
                 try:
+                    ref_audio = ensure_voice_reference(canonical_char)
                     c_text = clean_text_for_speech(turn.get("text", ""), is_chatterbox=True)
                     word_timings, turn_dur = _synthesize_chatterbox(
                         text=c_text,
                         voice_id=chatterbox_voice,
                         emotion=emotion,
-                        out_audio=turn_wav_raw
+                        out_audio=turn_wav_raw,
+                        audio_prompt_path=ref_audio
                     )
                     trim_silence(turn_wav_raw, turn_wav_trimmed)
                     turn_dur = get_audio_duration(turn_wav_trimmed)
                     synthesis_success = True
+                    exag_val = EMOTION_EXAGGERATION_MAP.get(emotion.lower(), {}).get("exaggeration", 0.65)
+                    print(f"🎭 [Chatterbox GPU exag={exag_val:.2f}] Turn {idx} ({canonical_char}) synthesized ({turn_dur:.2f}s).")
                 except Exception as e_chatterbox:
                     print(f"⚠️ Chatterbox GPU notice for turn {idx} ({canonical_char}): {e_chatterbox}. Falling back to Kokoro ONNX...")
                     engine_type = "kokoro"
@@ -722,6 +846,7 @@ def generate_dialogue_speech(
                     trim_silence(turn_wav_raw, turn_wav_trimmed)
                     turn_dur = get_audio_duration(turn_wav_trimmed)
                     synthesis_success = True
+                    print(f"⚠️ [Kokoro CPU fallback] Turn {idx} ({canonical_char}) synthesized ({turn_dur:.2f}s).")
                 except Exception as e_kokoro:
                     print(f"⚠️ Kokoro fallback for turn {idx} ({canonical_char}): {e_kokoro}")
                     engine_type = "edge_tts"
@@ -832,6 +957,13 @@ def generate_dialogue_speech(
                 current_timeline = round(turn_end + turn_pause, 3)
             else:
                 current_timeline = turn_end
+
+        # Add +2.8s tail padding after the last spoken turn so the final word is NEVER cut off
+        tail_padding_sec = 2.8
+        tail_file = os.path.join(tmpdir, "tail_padding.wav")
+        sf.write(tail_file, np.zeros(int(tail_padding_sec * 24000), dtype=np.float32), 24000)
+        turn_audio_files.append(tail_file)
+        current_timeline = round(current_timeline + tail_padding_sec, 3)
 
         # Concatenate audio files into vocal master
         concat_txt = os.path.join(tmpdir, "concat.txt")

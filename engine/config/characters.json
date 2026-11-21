@@ -109,11 +109,12 @@
     "type": "ai_orb",
     "rig_component": "LowPolyAIOrbRig",
     "palette": {
-      "primary": "#18181B",
-      "secondary": "#27272A",
+      "primary": "#334155",
+      "secondary": "#1E293B",
       "accent": "#EF4444",
-      "skin": "#18181B",
-      "shell": "#18181B",
+      "skin": "#334155",
+      "shell": "#334155",
+      "rimLight": "#EF4444",
       "eyeGlow": "#EF4444"
     },
     "default_position": [0.0, -0.35, 0.2],

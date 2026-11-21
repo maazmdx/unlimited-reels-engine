@@ -131,7 +131,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   episodeStr,
 }) => {
   const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
+  const { durationInFrames } = useVideoConfig();
 
   // 1. Resolve timeline and turns
   const activeTimeline: TimelineData = timeline || DEFAULT_TIMELINE;
@@ -308,9 +308,16 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     activeCharConfig?.badge_label ||
     (activeTurn?.character_id === "junior_dev" ? "Junior Dev" : activeTurn?.character_id);
 
-  // 8. Clean 2.5s Black End-Card (Final 75 frames)
-  const endCardDurationFrames = Math.round(2.5 * fps);
-  const endCardStartFrame = Math.max(0, totalFrames - endCardDurationFrames);
+  // Helper to strip emoji ranges that cause □ glyph issues on Linux
+  const stripEmojis = (str: string): string =>
+    (str || "")
+      .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}]/gu, "")
+      .trim();
+
+  // 8. Clean 2.5s Black End-Card (Strictly starts at lastTurnEndFrame + 9)
+  const lastTurn = turns && turns.length > 0 ? turns[turns.length - 1] : null;
+  const lastTurnEndFrame = lastTurn ? lastTurn.end_frame : Math.max(0, totalFrames - 75);
+  const endCardStartFrame = Math.max(0, lastTurnEndFrame + 9);
   const isEndCardActive = frame >= endCardStartFrame;
 
   const endCardFade = isEndCardActive
@@ -607,7 +614,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               textShadow: "0 4px 20px rgba(0, 0, 0, 0.95)",
             }}
           >
-            {resolvedEndCardQuestion}
+            {stripEmojis(resolvedEndCardQuestion)}
           </div>
 
           {/* Middle Highlight Auto-DM Pill */}
@@ -625,7 +632,23 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               marginBottom: 36,
             }}
           >
-            <span style={{ fontSize: 38, lineHeight: 1 }}>💬</span>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                backgroundColor: "#38BDF8",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 16,
+                fontWeight: 900,
+                color: "#030712",
+                letterSpacing: "-0.5px",
+              }}
+            >
+              DM
+            </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
               <span
                 style={{

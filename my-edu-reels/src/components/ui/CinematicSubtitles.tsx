@@ -30,20 +30,28 @@ export interface CinematicSubtitlesProps {
 }
 
 /**
+ * Strips non-ASCII emoji characters and symbol ranges so headless Linux/Kaggle
+ * never renders broken placeholder boxes (□).
+ */
+const stripEmojis = (str: string): string => {
+  return (str || "")
+    .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}]/gu, "")
+    .trim();
+};
+
+/**
  * CinematicSubtitles:
- * - Strictly enforces 1080x1420 Instagram safe zone (top: 220px, bottom: 280px).
- * - Upper-middle (top: 280px) during normal dialogue shots (clears face and table).
- * - Lower-safe (bottom: 320px) whenever DynamicProofCard OR End-Screen CTA is active.
- * - Guarantees ZERO collision with upper-third CTA pill (top: 260px) or proof card.
- * - High-contrast typography: 2-5 words per chunk with word-level highlight.
+ * - Floating editorial typography (fontSize: 52px, fontWeight: 700, soft drop-shadow).
+ * - Zero generic black rounded pill box or speaker label badge.
+ * - Human in #FFFFFF, AI in #FCD34D (Claude), #7DD3FC (Gemini), #FCA5A5 (Grok).
+ * - Strictly enforces 1080x1920 Instagram safe zone (top: 280px / bottom: 320px).
  * - Zero CSS transition, zero Math.random(), zero modulo spring resets.
  */
 export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
   activeTurn,
   isProofCardActive = false,
   isCtaActive = false,
-  speakerAccentColor = "#38BDF8",
-  speakerDisplayName,
+  speakerAccentColor,
   isAI = false,
 }) => {
   const frame = useCurrentFrame();
@@ -55,13 +63,12 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
 
   const words = activeTurn.words || [];
 
-  // Group words into bite-sized chunks of 3-5 words
+  // Group words into bite-sized chunks of 3-4 words for fast editorial reading
   const CHUNK_SIZE = 4;
   let activeChunkWords: TimelineWord[] = [];
   let activeWordIndexInChunk = -1;
 
   if (words.length > 0) {
-    // If current time is outside the turn's spoken words range (leading/trailing silence or gaps), hide subtitle pill
     const firstWordStart = words[0].start_sec;
     const lastWordEnd = words[words.length - 1].end_sec;
     if (currentTime < firstWordStart - 0.10 || currentTime > lastWordEnd + 0.18) {
@@ -77,18 +84,16 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
     activeChunkWords = words.slice(chunkStartIdx, chunkStartIdx + CHUNK_SIZE);
     activeWordIndexInChunk = safeWordIdx - chunkStartIdx;
 
-    // Guard against all-whitespace chunks
     if (activeChunkWords.length === 0 || activeChunkWords.every((w) => !w.word || !w.word.trim())) {
       return null;
     }
   } else {
-    // If no word-level timestamps, only render strictly within turn bounds
     if (currentTime < activeTurn.start_sec || currentTime > activeTurn.end_sec) {
       return null;
     }
   }
 
-  // Positioning: top: 280px for normal shots; bottom: 320px when proof card or CTA pill is active
+  // Positioning: top: 280px for normal shots; bottom: 320px when proof card or toast is active
   const isBottom = isProofCardActive || isCtaActive;
   const positionStyle: React.CSSProperties = isBottom
     ? {
@@ -106,15 +111,24 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
         zIndex: 95,
       };
 
-  const displayName =
-    speakerDisplayName ||
-    (activeTurn.character_id === "junior_dev"
-      ? "JUNIOR DEV"
-      : activeTurn.character_id === "dad"
-      ? "DAD"
-      : activeTurn.character_id.toUpperCase().replace("_", " "));
+  // Color mapping: Human in #FFFFFF, AI in designated color
+  const charId = (activeTurn.character_id || "").toLowerCase();
+  const isHumanChar = charId === "junior_dev" || charId === "dad" || (!isAI && !charId.includes("claude") && !charId.includes("gemini") && !charId.includes("grok"));
 
-  const highlightColor = isAI ? speakerAccentColor || "#FCD34D" : "#38BDF8";
+  let primaryColor = "#FFFFFF";
+  if (!isHumanChar) {
+    if (charId.includes("gemini")) {
+      primaryColor = "#7DD3FC";
+    } else if (charId.includes("grok")) {
+      primaryColor = "#FCA5A5";
+    } else {
+      primaryColor = speakerAccentColor || "#FCD34D"; // Claude default #FCD34D
+    }
+  }
+
+  const inactiveColor = isHumanChar
+    ? "rgba(255, 255, 255, 0.72)"
+    : `${primaryColor}B3`;
 
   return (
     <div
@@ -124,78 +138,51 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 10,
-        zIndex: 85,
+        zIndex: 95,
         pointerEvents: "none",
         textAlign: "center",
       }}
     >
-      {/* 1. Optional Speaker Label Badge */}
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          padding: "5px 14px",
-          borderRadius: 12,
-          backgroundColor: "rgba(10, 15, 29, 0.88)",
-          border: `1px solid ${highlightColor}66`,
-          boxShadow: `0 4px 12px rgba(0, 0, 0, 0.8), 0 0 10px ${highlightColor}33`,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 13,
-            fontWeight: 800,
-            letterSpacing: "0.8px",
-            color: highlightColor,
-            textTransform: "uppercase",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-          }}
-        >
-          {displayName}
-        </span>
-      </div>
-
-      {/* 2. Main Chunk Subtitle Text */}
+      {/* Floating editorial typography - Zero black pill box, zero badge */}
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
           alignItems: "center",
-          gap: "8px 12px",
+          gap: "8px 16px",
           maxWidth: 960,
-          backgroundColor: "rgba(8, 12, 22, 0.82)",
-          backdropFilter: "blur(12px)",
-          borderRadius: 20,
-          padding: "14px 28px",
-          border: "1px solid rgba(255, 255, 255, 0.12)",
-          boxShadow: "0 16px 36px rgba(0, 0, 0, 0.75)",
+          background: "transparent",
+          padding: 0,
+          border: "none",
+          boxShadow: "none",
         }}
       >
         {activeChunkWords.length > 0 ? (
           activeChunkWords.map((w, idx) => {
             const isActive = idx === activeWordIndexInChunk;
+            const displayWord = stripEmojis(w.word);
+            if (!displayWord) return null;
+
             return (
               <span
                 key={`${w.word}-${idx}`}
                 style={{
                   fontFamily:
                     "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                  fontSize: 42,
-                  fontWeight: 900,
+                  fontSize: 52,
+                  fontWeight: 700,
                   letterSpacing: "-0.5px",
                   lineHeight: 1.25,
-                  color: isActive ? highlightColor : "#FFFFFF",
+                  color: isActive ? primaryColor : inactiveColor,
                   textShadow: isActive
-                    ? `0 0 20px ${highlightColor}AA, 0 4px 12px rgba(0,0,0,0.95)`
-                    : "0 4px 12px rgba(0,0,0,0.95), 0 2px 4px rgba(0,0,0,0.9)",
-                  transform: isActive ? "scale(1.06)" : "scale(1.0)",
+                    ? `0 4px 18px rgba(0, 0, 0, 0.95), 0 0 24px ${primaryColor}88`
+                    : "0 4px 18px rgba(0, 0, 0, 0.85)",
+                  transform: isActive ? "scale(1.05)" : "scale(1.0)",
                   display: "inline-block",
                 }}
               >
-                {w.word}
+                {displayWord}
               </span>
             );
           })
@@ -204,13 +191,15 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
             style={{
               fontFamily:
                 "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-              fontSize: 38,
-              fontWeight: 800,
-              color: "#FFFFFF",
-              textShadow: "0 4px 12px rgba(0,0,0,0.95)",
+              fontSize: 52,
+              fontWeight: 700,
+              letterSpacing: "-0.5px",
+              lineHeight: 1.25,
+              color: primaryColor,
+              textShadow: `0 4px 18px rgba(0, 0, 0, 0.85), 0 0 16px ${primaryColor}66`,
             }}
           >
-            {activeTurn.text}
+            {stripEmojis(activeTurn.text)}
           </span>
         )}
       </div>
