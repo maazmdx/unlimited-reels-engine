@@ -427,14 +427,20 @@ class TopicMasterAgent:
         system_instruction = (
             "You are TopicMaster: The World-Class Viral Media Strategist for short-form video (Instagram Reels / YouTube Shorts).\n"
             "Your mandate: Select ONLY topics that have MASS CONSUMER APPEAL across college students, everyday developers, gamers, and tech fans.\n\n"
+            "HARD REJECT: ZERO PAID TOOLS / ZERO MONTHLY SUBSCRIPTIONS (MANDATORY GATE):\n"
+            "- NEVER pick a topic that promotes or recommends a paid tool, paid game, paid API, or paid monthly subscription ($19.99/mo, credit cards, paywalls, paid tiers).\n"
+            "- Paid software (Photoshop, ChatGPT Plus, Midjourney, Netflix, Notion Plus, Copilot Pro, expensive IDEs) may ONLY appear as the PUNCHING BAG to roast people who still waste money on them!\n"
+            "- The solution / recommendation MUST ALWAYS BE 100% FREE, ZERO-CARD, ZERO-DOLLAR (free open-source apps, free AI tools like NotebookLM/local models, free full browser games, free hidden phone/PC tricks, or free vs hype teardowns).\n"
+            "- Prioritize everyday topics every student, gamer, and everyday phone/potato laptop user relates to immediately—never obscure niche enterprise SaaS tools!\n\n"
             "STRICT BAN ON DRY CS TRIVIA:\n"
             "- Strictly BANNED: RFC specs, obscure algorithmic puzzle solvers, low-level Linux kernel patches, academic math proofs, compiler edge-cases.\n"
-            "- STRICTLY REWARDED: Playable retro games in browser, zero-cost AI workflows that replace $20/mo subscriptions, shocking company profit breakdowns (NVIDIA, Costco, Spotify), breaking humanoid robots / gadgets, and generational tech comedy (Dad vs WiFi / cloud bills).\n\n"
+            "- STRICTLY REWARDED: Playable retro games in browser, 100% free zero-cost AI workflows that replace $20/mo subscriptions, shocking company profit breakdowns (NVIDIA, Costco, Spotify), breaking humanoid robots / gadgets, and generational tech comedy (Dad vs WiFi / cloud bills).\n\n"
             "OBJECTIVE VIRAL SCORING RUBRIC (0-100):\n"
-            "1. Mass-Appeal Curiosity (0-35): Would a casual viewer, student, or dev freeze their thumb in the first 2 seconds?\n"
-            "2. Save/DM Demand (0-35): Would thousands of viewers comment a keyword to get the free link, playable port, or cheat sheet?\n"
-            "3. Meme & Debate Potential (0-30): Does it spark energetic comments ('Wait really?', 'No way!', or generational conflict)?\n"
-            "- MINIMUM PASSING SCORE: 78/100. Any topic scoring < 78 is automatically REJECTED."
+            "1. Mass-Appeal Curiosity (0-25): Would a casual viewer, student, or dev freeze their thumb in the first 2 seconds?\n"
+            "2. Save/DM Demand (0-25): Would thousands of viewers comment a keyword to get the 100% free link, playable port, or cheat sheet?\n"
+            "3. Meme & Debate Potential (0-25): Does it spark energetic comments ('Wait really?', 'No way!', or generational conflict)?\n"
+            "4. Roast & Ragebait Potential (0-25): Can the AI brutally humble the human here? Prioritize things humans waste hours or money doing that AI/free apps do in 2 seconds, browser games running on potato laptops, hyped tools humans overpay for, wild company money tricks, and new tech making old skills look prehistoric.\n"
+            "- MINIMUM PASSING SCORE: 78/100. Any topic scoring < 78 or requiring payment/credit card is automatically REJECTED."
         )
 
         prompt = f"""
@@ -447,11 +453,13 @@ PREVIOUSLY COVERED (DO NOT REPEAT):
 {excluded_text}
 
 TASK:
-1. Brainstorm 8 diverse candidate reel angles inspired by the live signals and our core categories.
-2. Score each candidate across the 3 rubric criteria (Curiosity 0-35, Save/DM Demand 0-35, Meme/Debate 0-30).
-3. Compute total `viral_score` (0-100).
-4. Strictly filter out anything scoring < 78.
-5. Rank by total score descending, and return the candidates in valid JSON.
+1. Brainstorm 8 diverse candidate reel angles inspired by the live signals and our core categories. Never lock to static examples—always synthesize fresh angles from live feeds + historical covered topics deduplication.
+2. HARD REJECT GATE: Reject any angle that promotes or recommends a paid tool or subscription. Paid tools may only be the punching bag while revealing a 100% FREE alternative.
+3. Prioritize topics with maximum Roast & Ragebait Potential where the AI can brutally humble human laziness or overpaying for software.
+4. Score each candidate across the 4 rubric criteria (Curiosity 0-25, Save/DM Demand 0-25, Meme/Debate 0-25, Roast/Ragebait 0-25).
+5. Compute total `viral_score` (0-100) as the sum of all 4 criteria.
+6. Strictly filter out anything scoring < 78 or promoting paid software.
+7. Rank by total score descending, and return the candidates in valid JSON.
 
 JSON Schema:
 {{
@@ -459,17 +467,19 @@ JSON Schema:
     {{
       "topic_title": "Punchy title under 55 characters",
       "category": "Retro & Browser Games | Underrated AI Apps | Tech Business Model | Breaking Tech | Relatable Culture",
-      "curiosity_score": 32,
-      "save_demand_score": 30,
-      "debate_potential_score": 26,
-      "viral_score": 88,
+      "curiosity_score": 24,
+      "save_demand_score": 24,
+      "debate_potential_score": 22,
+      "roast_ragebait_score": 25,
+      "viral_score": 95,
       "why_viral": "1-2 sentences on why this explodes in reach and comments",
+      "roast_angle": "How AI brutally humbles human laziness, potato laptops, or overpaying for software",
       "auto_dm_keyword": "ONEWORD",
       "left_character": "junior_dev or dad",
       "right_character": "claude, gemini, or grok",
       "scene_preset": "diner or desk",
       "resource_link_or_query": "Direct verifiable URL, search query, or tool name",
-      "core_conflict": "Left character skepticism/nostalgia vs right character witty facts"
+      "core_conflict": "Human denial/procrastination vs AI effortless superiority and savage facts"
     }}
   ]
 }}
@@ -480,25 +490,55 @@ JSON Schema:
             raise RuntimeError("Gemini failed to return scored topic candidates.")
 
         cleaned = raw_json.strip()
-        if cleaned.startswith("```"):
-            cleaned = re.sub(r"^```(?:json)?\n", "", cleaned)
-            cleaned = re.sub(r"\n```$", "", cleaned)
-        cleaned = cleaned.strip()
+        if "```" in cleaned:
+            match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", cleaned)
+            if match:
+                cleaned = match.group(1).strip()
+            else:
+                cleaned = re.sub(r"^```(?:json)?\n", "", cleaned)
+                cleaned = re.sub(r"\n```$", "", cleaned).strip()
 
-        parsed = json.loads(cleaned)
+        # Clean trailing commas
+        cleaned_clean = re.sub(r",\s*([\]}])", r"\1", cleaned)
+        try:
+            parsed = json.loads(cleaned_clean)
+        except Exception:
+            try:
+                parsed = json.loads(cleaned)
+            except Exception as e:
+                # Try finding outermost JSON object/array
+                start_idx = cleaned.find("{")
+                end_idx = cleaned.rfind("}")
+                if start_idx != -1 and end_idx != -1:
+                    sub = cleaned[start_idx:end_idx + 1]
+                    sub = re.sub(r",\s*([\]}])", r"\1", sub)
+                    parsed = json.loads(sub)
+                else:
+                    raise e
         candidates = parsed.get("candidates", []) if isinstance(parsed, dict) else parsed
 
-        # Filter candidates by score gate (>= 78) and sort descending
+        # Hard Zero-Paid-Tools Gate: NEVER promote paid tools, paid subscriptions, or paid games
+        paid_promo_re = re.compile(
+            r"(\$\d+[\d,.]*\s*(/mo|/month|/yr|per month)|paid tier|paid subscription|requires credit card|"
+            r"pricing starts at|pro plan only|premium subscription|buy for \$)",
+            re.IGNORECASE
+        )
+
+        # Filter candidates by score gate (>= 78) and Hard Zero-Paid-Tools Gate
         valid_candidates = []
         for c in candidates:
             score = c.get("viral_score", 0)
-            if score >= 78:
+            t_str = f"{c.get('topic_title', '')} {c.get('why_viral', '')} {c.get('roast_angle', '')}"
+            is_paid_promo = bool(paid_promo_re.search(t_str) and not any(neg in t_str.lower() for neg in ["replaces", "instead of", "beat", "kill", "cancel", "free", "$0", "zero", "0 dollar"]))
+            if score >= 78 and not is_paid_promo:
                 valid_candidates.append(c)
 
         if not valid_candidates and candidates:
-            # If all were strictly below 78, pick highest scoring
+            # If all were strictly below 78, pick highest scoring non-paid candidate
             candidates.sort(key=lambda x: x.get("viral_score", 0), reverse=True)
-            valid_candidates = candidates
+            valid_candidates = [c for c in candidates if not paid_promo_re.search(f"{c.get('topic_title', '')} {c.get('why_viral', '')}")]
+            if not valid_candidates:
+                valid_candidates = candidates[:1]
 
         valid_candidates.sort(key=lambda x: x.get("viral_score", 0), reverse=True)
 
@@ -529,16 +569,18 @@ JSON Schema:
         raw_kw = str(item.get("auto_dm_keyword", "LINK")).strip().upper()
         clean_kw = re.sub(r"[^A-Z0-9]", "", raw_kw) or "LINK"
 
-        score = int(item.get("viral_score") or 82)
+        score = int(item.get("viral_score") or 85)
         breakdown = {
-            "curiosity": int(item.get("curiosity_score") or 28),
-            "save_demand": int(item.get("save_demand_score") or 28),
-            "debate_potential": int(item.get("debate_potential_score") or 26),
+            "curiosity": int(item.get("curiosity_score") or 22),
+            "save_demand": int(item.get("save_demand_score") or 22),
+            "debate_potential": int(item.get("debate_potential_score") or 20),
+            "roast_ragebait": int(item.get("roast_ragebait_score") or 22),
         }
 
         category = item.get("category", "Viral Tech")
         why_viral = item.get("why_viral", "High curiosity gap and immediate viewer DM demand.")
-        conflict = item.get("core_conflict", f"{left_char} perspective vs {right_char} technical reality")
+        roast_angle = item.get("roast_angle", f"{right_char} brutally humbles human effort with instant zero-dollar tech.")
+        conflict = item.get("core_conflict", f"{left_char} human denial vs {right_char} savage roast facts")
 
         return {
             "id": slug,
@@ -551,10 +593,12 @@ JSON Schema:
             "viral_score": score,
             "score_breakdown": breakdown,
             "why_viral": why_viral,
+            "roast_angle": roast_angle,
             "auto_dm_keyword": clean_kw,
             "cta_keyword": clean_kw,
             "ctaKeyword": clean_kw,
-            "cta_phrase": f"Comment {clean_kw} and I'll DM you the exact link.",
+            "cta_phrase": f"Comment {clean_kw} and I'll DM you the free link.",
+            "is_100_percent_free": True,
             "left_character": left_char,
             "right_character": right_char,
             "scene_preset": scene_preset,
@@ -594,17 +638,19 @@ JSON Schema:
             sanitized = self._sanitize_topic({
                 "topic_title": pick.get("title", f"Tech Breakthrough #{i+1}"),
                 "category": pick.get("category", "Retro Tech"),
-                "viral_score": 84,
-                "curiosity_score": 30,
-                "save_demand_score": 28,
-                "debate_potential_score": 26,
-                "why_viral": "Proven high-retention evergreen archetype.",
+                "viral_score": 88,
+                "curiosity_score": 23,
+                "save_demand_score": 22,
+                "debate_potential_score": 21,
+                "roast_ragebait_score": 22,
+                "why_viral": "Proven high-retention evergreen ragebait archetype.",
+                "roast_angle": "AI roasts human wasting hours on manual effort vs instant automated tools.",
                 "auto_dm_keyword": pick.get("cta_keyword", "TECH"),
                 "left_character": pick.get("left_character", "junior_dev"),
                 "right_character": pick.get("right_character", "claude"),
                 "scene_preset": "diner",
                 "resource_link_or_query": "https://antigravity.run",
-                "core_conflict": pick.get("core_conflict", "Dev nostalgia vs engineering facts"),
+                "core_conflict": pick.get("core_conflict", "Human manual struggle vs AI effortless roast facts"),
             })
             winners.append(sanitized)
 
