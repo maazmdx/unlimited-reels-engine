@@ -27,7 +27,7 @@ jobs:
 
       - name: 📦 Install Kaggle CLI
         run: |
-          pip install -q --upgrade kaggle
+          pip install -q --upgrade kaggle six
 
       - name: 🚀 Push & Trigger Kaggle GPU Kernel
         env:
