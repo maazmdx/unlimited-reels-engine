@@ -6,7 +6,7 @@ export interface LowPolyAIOrbRigProps {
   characterId: "claude" | "gemini" | "grok" | "antigravity_bot" | string;
   isSpeaking?: boolean;
   mouthOpen?: number; // 0.0 to 1.0
-  emotion?: "neutral" | "deadpan" | "tired" | "shocked" | "angry" | "smug" | string;
+  emotion?: "neutral" | "deadpan" | "tired" | "shocked" | "angry" | "smug" | "sarcastic" | string;
   position?: [number, number, number];
   rotation?: [number, number, number];
   scale?: number;
@@ -165,11 +165,12 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
     eyeRotZ_L = -0.32;
     eyeRotZ_R = 0.32;
     eyePosY = 0.04;
-  } else if (emotion === "smug") {
-    eyeScaleY = 0.80;
-    eyeRotZ_L = 0.22;
-    eyeRotZ_R = -0.06;
-    eyePosY = 0.06;
+  } else if (emotion === "smug" || emotion === "sarcastic") {
+    eyeScaleY = 0.52; // Smug/sarcastic eyelid squint
+    eyeScaleX = 1.20;
+    eyeRotZ_L = 0.28;
+    eyeRotZ_R = -0.10;
+    eyePosY = 0.05;
   }
 
   // Blink collapses eyes to a thin horizontal slit

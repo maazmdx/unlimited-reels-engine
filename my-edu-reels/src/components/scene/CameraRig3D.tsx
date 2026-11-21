@@ -183,7 +183,23 @@ export function getCameraRigParams(
   const targetLookY = interpolate(transitionT, [0, 1], [prevBase.target[1], targetBase.target[1]]);
   const targetLookZ = interpolate(transitionT, [0, 1], [prevBase.target[2], targetBase.target[2]]);
 
-  const fov = interpolate(transitionT, [0, 1], [prevBase.fov, targetBase.fov]);
+  let fov = interpolate(transitionT, [0, 1], [prevBase.fov, targetBase.fov]);
+
+  // Subtle +4% comedic zoom punch-in when AI orb delivers a smug / sarcastic roast
+  const isSmugRoast =
+    activeTurn &&
+    activeTurn.character_id === rightCharId &&
+    (activeTurn.emotion === "smug" || activeTurn.emotion === "sarcastic");
+  if (isSmugRoast) {
+    const roastAge = Math.max(0, frame - activeTurn.start_frame);
+    const punchProgress = interpolate(roastAge, [0, 8], [0, 1], {
+      easing: Easing.out(Easing.cubic),
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    });
+    // Reducing FOV by 4% produces a clean comedic punch-in
+    fov *= 1 - 0.04 * punchProgress;
+  }
 
   // 3. Subtle camera push-in during active speaking turns (for turns > 0)
   if (!isTurn0) {

@@ -84,6 +84,10 @@ export interface MasterAutonomousReelProps {
   forcedCameraShot?: CameraShotType;
   ctaKeyword?: string;
   ctaText?: string;
+  weather?: "rain" | "sunny" | "sunset" | string;
+  weatherMode?: "rain" | "sunny" | "sunset";
+  episodeNumber?: number;
+  episodeStr?: string;
 }
 
 type CharacterRegistry = Record<
@@ -121,6 +125,10 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   forcedCameraShot,
   ctaKeyword,
   ctaText,
+  weather,
+  weatherMode,
+  episodeNumber,
+  episodeStr,
 }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
@@ -190,20 +198,26 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   // Emotion mapping
   const mapEmotion = (
     rawEmotion?: string
-  ): "neutral" | "tired" | "shocked" | "angry" | "smug" => {
+  ): "neutral" | "tired" | "shocked" | "angry" | "smug" | "sarcastic" => {
     if (!rawEmotion) return "neutral";
     const e = rawEmotion.toLowerCase();
-    if (e.includes("smug") || e.includes("happy")) return "smug";
+    if (e.includes("smug") || e.includes("sarcas") || e.includes("happy")) return "smug";
     if (e.includes("shock") || e.includes("surpris")) return "shocked";
     if (e.includes("angr")) return "angry";
     if (e.includes("tired") || e.includes("sad")) return "tired";
     return "neutral";
   };
 
+  const isAIRoasting =
+    isRightSpeaking &&
+    (activeTurn?.emotion === "smug" ||
+      activeTurn?.emotion === "sarcastic" ||
+      activeTurn?.emotion?.toLowerCase().includes("sarcas"));
+
   const leftEmotion = isLeftSpeaking
     ? mapEmotion(activeTurn?.emotion)
-    : isRightSpeaking && activeTurn?.emotion === "smug"
-    ? "tired"
+    : isAIRoasting
+    ? "shocked"
     : "neutral";
 
   const rightEmotion = isRightSpeaking
@@ -211,6 +225,18 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     : isLeftSpeaking && activeTurn?.emotion === "shocked"
     ? "smug"
     : "neutral";
+
+  const turnFrame = activeTurn ? Math.max(0, frame - activeTurn.start_frame) : 0;
+
+  // Resolve Weather Mode for Diner scene rotation ("rain" | "sunny" | "sunset")
+  const resolvedWeather: "rain" | "sunny" | "sunset" =
+    weatherMode ||
+    (weather === "sunny" || weather === "rain" || weather === "sunset" ? (weather as any) : undefined) ||
+    (environment?.toLowerCase().includes("sunny")
+      ? "sunny"
+      : environment?.toLowerCase().includes("sunset")
+      ? "sunset"
+      : "rain");
 
   // 5. Proof Card State & Safe Zone Coordinates (Act 3: Turns 5-7, 16-30s)
   const totalFrames = durationInFrames || activeTimeline.duration_in_frames || 450;
@@ -369,6 +395,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               isSpeaking={isLeftSpeaking}
               mouthOpen={mouthOpenLeft}
               emotion={leftEmotion}
+              turnFrame={turnFrame}
               position={[-1.15, 0.22, 0.0]}
               rotation={[
                 0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
@@ -390,13 +417,14 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
             />
           </SunsetDesk3D>
         ) : (
-          <CozyDiner3D>
+          <CozyDiner3D weatherMode={resolvedWeather}>
             {/* Left Seat: Human Dev in Diner Booth */}
             <LowPolyHumanRig
               characterId={leftCharId}
               isSpeaking={isLeftSpeaking}
               mouthOpen={mouthOpenLeft}
               emotion={leftEmotion}
+              turnFrame={turnFrame}
               position={[-1.15, 0.22, 0.0]}
               rotation={[
                 0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
@@ -646,7 +674,10 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
               textTransform: "uppercase",
             }}
           >
-            {endCard?.subtext || "Follow for Part 2"}
+            {endCard?.subtext ||
+              (episodeNumber
+                ? `Follow for Ep. ${episodeNumber + 1 < 10 ? "0" : ""}${episodeNumber + 1}`
+                : "Follow for Ep. 02")}
           </div>
         </div>
       )}

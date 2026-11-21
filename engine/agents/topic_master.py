@@ -241,12 +241,12 @@ class TopicMasterAgent:
             gh_url = "https://api.github.com/search/repositories?q=stars:>1000+pushed:>2026-01-01&sort=updated&order=desc"
             r_gh = self.session.get(gh_url, timeout=3.0)
             if r_gh.status_code == 200:
-                for it in r_gh.json().get("items", [])[:5]:
+                for it in r_gh.json().get("items", [])[:6]:
                     name = it.get("full_name") or it.get("name")
                     desc = it.get("description") or "Open source project"
                     signals.append({
-                        "source": "GitHub Trending",
-                        "title": f"{name}: {desc[:80]}",
+                        "source": "GitHub Trending (Open Source)",
+                        "title": f"[Free Open-Source Repo] {name}: {desc[:80]}",
                         "url": it.get("html_url", ""),
                     })
         except Exception:
@@ -434,7 +434,13 @@ class TopicMasterAgent:
             "- Prioritize everyday topics every student, gamer, and everyday phone/potato laptop user relates to immediately—never obscure niche enterprise SaaS tools!\n\n"
             "STRICT BAN ON DRY CS TRIVIA:\n"
             "- Strictly BANNED: RFC specs, obscure algorithmic puzzle solvers, low-level Linux kernel patches, academic math proofs, compiler edge-cases.\n"
-            "- STRICTLY REWARDED: Playable retro games in browser, 100% free zero-cost AI workflows that replace $20/mo subscriptions, shocking company profit breakdowns (NVIDIA, Costco, Spotify), breaking humanoid robots / gadgets, and generational tech comedy (Dad vs WiFi / cloud bills).\n\n"
+            "- STRICTLY REWARDED CATEGORIES:\n"
+            "  * Free Open-Source GitHub Repos: Insane 100% free open-source repos from GitHub Trending / Awesome lists (free self-hosted & desktop alternatives to paid apps, local AI models/agents, media downloaders, privacy tools) roasting humans still paying $20/mo subscriptions.\n"
+            "  * Retro & Browser Games: Playable retro games in browser tabs on potato laptops with zero downloads.\n"
+            "  * Underrated AI & App Workflows: 100% free zero-cost AI workflows that replace $20/mo subscriptions.\n"
+            "  * Tech Business Models: Shocking company profit breakdowns (NVIDIA, Costco, Spotify).\n"
+            "  * Breaking Tech & Gadgets: Wild hardware drops and humanoid robots making old human skills look prehistoric.\n"
+            "  * Relatable Tech / Dev / Indian Dad Memes: Generational tech comedy (Dad vs WiFi / cloud storage bills).\n\n"
             "OBJECTIVE VIRAL SCORING RUBRIC (0-100):\n"
             "1. Mass-Appeal Curiosity (0-25): Would a casual viewer, student, or dev freeze their thumb in the first 2 seconds?\n"
             "2. Save/DM Demand (0-25): Would thousands of viewers comment a keyword to get the 100% free link, playable port, or cheat sheet?\n"
@@ -466,7 +472,7 @@ JSON Schema:
   "candidates": [
     {{
       "topic_title": "Punchy title under 55 characters",
-      "category": "Retro & Browser Games | Underrated AI Apps | Tech Business Model | Breaking Tech | Relatable Culture",
+      "category": "Free Open-Source GitHub Repos | Retro & Browser Games | Underrated AI Apps | Tech Business Model | Breaking Tech | Relatable Culture",
       "curiosity_score": 24,
       "save_demand_score": 24,
       "debate_potential_score": 22,
@@ -582,6 +588,9 @@ JSON Schema:
         roast_angle = item.get("roast_angle", f"{right_char} brutally humbles human effort with instant zero-dollar tech.")
         conflict = item.get("core_conflict", f"{left_char} human denial vs {right_char} savage roast facts")
 
+        is_github_repo = any(term in str(category).lower() or term in str(title).lower() for term in ["github", "repo", "open-source", "open source"])
+        cta_phrase = f"Comment {clean_kw} and I'll DM you the GitHub repo link." if is_github_repo else f"Comment {clean_kw} and I'll DM you the free link."
+
         return {
             "id": slug,
             "title": title,
@@ -597,7 +606,7 @@ JSON Schema:
             "auto_dm_keyword": clean_kw,
             "cta_keyword": clean_kw,
             "ctaKeyword": clean_kw,
-            "cta_phrase": f"Comment {clean_kw} and I'll DM you the free link.",
+            "cta_phrase": cta_phrase,
             "is_100_percent_free": True,
             "left_character": left_char,
             "right_character": right_char,

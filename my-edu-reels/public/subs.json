@@ -1,1220 +1,1704 @@
 {
   "words": [
     {
-      "word": "Hey",
-      "raw": "Hey",
+      "word": "Never",
+      "raw": "Never",
       "start": 0.0,
-      "end": 0.173,
+      "end": 0.3,
       "character_id": "junior_dev"
     },
     {
-      "word": "Claude",
-      "raw": "Claude,",
-      "start": 0.173,
-      "end": 0.577,
+      "word": "push",
+      "raw": "push",
+      "start": 0.3,
+      "end": 0.539,
       "character_id": "junior_dev"
     },
     {
-      "word": "I",
-      "raw": "I",
-      "start": 0.577,
-      "end": 0.693,
-      "character_id": "junior_dev"
-    },
-    {
-      "word": "just",
-      "raw": "just",
-      "start": 0.693,
-      "end": 0.923,
-      "character_id": "junior_dev"
-    },
-    {
-      "word": "pushed",
-      "raw": "pushed",
-      "start": 0.923,
-      "end": 1.27,
-      "character_id": "junior_dev"
-    },
-    {
-      "word": "a",
-      "raw": "a",
-      "start": 1.27,
-      "end": 1.385,
-      "character_id": "junior_dev"
-    },
-    {
-      "word": "quick",
-      "raw": "quick",
-      "start": 1.385,
-      "end": 1.674,
-      "character_id": "junior_dev"
-    },
-    {
-      "word": "fix",
-      "raw": "fix",
-      "start": 1.674,
-      "end": 1.847,
+      "word": "code",
+      "raw": "code",
+      "start": 0.539,
+      "end": 0.779,
       "character_id": "junior_dev"
     },
     {
       "word": "directly",
       "raw": "directly",
-      "start": 1.847,
-      "end": 2.309,
+      "start": 0.779,
+      "end": 1.258,
       "character_id": "junior_dev"
     },
     {
       "word": "to",
       "raw": "to",
-      "start": 2.309,
-      "end": 2.424,
+      "start": 1.258,
+      "end": 1.378,
       "character_id": "junior_dev"
     },
     {
       "word": "production",
       "raw": "production",
-      "start": 2.424,
-      "end": 3.001,
+      "start": 1.378,
+      "end": 1.977,
       "character_id": "junior_dev"
     },
     {
       "word": "on",
       "raw": "on",
-      "start": 3.001,
-      "end": 3.117,
-      "character_id": "junior_dev"
-    },
-    {
-      "word": "a",
-      "raw": "a",
-      "start": 3.117,
-      "end": 3.232,
+      "start": 1.977,
+      "end": 2.097,
       "character_id": "junior_dev"
     },
     {
       "word": "Friday",
       "raw": "Friday",
-      "start": 3.232,
-      "end": 3.578,
+      "start": 2.097,
+      "end": 2.456,
       "character_id": "junior_dev"
     },
     {
       "word": "afternoon",
       "raw": "afternoon.",
-      "start": 3.578,
-      "end": 4.155,
+      "start": 2.456,
+      "end": 3.055,
       "character_id": "junior_dev"
     },
     {
-      "word": "Fascinating",
-      "raw": "Fascinating.",
+      "word": "...",
+      "raw": "...",
+      "start": 3.171,
+      "end": 3.362,
+      "character_id": "claude"
+    },
+    {
+      "word": "Bro",
+      "raw": "Bro...",
+      "start": 3.362,
+      "end": 3.745,
+      "character_id": "claude"
+    },
+    {
+      "word": "your",
+      "raw": "your",
+      "start": 3.745,
+      "end": 4.0,
+      "character_id": "claude"
+    },
+    {
+      "word": "code",
+      "raw": "code",
+      "start": 4.0,
+      "end": 4.255,
+      "character_id": "claude"
+    },
+    {
+      "word": "has",
+      "raw": "has",
       "start": 4.255,
-      "end": 5.002,
+      "end": 4.446,
       "character_id": "claude"
     },
     {
-      "word": "Shall",
-      "raw": "Shall",
-      "start": 5.002,
-      "end": 5.313,
+      "word": "more",
+      "raw": "more",
+      "start": 4.446,
+      "end": 4.702,
       "character_id": "claude"
     },
     {
-      "word": "I",
-      "raw": "I",
-      "start": 5.313,
-      "end": 5.437,
+      "word": "bugs",
+      "raw": "bugs",
+      "start": 4.702,
+      "end": 4.957,
       "character_id": "claude"
     },
     {
-      "word": "draft",
-      "raw": "draft",
-      "start": 5.437,
-      "end": 5.748,
+      "word": "than",
+      "raw": "than",
+      "start": 4.957,
+      "end": 5.212,
       "character_id": "claude"
     },
     {
-      "word": "the",
-      "raw": "the",
-      "start": 5.748,
-      "end": 5.935,
+      "word": "an",
+      "raw": "an",
+      "start": 5.212,
+      "end": 5.339,
       "character_id": "claude"
     },
     {
-      "word": "postmortem",
-      "raw": "post-mortem",
-      "start": 5.935,
-      "end": 6.619,
+      "word": "abandoned",
+      "raw": "abandoned",
+      "start": 5.339,
+      "end": 5.913,
       "character_id": "claude"
     },
     {
-      "word": "now",
-      "raw": "now,",
-      "start": 6.619,
-      "end": 6.868,
+      "word": "kitchen",
+      "raw": "kitchen.",
+      "start": 5.913,
+      "end": 6.423,
       "character_id": "claude"
     },
     {
-      "word": "or",
-      "raw": "or",
-      "start": 6.868,
-      "end": 6.992,
-      "character_id": "claude"
-    },
-    {
-      "word": "wait",
-      "raw": "wait",
-      "start": 6.992,
-      "end": 7.241,
-      "character_id": "claude"
-    },
-    {
-      "word": "until",
-      "raw": "until",
-      "start": 7.241,
-      "end": 7.552,
-      "character_id": "claude"
-    },
-    {
-      "word": "the",
-      "raw": "the",
-      "start": 7.552,
-      "end": 7.739,
-      "character_id": "claude"
-    },
-    {
-      "word": "alerts",
-      "raw": "alerts",
-      "start": 7.739,
-      "end": 8.112,
-      "character_id": "claude"
-    },
-    {
-      "word": "start",
-      "raw": "start",
-      "start": 8.112,
-      "end": 8.423,
-      "character_id": "claude"
-    },
-    {
-      "word": "screaming",
-      "raw": "screaming?",
-      "start": 8.423,
-      "end": 9.045,
-      "character_id": "claude"
-    },
-    {
-      "word": "Relax",
-      "raw": "Relax,",
-      "start": 9.258,
-      "end": 9.644,
-      "character_id": "junior_dev"
-    },
-    {
-      "word": "it",
-      "raw": "it",
-      "start": 9.644,
-      "end": 9.772,
+      "word": "Waitit",
+      "raw": "Wait—it",
+      "start": 6.636,
+      "end": 7.11,
       "character_id": "junior_dev"
     },
     {
       "word": "was",
       "raw": "was",
-      "start": 9.772,
-      "end": 9.965,
+      "start": 7.11,
+      "end": 7.313,
       "character_id": "junior_dev"
     },
     {
-      "word": "only",
-      "raw": "only",
-      "start": 9.965,
-      "end": 10.222,
+      "word": "just",
+      "raw": "just",
+      "start": 7.313,
+      "end": 7.584,
       "character_id": "junior_dev"
     },
     {
-      "word": "a",
-      "raw": "a",
-      "start": 10.222,
-      "end": 10.35,
+      "word": "one",
+      "raw": "one",
+      "start": 7.584,
+      "end": 7.788,
       "character_id": "junior_dev"
     },
     {
-      "word": "oneline",
-      "raw": "one-line",
-      "start": 10.35,
-      "end": 10.864,
+      "word": "tiny",
+      "raw": "tiny",
+      "start": 7.788,
+      "end": 8.059,
       "character_id": "junior_dev"
     },
     {
-      "word": "CSS",
-      "raw": "CSS",
-      "start": 10.864,
-      "end": 11.057,
+      "word": "button",
+      "raw": "button",
+      "start": 8.059,
+      "end": 8.465,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "color",
+      "raw": "color",
+      "start": 8.465,
+      "end": 8.804,
       "character_id": "junior_dev"
     },
     {
       "word": "change",
-      "raw": "change!",
-      "start": 11.057,
-      "end": 11.507,
+      "raw": "change",
+      "start": 8.804,
+      "end": 9.21,
       "character_id": "junior_dev"
     },
     {
-      "word": "What",
-      "raw": "What",
-      "start": 11.507,
-      "end": 11.764,
+      "word": "in",
+      "raw": "in",
+      "start": 9.21,
+      "end": 9.346,
       "character_id": "junior_dev"
     },
     {
-      "word": "could",
-      "raw": "could",
-      "start": 11.764,
-      "end": 12.085,
+      "word": "CSS",
+      "raw": "CSS!",
+      "start": 9.346,
+      "end": 9.617,
       "character_id": "junior_dev"
     },
     {
-      "word": "possibly",
-      "raw": "possibly",
-      "start": 12.085,
-      "end": 12.599,
+      "word": "...",
+      "raw": "...",
+      "start": 9.737,
+      "end": 9.925,
+      "character_id": "claude"
+    },
+    {
+      "word": "You",
+      "raw": "You",
+      "start": 9.925,
+      "end": 10.113,
+      "character_id": "claude"
+    },
+    {
+      "word": "broke",
+      "raw": "broke",
+      "start": 10.113,
+      "end": 10.427,
+      "character_id": "claude"
+    },
+    {
+      "word": "customer",
+      "raw": "customer",
+      "start": 10.427,
+      "end": 10.928,
+      "character_id": "claude"
+    },
+    {
+      "word": "checkout",
+      "raw": "checkout",
+      "start": 10.928,
+      "end": 11.43,
+      "character_id": "claude"
+    },
+    {
+      "word": "in",
+      "raw": "in",
+      "start": 11.43,
+      "end": 11.555,
+      "character_id": "claude"
+    },
+    {
+      "word": "eight",
+      "raw": "eight",
+      "start": 11.555,
+      "end": 11.869,
+      "character_id": "claude"
+    },
+    {
+      "word": "countries",
+      "raw": "countries",
+      "start": 11.869,
+      "end": 12.433,
+      "character_id": "claude"
+    },
+    {
+      "word": "simultaneously",
+      "raw": "simultaneously.",
+      "start": 12.433,
+      "end": 13.373,
+      "character_id": "claude"
+    },
+    {
+      "word": "Seriously",
+      "raw": "Seriously?",
+      "start": 13.583,
+      "end": 14.134,
       "character_id": "junior_dev"
     },
     {
-      "word": "go",
-      "raw": "go",
-      "start": 12.599,
-      "end": 12.728,
+      "word": "Show",
+      "raw": "Show",
+      "start": 14.134,
+      "end": 14.354,
       "character_id": "junior_dev"
     },
     {
-      "word": "wrong",
-      "raw": "wrong?",
-      "start": 12.728,
-      "end": 13.113,
+      "word": "me",
+      "raw": "me",
+      "start": 14.354,
+      "end": 14.464,
       "character_id": "junior_dev"
-    },
-    {
-      "word": "Statistically",
-      "raw": "Statistically",
-      "start": 13.333,
-      "end": 14.158,
-      "character_id": "claude"
-    },
-    {
-      "word": "speaking",
-      "raw": "speaking,",
-      "start": 14.158,
-      "end": 14.729,
-      "character_id": "claude"
-    },
-    {
-      "word": "precisely",
-      "raw": "precisely",
-      "start": 14.729,
-      "end": 15.299,
-      "character_id": "claude"
-    },
-    {
-      "word": "everything",
-      "raw": "everything.",
-      "start": 15.299,
-      "end": 15.997,
-      "character_id": "claude"
-    },
-    {
-      "word": "The",
-      "raw": "The",
-      "start": 15.997,
-      "end": 16.188,
-      "character_id": "claude"
-    },
-    {
-      "word": "entire",
-      "raw": "entire",
-      "start": 16.188,
-      "end": 16.568,
-      "character_id": "claude"
-    },
-    {
-      "word": "payment",
-      "raw": "payment",
-      "start": 16.568,
-      "end": 17.012,
-      "character_id": "claude"
-    },
-    {
-      "word": "gateway",
-      "raw": "gateway",
-      "start": 17.012,
-      "end": 17.456,
-      "character_id": "claude"
-    },
-    {
-      "word": "is",
-      "raw": "is",
-      "start": 17.456,
-      "end": 17.583,
-      "character_id": "claude"
-    },
-    {
-      "word": "already",
-      "raw": "already",
-      "start": 17.583,
-      "end": 18.027,
-      "character_id": "claude"
-    },
-    {
-      "word": "down",
-      "raw": "down.",
-      "start": 18.027,
-      "end": 18.344,
-      "character_id": "claude"
-    },
-    {
-      "word": "Arre",
-      "raw": "Arre",
-      "start": 18.559,
-      "end": 18.815,
-      "character_id": "dad"
-    },
-    {
-      "word": "Junior",
-      "raw": "Junior!",
-      "start": 18.815,
-      "end": 19.262,
-      "character_id": "dad"
-    },
-    {
-      "word": "Who",
-      "raw": "Who",
-      "start": 19.262,
-      "end": 19.454,
-      "character_id": "dad"
-    },
-    {
-      "word": "touches",
-      "raw": "touches",
-      "start": 19.454,
-      "end": 19.901,
-      "character_id": "dad"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 19.901,
-      "end": 20.093,
-      "character_id": "dad"
+      "start": 14.464,
+      "end": 14.629,
+      "character_id": "junior_dev"
     },
     {
-      "word": "server",
-      "raw": "server",
-      "start": 20.093,
-      "end": 20.477,
-      "character_id": "dad"
+      "word": "proof",
+      "raw": "proof",
+      "start": 14.629,
+      "end": 14.905,
+      "character_id": "junior_dev"
     },
     {
-      "word": "on",
-      "raw": "on",
-      "start": 20.477,
-      "end": 20.604,
-      "character_id": "dad"
-    },
-    {
-      "word": "Friday",
-      "raw": "Friday?!",
-      "start": 20.604,
-      "end": 21.116,
-      "character_id": "dad"
-    },
-    {
-      "word": "In",
-      "raw": "In",
-      "start": 21.116,
-      "end": 21.244,
-      "character_id": "dad"
+      "word": "before",
+      "raw": "before",
+      "start": 14.905,
+      "end": 15.235,
+      "character_id": "junior_dev"
     },
     {
       "word": "my",
       "raw": "my",
-      "start": 21.244,
-      "end": 21.371,
-      "character_id": "dad"
+      "start": 15.235,
+      "end": 15.345,
+      "character_id": "junior_dev"
     },
     {
-      "word": "days",
-      "raw": "days",
-      "start": 21.371,
-      "end": 21.627,
-      "character_id": "dad"
+      "word": "boss",
+      "raw": "boss",
+      "start": 15.345,
+      "end": 15.565,
+      "character_id": "junior_dev"
     },
     {
-      "word": "we",
-      "raw": "we",
-      "start": 21.627,
-      "end": 21.755,
-      "character_id": "dad"
+      "word": "wakes",
+      "raw": "wakes",
+      "start": 15.565,
+      "end": 15.841,
+      "character_id": "junior_dev"
     },
     {
-      "word": "never",
-      "raw": "never",
-      "start": 21.755,
-      "end": 22.075,
-      "character_id": "dad"
+      "word": "up",
+      "raw": "up.",
+      "start": 15.841,
+      "end": 16.006,
+      "character_id": "junior_dev"
     },
     {
-      "word": "touched",
-      "raw": "touched",
-      "start": 22.075,
-      "end": 22.522,
-      "character_id": "dad"
+      "word": "Look",
+      "raw": "Look",
+      "start": 16.097,
+      "end": 16.369,
+      "character_id": "claude"
     },
     {
-      "word": "production",
-      "raw": "production",
-      "start": 22.522,
-      "end": 23.161,
-      "character_id": "dad"
+      "word": "at",
+      "raw": "at",
+      "start": 16.369,
+      "end": 16.505,
+      "character_id": "claude"
     },
     {
-      "word": "without",
-      "raw": "without",
-      "start": 23.161,
-      "end": 23.609,
-      "character_id": "dad"
+      "word": "step",
+      "raw": "step",
+      "start": 16.505,
+      "end": 16.776,
+      "character_id": "claude"
     },
     {
-      "word": "a",
-      "raw": "a",
-      "start": 23.609,
-      "end": 23.736,
-      "character_id": "dad"
+      "word": "one",
+      "raw": "one:",
+      "start": 16.776,
+      "end": 17.048,
+      "character_id": "claude"
     },
     {
-      "word": "pooja",
-      "raw": "pooja!",
-      "start": 23.736,
-      "end": 24.12,
-      "character_id": "dad"
+      "word": "zero",
+      "raw": "zero",
+      "start": 17.048,
+      "end": 17.32,
+      "character_id": "claude"
+    },
+    {
+      "word": "tests",
+      "raw": "tests",
+      "start": 17.32,
+      "end": 17.66,
+      "character_id": "claude"
+    },
+    {
+      "word": "were",
+      "raw": "were",
+      "start": 17.66,
+      "end": 17.931,
+      "character_id": "claude"
+    },
+    {
+      "word": "run",
+      "raw": "run",
+      "start": 17.931,
+      "end": 18.135,
+      "character_id": "claude"
+    },
+    {
+      "word": "before",
+      "raw": "before",
+      "start": 18.135,
+      "end": 18.543,
+      "character_id": "claude"
+    },
+    {
+      "word": "pushing",
+      "raw": "pushing.",
+      "start": 18.543,
+      "end": 19.086,
+      "character_id": "claude"
     },
     {
       "word": "Wait",
-      "raw": "Wait...",
-      "start": 24.26,
-      "end": 24.653,
+      "raw": "Wait,",
+      "start": 19.305,
+      "end": 19.586,
       "character_id": "junior_dev"
     },
     {
-      "word": "why",
-      "raw": "why",
-      "start": 24.653,
-      "end": 24.822,
+      "word": "step",
+      "raw": "step",
+      "start": 19.586,
+      "end": 19.81,
       "character_id": "junior_dev"
     },
     {
-      "word": "is",
-      "raw": "is",
-      "start": 24.822,
-      "end": 24.934,
+      "word": "two",
+      "raw": "two",
+      "start": 19.81,
+      "end": 19.979,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "says",
+      "raw": "says",
+      "start": 19.979,
+      "end": 20.203,
       "character_id": "junior_dev"
     },
     {
       "word": "the",
       "raw": "the",
-      "start": 24.934,
-      "end": 25.103,
+      "start": 20.203,
+      "end": 20.372,
       "character_id": "junior_dev"
     },
     {
-      "word": "production",
-      "raw": "production",
-      "start": 25.103,
-      "end": 25.665,
+      "word": "lead",
+      "raw": "lead",
+      "start": 20.372,
+      "end": 20.596,
       "character_id": "junior_dev"
     },
     {
-      "word": "database",
-      "raw": "database",
-      "start": 25.665,
-      "end": 26.114,
+      "word": "engineer",
+      "raw": "engineer",
+      "start": 20.596,
+      "end": 21.046,
       "character_id": "junior_dev"
     },
     {
-      "word": "dropping",
-      "raw": "dropping",
-      "start": 26.114,
-      "end": 26.563,
+      "word": "is",
+      "raw": "is",
+      "start": 21.046,
+      "end": 21.158,
       "character_id": "junior_dev"
     },
     {
-      "word": "all",
-      "raw": "all",
-      "start": 26.563,
-      "end": 26.732,
+      "word": "already",
+      "raw": "already",
+      "start": 21.158,
+      "end": 21.551,
       "character_id": "junior_dev"
     },
     {
-      "word": "tables",
-      "raw": "tables",
-      "start": 26.732,
-      "end": 27.069,
+      "word": "hiking",
+      "raw": "hiking?",
+      "start": 21.551,
+      "end": 21.944,
       "character_id": "junior_dev"
     },
     {
-      "word": "right",
-      "raw": "right",
-      "start": 27.069,
-      "end": 27.35,
+      "word": "And",
+      "raw": "And",
+      "start": 22.061,
+      "end": 22.263,
+      "character_id": "claude"
+    },
+    {
+      "word": "step",
+      "raw": "step",
+      "start": 22.263,
+      "end": 22.532,
+      "character_id": "claude"
+    },
+    {
+      "word": "three",
+      "raw": "three:",
+      "start": 22.532,
+      "end": 22.936,
+      "character_id": "claude"
+    },
+    {
+      "word": "fortyseven",
+      "raw": "forty-seven",
+      "start": 22.936,
+      "end": 23.676,
+      "character_id": "claude"
+    },
+    {
+      "word": "emergency",
+      "raw": "emergency",
+      "start": 23.676,
+      "end": 24.282,
+      "character_id": "claude"
+    },
+    {
+      "word": "alerts",
+      "raw": "alerts",
+      "start": 24.282,
+      "end": 24.686,
+      "character_id": "claude"
+    },
+    {
+      "word": "fired",
+      "raw": "fired",
+      "start": 24.686,
+      "end": 25.022,
+      "character_id": "claude"
+    },
+    {
+      "word": "in",
+      "raw": "in",
+      "start": 25.022,
+      "end": 25.157,
+      "character_id": "claude"
+    },
+    {
+      "word": "twelve",
+      "raw": "twelve",
+      "start": 25.157,
+      "end": 25.56,
+      "character_id": "claude"
+    },
+    {
+      "word": "seconds",
+      "raw": "seconds.",
+      "start": 25.56,
+      "end": 26.099,
+      "character_id": "claude"
+    },
+    {
+      "word": "Bro",
+      "raw": "Bro...",
+      "start": 26.3,
+      "end": 26.639,
       "character_id": "junior_dev"
     },
     {
-      "word": "now",
-      "raw": "now?!",
-      "start": 27.35,
-      "end": 27.631,
+      "word": "my",
+      "raw": "my",
+      "start": 26.639,
+      "end": 26.752,
       "character_id": "junior_dev"
+    },
+    {
+      "word": "hands",
+      "raw": "hands",
+      "start": 26.752,
+      "end": 27.034,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "are",
+      "raw": "are",
+      "start": 27.034,
+      "end": 27.204,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "shaking",
+      "raw": "shaking.",
+      "start": 27.204,
+      "end": 27.656,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "How",
+      "raw": "How",
+      "start": 27.656,
+      "end": 27.825,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "do",
+      "raw": "do",
+      "start": 27.825,
+      "end": 27.938,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "I",
+      "raw": "I",
+      "start": 27.938,
+      "end": 28.051,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "fix",
+      "raw": "fix",
+      "start": 28.051,
+      "end": 28.221,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "this",
+      "raw": "this?",
+      "start": 28.221,
+      "end": 28.503,
+      "character_id": "junior_dev"
+    },
+    {
+      "word": "Check",
+      "raw": "Check",
+      "start": 28.623,
+      "end": 28.969,
+      "character_id": "claude"
+    },
+    {
+      "word": "your",
+      "raw": "your",
+      "start": 28.969,
+      "end": 29.246,
+      "character_id": "claude"
+    },
+    {
+      "word": "screen",
+      "raw": "screen:",
+      "start": 29.246,
+      "end": 29.73,
+      "character_id": "claude"
+    },
+    {
+      "word": "your",
+      "raw": "your",
+      "start": 29.73,
+      "end": 30.007,
+      "character_id": "claude"
+    },
+    {
+      "word": "CEO",
+      "raw": "CEO",
+      "start": 30.007,
+      "end": 30.214,
+      "character_id": "claude"
+    },
+    {
+      "word": "just",
+      "raw": "just",
+      "start": 30.214,
+      "end": 30.491,
+      "character_id": "claude"
+    },
+    {
+      "word": "messaged",
+      "raw": "messaged",
+      "start": 30.491,
+      "end": 31.045,
+      "character_id": "claude"
+    },
+    {
+      "word": "asking",
+      "raw": "asking",
+      "start": 31.045,
+      "end": 31.46,
+      "character_id": "claude"
+    },
+    {
+      "word": "why",
+      "raw": "why",
+      "start": 31.46,
+      "end": 31.667,
+      "character_id": "claude"
+    },
+    {
+      "word": "revenue",
+      "raw": "revenue",
+      "start": 31.667,
+      "end": 32.152,
+      "character_id": "claude"
+    },
+    {
+      "word": "stopped",
+      "raw": "stopped.",
+      "start": 32.152,
+      "end": 32.705,
+      "character_id": "claude"
+    },
+    {
+      "word": "...",
+      "raw": "...",
+      "start": 32.914,
+      "end": 33.135,
+      "character_id": "claude"
+    },
+    {
+      "word": "Enjoy",
+      "raw": "Enjoy",
+      "start": 33.135,
+      "end": 33.504,
+      "character_id": "claude"
+    },
+    {
+      "word": "your",
+      "raw": "your",
+      "start": 33.504,
+      "end": 33.8,
+      "character_id": "claude"
+    },
+    {
+      "word": "weekend",
+      "raw": "weekend",
+      "start": 33.8,
+      "end": 34.316,
+      "character_id": "claude"
+    },
+    {
+      "word": "unemployment",
+      "raw": "unemployment.",
+      "start": 34.316,
+      "end": 35.276,
+      "character_id": "claude"
+    },
+    {
+      "word": "Comment",
+      "raw": "Comment",
+      "start": 35.276,
+      "end": 35.793,
+      "character_id": "claude"
+    },
+    {
+      "word": "FIX",
+      "raw": "FIX",
+      "start": 35.793,
+      "end": 36.014,
+      "character_id": "claude"
+    },
+    {
+      "word": "and",
+      "raw": "and",
+      "start": 36.014,
+      "end": 36.235,
+      "character_id": "claude"
+    },
+    {
+      "word": "Ill",
+      "raw": "I'll",
+      "start": 36.235,
+      "end": 36.531,
+      "character_id": "claude"
+    },
+    {
+      "word": "DM",
+      "raw": "DM",
+      "start": 36.531,
+      "end": 36.678,
+      "character_id": "claude"
+    },
+    {
+      "word": "you",
+      "raw": "you",
+      "start": 36.678,
+      "end": 36.9,
+      "character_id": "claude"
+    },
+    {
+      "word": "the",
+      "raw": "the",
+      "start": 36.9,
+      "end": 37.121,
+      "character_id": "claude"
+    },
+    {
+      "word": "link",
+      "raw": "link.",
+      "start": 37.121,
+      "end": 37.49,
+      "character_id": "claude"
     }
   ],
   "chunks": [
     {
       "start": 0.0,
-      "end": 0.693,
-      "text": "Hey Claude I",
+      "end": 0.779,
+      "text": "Never push code",
       "character_id": "junior_dev",
       "words": [
         {
-          "word": "Hey",
+          "word": "Never",
           "start_sec": 0.0,
-          "end_sec": 0.173
+          "end_sec": 0.3
         },
         {
-          "word": "Claude",
-          "start_sec": 0.173,
-          "end_sec": 0.577
+          "word": "push",
+          "start_sec": 0.3,
+          "end_sec": 0.539
         },
         {
-          "word": "I",
-          "start_sec": 0.577,
-          "end_sec": 0.693
+          "word": "code",
+          "start_sec": 0.539,
+          "end_sec": 0.779
         }
       ]
     },
     {
-      "start": 0.693,
-      "end": 1.385,
-      "text": "just pushed a",
+      "start": 0.779,
+      "end": 1.977,
+      "text": "directly to production",
       "character_id": "junior_dev",
       "words": [
-        {
-          "word": "just",
-          "start_sec": 0.693,
-          "end_sec": 0.923
-        },
-        {
-          "word": "pushed",
-          "start_sec": 0.923,
-          "end_sec": 1.27
-        },
-        {
-          "word": "a",
-          "start_sec": 1.27,
-          "end_sec": 1.385
-        }
-      ]
-    },
-    {
-      "start": 1.385,
-      "end": 2.309,
-      "text": "quick fix directly",
-      "character_id": "junior_dev",
-      "words": [
-        {
-          "word": "quick",
-          "start_sec": 1.385,
-          "end_sec": 1.674
-        },
-        {
-          "word": "fix",
-          "start_sec": 1.674,
-          "end_sec": 1.847
-        },
         {
           "word": "directly",
-          "start_sec": 1.847,
-          "end_sec": 2.309
-        }
-      ]
-    },
-    {
-      "start": 2.309,
-      "end": 3.117,
-      "text": "to production on",
-      "character_id": "junior_dev",
-      "words": [
+          "start_sec": 0.779,
+          "end_sec": 1.258
+        },
         {
           "word": "to",
-          "start_sec": 2.309,
-          "end_sec": 2.424
+          "start_sec": 1.258,
+          "end_sec": 1.378
         },
         {
           "word": "production",
-          "start_sec": 2.424,
-          "end_sec": 3.001
-        },
-        {
-          "word": "on",
-          "start_sec": 3.001,
-          "end_sec": 3.117
+          "start_sec": 1.378,
+          "end_sec": 1.977
         }
       ]
     },
     {
-      "start": 3.117,
-      "end": 4.155,
-      "text": "a Friday afternoon",
+      "start": 1.977,
+      "end": 3.055,
+      "text": "on Friday afternoon",
       "character_id": "junior_dev",
       "words": [
         {
-          "word": "a",
-          "start_sec": 3.117,
-          "end_sec": 3.232
+          "word": "on",
+          "start_sec": 1.977,
+          "end_sec": 2.097
         },
         {
           "word": "Friday",
-          "start_sec": 3.232,
-          "end_sec": 3.578
+          "start_sec": 2.097,
+          "end_sec": 2.456
         },
         {
           "word": "afternoon",
-          "start_sec": 3.578,
-          "end_sec": 4.155
+          "start_sec": 2.456,
+          "end_sec": 3.055
         }
       ]
     },
     {
-      "start": 4.255,
-      "end": 5.437,
-      "text": "Fascinating Shall I",
+      "start": 3.171,
+      "end": 4.0,
+      "text": "... Bro your",
       "character_id": "claude",
       "words": [
         {
-          "word": "Fascinating",
+          "word": "...",
+          "start_sec": 3.171,
+          "end_sec": 3.362
+        },
+        {
+          "word": "Bro",
+          "start_sec": 3.362,
+          "end_sec": 3.745
+        },
+        {
+          "word": "your",
+          "start_sec": 3.745,
+          "end_sec": 4.0
+        }
+      ]
+    },
+    {
+      "start": 4.0,
+      "end": 4.702,
+      "text": "code has more",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "code",
+          "start_sec": 4.0,
+          "end_sec": 4.255
+        },
+        {
+          "word": "has",
           "start_sec": 4.255,
-          "end_sec": 5.002
+          "end_sec": 4.446
         },
         {
-          "word": "Shall",
-          "start_sec": 5.002,
-          "end_sec": 5.313
-        },
-        {
-          "word": "I",
-          "start_sec": 5.313,
-          "end_sec": 5.437
+          "word": "more",
+          "start_sec": 4.446,
+          "end_sec": 4.702
         }
       ]
     },
     {
-      "start": 5.437,
-      "end": 6.619,
-      "text": "draft the postmortem",
+      "start": 4.702,
+      "end": 5.339,
+      "text": "bugs than an",
       "character_id": "claude",
       "words": [
         {
-          "word": "draft",
-          "start_sec": 5.437,
-          "end_sec": 5.748
+          "word": "bugs",
+          "start_sec": 4.702,
+          "end_sec": 4.957
         },
         {
-          "word": "the",
-          "start_sec": 5.748,
-          "end_sec": 5.935
+          "word": "than",
+          "start_sec": 4.957,
+          "end_sec": 5.212
         },
         {
-          "word": "postmortem",
-          "start_sec": 5.935,
-          "end_sec": 6.619
+          "word": "an",
+          "start_sec": 5.212,
+          "end_sec": 5.339
         }
       ]
     },
     {
-      "start": 6.619,
-      "end": 7.241,
-      "text": "now or wait",
+      "start": 5.339,
+      "end": 6.423,
+      "text": "abandoned kitchen",
       "character_id": "claude",
       "words": [
         {
-          "word": "now",
-          "start_sec": 6.619,
-          "end_sec": 6.868
+          "word": "abandoned",
+          "start_sec": 5.339,
+          "end_sec": 5.913
         },
         {
-          "word": "or",
-          "start_sec": 6.868,
-          "end_sec": 6.992
-        },
-        {
-          "word": "wait",
-          "start_sec": 6.992,
-          "end_sec": 7.241
+          "word": "kitchen",
+          "start_sec": 5.913,
+          "end_sec": 6.423
         }
       ]
     },
     {
-      "start": 7.241,
-      "end": 8.112,
-      "text": "until the alerts",
-      "character_id": "claude",
-      "words": [
-        {
-          "word": "until",
-          "start_sec": 7.241,
-          "end_sec": 7.552
-        },
-        {
-          "word": "the",
-          "start_sec": 7.552,
-          "end_sec": 7.739
-        },
-        {
-          "word": "alerts",
-          "start_sec": 7.739,
-          "end_sec": 8.112
-        }
-      ]
-    },
-    {
-      "start": 8.112,
-      "end": 9.045,
-      "text": "start screaming",
-      "character_id": "claude",
-      "words": [
-        {
-          "word": "start",
-          "start_sec": 8.112,
-          "end_sec": 8.423
-        },
-        {
-          "word": "screaming",
-          "start_sec": 8.423,
-          "end_sec": 9.045
-        }
-      ]
-    },
-    {
-      "start": 9.258,
-      "end": 9.965,
-      "text": "Relax it was",
+      "start": 6.636,
+      "end": 7.584,
+      "text": "Waitit was just",
       "character_id": "junior_dev",
       "words": [
         {
-          "word": "Relax",
-          "start_sec": 9.258,
-          "end_sec": 9.644
-        },
-        {
-          "word": "it",
-          "start_sec": 9.644,
-          "end_sec": 9.772
+          "word": "Waitit",
+          "start_sec": 6.636,
+          "end_sec": 7.11
         },
         {
           "word": "was",
-          "start_sec": 9.772,
-          "end_sec": 9.965
+          "start_sec": 7.11,
+          "end_sec": 7.313
+        },
+        {
+          "word": "just",
+          "start_sec": 7.313,
+          "end_sec": 7.584
         }
       ]
     },
     {
-      "start": 9.965,
-      "end": 10.864,
-      "text": "only a oneline",
+      "start": 7.584,
+      "end": 8.465,
+      "text": "one tiny button",
       "character_id": "junior_dev",
       "words": [
         {
-          "word": "only",
-          "start_sec": 9.965,
-          "end_sec": 10.222
+          "word": "one",
+          "start_sec": 7.584,
+          "end_sec": 7.788
         },
         {
-          "word": "a",
-          "start_sec": 10.222,
-          "end_sec": 10.35
+          "word": "tiny",
+          "start_sec": 7.788,
+          "end_sec": 8.059
         },
         {
-          "word": "oneline",
-          "start_sec": 10.35,
-          "end_sec": 10.864
+          "word": "button",
+          "start_sec": 8.059,
+          "end_sec": 8.465
         }
       ]
     },
     {
-      "start": 10.864,
-      "end": 11.764,
-      "text": "CSS change What",
+      "start": 8.465,
+      "end": 9.346,
+      "text": "color change in",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "color",
+          "start_sec": 8.465,
+          "end_sec": 8.804
+        },
+        {
+          "word": "change",
+          "start_sec": 8.804,
+          "end_sec": 9.21
+        },
+        {
+          "word": "in",
+          "start_sec": 9.21,
+          "end_sec": 9.346
+        }
+      ]
+    },
+    {
+      "start": 9.346,
+      "end": 9.617,
+      "text": "CSS",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "CSS",
-          "start_sec": 10.864,
-          "end_sec": 11.057
-        },
-        {
-          "word": "change",
-          "start_sec": 11.057,
-          "end_sec": 11.507
-        },
-        {
-          "word": "What",
-          "start_sec": 11.507,
-          "end_sec": 11.764
+          "start_sec": 9.346,
+          "end_sec": 9.617
         }
       ]
     },
     {
-      "start": 11.764,
-      "end": 12.728,
-      "text": "could possibly go",
+      "start": 9.737,
+      "end": 10.427,
+      "text": "... You broke",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "...",
+          "start_sec": 9.737,
+          "end_sec": 9.925
+        },
+        {
+          "word": "You",
+          "start_sec": 9.925,
+          "end_sec": 10.113
+        },
+        {
+          "word": "broke",
+          "start_sec": 10.113,
+          "end_sec": 10.427
+        }
+      ]
+    },
+    {
+      "start": 10.427,
+      "end": 11.555,
+      "text": "customer checkout in",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "customer",
+          "start_sec": 10.427,
+          "end_sec": 10.928
+        },
+        {
+          "word": "checkout",
+          "start_sec": 10.928,
+          "end_sec": 11.43
+        },
+        {
+          "word": "in",
+          "start_sec": 11.43,
+          "end_sec": 11.555
+        }
+      ]
+    },
+    {
+      "start": 11.555,
+      "end": 13.373,
+      "text": "eight countries simultaneously",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "eight",
+          "start_sec": 11.555,
+          "end_sec": 11.869
+        },
+        {
+          "word": "countries",
+          "start_sec": 11.869,
+          "end_sec": 12.433
+        },
+        {
+          "word": "simultaneously",
+          "start_sec": 12.433,
+          "end_sec": 13.373
+        }
+      ]
+    },
+    {
+      "start": 13.583,
+      "end": 14.464,
+      "text": "Seriously Show me",
       "character_id": "junior_dev",
       "words": [
         {
-          "word": "could",
-          "start_sec": 11.764,
-          "end_sec": 12.085
+          "word": "Seriously",
+          "start_sec": 13.583,
+          "end_sec": 14.134
         },
         {
-          "word": "possibly",
-          "start_sec": 12.085,
-          "end_sec": 12.599
+          "word": "Show",
+          "start_sec": 14.134,
+          "end_sec": 14.354
         },
         {
-          "word": "go",
-          "start_sec": 12.599,
-          "end_sec": 12.728
+          "word": "me",
+          "start_sec": 14.354,
+          "end_sec": 14.464
         }
       ]
     },
     {
-      "start": 12.728,
-      "end": 13.113,
-      "text": "wrong",
+      "start": 14.464,
+      "end": 15.235,
+      "text": "the proof before",
       "character_id": "junior_dev",
       "words": [
-        {
-          "word": "wrong",
-          "start_sec": 12.728,
-          "end_sec": 13.113
-        }
-      ]
-    },
-    {
-      "start": 13.333,
-      "end": 15.299,
-      "text": "Statistically speaking precisely",
-      "character_id": "claude",
-      "words": [
-        {
-          "word": "Statistically",
-          "start_sec": 13.333,
-          "end_sec": 14.158
-        },
-        {
-          "word": "speaking",
-          "start_sec": 14.158,
-          "end_sec": 14.729
-        },
-        {
-          "word": "precisely",
-          "start_sec": 14.729,
-          "end_sec": 15.299
-        }
-      ]
-    },
-    {
-      "start": 15.299,
-      "end": 16.568,
-      "text": "everything The entire",
-      "character_id": "claude",
-      "words": [
-        {
-          "word": "everything",
-          "start_sec": 15.299,
-          "end_sec": 15.997
-        },
-        {
-          "word": "The",
-          "start_sec": 15.997,
-          "end_sec": 16.188
-        },
-        {
-          "word": "entire",
-          "start_sec": 16.188,
-          "end_sec": 16.568
-        }
-      ]
-    },
-    {
-      "start": 16.568,
-      "end": 17.583,
-      "text": "payment gateway is",
-      "character_id": "claude",
-      "words": [
-        {
-          "word": "payment",
-          "start_sec": 16.568,
-          "end_sec": 17.012
-        },
-        {
-          "word": "gateway",
-          "start_sec": 17.012,
-          "end_sec": 17.456
-        },
-        {
-          "word": "is",
-          "start_sec": 17.456,
-          "end_sec": 17.583
-        }
-      ]
-    },
-    {
-      "start": 17.583,
-      "end": 18.344,
-      "text": "already down",
-      "character_id": "claude",
-      "words": [
-        {
-          "word": "already",
-          "start_sec": 17.583,
-          "end_sec": 18.027
-        },
-        {
-          "word": "down",
-          "start_sec": 18.027,
-          "end_sec": 18.344
-        }
-      ]
-    },
-    {
-      "start": 18.559,
-      "end": 19.454,
-      "text": "Arre Junior Who",
-      "character_id": "dad",
-      "words": [
-        {
-          "word": "Arre",
-          "start_sec": 18.559,
-          "end_sec": 18.815
-        },
-        {
-          "word": "Junior",
-          "start_sec": 18.815,
-          "end_sec": 19.262
-        },
-        {
-          "word": "Who",
-          "start_sec": 19.262,
-          "end_sec": 19.454
-        }
-      ]
-    },
-    {
-      "start": 19.454,
-      "end": 20.477,
-      "text": "touches the server",
-      "character_id": "dad",
-      "words": [
-        {
-          "word": "touches",
-          "start_sec": 19.454,
-          "end_sec": 19.901
-        },
         {
           "word": "the",
-          "start_sec": 19.901,
-          "end_sec": 20.093
+          "start_sec": 14.464,
+          "end_sec": 14.629
         },
         {
-          "word": "server",
-          "start_sec": 20.093,
-          "end_sec": 20.477
+          "word": "proof",
+          "start_sec": 14.629,
+          "end_sec": 14.905
+        },
+        {
+          "word": "before",
+          "start_sec": 14.905,
+          "end_sec": 15.235
         }
       ]
     },
     {
-      "start": 20.477,
-      "end": 21.244,
-      "text": "on Friday In",
-      "character_id": "dad",
-      "words": [
-        {
-          "word": "on",
-          "start_sec": 20.477,
-          "end_sec": 20.604
-        },
-        {
-          "word": "Friday",
-          "start_sec": 20.604,
-          "end_sec": 21.116
-        },
-        {
-          "word": "In",
-          "start_sec": 21.116,
-          "end_sec": 21.244
-        }
-      ]
-    },
-    {
-      "start": 21.244,
-      "end": 21.755,
-      "text": "my days we",
-      "character_id": "dad",
+      "start": 15.235,
+      "end": 15.841,
+      "text": "my boss wakes",
+      "character_id": "junior_dev",
       "words": [
         {
           "word": "my",
-          "start_sec": 21.244,
-          "end_sec": 21.371
+          "start_sec": 15.235,
+          "end_sec": 15.345
         },
         {
-          "word": "days",
-          "start_sec": 21.371,
-          "end_sec": 21.627
+          "word": "boss",
+          "start_sec": 15.345,
+          "end_sec": 15.565
         },
         {
-          "word": "we",
-          "start_sec": 21.627,
-          "end_sec": 21.755
+          "word": "wakes",
+          "start_sec": 15.565,
+          "end_sec": 15.841
         }
       ]
     },
     {
-      "start": 21.755,
-      "end": 23.161,
-      "text": "never touched production",
-      "character_id": "dad",
+      "start": 15.841,
+      "end": 16.006,
+      "text": "up",
+      "character_id": "junior_dev",
       "words": [
         {
-          "word": "never",
-          "start_sec": 21.755,
-          "end_sec": 22.075
-        },
-        {
-          "word": "touched",
-          "start_sec": 22.075,
-          "end_sec": 22.522
-        },
-        {
-          "word": "production",
-          "start_sec": 22.522,
-          "end_sec": 23.161
+          "word": "up",
+          "start_sec": 15.841,
+          "end_sec": 16.006
         }
       ]
     },
     {
-      "start": 23.161,
-      "end": 24.12,
-      "text": "without a pooja",
-      "character_id": "dad",
+      "start": 16.097,
+      "end": 16.776,
+      "text": "Look at step",
+      "character_id": "claude",
       "words": [
         {
-          "word": "without",
-          "start_sec": 23.161,
-          "end_sec": 23.609
+          "word": "Look",
+          "start_sec": 16.097,
+          "end_sec": 16.369
         },
         {
-          "word": "a",
-          "start_sec": 23.609,
-          "end_sec": 23.736
+          "word": "at",
+          "start_sec": 16.369,
+          "end_sec": 16.505
         },
         {
-          "word": "pooja",
-          "start_sec": 23.736,
-          "end_sec": 24.12
+          "word": "step",
+          "start_sec": 16.505,
+          "end_sec": 16.776
         }
       ]
     },
     {
-      "start": 24.26,
-      "end": 24.934,
-      "text": "Wait why is",
+      "start": 16.776,
+      "end": 17.66,
+      "text": "one zero tests",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "one",
+          "start_sec": 16.776,
+          "end_sec": 17.048
+        },
+        {
+          "word": "zero",
+          "start_sec": 17.048,
+          "end_sec": 17.32
+        },
+        {
+          "word": "tests",
+          "start_sec": 17.32,
+          "end_sec": 17.66
+        }
+      ]
+    },
+    {
+      "start": 17.66,
+      "end": 18.543,
+      "text": "were run before",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "were",
+          "start_sec": 17.66,
+          "end_sec": 17.931
+        },
+        {
+          "word": "run",
+          "start_sec": 17.931,
+          "end_sec": 18.135
+        },
+        {
+          "word": "before",
+          "start_sec": 18.135,
+          "end_sec": 18.543
+        }
+      ]
+    },
+    {
+      "start": 18.543,
+      "end": 19.086,
+      "text": "pushing",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "pushing",
+          "start_sec": 18.543,
+          "end_sec": 19.086
+        }
+      ]
+    },
+    {
+      "start": 19.305,
+      "end": 19.979,
+      "text": "Wait step two",
       "character_id": "junior_dev",
       "words": [
         {
           "word": "Wait",
-          "start_sec": 24.26,
-          "end_sec": 24.653
+          "start_sec": 19.305,
+          "end_sec": 19.586
         },
         {
-          "word": "why",
-          "start_sec": 24.653,
-          "end_sec": 24.822
+          "word": "step",
+          "start_sec": 19.586,
+          "end_sec": 19.81
+        },
+        {
+          "word": "two",
+          "start_sec": 19.81,
+          "end_sec": 19.979
+        }
+      ]
+    },
+    {
+      "start": 19.979,
+      "end": 20.596,
+      "text": "says the lead",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "says",
+          "start_sec": 19.979,
+          "end_sec": 20.203
+        },
+        {
+          "word": "the",
+          "start_sec": 20.203,
+          "end_sec": 20.372
+        },
+        {
+          "word": "lead",
+          "start_sec": 20.372,
+          "end_sec": 20.596
+        }
+      ]
+    },
+    {
+      "start": 20.596,
+      "end": 21.551,
+      "text": "engineer is already",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "engineer",
+          "start_sec": 20.596,
+          "end_sec": 21.046
         },
         {
           "word": "is",
-          "start_sec": 24.822,
-          "end_sec": 24.934
+          "start_sec": 21.046,
+          "end_sec": 21.158
+        },
+        {
+          "word": "already",
+          "start_sec": 21.158,
+          "end_sec": 21.551
         }
       ]
     },
     {
-      "start": 24.934,
-      "end": 26.114,
-      "text": "the production database",
+      "start": 21.551,
+      "end": 21.944,
+      "text": "hiking",
       "character_id": "junior_dev",
       "words": [
+        {
+          "word": "hiking",
+          "start_sec": 21.551,
+          "end_sec": 21.944
+        }
+      ]
+    },
+    {
+      "start": 22.061,
+      "end": 22.936,
+      "text": "And step three",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "And",
+          "start_sec": 22.061,
+          "end_sec": 22.263
+        },
+        {
+          "word": "step",
+          "start_sec": 22.263,
+          "end_sec": 22.532
+        },
+        {
+          "word": "three",
+          "start_sec": 22.532,
+          "end_sec": 22.936
+        }
+      ]
+    },
+    {
+      "start": 22.936,
+      "end": 24.686,
+      "text": "fortyseven emergency alerts",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "fortyseven",
+          "start_sec": 22.936,
+          "end_sec": 23.676
+        },
+        {
+          "word": "emergency",
+          "start_sec": 23.676,
+          "end_sec": 24.282
+        },
+        {
+          "word": "alerts",
+          "start_sec": 24.282,
+          "end_sec": 24.686
+        }
+      ]
+    },
+    {
+      "start": 24.686,
+      "end": 25.56,
+      "text": "fired in twelve",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "fired",
+          "start_sec": 24.686,
+          "end_sec": 25.022
+        },
+        {
+          "word": "in",
+          "start_sec": 25.022,
+          "end_sec": 25.157
+        },
+        {
+          "word": "twelve",
+          "start_sec": 25.157,
+          "end_sec": 25.56
+        }
+      ]
+    },
+    {
+      "start": 25.56,
+      "end": 26.099,
+      "text": "seconds",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "seconds",
+          "start_sec": 25.56,
+          "end_sec": 26.099
+        }
+      ]
+    },
+    {
+      "start": 26.3,
+      "end": 27.034,
+      "text": "Bro my hands",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "Bro",
+          "start_sec": 26.3,
+          "end_sec": 26.639
+        },
+        {
+          "word": "my",
+          "start_sec": 26.639,
+          "end_sec": 26.752
+        },
+        {
+          "word": "hands",
+          "start_sec": 26.752,
+          "end_sec": 27.034
+        }
+      ]
+    },
+    {
+      "start": 27.034,
+      "end": 27.825,
+      "text": "are shaking How",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "are",
+          "start_sec": 27.034,
+          "end_sec": 27.204
+        },
+        {
+          "word": "shaking",
+          "start_sec": 27.204,
+          "end_sec": 27.656
+        },
+        {
+          "word": "How",
+          "start_sec": 27.656,
+          "end_sec": 27.825
+        }
+      ]
+    },
+    {
+      "start": 27.825,
+      "end": 28.221,
+      "text": "do I fix",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "do",
+          "start_sec": 27.825,
+          "end_sec": 27.938
+        },
+        {
+          "word": "I",
+          "start_sec": 27.938,
+          "end_sec": 28.051
+        },
+        {
+          "word": "fix",
+          "start_sec": 28.051,
+          "end_sec": 28.221
+        }
+      ]
+    },
+    {
+      "start": 28.221,
+      "end": 28.503,
+      "text": "this",
+      "character_id": "junior_dev",
+      "words": [
+        {
+          "word": "this",
+          "start_sec": 28.221,
+          "end_sec": 28.503
+        }
+      ]
+    },
+    {
+      "start": 28.623,
+      "end": 29.73,
+      "text": "Check your screen",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "Check",
+          "start_sec": 28.623,
+          "end_sec": 28.969
+        },
+        {
+          "word": "your",
+          "start_sec": 28.969,
+          "end_sec": 29.246
+        },
+        {
+          "word": "screen",
+          "start_sec": 29.246,
+          "end_sec": 29.73
+        }
+      ]
+    },
+    {
+      "start": 29.73,
+      "end": 30.491,
+      "text": "your CEO just",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "your",
+          "start_sec": 29.73,
+          "end_sec": 30.007
+        },
+        {
+          "word": "CEO",
+          "start_sec": 30.007,
+          "end_sec": 30.214
+        },
+        {
+          "word": "just",
+          "start_sec": 30.214,
+          "end_sec": 30.491
+        }
+      ]
+    },
+    {
+      "start": 30.491,
+      "end": 31.667,
+      "text": "messaged asking why",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "messaged",
+          "start_sec": 30.491,
+          "end_sec": 31.045
+        },
+        {
+          "word": "asking",
+          "start_sec": 31.045,
+          "end_sec": 31.46
+        },
+        {
+          "word": "why",
+          "start_sec": 31.46,
+          "end_sec": 31.667
+        }
+      ]
+    },
+    {
+      "start": 31.667,
+      "end": 32.705,
+      "text": "revenue stopped",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "revenue",
+          "start_sec": 31.667,
+          "end_sec": 32.152
+        },
+        {
+          "word": "stopped",
+          "start_sec": 32.152,
+          "end_sec": 32.705
+        }
+      ]
+    },
+    {
+      "start": 32.914,
+      "end": 33.8,
+      "text": "... Enjoy your",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "...",
+          "start_sec": 32.914,
+          "end_sec": 33.135
+        },
+        {
+          "word": "Enjoy",
+          "start_sec": 33.135,
+          "end_sec": 33.504
+        },
+        {
+          "word": "your",
+          "start_sec": 33.504,
+          "end_sec": 33.8
+        }
+      ]
+    },
+    {
+      "start": 33.8,
+      "end": 35.793,
+      "text": "weekend unemployment Comment",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "weekend",
+          "start_sec": 33.8,
+          "end_sec": 34.316
+        },
+        {
+          "word": "unemployment",
+          "start_sec": 34.316,
+          "end_sec": 35.276
+        },
+        {
+          "word": "Comment",
+          "start_sec": 35.276,
+          "end_sec": 35.793
+        }
+      ]
+    },
+    {
+      "start": 35.793,
+      "end": 36.531,
+      "text": "FIX and Ill",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "FIX",
+          "start_sec": 35.793,
+          "end_sec": 36.014
+        },
+        {
+          "word": "and",
+          "start_sec": 36.014,
+          "end_sec": 36.235
+        },
+        {
+          "word": "Ill",
+          "start_sec": 36.235,
+          "end_sec": 36.531
+        }
+      ]
+    },
+    {
+      "start": 36.531,
+      "end": 37.121,
+      "text": "DM you the",
+      "character_id": "claude",
+      "words": [
+        {
+          "word": "DM",
+          "start_sec": 36.531,
+          "end_sec": 36.678
+        },
+        {
+          "word": "you",
+          "start_sec": 36.678,
+          "end_sec": 36.9
+        },
         {
           "word": "the",
-          "start_sec": 24.934,
-          "end_sec": 25.103
-        },
-        {
-          "word": "production",
-          "start_sec": 25.103,
-          "end_sec": 25.665
-        },
-        {
-          "word": "database",
-          "start_sec": 25.665,
-          "end_sec": 26.114
+          "start_sec": 36.9,
+          "end_sec": 37.121
         }
       ]
     },
     {
-      "start": 26.114,
-      "end": 27.069,
-      "text": "dropping all tables",
-      "character_id": "junior_dev",
+      "start": 37.121,
+      "end": 37.49,
+      "text": "link",
+      "character_id": "claude",
       "words": [
         {
-          "word": "dropping",
-          "start_sec": 26.114,
-          "end_sec": 26.563
-        },
-        {
-          "word": "all",
-          "start_sec": 26.563,
-          "end_sec": 26.732
-        },
-        {
-          "word": "tables",
-          "start_sec": 26.732,
-          "end_sec": 27.069
-        }
-      ]
-    },
-    {
-      "start": 27.069,
-      "end": 27.631,
-      "text": "right now",
-      "character_id": "junior_dev",
-      "words": [
-        {
-          "word": "right",
-          "start_sec": 27.069,
-          "end_sec": 27.35
-        },
-        {
-          "word": "now",
-          "start_sec": 27.35,
-          "end_sec": 27.631
+          "word": "link",
+          "start_sec": 37.121,
+          "end_sec": 37.49
         }
       ]
     }
@@ -1223,488 +1707,708 @@
     {
       "turn_index": 0,
       "character_id": "junior_dev",
-      "text": "Hey Claude, I just pushed a quick fix directly to production on a Friday afternoon.",
-      "emotion": "neutral",
+      "text": "Never push code directly to production on Friday afternoon.",
+      "emotion": "shocked",
       "start_sec": 0.0,
-      "end_sec": 4.135,
+      "end_sec": 3.031,
       "start_frame": 0,
-      "end_frame": 124,
-      "duration_sec": 4.135,
+      "end_frame": 91,
+      "duration_sec": 3.031,
       "words": [
         {
-          "word": "Hey",
+          "word": "Never",
           "start_sec": 0.0,
-          "end_sec": 0.173
+          "end_sec": 0.3
         },
         {
-          "word": "Claude",
-          "start_sec": 0.173,
-          "end_sec": 0.577
+          "word": "push",
+          "start_sec": 0.3,
+          "end_sec": 0.539
         },
         {
-          "word": "I",
-          "start_sec": 0.577,
-          "end_sec": 0.693
-        },
-        {
-          "word": "just",
-          "start_sec": 0.693,
-          "end_sec": 0.923
-        },
-        {
-          "word": "pushed",
-          "start_sec": 0.923,
-          "end_sec": 1.27
-        },
-        {
-          "word": "a",
-          "start_sec": 1.27,
-          "end_sec": 1.385
-        },
-        {
-          "word": "quick",
-          "start_sec": 1.385,
-          "end_sec": 1.674
-        },
-        {
-          "word": "fix",
-          "start_sec": 1.674,
-          "end_sec": 1.847
+          "word": "code",
+          "start_sec": 0.539,
+          "end_sec": 0.779
         },
         {
           "word": "directly",
-          "start_sec": 1.847,
-          "end_sec": 2.309
+          "start_sec": 0.779,
+          "end_sec": 1.258
         },
         {
           "word": "to",
-          "start_sec": 2.309,
-          "end_sec": 2.424
+          "start_sec": 1.258,
+          "end_sec": 1.378
         },
         {
           "word": "production",
-          "start_sec": 2.424,
-          "end_sec": 3.001
+          "start_sec": 1.378,
+          "end_sec": 1.977
         },
         {
           "word": "on",
-          "start_sec": 3.001,
-          "end_sec": 3.117
-        },
-        {
-          "word": "a",
-          "start_sec": 3.117,
-          "end_sec": 3.232
+          "start_sec": 1.977,
+          "end_sec": 2.097
         },
         {
           "word": "Friday",
-          "start_sec": 3.232,
-          "end_sec": 3.578
+          "start_sec": 2.097,
+          "end_sec": 2.456
         },
         {
           "word": "afternoon",
-          "start_sec": 3.578,
-          "end_sec": 4.155
+          "start_sec": 2.456,
+          "end_sec": 3.055
         }
       ]
     },
     {
       "turn_index": 1,
       "character_id": "claude",
-      "text": "Fascinating. Shall I draft the post-mortem now, or wait until the alerts start screaming?",
-      "emotion": "deadpan",
-      "start_sec": 4.255,
-      "end_sec": 9.018,
-      "start_frame": 128,
-      "end_frame": 271,
-      "duration_sec": 4.763,
+      "text": "... Bro... your code has more bugs than an abandoned kitchen.",
+      "emotion": "smug",
+      "start_sec": 3.171,
+      "end_sec": 6.396,
+      "start_frame": 95,
+      "end_frame": 192,
+      "duration_sec": 3.225,
       "words": [
         {
-          "word": "Fascinating",
+          "word": "...",
+          "start_sec": 3.171,
+          "end_sec": 3.362
+        },
+        {
+          "word": "Bro",
+          "start_sec": 3.362,
+          "end_sec": 3.745
+        },
+        {
+          "word": "your",
+          "start_sec": 3.745,
+          "end_sec": 4.0
+        },
+        {
+          "word": "code",
+          "start_sec": 4.0,
+          "end_sec": 4.255
+        },
+        {
+          "word": "has",
           "start_sec": 4.255,
-          "end_sec": 5.002
+          "end_sec": 4.446
         },
         {
-          "word": "Shall",
-          "start_sec": 5.002,
-          "end_sec": 5.313
+          "word": "more",
+          "start_sec": 4.446,
+          "end_sec": 4.702
         },
         {
-          "word": "I",
-          "start_sec": 5.313,
-          "end_sec": 5.437
+          "word": "bugs",
+          "start_sec": 4.702,
+          "end_sec": 4.957
         },
         {
-          "word": "draft",
-          "start_sec": 5.437,
-          "end_sec": 5.748
+          "word": "than",
+          "start_sec": 4.957,
+          "end_sec": 5.212
         },
         {
-          "word": "the",
-          "start_sec": 5.748,
-          "end_sec": 5.935
+          "word": "an",
+          "start_sec": 5.212,
+          "end_sec": 5.339
         },
         {
-          "word": "postmortem",
-          "start_sec": 5.935,
-          "end_sec": 6.619
+          "word": "abandoned",
+          "start_sec": 5.339,
+          "end_sec": 5.913
         },
         {
-          "word": "now",
-          "start_sec": 6.619,
-          "end_sec": 6.868
-        },
-        {
-          "word": "or",
-          "start_sec": 6.868,
-          "end_sec": 6.992
-        },
-        {
-          "word": "wait",
-          "start_sec": 6.992,
-          "end_sec": 7.241
-        },
-        {
-          "word": "until",
-          "start_sec": 7.241,
-          "end_sec": 7.552
-        },
-        {
-          "word": "the",
-          "start_sec": 7.552,
-          "end_sec": 7.739
-        },
-        {
-          "word": "alerts",
-          "start_sec": 7.739,
-          "end_sec": 8.112
-        },
-        {
-          "word": "start",
-          "start_sec": 8.112,
-          "end_sec": 8.423
-        },
-        {
-          "word": "screaming",
-          "start_sec": 8.423,
-          "end_sec": 9.045
+          "word": "kitchen",
+          "start_sec": 5.913,
+          "end_sec": 6.423
         }
       ]
     },
     {
       "turn_index": 2,
       "character_id": "junior_dev",
-      "text": "Relax, it was only a one-line CSS change! What could possibly go wrong?",
-      "emotion": "smug",
-      "start_sec": 9.258,
-      "end_sec": 13.093,
-      "start_frame": 278,
-      "end_frame": 393,
-      "duration_sec": 3.835,
+      "text": "Wait—it was just one tiny button color change in CSS!",
+      "emotion": "shocked",
+      "start_sec": 6.636,
+      "end_sec": 9.597,
+      "start_frame": 199,
+      "end_frame": 288,
+      "duration_sec": 2.961,
       "words": [
         {
-          "word": "Relax",
-          "start_sec": 9.258,
-          "end_sec": 9.644
-        },
-        {
-          "word": "it",
-          "start_sec": 9.644,
-          "end_sec": 9.772
+          "word": "Waitit",
+          "start_sec": 6.636,
+          "end_sec": 7.11
         },
         {
           "word": "was",
-          "start_sec": 9.772,
-          "end_sec": 9.965
+          "start_sec": 7.11,
+          "end_sec": 7.313
         },
         {
-          "word": "only",
-          "start_sec": 9.965,
-          "end_sec": 10.222
+          "word": "just",
+          "start_sec": 7.313,
+          "end_sec": 7.584
         },
         {
-          "word": "a",
-          "start_sec": 10.222,
-          "end_sec": 10.35
+          "word": "one",
+          "start_sec": 7.584,
+          "end_sec": 7.788
         },
         {
-          "word": "oneline",
-          "start_sec": 10.35,
-          "end_sec": 10.864
+          "word": "tiny",
+          "start_sec": 7.788,
+          "end_sec": 8.059
         },
         {
-          "word": "CSS",
-          "start_sec": 10.864,
-          "end_sec": 11.057
+          "word": "button",
+          "start_sec": 8.059,
+          "end_sec": 8.465
+        },
+        {
+          "word": "color",
+          "start_sec": 8.465,
+          "end_sec": 8.804
         },
         {
           "word": "change",
-          "start_sec": 11.057,
-          "end_sec": 11.507
+          "start_sec": 8.804,
+          "end_sec": 9.21
         },
         {
-          "word": "What",
-          "start_sec": 11.507,
-          "end_sec": 11.764
+          "word": "in",
+          "start_sec": 9.21,
+          "end_sec": 9.346
         },
         {
-          "word": "could",
-          "start_sec": 11.764,
-          "end_sec": 12.085
-        },
-        {
-          "word": "possibly",
-          "start_sec": 12.085,
-          "end_sec": 12.599
-        },
-        {
-          "word": "go",
-          "start_sec": 12.599,
-          "end_sec": 12.728
-        },
-        {
-          "word": "wrong",
-          "start_sec": 12.728,
-          "end_sec": 13.113
+          "word": "CSS",
+          "start_sec": 9.346,
+          "end_sec": 9.617
         }
       ]
     },
     {
       "turn_index": 3,
       "character_id": "claude",
-      "text": "Statistically speaking, precisely everything. The entire payment gateway is already down.",
+      "text": "... You broke customer checkout in eight countries simultaneously.",
       "emotion": "smug",
-      "start_sec": 13.333,
-      "end_sec": 18.319,
-      "start_frame": 400,
-      "end_frame": 550,
-      "duration_sec": 4.986,
+      "start_sec": 9.737,
+      "end_sec": 13.343,
+      "start_frame": 292,
+      "end_frame": 400,
+      "duration_sec": 3.606,
       "words": [
         {
-          "word": "Statistically",
-          "start_sec": 13.333,
-          "end_sec": 14.158
+          "word": "...",
+          "start_sec": 9.737,
+          "end_sec": 9.925
         },
         {
-          "word": "speaking",
-          "start_sec": 14.158,
-          "end_sec": 14.729
+          "word": "You",
+          "start_sec": 9.925,
+          "end_sec": 10.113
         },
         {
-          "word": "precisely",
-          "start_sec": 14.729,
-          "end_sec": 15.299
+          "word": "broke",
+          "start_sec": 10.113,
+          "end_sec": 10.427
         },
         {
-          "word": "everything",
-          "start_sec": 15.299,
-          "end_sec": 15.997
+          "word": "customer",
+          "start_sec": 10.427,
+          "end_sec": 10.928
         },
         {
-          "word": "The",
-          "start_sec": 15.997,
-          "end_sec": 16.188
+          "word": "checkout",
+          "start_sec": 10.928,
+          "end_sec": 11.43
         },
         {
-          "word": "entire",
-          "start_sec": 16.188,
-          "end_sec": 16.568
+          "word": "in",
+          "start_sec": 11.43,
+          "end_sec": 11.555
         },
         {
-          "word": "payment",
-          "start_sec": 16.568,
-          "end_sec": 17.012
+          "word": "eight",
+          "start_sec": 11.555,
+          "end_sec": 11.869
         },
         {
-          "word": "gateway",
-          "start_sec": 17.012,
-          "end_sec": 17.456
+          "word": "countries",
+          "start_sec": 11.869,
+          "end_sec": 12.433
         },
         {
-          "word": "is",
-          "start_sec": 17.456,
-          "end_sec": 17.583
-        },
-        {
-          "word": "already",
-          "start_sec": 17.583,
-          "end_sec": 18.027
-        },
-        {
-          "word": "down",
-          "start_sec": 18.027,
-          "end_sec": 18.344
+          "word": "simultaneously",
+          "start_sec": 12.433,
+          "end_sec": 13.373
         }
       ]
     },
     {
       "turn_index": 4,
-      "character_id": "dad",
-      "text": "Arre Junior! Who touches the server on Friday?! In my days we never touched production without a pooja!",
+      "character_id": "junior_dev",
+      "text": "Seriously? Show me the proof before my boss wakes up.",
       "emotion": "shocked",
-      "start_sec": 18.559,
-      "end_sec": 24.12,
-      "start_frame": 557,
-      "end_frame": 724,
-      "duration_sec": 5.561,
+      "start_sec": 13.583,
+      "end_sec": 15.957,
+      "start_frame": 407,
+      "end_frame": 479,
+      "duration_sec": 2.374,
       "words": [
         {
-          "word": "Arre",
-          "start_sec": 18.559,
-          "end_sec": 18.815
+          "word": "Seriously",
+          "start_sec": 13.583,
+          "end_sec": 14.134
         },
         {
-          "word": "Junior",
-          "start_sec": 18.815,
-          "end_sec": 19.262
+          "word": "Show",
+          "start_sec": 14.134,
+          "end_sec": 14.354
         },
         {
-          "word": "Who",
-          "start_sec": 19.262,
-          "end_sec": 19.454
-        },
-        {
-          "word": "touches",
-          "start_sec": 19.454,
-          "end_sec": 19.901
+          "word": "me",
+          "start_sec": 14.354,
+          "end_sec": 14.464
         },
         {
           "word": "the",
-          "start_sec": 19.901,
-          "end_sec": 20.093
+          "start_sec": 14.464,
+          "end_sec": 14.629
         },
         {
-          "word": "server",
-          "start_sec": 20.093,
-          "end_sec": 20.477
+          "word": "proof",
+          "start_sec": 14.629,
+          "end_sec": 14.905
         },
         {
-          "word": "on",
-          "start_sec": 20.477,
-          "end_sec": 20.604
-        },
-        {
-          "word": "Friday",
-          "start_sec": 20.604,
-          "end_sec": 21.116
-        },
-        {
-          "word": "In",
-          "start_sec": 21.116,
-          "end_sec": 21.244
+          "word": "before",
+          "start_sec": 14.905,
+          "end_sec": 15.235
         },
         {
           "word": "my",
-          "start_sec": 21.244,
-          "end_sec": 21.371
+          "start_sec": 15.235,
+          "end_sec": 15.345
         },
         {
-          "word": "days",
-          "start_sec": 21.371,
-          "end_sec": 21.627
+          "word": "boss",
+          "start_sec": 15.345,
+          "end_sec": 15.565
         },
         {
-          "word": "we",
-          "start_sec": 21.627,
-          "end_sec": 21.755
+          "word": "wakes",
+          "start_sec": 15.565,
+          "end_sec": 15.841
         },
         {
-          "word": "never",
-          "start_sec": 21.755,
-          "end_sec": 22.075
-        },
-        {
-          "word": "touched",
-          "start_sec": 22.075,
-          "end_sec": 22.522
-        },
-        {
-          "word": "production",
-          "start_sec": 22.522,
-          "end_sec": 23.161
-        },
-        {
-          "word": "without",
-          "start_sec": 23.161,
-          "end_sec": 23.609
-        },
-        {
-          "word": "a",
-          "start_sec": 23.609,
-          "end_sec": 23.736
-        },
-        {
-          "word": "pooja",
-          "start_sec": 23.736,
-          "end_sec": 24.12
+          "word": "up",
+          "start_sec": 15.841,
+          "end_sec": 16.006
         }
       ]
     },
     {
       "turn_index": 5,
+      "character_id": "claude",
+      "text": "Look at step one: zero tests were run before pushing.",
+      "emotion": "smug",
+      "start_sec": 16.097,
+      "end_sec": 19.065,
+      "start_frame": 483,
+      "end_frame": 572,
+      "duration_sec": 2.968,
+      "words": [
+        {
+          "word": "Look",
+          "start_sec": 16.097,
+          "end_sec": 16.369
+        },
+        {
+          "word": "at",
+          "start_sec": 16.369,
+          "end_sec": 16.505
+        },
+        {
+          "word": "step",
+          "start_sec": 16.505,
+          "end_sec": 16.776
+        },
+        {
+          "word": "one",
+          "start_sec": 16.776,
+          "end_sec": 17.048
+        },
+        {
+          "word": "zero",
+          "start_sec": 17.048,
+          "end_sec": 17.32
+        },
+        {
+          "word": "tests",
+          "start_sec": 17.32,
+          "end_sec": 17.66
+        },
+        {
+          "word": "were",
+          "start_sec": 17.66,
+          "end_sec": 17.931
+        },
+        {
+          "word": "run",
+          "start_sec": 17.931,
+          "end_sec": 18.135
+        },
+        {
+          "word": "before",
+          "start_sec": 18.135,
+          "end_sec": 18.543
+        },
+        {
+          "word": "pushing",
+          "start_sec": 18.543,
+          "end_sec": 19.086
+        }
+      ]
+    },
+    {
+      "turn_index": 6,
       "character_id": "junior_dev",
-      "text": "Wait... why is the production database dropping all tables right now?!",
+      "text": "Wait, step two says the lead engineer is already hiking?",
       "emotion": "shocked",
-      "start_sec": 24.26,
-      "end_sec": 27.606,
-      "start_frame": 728,
-      "end_frame": 828,
-      "duration_sec": 3.346,
+      "start_sec": 19.305,
+      "end_sec": 21.921,
+      "start_frame": 579,
+      "end_frame": 658,
+      "duration_sec": 2.616,
       "words": [
         {
           "word": "Wait",
-          "start_sec": 24.26,
-          "end_sec": 24.653
+          "start_sec": 19.305,
+          "end_sec": 19.586
         },
         {
-          "word": "why",
-          "start_sec": 24.653,
-          "end_sec": 24.822
+          "word": "step",
+          "start_sec": 19.586,
+          "end_sec": 19.81
         },
         {
-          "word": "is",
-          "start_sec": 24.822,
-          "end_sec": 24.934
+          "word": "two",
+          "start_sec": 19.81,
+          "end_sec": 19.979
+        },
+        {
+          "word": "says",
+          "start_sec": 19.979,
+          "end_sec": 20.203
         },
         {
           "word": "the",
-          "start_sec": 24.934,
-          "end_sec": 25.103
+          "start_sec": 20.203,
+          "end_sec": 20.372
         },
         {
-          "word": "production",
-          "start_sec": 25.103,
-          "end_sec": 25.665
+          "word": "lead",
+          "start_sec": 20.372,
+          "end_sec": 20.596
         },
         {
-          "word": "database",
-          "start_sec": 25.665,
-          "end_sec": 26.114
+          "word": "engineer",
+          "start_sec": 20.596,
+          "end_sec": 21.046
         },
         {
-          "word": "dropping",
-          "start_sec": 26.114,
-          "end_sec": 26.563
+          "word": "is",
+          "start_sec": 21.046,
+          "end_sec": 21.158
         },
         {
-          "word": "all",
-          "start_sec": 26.563,
-          "end_sec": 26.732
+          "word": "already",
+          "start_sec": 21.158,
+          "end_sec": 21.551
         },
         {
-          "word": "tables",
-          "start_sec": 26.732,
-          "end_sec": 27.069
+          "word": "hiking",
+          "start_sec": 21.551,
+          "end_sec": 21.944
+        }
+      ]
+    },
+    {
+      "turn_index": 7,
+      "character_id": "claude",
+      "text": "And step three: forty-seven emergency alerts fired in twelve seconds.",
+      "emotion": "smug",
+      "start_sec": 22.061,
+      "end_sec": 26.06,
+      "start_frame": 662,
+      "end_frame": 782,
+      "duration_sec": 3.999,
+      "words": [
+        {
+          "word": "And",
+          "start_sec": 22.061,
+          "end_sec": 22.263
         },
         {
-          "word": "right",
-          "start_sec": 27.069,
-          "end_sec": 27.35
+          "word": "step",
+          "start_sec": 22.263,
+          "end_sec": 22.532
         },
         {
-          "word": "now",
-          "start_sec": 27.35,
-          "end_sec": 27.631
+          "word": "three",
+          "start_sec": 22.532,
+          "end_sec": 22.936
+        },
+        {
+          "word": "fortyseven",
+          "start_sec": 22.936,
+          "end_sec": 23.676
+        },
+        {
+          "word": "emergency",
+          "start_sec": 23.676,
+          "end_sec": 24.282
+        },
+        {
+          "word": "alerts",
+          "start_sec": 24.282,
+          "end_sec": 24.686
+        },
+        {
+          "word": "fired",
+          "start_sec": 24.686,
+          "end_sec": 25.022
+        },
+        {
+          "word": "in",
+          "start_sec": 25.022,
+          "end_sec": 25.157
+        },
+        {
+          "word": "twelve",
+          "start_sec": 25.157,
+          "end_sec": 25.56
+        },
+        {
+          "word": "seconds",
+          "start_sec": 25.56,
+          "end_sec": 26.099
+        }
+      ]
+    },
+    {
+      "turn_index": 8,
+      "character_id": "junior_dev",
+      "text": "Bro... my hands are shaking. How do I fix this?",
+      "emotion": "shocked",
+      "start_sec": 26.3,
+      "end_sec": 28.483,
+      "start_frame": 789,
+      "end_frame": 854,
+      "duration_sec": 2.183,
+      "words": [
+        {
+          "word": "Bro",
+          "start_sec": 26.3,
+          "end_sec": 26.639
+        },
+        {
+          "word": "my",
+          "start_sec": 26.639,
+          "end_sec": 26.752
+        },
+        {
+          "word": "hands",
+          "start_sec": 26.752,
+          "end_sec": 27.034
+        },
+        {
+          "word": "are",
+          "start_sec": 27.034,
+          "end_sec": 27.204
+        },
+        {
+          "word": "shaking",
+          "start_sec": 27.204,
+          "end_sec": 27.656
+        },
+        {
+          "word": "How",
+          "start_sec": 27.656,
+          "end_sec": 27.825
+        },
+        {
+          "word": "do",
+          "start_sec": 27.825,
+          "end_sec": 27.938
+        },
+        {
+          "word": "I",
+          "start_sec": 27.938,
+          "end_sec": 28.051
+        },
+        {
+          "word": "fix",
+          "start_sec": 28.051,
+          "end_sec": 28.221
+        },
+        {
+          "word": "this",
+          "start_sec": 28.221,
+          "end_sec": 28.503
+        }
+      ]
+    },
+    {
+      "turn_index": 9,
+      "character_id": "claude",
+      "text": "Check your screen: your CEO just messaged asking why revenue stopped.",
+      "emotion": "smug",
+      "start_sec": 28.623,
+      "end_sec": 32.674,
+      "start_frame": 859,
+      "end_frame": 980,
+      "duration_sec": 4.051,
+      "words": [
+        {
+          "word": "Check",
+          "start_sec": 28.623,
+          "end_sec": 28.969
+        },
+        {
+          "word": "your",
+          "start_sec": 28.969,
+          "end_sec": 29.246
+        },
+        {
+          "word": "screen",
+          "start_sec": 29.246,
+          "end_sec": 29.73
+        },
+        {
+          "word": "your",
+          "start_sec": 29.73,
+          "end_sec": 30.007
+        },
+        {
+          "word": "CEO",
+          "start_sec": 30.007,
+          "end_sec": 30.214
+        },
+        {
+          "word": "just",
+          "start_sec": 30.214,
+          "end_sec": 30.491
+        },
+        {
+          "word": "messaged",
+          "start_sec": 30.491,
+          "end_sec": 31.045
+        },
+        {
+          "word": "asking",
+          "start_sec": 31.045,
+          "end_sec": 31.46
+        },
+        {
+          "word": "why",
+          "start_sec": 31.46,
+          "end_sec": 31.667
+        },
+        {
+          "word": "revenue",
+          "start_sec": 31.667,
+          "end_sec": 32.152
+        },
+        {
+          "word": "stopped",
+          "start_sec": 32.152,
+          "end_sec": 32.705
+        }
+      ]
+    },
+    {
+      "turn_index": 10,
+      "character_id": "claude",
+      "text": "... Enjoy your weekend unemployment. Comment FIX and I'll DM you the link.",
+      "emotion": "smug",
+      "start_sec": 32.914,
+      "end_sec": 37.42,
+      "start_frame": 987,
+      "end_frame": 1123,
+      "duration_sec": 4.506,
+      "words": [
+        {
+          "word": "...",
+          "start_sec": 32.914,
+          "end_sec": 33.135
+        },
+        {
+          "word": "Enjoy",
+          "start_sec": 33.135,
+          "end_sec": 33.504
+        },
+        {
+          "word": "your",
+          "start_sec": 33.504,
+          "end_sec": 33.8
+        },
+        {
+          "word": "weekend",
+          "start_sec": 33.8,
+          "end_sec": 34.316
+        },
+        {
+          "word": "unemployment",
+          "start_sec": 34.316,
+          "end_sec": 35.276
+        },
+        {
+          "word": "Comment",
+          "start_sec": 35.276,
+          "end_sec": 35.793
+        },
+        {
+          "word": "FIX",
+          "start_sec": 35.793,
+          "end_sec": 36.014
+        },
+        {
+          "word": "and",
+          "start_sec": 36.014,
+          "end_sec": 36.235
+        },
+        {
+          "word": "Ill",
+          "start_sec": 36.235,
+          "end_sec": 36.531
+        },
+        {
+          "word": "DM",
+          "start_sec": 36.531,
+          "end_sec": 36.678
+        },
+        {
+          "word": "you",
+          "start_sec": 36.678,
+          "end_sec": 36.9
+        },
+        {
+          "word": "the",
+          "start_sec": 36.9,
+          "end_sec": 37.121
+        },
+        {
+          "word": "link",
+          "start_sec": 37.121,
+          "end_sec": 37.49
         }
       ]
     }

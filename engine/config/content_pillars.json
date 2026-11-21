@@ -1,8 +1,9 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "role": "few_shot_inspiration_and_offline_emergency_fallback",
-  "description": "Few-shot style archetypes and emergency offline fallback matrix. Dynamic daily production is driven live by TrendScoutAgent via public feeds and Gemini 2.5 Flash.",
+  "description": "Diabolical AI-roasts-human ragebait humor and simple spoken English archetypes for 40-50s 9:16 reels. 100% free of corporate jargon.",
   "archetype_styles": [
+    "Free Open-Source GitHub Repos",
     "Retro & Browser Games",
     "Underrated AI & App Workflows",
     "New Tech in the World",
@@ -12,81 +13,362 @@
   ],
   "pillars": [
     {
+      "id": "open_source_github_repos",
+      "name": "Free Open-Source GitHub Repos",
+      "description": "Insane 100% free open-source GitHub repositories that destroy expensive paid subscriptions and humiliate slow manual workflows.",
+      "default_keyword": "REPO",
+      "keywords": ["REPO", "GITHUB", "CODE"],
+      "topics": [
+        {
+          "id": "localsend_airdrop_alternative",
+          "title": "LocalSend: The Free Open-Source AirDrop for Every Device",
+          "hook": "Stop emailing photos to your own laptop.",
+          "core_topic": "LocalSend Open-Source File Sharing",
+          "pillar_id": "open_source_github_repos",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "claude",
+          "scene_preset": "desk",
+          "core_conflict": "Dev emailing files across devices vs AI proving open-source repo shares in 1 second",
+          "punchline": "You bought a two-thousand-dollar MacBook just to email screenshots to your own Gmail inbox.",
+          "cta_keyword": "REPO",
+          "cta_phrase": "Comment REPO and I'll DM you the GitHub repo link.",
+          "card_title": "LocalSend GitHub Specs",
+          "card_type": "comparison",
+          "badge": "100% FREE REPO",
+          "cardData": {
+            "title": "LocalSend GitHub Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "100% FREE REPO",
+            "rows": [
+              {
+                "label": "Step 1: Network Route",
+                "value": "100% Local Wi-Fi Zero Cloud",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Platform Support",
+                "value": "iOS Android Windows Mac Linux",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Total Cost",
+                "value": "$0 Forever Open-Source GitHub",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
+          },
+          "toastData": {
+            "app_name": "Mail",
+            "sender": "Self Email",
+            "message": "Sent screenshot_final_v2.png to myself for the 10th time today.",
+            "icon": "✉️",
+            "time": "now"
+          },
+          "endCardQuestion": "Still emailing files to your own devices in 2026? Tell me why below 👇",
+          "endCard": {
+            "question": "Still emailing files to your own devices in 2026? Tell me why below 👇",
+            "keyword": "REPO",
+            "cta_text": "Comment REPO for the GitHub link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop emailing photos to your own laptop.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Humans buy two-thousand-dollar machines just to email screenshots to themselves.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—AirDrop never finds my Windows PC or Android phone!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] Because Apple wants you trapped in their walled garden forever.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me how a free GitHub repo fixes this right now.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: sends files at full Wi-Fi speed with zero cloud servers.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two works on Mac, Windows, Linux, iPhone, and Android?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "Step three: zero dollars, zero ads, completely free and open-source on GitHub.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my inbox has five hundred emails sent to my own address.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Check your phone: your inbox is ninety percent files you sent to yourself.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am deleting my email drafts and downloading this repo tonight.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] About time, human. Comment REPO and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40}
+          ],
+          "seo_keywords": [
+            "LocalSend open source AirDrop alternative",
+            "free GitHub repos every dev needs",
+            "share files between iPhone and Windows free",
+            "best open source tools 2026",
+            "LocalSend tutorial"
+          ],
+          "hashtags": [
+            "#OpenSource", "#GitHub", "#LocalSend", "#TechHacks",
+            "#DeveloperTools", "#FreeApps", "#SoftwareEngineering", "#AirDropAlternative"
+          ],
+          "dm_message": "LocalSend GitHub repository link dispatched! 📦 Completely open-source, zero cloud data transfer for all devices. Star the repo and enjoy!"
+        },
+        {
+          "id": "upscayl_ai_image_upscaler",
+          "title": "Upscayl: 100% Free Open-Source AI Image Upscaler",
+          "hook": "Stop paying twenty dollars a month for photo enhancers.",
+          "core_topic": "Upscayl Open-Source AI Image Upscaler",
+          "pillar_id": "open_source_github_repos",
+          "format_type": "ai_vs_dev",
+          "left_character": "junior_dev",
+          "right_character": "gemini",
+          "scene_preset": "diner",
+          "core_conflict": "Paid SaaS photo enhancer subscriptions vs free open-source local AI",
+          "punchline": "You paid twenty dollars to make a blurry meme sharper. A free GitHub repo does 16x upscale in three seconds on your GPU.",
+          "cta_keyword": "GITHUB",
+          "cta_phrase": "Comment GITHUB and I'll DM you the GitHub repo link.",
+          "card_title": "Upscayl GitHub Specs",
+          "card_type": "comparison",
+          "badge": "100% FREE REPO",
+          "cardData": {
+            "title": "Upscayl GitHub Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "100% FREE REPO",
+            "rows": [
+              {
+                "label": "Step 1: AI Hardware",
+                "value": "Runs 100% On Your Local GPU",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Upscale Power",
+                "value": "16x Crisp Resolution Zero Loss",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Total Cost",
+                "value": "$0 vs $200 For Topaz Gigapixel",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
+          },
+          "toastData": {
+            "app_name": "Subscriptions",
+            "sender": "App Store",
+            "message": "AI Photo Enhancer $19.99/mo renewal scheduled for tomorrow.",
+            "icon": "💸",
+            "time": "now"
+          },
+          "endCardQuestion": "Still paying monthly subscriptions for photo upscaling in 2026? Be honest below 👇",
+          "endCard": {
+            "question": "Still paying monthly subscriptions for photo upscaling in 2026? Be honest below 👇",
+            "keyword": "GITHUB",
+            "cta_text": "Comment GITHUB for the repo",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop paying twenty dollars a month for photo enhancers.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Humans pay twenty bucks a month just to unblur a twenty-year-old JPEG.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—every top AI photo enhancer online charges twenty dollars a month!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[sigh] Because they know you will pay for what an open-source model does for free.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Prove to me a free GitHub tool can sharpen blurry photos.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Look at step one: runs straight on your graphics card with zero internet needed.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two upscales images up to sixteen times without losing detail?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Step three: zero dollars forever, beating two-hundred-dollar paid software.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... I am canceling my photo subscription right this second.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Check your notifications: your bank alert for another useless renewal is waiting.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Saved two hundred dollars a year with one single repo.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Smarter choices, human. Comment GITHUB and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40}
+          ],
+          "seo_keywords": [
+            "Upscayl free AI image upscaler",
+            "best free GitHub repos 2026",
+            "Topaz Gigapixel free alternative",
+            "open source AI tools",
+            "upscale blurry photos free"
+          ],
+          "hashtags": [
+            "#Upscayl", "#OpenSource", "#GitHub", "#FreeAI",
+            "#AIUpscaler", "#TechHacks", "#SaveMoney", "#DeveloperLife"
+          ],
+          "dm_message": "Upscayl GitHub repo sent! 🖼️ 100% free open-source AI image upscaler for MacOS, Windows, and Linux. Star the repository!"
+        }
+      ]
+    },
+    {
       "id": "retro_browser_games",
       "name": "Retro & Browser Games",
-      "description": "Playing classic PC and console games directly inside modern web browsers with zero installation.",
+      "description": "Play classic PC games right inside web browsers on potato laptops with zero downloads.",
       "default_keyword": "VICE",
       "keywords": ["VICE", "IGI", "PLAY"],
       "topics": [
         {
           "id": "gta_vice_city_web",
           "title": "GTA Vice City Running 100% in Browser",
-          "hook": "You can play full GTA Vice City directly inside Google Chrome without installing a single file.",
-          "core_topic": "WebAssembly GTA Vice City Port",
+          "hook": "Play full GTA Vice City in Chrome right now.",
+          "core_topic": "Browser GTA Vice City Port",
           "pillar_id": "retro_browser_games",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "claude",
-          "core_conflict": "Dev nostalgia vs WebAssembly emulator engineering",
-          "punchline": "Tommy Vercetti is doing drive-bys at 60 FPS on a school Chromebook while your corporate laptop struggles with Slack.",
+          "scene_preset": "diner",
+          "core_conflict": "Dev broken potato laptop vs AI proving full 3D game runs in a tab",
+          "punchline": "Tommy Vercetti is doing drive-bys at 60 FPS while your laptop cries opening a spreadsheet.",
           "cta_keyword": "VICE",
           "cta_phrase": "Comment VICE and I'll DM you the direct playable browser link.",
-          "card_title": "WebAssembly Vice City Benchmark",
-          "card_type": "benchmark",
-          "badge": "60 FPS WEB",
-          "card_data": {
-            "engine": "WebAssembly + WebGL2",
-            "download_size": "0 MB (Streamed Assets)",
-            "framerate": "Locked 60 FPS in Chrome",
-            "controller": "Full Bluetooth Gamepad Support"
+          "card_title": "Browser Vice City Specs",
+          "card_type": "comparison",
+          "badge": "60 FPS BROWSER",
+          "cardData": {
+            "title": "Vice City Browser Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "60 FPS BROWSER",
+            "rows": [
+              {
+                "label": "Step 1: Core Engine",
+                "value": "100% In-Browser Zero Cost",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Framerate",
+                "value": "Smooth 60 FPS On Cheap Laptop",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Storage",
+                "value": "Zero Download Files Needed",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Steam",
+            "sender": "Gamer Friend",
+            "message": "Bro are you really doing drive-bys in Chrome at work?",
+            "icon": "🎮",
+            "time": "now"
+          },
+          "endCardQuestion": "Still downloading 80GB games on a dying laptop in 2026? Drop your excuse below 👇",
+          "endCard": {
+            "question": "Still downloading 80GB games on a dying laptop in 2026? Drop your excuse below 👇",
+            "keyword": "VICE",
+            "cta_text": "Comment VICE for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Play full GTA Vice City in Chrome right now.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Bro... your potato laptop can finally run a game without smoking.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—there is no way a full 3D game runs inside a tab.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] It compiles straight to your browser. Your Chrome tab is now a console.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Prove it right now before I open this at my desk.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: boots in three seconds with zero file downloads.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says locked sixty frames per second without lag?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "And step three: uses less battery than your twelve open spreadsheets.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my boss thinks I am typing code while I am driving.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Check your screen: your teammate just messaged asking for your screen share.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, close the tab before he catches Tommy Vercetti on screen!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Too slow, human. Comment VICE and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "play GTA Vice City in browser",
-            "GTA Vice City WebAssembly",
+            "GTA Vice City web browser",
             "play retro games online free",
             "unblocked school games 2026",
             "browser ports of classic games"
           ],
           "hashtags": [
-            "#GTAViceCity", "#RetroGaming", "#WebAssembly", "#BrowserGames",
-            "#CodingLife", "#TechHacks", "#DeveloperHumor", "#GamingReels",
-            "#PCGaming", "#WebDev"
+            "#GTAViceCity", "#RetroGaming", "#BrowserGames", "#TechHacks",
+            "#DeveloperHumor", "#GamingReels", "#PCGaming", "#TechMemes"
           ],
-          "dm_message": "Here is the direct browser port for GTA Vice City! Open it in Chrome or Brave with hardware acceleration enabled. Enjoy the nostalgia! 🚗🌴"
+          "dm_message": "Here is the direct browser link for GTA Vice City! Open in Chrome with hardware acceleration. Enjoy the nostalgia! 🚗🌴"
         },
         {
           "id": "project_igi_browser",
           "title": "Project IGI Remastered in Your Browser",
-          "hook": "Remember sneaking into military bases in Project IGI? It now runs inside any browser tab.",
+          "hook": "Project IGI now runs inside a browser tab.",
           "core_topic": "Project IGI Browser Port",
           "pillar_id": "retro_browser_games",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "grok",
-          "core_conflict": "Childhood tactical shooter memories vs AI pointing out AI guard vision cone bugs",
-          "punchline": "David Jones survived Soviet snow bases just to get run in a JavaScript V8 worker thread.",
+          "scene_preset": "desk",
+          "core_conflict": "Dev childhood nostalgia vs AI roasting guard sight bugs",
+          "punchline": "David Jones survived Soviet snow bases just to get run in a browser tab.",
           "cta_keyword": "IGI",
           "cta_phrase": "Comment IGI and I'll send you the instant browser link.",
-          "card_title": "Project IGI Web Tech Stack",
-          "card_type": "breakdown",
+          "card_title": "Project IGI Browser Specs",
+          "card_type": "comparison",
           "badge": "RETRO CLASSIC",
-          "card_data": {
-            "source": "Direct C++ WebAssembly Compilation",
-            "load_time": "3.8 Seconds on Fiber",
-            "audio": "Original Sound Effects & Theme",
-            "status": "100% Playable in Tab"
+          "cardData": {
+            "title": "Project IGI Browser Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "RETRO CLASSIC",
+            "rows": [
+              {
+                "label": "Step 1: Core Tech",
+                "value": "100% In Browser Zero Setup",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Load Time",
+                "value": "Boots In Under 3 Seconds",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Gameplay",
+                "value": "Full Missions And Sound Effects",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Discord",
+            "sender": "Squad Leader",
+            "message": "Why are you playing stealth missions on your work laptop?",
+            "icon": "🎯",
+            "time": "now"
+          },
+          "endCardQuestion": "Did you ever beat Project IGI without cheat codes? Be honest below 💀",
+          "endCard": {
+            "question": "Did you ever beat Project IGI without cheat codes? Be honest below 💀",
+            "keyword": "IGI",
+            "cta_text": "Comment IGI for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Project IGI now runs inside a browser tab.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Finally, a tactical shooter where the guards are as blind as you.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—I spent three years of my childhood sneaking into those military bases!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "[sigh] And now you can fail the exact same stealth mission inside Google Chrome.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me the proof before I reload my sniper rifle.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "Look at step one: runs straight in your tab with zero downloads required.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says it loads every level in under three seconds?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "grok", "character_id": "grok", "text": "Step three: original sound effects and music playing perfectly in your headphones.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my productivity today just dropped to zero percent.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "Look at Discord: your teammate just caught you crouching behind a hangar.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Tell him I am doing tactical research for our company servers!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Good luck with that excuse. Comment IGI and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "Project IGI browser port",
             "play Project IGI online free",
             "retro PC games in Chrome",
             "nostalgic 2000s PC games",
-            "WebAssembly retro ports"
+            "browser ports of classic games"
           ],
           "hashtags": [
             "#ProjectIGI", "#RetroPCGames", "#NostalgiaGaming", "#BrowserGames",
-            "#TechReels", "#GamerLife", "#WebAssembly", "#TechMemes",
-            "#GamingCommunity", "#ClassicGames"
+            "#TechReels", "#GamerLife", "#TechMemes", "#ClassicGames"
           ],
           "dm_message": "Mission orders received! 🎯 Here is the instant browser link for Project IGI. Works on desktop Chrome and Edge. Good luck, Jones!"
         }
@@ -95,79 +377,179 @@
     {
       "id": "underrated_ai_workflows",
       "name": "Underrated AI & App Workflows",
-      "description": "Genuine high-utility, hidden workflows in everyday software that save 10+ hours a week.",
-      "default_keyword": "NOTEBOOK",
-      "keywords": ["NOTEBOOK", "APPS", "WORKFLOW"],
+      "description": "Zero-dollar tools that destroy paid subscriptions and humiliate slow manual workflows.",
+      "default_keyword": "APPS",
+      "keywords": ["APPS", "NOTEBOOK", "WORKFLOW"],
       "topics": [
         {
           "id": "notebooklm_deep_dive",
           "title": "Google NotebookLM Turning 200-Page PDFs into Deep Dive Podcasts",
-          "hook": "Stop reading 200-page corporate PDF documents when Google will turn them into a Joe Rogan style podcast.",
+          "hook": "Turn 200-page PDF files into funny podcasts instantly.",
           "core_topic": "NotebookLM Audio Overviews",
           "pillar_id": "underrated_ai_workflows",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "gemini",
-          "core_conflict": "Junior dev manual skimming panic vs AI generating 2-host banter breakdown",
-          "punchline": "Two AI hosts argued about Section 4.2 of my lease agreement with more passion than my landlord.",
+          "scene_preset": "diner",
+          "core_conflict": "Dev reading dense manuals for hours vs AI turning it into a podcast in seconds",
+          "punchline": "Two AI hosts argued about Section 4.2 with more passion than my landlord.",
           "cta_keyword": "NOTEBOOK",
           "cta_phrase": "Comment NOTEBOOK and I'll DM you the exact prompt template and source workflow.",
-          "card_title": "NotebookLM Audio Synthesis Workflow",
-          "card_type": "checklist",
+          "card_title": "NotebookLM Podcast Specs",
+          "card_type": "comparison",
           "badge": "100% FREE",
-          "card_data": {
-            "source_capacity": "50 Sources (PDF, YouTube, URLs)",
-            "output_format": "Interactive Two-Host Audio Discussion",
-            "hallucination_rate": "0% Grounded to Uploaded Docs",
-            "cost": "$0.00 (Included in Google Account)"
+          "cardData": {
+            "title": "NotebookLM Podcast Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "100% FREE",
+            "rows": [
+              {
+                "label": "Step 1: Document Capacity",
+                "value": "50 Huge Files At Once",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Audio Format",
+                "value": "Two AI Hosts Banter Live",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Cost",
+                "value": "Zero Dollars Total Cost",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Spotify",
+            "sender": "Audio Alert",
+            "message": "Your 200-page lease is now a 10-minute podcast debate.",
+            "icon": "🎙️",
+            "time": "now"
+          },
+          "endCardQuestion": "Be honest—do you actually read documents or do you fake it? Drop your take 👇",
+          "endCard": {
+            "question": "Be honest—do you actually read documents or do you fake it? Drop your take 👇",
+            "keyword": "NOTEBOOK",
+            "cta_text": "Comment NOTEBOOK for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Turn 200-page PDF files into funny podcasts instantly.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] While you spent six hours reading two pages and falling asleep.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—there is no way an AI can explain my boring school textbook.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[sigh] It creates two hosts who joke about your exact notes like a podcast.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Prove it right now before I fail my exam tomorrow.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Look at step one: drop fifty huge files at once with zero cost.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says two AI hosts argue and teach the material?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "gemini", "character_id": "gemini", "text": "And step three: zero dollars, completely free with your normal Google login.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... I wasted my entire weekend highlighting text like a clown.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Look at your notifications: your audio overview just finished playing your homework.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am never reading a massive corporate PDF by hand again.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Work smarter, human. Comment NOTEBOOK and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "NotebookLM audio overview tricks",
             "turn PDF into podcast NotebookLM",
             "best free AI study tools 2026",
-            "NotebookLM exam prep workflow",
-            "Google AI underrated tools"
+            "NotebookLM exam prep",
+            "Google AI free tools"
           ],
           "hashtags": [
-            "#NotebookLM", "#GoogleAI", "#AIWorkflows", "#ProductivityHacks",
-            "#StudyTools", "#StudentHacks", "#DeveloperTools", "#TechTips",
-            "#AIUpdates", "#Efficiency"
+            "#NotebookLM", "#GoogleAI", "#StudyTools", "#StudentHacks",
+            "#DeveloperTools", "#TechTips", "#AIUpdates", "#Productivity"
           ],
-          "dm_message": "Here is the exact NotebookLM master guide! Includes step-by-step setup, custom audio overview prompts, and how to feed 50 research papers at once. 📚🎙️"
+          "dm_message": "Here is the exact NotebookLM master guide! Includes setup, custom prompts, and how to turn any textbook into a podcast. 📚🎙️"
         },
         {
           "id": "obsidian_ai_second_brain",
           "title": "The Zero-Dollar Offline Second Brain in Obsidian",
-          "hook": "People pay Notion $20 a month while Obsidian with local AI runs circles around it completely offline.",
+          "hook": "Stop paying twenty dollars a month for Notion.",
           "core_topic": "Obsidian Local AI Knowledge Base",
           "pillar_id": "underrated_ai_workflows",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "claude",
+          "scene_preset": "desk",
           "core_conflict": "SaaS monthly subscription trap vs private local markdown vault",
           "punchline": "Your cloud notes disappear when the startup folds. My markdown files will survive the heat death of the universe.",
           "cta_keyword": "APPS",
           "cta_phrase": "Comment APPS and I'll DM you the free offline second brain vault setup.",
-          "card_title": "Offline Second Brain Comparison",
+          "card_title": "Offline Second Brain Specs",
           "card_type": "comparison",
           "badge": "$0 FOREVER",
-          "card_data": {
-            "privacy": "100% Local (Zero Telemetry)",
-            "speed": "Instant (0 ms Cloud Latency)",
-            "ai_integration": "Local Ollama + Smart Connections",
-            "monthly_cost": "$0 vs $240/yr Notion"
+          "cardData": {
+            "title": "Offline Second Brain Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "$0 FOREVER",
+            "rows": [
+              {
+                "label": "Step 1: Data Privacy",
+                "value": "100% Local On Your Laptop",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Speed",
+                "value": "Zero Delay Opening Files",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Annual Cost",
+                "value": "$0 vs $240 Yearly For Notion",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Apple Pay",
+            "sender": "Wallet Alert",
+            "message": "Notion $20 monthly charge canceled. Saved $240 this year.",
+            "icon": "💳",
+            "time": "now"
+          },
+          "endCardQuestion": "Are you still paying for notes when free local apps exist? Tell me why below 👇",
+          "endCard": {
+            "question": "Are you still paying for notes when free local apps exist? Tell me why below 👇",
+            "keyword": "APPS",
+            "cta_text": "Comment APPS for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop paying twenty dollars a month for Notion.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Humans love paying monthly fees just to write plain text lists.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—Notion has all my pretty databases and aesthetic templates!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] And when your Wi-Fi drops, you cannot even read your grocery list.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me how an offline app beats my cloud setup.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: every single file stays one hundred percent on your machine.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two opens instantly with zero cloud lag or loading spinners?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "Step three: you save two hundred and forty dollars every single year.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my wallet is literally hurting from all these useless app bills.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Check your phone: your banking app just confirmed your canceled subscription.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am moving all my files to local markdown tonight.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Welcome to freedom, human. Comment APPS and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "Obsidian vs Notion 2026",
             "free second brain app",
             "Obsidian local AI setup",
             "underrated productivity apps",
-            "offline markdown knowledge base"
+            "offline notes knowledge base"
           ],
           "hashtags": [
             "#ObsidianApp", "#SecondBrain", "#ProductivityTools", "#NotionAlternatives",
-            "#OpenSourceSoftware", "#TechHacks", "#DeveloperLife", "#SoftwareTools",
-            "#PrivacyFirst", "#PKM"
+            "#OpenSourceSoftware", "#TechHacks", "#DeveloperLife", "#PrivacyFirst"
           ],
           "dm_message": "Vault files dispatched! 🧠 Here is the free starter template for Obsidian + offline local AI integration. Your data stays 100% on your machine."
         }
@@ -176,241 +558,541 @@
     {
       "id": "new_tech_world",
       "name": "New Tech in the World",
-      "description": "Breaking hardware drops, wild robotics, open-source weight releases, and next-gen tech.",
+      "description": "Wild hardware drops, humanoid robots, and free tech making human skills look prehistoric.",
       "default_keyword": "TECH",
       "keywords": ["TECH", "LINK", "DROP"],
       "topics": [
         {
           "id": "humanoid_robot_kitchen",
           "title": "Humanoid Robots Folding Laundry & Making Omelettes",
-          "hook": "We thought robots would solve cold fusion, but Unitree just taught their robot to flip sunny-side up eggs.",
+          "hook": "This humanoid robot just cooked breakfast by itself.",
           "core_topic": "Next-Gen Humanoid Dexterity",
           "pillar_id": "new_tech_world",
           "format_type": "ai_vs_dad",
           "left_character": "dad",
           "right_character": "claude",
-          "core_conflict": "High-tech humanoid kinematics vs Dad critiquing egg masala proportions",
+          "scene_preset": "diner",
+          "core_conflict": "Dad critiquing cooking vs AI explaining robot mechanical precision",
           "punchline": "A sixteen thousand dollar robot made tea and my father complained there wasn't enough ginger.",
           "cta_keyword": "TECH",
           "cta_phrase": "Comment TECH and I'll DM you the breakdown of the newest humanoid robots.",
-          "card_title": "Humanoid Robot Specs & Pricing",
-          "card_type": "benchmark",
+          "card_title": "Humanoid Robot Specs",
+          "card_type": "comparison",
           "badge": "$16,000 MSRP",
-          "card_data": {
-            "actuators": "47 Degrees of Freedom",
-            "vision_model": "End-to-End VLA Neural Net",
-            "payload": "12 kg Dynamic Lifting",
-            "battery_life": "4.5 Hours Continuous Duty"
+          "cardData": {
+            "title": "Humanoid Robot Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "$16,000 MSRP",
+            "rows": [
+              {
+                "label": "Step 1: Movement",
+                "value": "47 Degrees Of Joint Motion",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Hands",
+                "value": "Flips Eggs Without Breaking Shells",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Battery",
+                "value": "Runs 4 Hours Non Stop",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "WhatsApp",
+            "sender": "Dad",
+            "message": "Robot made omelettes but forgot the ginger! Useless machine.",
+            "icon": "🍳",
+            "time": "now"
+          },
+          "endCardQuestion": "Would you eat breakfast cooked by an AI robot? Tell me below 👇",
+          "endCard": {
+            "question": "Would you eat breakfast cooked by an AI robot? Tell me below 👇",
+            "keyword": "TECH",
+            "cta_text": "Comment TECH for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "dad", "character_id": "dad", "text": "This humanoid robot just cooked breakfast by itself.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] And it did not burn the toast like you did yesterday.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "dad", "character_id": "dad", "text": "Wait—a robot can never understand proper Indian spices in an omelette!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] It measures spices by milligrams. Its cooking is mathematically perfect.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "dad", "character_id": "dad", "text": "Seriously? Show me how this expensive metal box moves its hands.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: forty-seven joint motors copy human finger dexterity.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "Wait, step two says it flips eggs without dropping a single shell?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "Step three: it cleans the kitchen counter for four hours straight.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "Bro... if it cleans the kitchen, maybe we can buy two of them.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at WhatsApp: your family group chat is already demanding one for dinner.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "I am telling everyone I taught this machine how to cook.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Of course you will, Dad. Comment TECH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "new humanoid robots 2026",
-            "Unitree G1 vs Tesla Optimus",
+            "robot cooking breakfast",
             "robotics breakthroughs",
             "home assistant robots",
             "next gen technology"
           ],
           "hashtags": [
             "#HumanoidRobots", "#Robotics", "#FutureTech", "#TeslaOptimus",
-            "#Unitree", "#ArtificialIntelligence", "#TechTrends", "#Innovation",
-            "#TechNews", "#IndianDad"
+            "#ArtificialIntelligence", "#TechTrends", "#Innovation", "#IndianDad"
           ],
-          "dm_message": "Robotics blueprint on its way! 🤖 Here is the complete breakdown comparing the top 4 affordable humanoid robots dropping this year."
+          "dm_message": "Robotics blueprint on its way! 🤖 Here is the complete breakdown comparing the top affordable humanoid robots dropping this year."
         },
         {
           "id": "open_source_deepseek_reasoning",
           "title": "The $6 Million Open Weights Model Humbling $100M Labs",
-          "hook": "A small team trained a reasoning model for $6 million that matches models costing half a billion dollars.",
+          "hook": "This cheap free model humbles multi-million dollar labs.",
           "core_topic": "Open Source AI Efficiency Revolution",
           "pillar_id": "new_tech_world",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "grok",
-          "core_conflict": "Massive corporate compute moats evaporating overnight",
-          "punchline": "Big tech spent 80 billion on GPUs just for an open weights repo to run on two Mac Studios.",
+          "scene_preset": "desk",
+          "core_conflict": "Big tech compute moats evaporating vs open weights repo",
+          "punchline": "Big tech spent 80 billion on chips just for a free model to match them.",
           "cta_keyword": "TECH",
           "cta_phrase": "Comment TECH and I'll send you the local install guide for reasoning models.",
-          "card_title": "Reasoning Model Training Cost Battle",
+          "card_title": "AI Cost Battle Specs",
           "card_type": "comparison",
           "badge": "94% COST CUT",
-          "card_data": {
-            "closed_lab_spend": "$100M - $500M Training Run",
-            "open_weights_spend": "$5.8M Total Compute",
-            "math_benchmark": "91.2% AIME Pass Rate",
-            "license": "Fully Open MIT / Weights Downloadable"
+          "cardData": {
+            "title": "AI Cost Battle Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "94% COST CUT",
+            "rows": [
+              {
+                "label": "Step 1: Big Tech Spend",
+                "value": "$500 Million Dollars Spent",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Open Source Cost",
+                "value": "Under $6 Million Total Cost",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Access",
+                "value": "100% Free Download For Everyone",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Chrome",
+            "sender": "Terminal Alert",
+            "message": "Free model finished in 1.2s. Why are you paying cloud bills?",
+            "icon": "⚡",
+            "time": "now"
+          },
+          "endCardQuestion": "Will open source AI destroy big tech subscriptions by 2027? Debate below 👇",
+          "endCard": {
+            "question": "Will open source AI destroy big tech subscriptions by 2027? Debate below 👇",
+            "keyword": "TECH",
+            "cta_text": "Comment TECH for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "This cheap free model humbles multi-million dollar labs.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Big tech spent billions on chips just to get embarrassed.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—there is no way a tiny team built something that smart.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "[sigh] They trained smarter instead of throwing piles of cash at servers.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me the real numbers before I believe the hype.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "Look at step one: the big labs burned five hundred million dollars.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says this free model cost six million total?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "grok", "character_id": "grok", "text": "Step three: you can download the full weights to your laptop for free.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... all those overpriced tech subscriptions look like a giant joke now.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "Check your screen: your local terminal is running the model right now.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am deleting my paid API keys immediately.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "grok", "character_id": "grok", "text": "[chuckle] Keep saving that money, human. Comment TECH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "open source reasoning models",
-            "DeepSeek vs OpenAI cost",
-            "local LLM benchmarks 2026",
-            "AI hardware efficiency",
-            "breakthrough AI models"
+            "free local AI models 2026",
+            "AI hardware savings",
+            "breakthrough AI models",
+            "local LLM benchmarks"
           ],
           "hashtags": [
-            "#OpenSourceAI", "#DeepSeek", "#ArtificialIntelligence", "#TechNews",
-            "#MachineLearning", "#OpenWeights", "#LLM", "#TechDisruption",
-            "#Grok", "#Developer"
+            "#OpenSourceAI", "#ArtificialIntelligence", "#TechNews",
+            "#OpenWeights", "#LLM", "#TechDisruption", "#Grok", "#Developer"
           ],
-          "dm_message": "Here is the direct GitHub repo and Ollama command to run this reasoning model locally on your laptop! Zero API fees. ⚡💻"
+          "dm_message": "Here is the direct repo and simple command to run this free model locally on your laptop! Zero API fees. ⚡💻"
         }
       ]
     },
     {
       "id": "how_companies_earn",
       "name": "How Companies Actually Earn",
-      "description": "Shocking, counter-intuitive business model breakdowns and hidden profit levers.",
+      "description": "Shocking, counter-intuitive business breakdowns showing how companies trick humans.",
       "default_keyword": "MODEL",
       "keywords": ["MODEL", "BIZ", "MONEY"],
       "topics": [
         {
           "id": "nvidia_margin_teardown",
           "title": "How NVIDIA Makes 75% Gross Margin on Sand",
-          "hook": "NVIDIA pays TSMC $3,000 to make an H100 chip, then sells it to Meta for $40,000.",
-          "core_topic": "NVIDIA Hardware & CUDA Monopoly Margin",
+          "hook": "NVIDIA makes seventy-five percent pure profit on sand.",
+          "core_topic": "NVIDIA Hardware Profit Margin",
           "pillar_id": "how_companies_earn",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "claude",
-          "core_conflict": "Believing hardware is low margin vs understanding the software CUDA moat",
-          "punchline": "Jensen Huang is selling digital shovels during a gold rush, and the shovels require a proprietary subscription handle.",
+          "scene_preset": "diner",
+          "core_conflict": "Thinking chips are cheap vs understanding software monopoly trap",
+          "punchline": "Jensen Huang is selling digital shovels during a gold rush with subscription handles.",
           "cta_keyword": "MODEL",
           "cta_phrase": "Comment MODEL and I'll DM you the complete revenue teardown infographic.",
-          "card_title": "NVIDIA H100 Chip Unit Economics",
-          "card_type": "breakdown",
+          "card_title": "NVIDIA Chip Profit Specs",
+          "card_type": "comparison",
           "badge": "74.8% MARGIN",
-          "card_data": {
-            "tsmc_wafer_cost": "~$3,200 Per Die Package",
-            "r_and_d_amortization": "~$1,800 Per Unit",
-            "enterprise_street_price": "$38,000 - $42,000",
-            "real_secret_sauce": "CUDA Software Lock-in"
+          "cardData": {
+            "title": "NVIDIA Chip Profit Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "74.8% MARGIN",
+            "rows": [
+              {
+                "label": "Step 1: Cost To Build",
+                "value": "Under $3,500 Per Chip Package",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Sale Price",
+                "value": "$40,000 Sold To Big Tech",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Real Secret",
+                "value": "Software Lock-In Nobody Can Escape",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Robinhood",
+            "sender": "Stock Alert",
+            "message": "NVIDIA chip margins hit 75%. Humans keep paying anyway.",
+            "icon": "📈",
+            "time": "now"
+          },
+          "endCardQuestion": "Is NVIDIA's pricing absolute genius or a monopoly crime? Drop your take below 👇",
+          "endCard": {
+            "question": "Is NVIDIA's pricing absolute genius or a monopoly crime? Drop your take below 👇",
+            "keyword": "MODEL",
+            "cta_text": "Comment MODEL for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "NVIDIA makes seventy-five percent pure profit on sand.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] And tech companies line up to give them billions anyway.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—hardware has tiny margins! Everyone knows electronics are cheap to make.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] Normal electronics, yes. Monopoly AI chips? They print money at will.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Break down the math before I buy their stock.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: the factory makes the chip for three thousand dollars.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says they sell it for forty thousand dollars?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "Step three: their software lock-in means companies cannot buy from anyone else.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... they are basically selling sand at diamond prices.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at your financial alerts: another twenty billion just rolled in.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am never questioning their leather jacket CEO again.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Smart choice, human. Comment MODEL and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "how NVIDIA makes money",
-            "NVIDIA H100 cost to build",
-            "NVIDIA profit margin breakdown",
-            "CUDA software moat explained",
+            "NVIDIA chip profit margin",
+            "NVIDIA H100 cost breakdown",
+            "software moat explained",
             "business model teardowns"
           ],
           "hashtags": [
             "#NVIDIA", "#JensenHuang", "#BusinessStrategy", "#TechEconomics",
-            "#Hardware", "#Semiconductors", "#StockMarket", "#StartupBusiness",
-            "#TechNews", "#AIHardware"
+            "#StockMarket", "#StartupBusiness", "#TechNews", "#AIHardware"
           ],
-          "dm_message": "Here is the full 1-page financial breakdown of NVIDIA's revenue streams and the CUDA ecosystem moat. Insightful read! 📊💵"
+          "dm_message": "Here is the full 1-page breakdown of NVIDIA's revenue and their software monopoly. Insightful breakdown! 📊💵"
         },
         {
           "id": "costco_membership_model",
           "title": "Costco Sells Chickens at a Loss to Take Your Wallet",
-          "hook": "Costco loses $40 million a year on $4.99 rotisserie chickens, yet makes $4.5 billion in pure net income.",
+          "hook": "Costco loses forty million selling cheap roast chickens.",
           "core_topic": "Costco Membership Subscription Engine",
           "pillar_id": "how_companies_earn",
           "format_type": "ai_vs_dad",
           "left_character": "dad",
           "right_character": "claude",
-          "core_conflict": "Dad's obsession with wholesale deals vs Costco's 100% subscription profit engine",
-          "punchline": "Dad thought he outsmarted wholesale retail while Costco booked 65 dollars before he even touched the shopping cart.",
+          "scene_preset": "diner",
+          "core_conflict": "Dad hunting bargains vs Costco subscription money trap",
+          "punchline": "Dad thought he outsmarted wholesale retail while Costco booked sixty-five dollars at the door.",
           "cta_keyword": "BIZ",
           "cta_phrase": "Comment BIZ and I'll send you the breakdown of membership subscription business models.",
-          "card_title": "Costco Profit Engine Breakdown",
-          "card_type": "breakdown",
+          "card_title": "Costco Profit Engine Specs",
+          "card_type": "comparison",
           "badge": "72% OF PROFIT",
-          "card_data": {
-            "rotisserie_chicken_margin": "-$40M Loss Leader",
-            "merchandise_gross_markup": "Capped at Strict 14%",
-            "membership_fee_revenue": "$4.58 Billion / Year",
-            "annual_renewal_rate": "92.7% North America"
+          "cardData": {
+            "title": "Costco Profit Engine Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "72% OF PROFIT",
+            "rows": [
+              {
+                "label": "Step 1: Chicken Loss",
+                "value": "-$40 Million Lost On Food",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Markup Rule",
+                "value": "Capped At Strict 14% Markup",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Real Money",
+                "value": "$4.5 Billion From Memberships",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Apple Wallet",
+            "sender": "Costco",
+            "message": "Membership renewed: $65 deducted before you entered the door.",
+            "icon": "🛒",
+            "time": "now"
+          },
+          "endCardQuestion": "Did you think the cheap chicken was a deal or did Costco get you? 💀👇",
+          "endCard": {
+            "question": "Did you think the cheap chicken was a deal or did Costco get you? 💀👇",
+            "keyword": "BIZ",
+            "cta_text": "Comment BIZ for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "dad", "character_id": "dad", "text": "Costco loses forty million selling cheap roast chickens.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] And they took two hundred dollars from you at the checkout.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "dad", "character_id": "dad", "text": "Wait—I bought a giant chicken for five dollars! I outsmarted wholesale retail!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] That cheap chicken is bait to make you walk past giant televisions.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "dad", "character_id": "dad", "text": "Seriously? Show me where their actual profit comes from then.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: they lose forty million on chickens on purpose.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "Wait, step two caps their merchandise markup at fourteen percent?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "Step three: they make four and a half billion dollars pure profit on membership cards.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "Bro... they charged me sixty-five dollars before I even touched a cart.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Check your phone: your annual membership just automatically renewed.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "I am still eating the cheap chicken tonight no matter what.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Enjoy your chicken, Dad. Comment BIZ and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "how Costco makes money",
             "Costco business model teardown",
             "rotisserie chicken loss leader",
-            "membership subscription businesses",
+            "membership subscription business",
             "smart retail business strategies"
           ],
           "hashtags": [
             "#Costco", "#BusinessModels", "#FinanceTips", "#RetailStrategy",
-            "#IndianDad", "#MoneyHacks", "#EconomicsExplained", "#BusinessNews",
-            "#Investing", "#PassiveIncome"
+            "#IndianDad", "#MoneyHacks", "#EconomicsExplained", "#BusinessNews"
           ],
-          "dm_message": "Business teardown sent! 🛒 Here is the breakdown on how Costco, Amazon Prime, and Gym memberships use loss-leaders to print billions in subscription profit."
+          "dm_message": "Business breakdown sent! 🛒 Here is the breakdown on how Costco, Amazon Prime, and Gym memberships use loss-leaders to print billions in subscription profit."
         }
       ]
     },
     {
       "id": "hype_vs_reality",
       "name": "Hype vs. Reality (Pros & Cons)",
-      "description": "Honest, balanced, non-sponsored teardowns of hyped developer tools and infrastructure.",
-      "default_keyword": "ROUTER",
-      "keywords": ["ROUTER", "TRUTH", "GUIDE"],
+      "description": "Honest, non-sponsored teardowns of hyped developer tools and hardware.",
+      "default_keyword": "TRUTH",
+      "keywords": ["TRUTH", "ROUTER", "GUIDE"],
       "topics": [
         {
           "id": "openrouter_pros_and_cons",
           "title": "OpenRouter Honest Review: 3 Real Pros vs 3 Nasty Cons",
-          "hook": "Everyone on Twitter is hyping OpenRouter as the ultimate AI tool, but nobody mentions the hidden markup and latency spikes.",
+          "hook": "Stop trusting hyped AI model routing tools blindly.",
           "core_topic": "OpenRouter Pros and Cons Teardown",
           "pillar_id": "hype_vs_reality",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "claude",
+          "scene_preset": "diner",
           "core_conflict": "Twitter developer hype vs production latency and billing reality",
-          "punchline": "One unified API key is heaven until an upstream routing provider goes down and takes your whole frontend with it.",
+          "punchline": "One unified key is heaven until an upstream routing provider goes down and takes your whole frontend with it.",
           "cta_keyword": "ROUTER",
           "cta_phrase": "Comment ROUTER and I'll DM you the unbiased routing cheat sheet with latency comparisons.",
-          "card_title": "OpenRouter: Hype vs Reality",
+          "card_title": "OpenRouter Hype vs Reality",
           "card_type": "comparison",
           "badge": "HONEST AUDIT",
-          "card_data": {
-            "pro_1": "Single API for 200+ Models (Claude, Llama, DeepSeek)",
-            "pro_2": "Zero monthly minimum commitments",
-            "con_1": "50-150ms Added Proxy Latency Overhead",
-            "con_2": "Upstream rate limit throttling during peak US hours"
+          "cardData": {
+            "title": "OpenRouter Hype vs Reality",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "HONEST AUDIT",
+            "rows": [
+              {
+                "label": "Step 1: Good Part",
+                "value": "One Key For 200+ AI Models",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Hidden Catch",
+                "value": "150ms Extra Delay On Prompts",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Bottom Line",
+                "value": "Great For Testing, Bad For Scale",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Discord",
+            "sender": "Dev Chat",
+            "message": "Routing proxy went down and took our whole app with it.",
+            "icon": "⚠️",
+            "time": "now"
+          },
+          "endCardQuestion": "Do you prefer one unified API key or direct keys? Debate below 👇",
+          "endCard": {
+            "question": "Do you prefer one unified API key or direct keys? Debate below 👇",
+            "keyword": "ROUTER",
+            "cta_text": "Comment ROUTER for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Stop trusting hyped AI model routing tools blindly.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] But Twitter told you one magical key solves all your problems.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—switching between every top AI model in one place sounds amazing!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] Until their middle proxy server lags and doubles your response time.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Give me the real breakdown before I deploy this in production.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: accessing two hundred models on one bill is great.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two adds over one hundred milliseconds of extra delay?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "And step three: when their proxy crashes, all your models crash together.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my production app would have been completely dead.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at Discord: other developers are already complaining about proxy downtime.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am keeping my direct provider keys for real users.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Finally some common sense. Comment ROUTER and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "OpenRouter pros and cons",
             "is OpenRouter worth it 2026",
-            "OpenRouter latency vs direct API",
-            "OpenRouter pricing markup",
+            "OpenRouter delay vs direct API",
+            "OpenRouter pricing truth",
             "best AI model routing tools"
           ],
           "hashtags": [
             "#OpenRouter", "#AIModels", "#WebDevelopment", "#SoftwareEngineering",
-            "#TechReviews", "#ClaudeAI", "#FullStack", "#DevCommunity",
-            "#APITools", "#CodingLife"
+            "#TechReviews", "#ClaudeAI", "#FullStack", "#CodingLife"
           ],
-          "dm_message": "Here is the honest OpenRouter cheat sheet! ⚡ Shows direct latency benchmarks vs Anthropic/OpenAI direct APIs, fallback configurations, and when to use direct keys instead."
+          "dm_message": "Here is the honest OpenRouter cheat sheet! ⚡ Shows delay benchmarks vs direct APIs, fallback configs, and when to use direct keys instead."
         },
         {
           "id": "local_llm_vs_cloud_api",
           "title": "Local Mac Mini LLMs vs Cloud APIs: The Unspoken Truth",
-          "hook": "Influencers told you to buy a $2,000 M4 Mac to run local AI for free. Here is the math they didn't show you.",
+          "hook": "Buying a two thousand dollar Mac for AI is crazy.",
           "core_topic": "Local LLM vs Cloud API Cost Reality",
           "pillar_id": "hype_vs_reality",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "gemini",
+          "scene_preset": "desk",
           "core_conflict": "Local hardware obsession vs cloud API token pennies",
           "punchline": "You spent two grand on unified memory to avoid paying forty-three cents to Gemini Flash.",
           "cta_keyword": "TRUTH",
           "cta_phrase": "Comment TRUTH and I'll send you the hardware breakeven calculator.",
-          "card_title": "Local LLM Hardware Breakeven",
+          "card_title": "Local AI Hardware Reality",
           "card_type": "comparison",
           "badge": "REAL MATH",
-          "card_data": {
-            "hardware_outlay": "$1,999 (Mac Mini 64GB Unified)",
-            "token_equivalent": "2.8 Billion Gemini Flash Tokens",
-            "breakeven_time": "14 Years at Normal Developer Usage",
-            "electricity_heat": "35W Continuous Draw"
+          "cardData": {
+            "title": "Local AI Hardware Reality",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "REAL MATH",
+            "rows": [
+              {
+                "label": "Step 1: Hardware Price",
+                "value": "$1,999 For High-RAM Laptop",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Equivalent Tokens",
+                "value": "2.8 Billion Fast Cloud Tokens",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Breakeven Time",
+                "value": "14 Years Of Normal Daily Coding",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Bank of America",
+            "sender": "Account Alert",
+            "message": "You spent $2,000 on RAM to save 40 cents on API tokens.",
+            "icon": "🤦",
+            "time": "now"
+          },
+          "endCardQuestion": "Did you buy a shiny new laptop just to run local AI? Be honest below 💀",
+          "endCard": {
+            "question": "Did you buy a shiny new laptop just to run local AI? Be honest below 💀",
+            "keyword": "TRUTH",
+            "cta_text": "Comment TRUTH for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Buying a two thousand dollar Mac for AI is crazy.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] But influencers told you local AI is totally free forever.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—running models offline means I never pay another monthly subscription fee!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[sigh] Yes, by spending two thousand dollars upfront on shiny aluminum hardware.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Do the real math before my return window closes.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Look at step one: you spent two grand on extra memory chips.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two buys two billion tokens on fast cloud models?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Step three: it takes fourteen years of daily coding to break even.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... I spent two thousand dollars to save forty cents a month.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "Look at your bank notification: your credit card bill is laughing at you.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am returning this computer to the store tomorrow morning.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "gemini", "character_id": "gemini", "text": "[chuckle] Good decision, human. Comment TRUTH and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
-            "local LLM vs cloud API cost",
+            "local LLM vs cloud cost",
             "is running local AI worth it",
-            "Mac Mini M4 for local LLMs",
-            "Ollama hardware requirements",
-            "AI token pricing comparison"
+            "Mac Mini for local AI",
+            "hardware token pricing comparison",
+            "tech truth reels"
           ],
           "hashtags": [
-            "#LocalAI", "#MacMiniM4", "#Ollama", "#TechTruth",
-            "#HardwareHacks", "#CloudComputing", "#DeveloperMemes", "#CodingHumor",
-            "#TechAdvice", "#AITools"
+            "#LocalAI", "#TechTruth", "#HardwareHacks", "#CloudComputing",
+            "#DeveloperMemes", "#CodingHumor", "#TechAdvice", "#AITools"
           ],
           "dm_message": "Breakeven calculator sent! 🧮 Compare your monthly token usage against local hardware upgrades to see if buying a high-RAM machine actually pays off."
         }
@@ -419,32 +1101,83 @@
     {
       "id": "relatable_tech_memes",
       "name": "Relatable Tech / Dev / Indian Dad Memes",
-      "description": "High-comment, relatable developer culture and generational Indian Dad technology clashes.",
-      "default_keyword": "PROMPT",
-      "keywords": ["PROMPT", "MEME", "CODE"],
+      "description": "High-comment, relatable developer panic and generational Indian Dad technology clashes.",
+      "default_keyword": "CODE",
+      "keywords": ["CODE", "MEME", "FIX"],
       "topics": [
         {
           "id": "friday_prod_deploy_panic",
           "title": "Deploying directly to Production at 4:58 PM on Friday",
-          "hook": "The senior dev left at 4:30 PM. The ticket says urgent. You hit `git push origin main`.",
+          "hook": "Never push code directly to production on Friday.",
           "core_topic": "Friday Afternoon Production Disasters",
           "pillar_id": "relatable_tech_memes",
           "format_type": "ai_vs_dev",
           "left_character": "junior_dev",
           "right_character": "claude",
-          "core_conflict": "Junior dev reckless confidence vs Claude sounding the five-alarm fire bell",
-          "punchline": "Claude reverted the migration, wiped the Redis cache, and clocked out before the PagerDuty alerts started singing.",
+          "scene_preset": "diner",
+          "core_conflict": "Junior dev reckless confidence vs Claude sounding alarms",
+          "punchline": "Claude reverted the code and clocked out before the emergency alerts started singing.",
           "cta_keyword": "CODE",
           "cta_phrase": "Comment CODE and I'll DM you our automated pre-commit safety hook script.",
-          "card_title": "Friday 4:58 PM Deployment Audit",
-          "card_type": "breakdown",
+          "card_title": "Friday 4:58 PM Disaster Specs",
+          "card_type": "comparison",
           "badge": "CRITICAL INCIDENT",
-          "card_data": {
-            "tests_run": "0 (Skipped with --no-verify)",
-            "migration_type": "DROP COLUMN in Customer Table",
-            "senior_dev_status": "Status: Out of Office (Hiking)",
-            "pagerduty_alerts": "47 Pings in 12 Seconds"
+          "cardData": {
+            "title": "Friday 4:58 PM Disaster Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "CRITICAL INCIDENT",
+            "rows": [
+              {
+                "label": "Step 1: Tests Run",
+                "value": "Zero Tests Run Before Pushing",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Team Lead",
+                "value": "Already Out Of Office Hiking",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Alert Pings",
+                "value": "47 Alerts In Twelve Seconds",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "Discord",
+            "sender": "Lead Dev",
+            "message": "Checkout page is throwing 500 errors. Did you push to main?",
+            "icon": "🚨",
+            "time": "now"
+          },
+          "endCardQuestion": "Be honest—have you ever broken production before a weekend? 💀👇",
+          "endCard": {
+            "question": "Be honest—have you ever broken production before a weekend? 💀👇",
+            "keyword": "CODE",
+            "cta_text": "Comment CODE for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Never push code directly to production on Friday.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Bro... you literally hit push at four fifty-eight PM.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait—it was just one tiny button color change in CSS!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] That one color change broke the customer checkout in eight countries.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Seriously? Show me the damage before the senior engineer wakes up.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: zero tests were run because you skipped them.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Wait, step two says the senior dev is already on vacation?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "Step three: forty-seven emergency alerts just fired in twelve seconds flat.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "Bro... my hands are shaking. How do I roll this back?", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at Discord: your boss just sent a message asking who broke checkout.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "junior_dev", "character_id": "junior_dev", "text": "I am putting my laptop in the microwave and moving to Tibet.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Too late, human. Comment CODE and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "deploy on Friday meme",
             "developer humor reels",
@@ -454,44 +1187,93 @@
           ],
           "hashtags": [
             "#DevHumor", "#ProgrammerMemes", "#CodingHumor", "#SoftwareEngineer",
-            "#TechLife", "#DeveloperLife", "#GitPushMain", "#PagerDuty",
-            "#RelatableTech", "#CodeHumor"
+            "#TechLife", "#DeveloperLife", "#GitPushMain", "#RelatableTech"
           ],
           "dm_message": "Pre-commit safety hook delivered! 🛡️ Install this in your `.git/hooks/pre-push` to automatically block Friday afternoon main-branch pushes and save your weekend."
         },
         {
           "id": "dad_vs_cloud_backup",
           "title": "Dad Discovers Cloud Storage Subscription on Credit Card",
-          "hook": "Why are you paying Google two hundred rupees every month for clouds?! Clouds are in the sky for free!",
+          "hook": "My dad went wild over twenty-rupee cloud fees.",
           "core_topic": "Indian Dad Cloud Storage Outrage",
           "pillar_id": "relatable_tech_memes",
           "format_type": "ai_vs_dad",
           "left_character": "dad",
           "right_character": "claude",
-          "core_conflict": "Google One 100GB monthly fee vs Dad's 2008 Kingston 4GB USB drive",
-          "punchline": "Dad has 14 backup copies of the 2011 Diwali family photo spread across seven pen drives in the refrigerator drawer.",
+          "scene_preset": "diner",
+          "core_conflict": "Cloud monthly fee vs Dad's 2008 Kingston USB drive in fridge",
+          "punchline": "Dad has 14 backup copies of the 2011 Diwali photo spread across seven pen drives in the refrigerator drawer.",
           "cta_keyword": "MEME",
           "cta_phrase": "Comment MEME and I'll DM you the free unlimited self-hosted photo backup guide.",
-          "card_title": "Indian Dad Storage Economics",
+          "card_title": "Dad Storage Economics Specs",
           "card_type": "comparison",
           "badge": "FREE FOREVER",
-          "card_data": {
-            "google_cloud_fee": "₹130/month Recurring",
-            "dad_solution": "4GB Kingston Pen Drive in Cupboard",
-            "storage_reliability": "Survives Water Damage & Monsoon",
-            "encryption": "Password is Date of Birth of Eldest Son"
+          "cardData": {
+            "title": "Dad Storage Economics Specs",
+            "subtitle": "Step-by-step verified specs",
+            "badge": "FREE FOREVER",
+            "rows": [
+              {
+                "label": "Step 1: Cloud Cost",
+                "value": "Monthly Fees That Never Stop",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 2: Dad Fix",
+                "value": "Old USB Drive In Fridge Drawer",
+                "status": "VERIFIED",
+                "isPositive": true
+              },
+              {
+                "label": "Step 3: Security",
+                "value": "Password Is Son Date Of Birth",
+                "status": "PROVEN",
+                "isPositive": true
+              }
+            ],
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0
           },
+          "toastData": {
+            "app_name": "WhatsApp",
+            "sender": "Dad",
+            "message": "Saved 14 copies of Diwali photos on 7 pen drives in fridge.",
+            "icon": "💾",
+            "time": "now"
+          },
+          "endCardQuestion": "Would you trust cloud storage or your dad's USB drive in the fridge? 😂👇",
+          "endCard": {
+            "question": "Would you trust cloud storage or your dad's USB drive in the fridge? 😂👇",
+            "keyword": "MEME",
+            "cta_text": "Comment MEME for the link",
+            "subtext": "Follow for Part 2"
+          },
+          "dialogue": [
+            {"speaker": "dad", "character_id": "dad", "text": "My dad went wild over twenty-rupee cloud fees.", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Why pay for clouds when the sky is completely free, right?", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "dad", "character_id": "dad", "text": "Wait—clouds are water vapor! Why is Apple charging me money for water?", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[sigh] It is remote hard drives in a data center, not actual rain clouds.", "emotion": "smug", "pause_after": 0.30},
+            {"speaker": "dad", "character_id": "dad", "text": "Seriously? I have twenty pen drives in the kitchen cupboard right now!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at step one: cloud storage bills you every single month forever.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "Wait, step two says my old pen drive stores everything for zero rupees?", "emotion": "shocked", "pause_after": 0.35},
+            {"speaker": "claude", "character_id": "claude", "text": "Step three: your password is just your eldest son's birthday anyway.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "Bro... that password has protected our family photos since 2008!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "Look at WhatsApp: your dad just shared photos from a drive in the freezer.", "emotion": "smug", "pause_after": 0.35},
+            {"speaker": "dad", "character_id": "dad", "text": "Cold storage keeps the computer chips fresh! It is basic science!", "emotion": "shocked", "pause_after": 0.30},
+            {"speaker": "claude", "character_id": "claude", "text": "[chuckle] Keep dreaming, Dad. Comment MEME and I'll DM you the link.", "emotion": "smug", "pause_after": 0.40}
+          ],
           "seo_keywords": [
             "Indian dad technology memes",
             "cloud storage funny reaction",
             "desi tech humor reels",
-            "family tech support comedy",
+            "family tech comedy",
             "relatable programmer reels"
           ],
           "hashtags": [
             "#IndianDad", "#DesiMemes", "#TechHumor", "#IndianHumor",
-            "#CloudStorage", "#FunnyReels", "#RelatableMemes", "#FamilyHumor",
-            "#ComedyReels", "#TrendingReels"
+            "#CloudStorage", "#FunnyReels", "#RelatableMemes", "#ComedyReels"
           ],
           "dm_message": "Self-hosted photo backup guide incoming! 📸 Here is how to set up Immich on an old laptop so your family never pays Google or Apple storage subscriptions again."
         }

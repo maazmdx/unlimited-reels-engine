@@ -16,6 +16,8 @@ export interface DynamicCardData {
   type?: "code" | "benchmark" | "comparison" | "alert";
   codeSnippet?: string;
   language?: string;
+  searchQuery?: string;
+  command?: string;
   items?: CardProofItem[];
   rows?: CardProofItem[];
   highlight?: string;
@@ -175,6 +177,35 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   const badge = cardData.badge || "VERIFIED PROOF";
   const type = cardData.type || (cardData.codeSnippet ? "code" : "comparison");
 
+  // Deterministic Typing & Click Search Bar (Turn 5 Typing, Turns 6-7 Click + Verified Pill)
+  const rawSearchText =
+    cardData.searchQuery ||
+    cardData.command ||
+    (cardData.title
+      ? `verify --inspect "${cardData.title.slice(0, 26)}"`
+      : "benchmark --live --official");
+
+  const typingAge = Math.max(0, age - 8);
+  const typingDuration = 36;
+  const typingProgress = interpolate(typingAge, [0, typingDuration], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const typedLength =
+    activeStepIndex === 0
+      ? Math.floor(typingProgress * rawSearchText.length)
+      : rawSearchText.length;
+  const displayedSearchText = rawSearchText.slice(0, typedLength);
+  const isTypingDone = activeStepIndex !== 0 || typingProgress >= 1.0;
+  const showBlinkingCursor = !isTypingDone && (Math.floor(frame / 6) % 2 === 0);
+
+  const isTurn6Or7 = (activeStepIndex ?? 0) >= 1;
+  const searchPillLabel = isTurn6Or7 ? "✓ Verified" : "Active";
+  const searchPillBg = isTurn6Or7 ? "#16A34A" : "#0284C7";
+  const searchPillShadow = isTurn6Or7
+    ? "0 2px 10px rgba(22, 163, 74, 0.4)"
+    : "0 2px 8px rgba(2, 132, 199, 0.35)";
+
   return (
     <div
       style={{
@@ -282,8 +313,88 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
           </div>
         </div>
 
+        {/* Interactive Search / Command Action Bar (Turn 5 Typing -> Turn 6-7 Click + Pill Toggle) */}
+        <div
+          style={{
+            position: "relative",
+            margin: "12px 24px 0 24px",
+            padding: "8px 16px",
+            backgroundColor: "rgba(241, 245, 249, 0.95)",
+            border: isTurn6Or7 ? "1.5px solid rgba(22, 163, 74, 0.6)" : "1.5px solid rgba(203, 213, 225, 0.9)",
+            borderRadius: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            boxShadow: "inset 0 1px 3px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, overflow: "hidden", flex: 1 }}>
+            <span style={{ fontSize: 13, color: "#64748B" }}>🔍</span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
+                fontSize: 13,
+                fontWeight: 700,
+                color: "#0F172A",
+                whiteSpace: "nowrap",
+                letterSpacing: "-0.2px",
+              }}
+            >
+              {displayedSearchText}
+              {showBlinkingCursor && (
+                <span style={{ color: "#0284C7", fontWeight: 900 }}>|</span>
+              )}
+            </span>
+          </div>
+
+          {/* Interactive Pill Toggle Button */}
+          <div
+            style={{
+              backgroundColor: searchPillBg,
+              color: "#FFFFFF",
+              padding: "4px 14px",
+              borderRadius: 8,
+              fontSize: 11,
+              fontWeight: 800,
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              boxShadow: searchPillShadow,
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              transform:
+                activeStepIndex === 1
+                  ? `scale(${interpolate(age % 24, [0, 6, 12, 24], [1, 0.92, 1, 1])})`
+                  : "scale(1)",
+              transformOrigin: "center",
+            }}
+          >
+            <span>{searchPillLabel}</span>
+          </div>
+
+          {/* Animated Cursor Click on Turn 6 (activeStepIndex === 1) */}
+          {activeStepIndex === 1 && (
+            <div
+              style={{
+                position: "absolute",
+                right: 20,
+                top: 14,
+                transform: `scale(${interpolate(age % 24, [0, 6, 12, 24], [1, 0.85, 1, 1])})`,
+                pointerEvents: "none",
+                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))",
+                zIndex: 10,
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#0F172A" stroke="#FFFFFF" strokeWidth="1.5">
+                <path d="M4 3l13 8-7 2-3 7L4 3z" />
+              </svg>
+            </div>
+          )}
+        </div>
+
         {/* Content Body */}
-        <div style={{ padding: "20px 24px", color: "#0F172A" }}>
+        <div style={{ padding: "16px 24px", color: "#0F172A" }}>
           {cardData.subtitle && (
             <div
               style={{

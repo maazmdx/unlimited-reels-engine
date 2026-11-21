@@ -1,13 +1,13 @@
 {
-  "title": "Production on Friday Skit",
+  "title": "Production on Friday Roast Skit",
   "language": "en",
   "type": "dialogue",
-  "durationInSeconds": 27.606,
-  "durationInFrames": 841,
+  "durationInSeconds": 37.42,
+  "durationInFrames": 1135,
   "fps": 30,
   "width": 1080,
   "height": 1920,
-  "turnsCount": 6,
-  "wordCount": 82,
-  "chunksCount": 29
+  "turnsCount": 11,
+  "wordCount": 113,
+  "chunksCount": 43
 }

@@ -124,6 +124,38 @@ def load_content_pillars_pool() -> List[Dict[str, Any]]:
 
 CURATED_MORNING_POOL = load_content_pillars_pool()
 
+SCENE_MOODS = [
+    ("diner", "rain"),    # 1. Rainy Midnight Diner
+    ("diner", "sunny"),   # 2. Sunny Morning Diner (warm sunbeams)
+    ("desk", "sunset"),   # 3. Purple Twilight Desk
+]
+
+
+def load_covered_topics_history(covered_file: Path) -> List[Dict[str, Any]]:
+    """Loads historical covered topics from inbox/covered_topics.json."""
+    if not covered_file.exists():
+        return []
+    try:
+        with open(covered_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except Exception as e:
+        print(f"⚠️ Error reading covered_topics.json: {e}")
+        return []
+
+
+def record_covered_topic(covered_file: Path, record: Dict[str, Any]):
+    """Appends covered topic with episode tracking to inbox/covered_topics.json."""
+    history = load_covered_topics_history(covered_file)
+    history.append(record)
+    try:
+        covered_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(covered_file, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=2)
+        print(f"💾 [Covered Topics] Recorded {record.get('episode_str', 'Ep')} into inbox/covered_topics.json")
+    except Exception as e:
+        print(f"⚠️ Failed to update covered_topics.json: {e}")
+
 
 def load_inbox_queue(queue_file: Path) -> List[str]:
     """Reads URLs from inbox queue file."""
@@ -308,10 +340,26 @@ def run_morning_batch(
                 items_to_process.append({"type": "pool", "data": candidate})
             pool_index += 1
 
+    covered_file = PROJECT_ROOT / "inbox" / "covered_topics.json"
+    covered_history = load_covered_topics_history(covered_file)
+    current_episode_count = len(covered_history)
+
     # Execute sequential generation chain for each item
     for idx, item in enumerate(items_to_process, 1):
+        ep_num = current_episode_count + idx
+        ep_str = f"Ep. {ep_num:02d}"
+        next_ep_str = f"Ep. {ep_num + 1:02d}"
+
+        # Auto-Rotate 3 distinct scene moods:
+        # 1. ("diner", "rain") — Rainy Midnight Diner
+        # 2. ("diner", "sunny") — Sunny Morning Diner (warm sunbeams)
+        # 3. ("desk", "sunset") — Purple Twilight Desk
+        preset_mood, weather_mood = SCENE_MOODS[(ep_num - 1) % len(SCENE_MOODS)]
+        selected_scene = scene_preset if (scene_preset and scene_preset != "auto") else preset_mood
+
         print(f"\n" + "=" * 70)
-        print(f"  🎬 PRODUCING MORNING REEL #{idx} OF {len(items_to_process)}")
+        print(f"  🎬 PRODUCING MORNING REEL #{idx} OF {len(items_to_process)} [{ep_str}]")
+        print(f"  🎨 Scene Mood Rotation: {selected_scene} ({weather_mood}) | Follow for {next_ep_str}")
         print("  Sequential Chain: TopicMaster -> HookMaster -> SEOMaster -> Audio -> Scene -> Audit")
         print("=" * 70)
 
@@ -326,13 +374,16 @@ def run_morning_batch(
                 "auto_dm_keyword": analysis.get("cta_keyword", "LINK"),
                 "left_character": analysis.get("left_character", "junior_dev"),
                 "right_character": analysis.get("right_character", "claude"),
-                "scene_preset": scene_preset if (scene_preset and scene_preset != "auto") else "diner",
+                "scene_preset": selected_scene,
+                "weather": weather_mood,
                 "core_conflict": analysis.get("core_conflict", "Social hype vs engineering facts"),
                 "viral_score": 85,
                 "card_data": analysis.get("card_data") or analysis.get("cardData", {}),
             }
         elif item["type"] == "dynamic":
             topic_payload = item["data"]
+            topic_payload["scene_preset"] = selected_scene
+            topic_payload["weather"] = weather_mood
             print(f"🔥 [TopicMaster] Curated: {topic_payload.get('title')} | Score: {topic_payload.get('viral_score', 85)}/100 [{topic_payload.get('category')}]")
         else:
             pool_data = item["data"]
@@ -344,19 +395,25 @@ def run_morning_batch(
                 "auto_dm_keyword": pool_data.get("cta_keyword", "TECH"),
                 "left_character": pool_data.get("left_character", "junior_dev"),
                 "right_character": pool_data.get("right_character", "claude"),
-                "scene_preset": scene_preset if (scene_preset and scene_preset != "auto") else "diner",
+                "scene_preset": selected_scene,
+                "weather": weather_mood,
                 "core_conflict": pool_data.get("core_conflict", "Dev nostalgia vs reality"),
                 "viral_score": 82,
                 "card_data": pool_data.get("card_data", {}),
             }
 
-        # 2. HookMaster Stage (0-3s Hook Battle + Tight 6-turn Screenplay)
-        print("⚡ [HookMaster] Conducting 0-3s Hook Battle and writing tight 6-turn screenplay...")
+        # 2. HookMaster Stage (0-3s Hook Battle + Tight Screenplay)
+        print("⚡ [HookMaster] Conducting 0-3s Hook Battle and writing screenplay...")
         script_data = hook_master.craft_reel_screenplay(topic_payload)
-        if scene_preset and scene_preset != "auto":
-            script_data["scenePreset"] = scene_preset
-        elif topic_payload.get("scene_preset"):
-            script_data["scenePreset"] = topic_payload.get("scene_preset")
+        script_data["scenePreset"] = selected_scene
+        script_data["environment"] = selected_scene
+        script_data["weather"] = weather_mood
+        script_data["weatherMode"] = weather_mood
+        script_data["episode_number"] = ep_num
+        script_data["episode_str"] = ep_str
+        if not script_data.get("endCard"):
+            script_data["endCard"] = {}
+        script_data["endCard"]["subtext"] = f"Follow for {next_ep_str}"
 
         # 3. AudioDirector Stage (Neural character voices & DSP mastering)
         print("🎙️ [AudioDirector] Synthesizing neural character voices & audio mastering...")
@@ -389,6 +446,14 @@ def run_morning_batch(
         final_video_dest = batch_dir / output_filename
         if Path(rendered_mp4).exists() and os.path.realpath(str(rendered_mp4)) != os.path.realpath(str(final_video_dest)):
             shutil.copy2(rendered_mp4, final_video_dest)
+
+        # Copy exported 4:5 cover still beside the MP4 in morning batch directory
+        cover_src = Path(rendered_mp4).with_name(f"{Path(rendered_mp4).stem}_cover.png")
+        cover_dest = batch_dir / f"{Path(output_filename).stem}_cover.png"
+        if cover_src.exists():
+            if os.path.realpath(str(cover_src)) != os.path.realpath(str(cover_dest)):
+                shutil.copy2(cover_src, cover_dest)
+            print(f"🖼️ [Cover Still] Delivered beside MP4: {cover_dest.name}")
 
         # Copy audit keyframes to thumbs directory
         for kf in audit_res.get("keyframes", []):
@@ -454,13 +519,31 @@ def run_morning_batch(
             or "LINK"
         )
 
+        # Record topic & episode number into inbox/covered_topics.json
+        record_covered_topic(covered_file, {
+            "slug": safe_title,
+            "title": script_data["title"],
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "episode_number": ep_num,
+            "episode_str": ep_str,
+            "auto_dm_keyword": cta_keyword_val,
+            "pillar_style": topic_payload.get("category", "AI Satire"),
+            "scene_preset": selected_scene,
+            "weather_mood": weather_mood
+        })
+
         generated_reels.append({
             "index": idx,
+            "episode_number": ep_num,
+            "episode_str": ep_str,
             "title": script_data["title"],
             "video_path": str(final_video_dest),
+            "cover_path": str(cover_dest) if cover_dest.exists() else None,
             "caption_path": str(caption_file),
             "autodm_path": str(autodm_file),
             "cta_keyword": cta_keyword_val,
+            "scene_preset": selected_scene,
+            "weather_mood": weather_mood,
             "duration": audit_res.get("duration", 0),
             "quality_score": audit_res.get("score", 100),
             "status": audit_res.get("status", "PASS"),

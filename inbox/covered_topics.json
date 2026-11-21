@@ -134,5 +134,29 @@
     "auto_dm_keyword": "BROWSER",
     "category": "Retro & Browser Games",
     "viral_score": 98
+  },
+  {
+    "slug": "gta_vice_city_running_100__in_browser",
+    "title": "GTA Vice City Running 100% in Browser",
+    "date": "2026-11-21",
+    "auto_dm_keyword": "VICE",
+    "category": "Retro & Browser Games",
+    "viral_score": 88
+  },
+  {
+    "slug": "run_a_1993_intel_486_pc_in_your_browser",
+    "title": "Run a 1993 Intel 486 PC in Your Browser",
+    "date": "2026-11-21",
+    "auto_dm_keyword": "RETRO486",
+    "category": "Retro & Browser Games",
+    "viral_score": 98
+  },
+  {
+    "slug": "stop_paying_spotify__11_mo_for_audiobooks",
+    "title": "Stop Paying Spotify $11/mo for Audiobooks",
+    "date": "2026-11-21",
+    "auto_dm_keyword": "AUDIO",
+    "category": "Underrated AI Apps",
+    "viral_score": 99
   }
 ]

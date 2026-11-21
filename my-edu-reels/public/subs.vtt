@@ -1,117 +1,173 @@
 WEBVTT
 
 1
-00:00:00.000 --> 00:00:00.693
-[JUNIOR_DEV] Hey Claude I
+00:00:00.000 --> 00:00:00.779
+[JUNIOR_DEV] Never push code
 
 2
-00:00:00.693 --> 00:00:01.385
-[JUNIOR_DEV] just pushed a
+00:00:00.779 --> 00:00:01.977
+[JUNIOR_DEV] directly to production
 
 3
-00:00:01.385 --> 00:00:02.309
-[JUNIOR_DEV] quick fix directly
+00:00:01.977 --> 00:00:03.055
+[JUNIOR_DEV] on Friday afternoon
 
 4
-00:00:02.309 --> 00:00:03.117
-[JUNIOR_DEV] to production on
+00:00:03.171 --> 00:00:04.000
+[CLAUDE] ... Bro your
 
 5
-00:00:03.117 --> 00:00:04.155
-[JUNIOR_DEV] a Friday afternoon
+00:00:04.000 --> 00:00:04.702
+[CLAUDE] code has more
 
 6
-00:00:04.255 --> 00:00:05.437
-[CLAUDE] Fascinating Shall I
+00:00:04.702 --> 00:00:05.339
+[CLAUDE] bugs than an
 
 7
-00:00:05.437 --> 00:00:06.619
-[CLAUDE] draft the postmortem
+00:00:05.339 --> 00:00:06.423
+[CLAUDE] abandoned kitchen
 
 8
-00:00:06.619 --> 00:00:07.241
-[CLAUDE] now or wait
+00:00:06.636 --> 00:00:07.584
+[JUNIOR_DEV] Waitit was just
 
 9
-00:00:07.241 --> 00:00:08.112
-[CLAUDE] until the alerts
+00:00:07.584 --> 00:00:08.465
+[JUNIOR_DEV] one tiny button
 
 10
-00:00:08.112 --> 00:00:09.045
-[CLAUDE] start screaming
+00:00:08.465 --> 00:00:09.346
+[JUNIOR_DEV] color change in
 
 11
-00:00:09.258 --> 00:00:09.965
-[JUNIOR_DEV] Relax it was
+00:00:09.346 --> 00:00:09.617
+[JUNIOR_DEV] CSS
 
 12
-00:00:09.965 --> 00:00:10.864
-[JUNIOR_DEV] only a oneline
+00:00:09.737 --> 00:00:10.427
+[CLAUDE] ... You broke
 
 13
-00:00:10.864 --> 00:00:11.764
-[JUNIOR_DEV] CSS change What
+00:00:10.427 --> 00:00:11.555
+[CLAUDE] customer checkout in
 
 14
-00:00:11.764 --> 00:00:12.728
-[JUNIOR_DEV] could possibly go
+00:00:11.555 --> 00:00:13.373
+[CLAUDE] eight countries simultaneously
 
 15
-00:00:12.728 --> 00:00:13.113
-[JUNIOR_DEV] wrong
+00:00:13.583 --> 00:00:14.464
+[JUNIOR_DEV] Seriously Show me
 
 16
-00:00:13.333 --> 00:00:15.299
-[CLAUDE] Statistically speaking precisely
+00:00:14.464 --> 00:00:15.235
+[JUNIOR_DEV] the proof before
 
 17
-00:00:15.299 --> 00:00:16.568
-[CLAUDE] everything The entire
+00:00:15.235 --> 00:00:15.841
+[JUNIOR_DEV] my boss wakes
 
 18
-00:00:16.568 --> 00:00:17.583
-[CLAUDE] payment gateway is
+00:00:15.841 --> 00:00:16.006
+[JUNIOR_DEV] up
 
 19
-00:00:17.583 --> 00:00:18.344
-[CLAUDE] already down
+00:00:16.097 --> 00:00:16.776
+[CLAUDE] Look at step
 
 20
-00:00:18.559 --> 00:00:19.454
-[DAD] Arre Junior Who
+00:00:16.776 --> 00:00:17.660
+[CLAUDE] one zero tests
 
 21
-00:00:19.454 --> 00:00:20.477
-[DAD] touches the server
+00:00:17.660 --> 00:00:18.543
+[CLAUDE] were run before
 
 22
-00:00:20.477 --> 00:00:21.244
-[DAD] on Friday In
+00:00:18.543 --> 00:00:19.086
+[CLAUDE] pushing
 
 23
-00:00:21.244 --> 00:00:21.755
-[DAD] my days we
+00:00:19.305 --> 00:00:19.979
+[JUNIOR_DEV] Wait step two
 
 24
-00:00:21.755 --> 00:00:23.161
-[DAD] never touched production
+00:00:19.979 --> 00:00:20.596
+[JUNIOR_DEV] says the lead
 
 25
-00:00:23.161 --> 00:00:24.120
-[DAD] without a pooja
+00:00:20.596 --> 00:00:21.551
+[JUNIOR_DEV] engineer is already
 
 26
-00:00:24.260 --> 00:00:24.934
-[JUNIOR_DEV] Wait why is
+00:00:21.551 --> 00:00:21.944
+[JUNIOR_DEV] hiking
 
 27
-00:00:24.934 --> 00:00:26.114
-[JUNIOR_DEV] the production database
+00:00:22.061 --> 00:00:22.936
+[CLAUDE] And step three
 
 28
-00:00:26.114 --> 00:00:27.069
-[JUNIOR_DEV] dropping all tables
+00:00:22.936 --> 00:00:24.686
+[CLAUDE] fortyseven emergency alerts
 
 29
-00:00:27.069 --> 00:00:27.631
-[JUNIOR_DEV] right now
+00:00:24.686 --> 00:00:25.560
+[CLAUDE] fired in twelve
+
+30
+00:00:25.560 --> 00:00:26.099
+[CLAUDE] seconds
+
+31
+00:00:26.300 --> 00:00:27.034
+[JUNIOR_DEV] Bro my hands
+
+32
+00:00:27.034 --> 00:00:27.825
+[JUNIOR_DEV] are shaking How
+
+33
+00:00:27.825 --> 00:00:28.221
+[JUNIOR_DEV] do I fix
+
+34
+00:00:28.221 --> 00:00:28.503
+[JUNIOR_DEV] this
+
+35
+00:00:28.623 --> 00:00:29.730
+[CLAUDE] Check your screen
+
+36
+00:00:29.730 --> 00:00:30.491
+[CLAUDE] your CEO just
+
+37
+00:00:30.491 --> 00:00:31.667
+[CLAUDE] messaged asking why
+
+38
+00:00:31.667 --> 00:00:32.705
+[CLAUDE] revenue stopped
+
+39
+00:00:32.914 --> 00:00:33.800
+[CLAUDE] ... Enjoy your
+
+40
+00:00:33.800 --> 00:00:35.793
+[CLAUDE] weekend unemployment Comment
+
+41
+00:00:35.793 --> 00:00:36.531
+[CLAUDE] FIX and Ill
+
+42
+00:00:36.531 --> 00:00:37.121
+[CLAUDE] DM you the
+
+43
+00:00:37.121 --> 00:00:37.490
+[CLAUDE] link

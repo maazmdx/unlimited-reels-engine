@@ -15,6 +15,7 @@ Generates high-converting, searchable social assets for each reel:
 """
 
 import os
+import re
 import json
 import time
 from pathlib import Path
@@ -29,6 +30,39 @@ except ImportError:
 
 from engine.dns_utils import enable_fast_dns
 enable_fast_dns()
+
+# Strict Vocabulary Ban (Simple Spoken English ONLY - 6th-8th Grade Level)
+BANNED_WORDS = [
+    "framework", "paradigm", "optimize", "optimization", "optimizing",
+    "biometric", "infrastructure", "synergy", "synergies", "utilize", "utilizing",
+    "collaboration", "delivers", "delivering", "latency", "ecosystem"
+]
+
+VOCABULARY_REPLACEMENTS = [
+    (re.compile(r"\bframeworks?\b", re.IGNORECASE), "tools"),
+    (re.compile(r"\bparadigms?\b", re.IGNORECASE), "ways"),
+    (re.compile(r"\boptimizations?\b", re.IGNORECASE), "speed boosts"),
+    (re.compile(r"\boptimizing\b", re.IGNORECASE), "speeding up"),
+    (re.compile(r"\boptimize\b", re.IGNORECASE), "speed up"),
+    (re.compile(r"\bbiometrics?\b", re.IGNORECASE), "face scan"),
+    (re.compile(r"\binfrastructure\b", re.IGNORECASE), "setup"),
+    (re.compile(r"\bsynerg(y|ies)\b", re.IGNORECASE), "teamwork"),
+    (re.compile(r"\butilizing\b", re.IGNORECASE), "using"),
+    (re.compile(r"\butilize\b", re.IGNORECASE), "use"),
+    (re.compile(r"\bcollaboration\b", re.IGNORECASE), "teamwork"),
+    (re.compile(r"\bdelivering\b", re.IGNORECASE), "giving"),
+    (re.compile(r"\bdelivers\b", re.IGNORECASE), "gives"),
+    (re.compile(r"\blatency\b", re.IGNORECASE), "delay"),
+    (re.compile(r"\becosystems?\b", re.IGNORECASE), "setup"),
+]
+
+
+def sanitize_simple_spoken_english(text: str) -> str:
+    """Replaces corporate buzzwords with simple, 6th-8th grade conversational English."""
+    cleaned = text
+    for pattern, repl in VOCABULARY_REPLACEMENTS:
+        cleaned = pattern.sub(repl, cleaned)
+    return cleaned
 
 
 class SEOMasterAgent:
@@ -129,16 +163,29 @@ class SEOMasterAgent:
             f"Category: {category}\n"
             f"Auto-DM Keyword: {kw}\n"
             f"Draft Headline: {raw_headline}\n\n"
+            "STRICT RULES (SIMPLE SPOKEN ENGLISH ONLY - 6th-8th GRADE LEVEL):\n"
+            "- Explicitly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', or any corporate fluff.\n"
+            "- Write in punchy, short sentences that anyone on Instagram understands in half a second.\n"
+            "- 'seo_headline': MUST explicitly emphasize '100% FREE' or '$0' in the title (e.g., 'Play Full GTA in Chrome [100% FREE]' or 'This $0 Tool Replaces 4 Hours of Work').\n"
+            "- 'pinned_comment': MUST be a spicy, diabolical ragebait question that forces people to comment or debate (e.g., 'Still paying for this in 2026? Be honest 💀' or 'Still downloading 80GB games on a potato laptop? Drop your excuse below 👇').\n\n"
             "Return JSON with:\n"
-            "- 'seo_headline': A high-CTR, front-loaded Instagram SEO title with emoji\n"
-            "- 'pinned_comment': An opinionated debate starter question for viewers to comment below\n"
+            "- 'seo_headline': A high-CTR, front-loaded Instagram SEO title with emoji and '100% FREE' (simple spoken English only)\n"
+            "- 'pinned_comment': A spicy ragebait debate question triggering instant comments\n"
             "- 'comment_replies': Exactly 3 friendly, distinct public comment replies confirming DM sent (to avoid IG bot throttle)"
         )
-        sys_inst = "You are an elite Instagram SEO and Engagement Director. Return ONLY valid JSON."
+        sys_inst = (
+            "You are an elite Instagram SEO and Viral Engagement Director. "
+            "Write in simple, punchy, conversational spoken English (6th-8th grade). "
+            "Never use corporate buzzwords. Return ONLY valid JSON."
+        )
         try:
             raw = self._call_gemini_api(prompt, sys_inst)
             if raw:
-                data = json.loads(raw.strip().strip("`").replace("json\n", "", 1))
+                cleaned = raw.strip()
+                if cleaned.startswith("```"):
+                    cleaned = re.sub(r"^```(?:json)?\n", "", cleaned)
+                    cleaned = re.sub(r"\n```$", "", cleaned)
+                data = json.loads(cleaned.strip())
                 return data
         except Exception:
             pass
@@ -154,7 +201,7 @@ class SEOMasterAgent:
         Takes screenplay and topic metadata, synthesizes caption and Auto-DM config,
         and optionally writes to disk if batch_dir and file_prefix are provided.
         """
-        title = script_data.get("title", "Daily Tech Breakdown")
+        title = sanitize_simple_spoken_english(script_data.get("title", "Daily Tech Breakdown"))
         hook_obj = script_data.get("hook", {})
         if isinstance(hook_obj, dict):
             headline = hook_obj.get("headline", title)
@@ -164,6 +211,9 @@ class SEOMasterAgent:
             headline = title
             subheadline = str(hook_obj)
             tag = "⚠️ VIRAL REAL TALK"
+
+        headline = sanitize_simple_spoken_english(headline)
+        subheadline = sanitize_simple_spoken_english(subheadline)
 
         kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
         category = script_data.get("category", "Tech Innovation")
@@ -179,13 +229,13 @@ class SEOMasterAgent:
                         lbl = str(item.get("label") or item.get("name") or "").strip()
                         val = str(item.get("value") or item.get("desc") or "").strip()
                         if lbl and val:
-                            bullets.append(f"• {lbl}: {val}")
+                            bullets.append(f"• {sanitize_simple_spoken_english(lbl)}: {sanitize_simple_spoken_english(val)}")
                         elif lbl:
-                            bullets.append(f"• {lbl}")
+                            bullets.append(f"• {sanitize_simple_spoken_english(lbl)}")
                         elif val:
-                            bullets.append(f"• {val}")
+                            bullets.append(f"• {sanitize_simple_spoken_english(val)}")
                     elif isinstance(item, str):
-                        bullets.append(f"• {item.strip()}")
+                        bullets.append(f"• {sanitize_simple_spoken_english(item.strip())}")
             else:
                 # Filter out raw metadata keys (title, subtitle, badge, etc.)
                 ignored_keys = {
@@ -196,29 +246,32 @@ class SEOMasterAgent:
                 for k, v in card_data.items():
                     if k.lower() not in ignored_keys and not isinstance(v, (dict, list)):
                         clean_k = k.replace("_", " ").title()
-                        bullets.append(f"• {clean_k}: {v}")
+                        bullets.append(f"• {sanitize_simple_spoken_english(clean_k)}: {sanitize_simple_spoken_english(str(v))}")
                         if len(bullets) >= 3:
                             break
 
         if not bullets:
             bullets = [
-                "• 100% Free workflow running directly in your browser",
-                "• Zero installation or bloated cloud subscriptions",
-                "• Step-by-step setup and instant direct link",
+                "• 100% Free: $0 setup running directly in your browser",
+                "• The Catch: What paid tools charged you $20/mo for",
+                "• Instant Access: Step-by-step setup with zero installs",
             ]
         bullets_text = "\n".join(bullets)
 
-        # 2. Front-loaded High-CTR SEO Headline
+        # 2. Front-loaded High-CTR SEO Headline (emphasize 100% FREE in simple spoken English)
         seo_headline = f"{tag} {headline.title() if headline.isupper() else headline}"
+        if not any(f in seo_headline.lower() for f in ["100% free", "free", "$0", "zero dollar", "0 dollar"]):
+            seo_headline = f"{seo_headline} [100% FREE]"
+        seo_headline = sanitize_simple_spoken_english(seo_headline)
 
-        # 3. Pinned Comment Bait (opinionated question to trigger debate velocity)
+        # 3. Pinned Comment Bait (spicy ragebait debate trigger)
         pinned_comment = self._craft_pinned_comment(title, category, kw)
 
         # 4. Varied Public Comment Replies (3 variations to bypass Instagram bot throttling)
         comment_replies = [
             f"Sent to your DMs! 🚀 Check your message requests if you don't see it.",
-            f"Just sent over the direct link! ⚡ Enjoy.",
-            f"Check your messages! 📬 Sent the full guide and link.",
+            f"Just sent over the free direct link! ⚡ Enjoy.",
+            f"Check your messages! 📬 Sent the 100% free guide and link.",
         ]
 
         # 5. Optional AI refinement with fast free-tier fallback
@@ -226,32 +279,36 @@ class SEOMasterAgent:
             ai_data = self._refine_with_ai(title, category, kw, seo_headline)
             if ai_data:
                 if ai_data.get("seo_headline"):
-                    seo_headline = ai_data["seo_headline"]
+                    seo_headline = sanitize_simple_spoken_english(ai_data["seo_headline"])
+                    if not any(f in seo_headline.lower() for f in ["100% free", "free", "$0", "zero dollar", "0 dollar"]):
+                        seo_headline = f"{seo_headline} [100% FREE]"
                 if ai_data.get("pinned_comment"):
-                    pinned_comment = ai_data["pinned_comment"]
+                    pinned_comment = sanitize_simple_spoken_english(ai_data["pinned_comment"])
                 if ai_data.get("comment_replies") and isinstance(ai_data["comment_replies"], list) and len(ai_data["comment_replies"]) >= 3:
-                    comment_replies = ai_data["comment_replies"][:3]
+                    comment_replies = [sanitize_simple_spoken_english(r) for r in ai_data["comment_replies"][:3]]
 
         # 6. Tiered Hashtags (3 broad + 4 mid-niche + 3 exact-topic, zero spam)
         tiered_hashtags = self._build_tiered_hashtags(title, category, kw)
         hashtags_str = " ".join(tiered_hashtags)
 
-        # 7. Full Caption Text
+        # 7. Full Caption Text (Simple, direct, searchable)
         caption_text = (
             f"{seo_headline}\n\n"
             f"{subheadline}\n\n"
             f"Key Breakdown:\n"
             f"{bullets_text}\n\n"
-            f"💬 Comment \"{kw}\" below and I'll DM you the link!\n\n"
+            f"💬 Comment \"{kw}\" below and I'll DM you the free link!\n\n"
             f"📌 PINNED DEBATE: {pinned_comment}\n\n"
             f"Follow @antigravity for daily zero-dollar workflows, retro hacks & unfiltered tech truth!\n\n"
             f"{hashtags_str}"
         )
+        caption_text = sanitize_simple_spoken_english(caption_text)
 
         dm_msg = script_data.get("dm_message") or (
             f"Hey! 🚀 Here is the verified link and guide for {title}: https://antigravity.run/r/{kw.lower()}\n"
             f"Enjoy exploring, and drop any questions!"
         )
+        dm_msg = sanitize_simple_spoken_english(dm_msg)
 
         autodm_payload = {
             "keyword": kw,
@@ -292,18 +349,18 @@ class SEOMasterAgent:
         }
 
     def _craft_pinned_comment(self, title: str, category: str, kw: str) -> str:
-        """Crafts a sharp, opinionated debate starter to pin in the comments."""
-        lower_t = title.lower()
+        """Crafts a sharp, opinionated ragebait debate question to pin in the comments."""
+        lower_t = (title + " " + category).lower()
         if "browser" in lower_t or "retro" in lower_t or "game" in lower_t:
-            return "What's the #1 classic PC game that deserves a full browser remake next? Drop it below 👇"
+            return "Still downloading 80GB games on a dying potato laptop in 2026? Drop your excuse below 👇"
         elif "ai" in lower_t or "agent" in lower_t or "model" in lower_t:
-            return "Be honest: would you rather pay $20/month for an official AI agent or run a free one locally? Debate below 👇"
-        elif "cost" in lower_t or "earn" in lower_t or "margin" in lower_t or "money" in lower_t:
-            return "Is this business model genius or a complete customer trap? What do you think? 👇"
+            return "Still paying $20/month for AI in 2026? Be honest—would you even pass your job interview without it? 💀"
+        elif "cost" in lower_t or "earn" in lower_t or "margin" in lower_t or "money" in lower_t or "business" in lower_t:
+            return "Did you really think their free app was a gift or did you just realize you're the product? 💀 Debate below 👇"
         elif "dad" in lower_t or "wifi" in lower_t or "bill" in lower_t:
-            return "Has your dad ever done something like this? What's his craziest tech fix? 😂👇"
+            return "Would you trust your dad to fix your Wi-Fi or pay $100 for a technician? Be honest 😂👇"
         else:
-            return "Did this surprise you or did you already know this was possible? Drop your take below 👇"
+            return "Still paying monthly fees for software when 100% free tools exist? Drop your excuse below 👇"
 
     def _build_tiered_hashtags(self, title: str, category: str, kw: str) -> List[str]:
         """

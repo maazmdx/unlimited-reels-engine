@@ -7,6 +7,7 @@ export interface LowPolyHumanRigProps {
   isSpeaking?: boolean;
   mouthOpen?: number; // 0.0 to 1.0
   emotion?: "neutral" | "tired" | "shocked" | "angry" | "smug" | string;
+  turnFrame?: number; // Frames since active turn started
   position?: [number, number, number];
   rotation?: [number, number, number];
   scale?: number;
@@ -30,6 +31,7 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   isSpeaking = false,
   mouthOpen = 0.0,
   emotion = "neutral",
+  turnFrame,
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   scale = 1.0,
@@ -45,6 +47,17 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   const breathRotX = Math.sin(frame * 0.055) * 0.012;
   const speakNodX = isSpeaking ? Math.sin(frame * 0.38) * 0.028 : 0;
   const speakHeadTiltZ = isSpeaking ? Math.sin(frame * 0.22) * 0.018 : 0;
+
+  // =========================================================================
+  // 1B. 15-FRAME DISBELIEF HEAD-SHAKE ON SHOCKED OR ANGRY ROAST REACTION
+  // =========================================================================
+  let headShakeY = 0;
+  const isRoastReaction = emotion === "shocked" || emotion === "angry";
+  const effectiveTurnFrame = turnFrame !== undefined ? turnFrame : (frame % 30);
+  if (isRoastReaction && effectiveTurnFrame >= 0 && effectiveTurnFrame <= 15) {
+    const decay = 1.0 - effectiveTurnFrame / 15;
+    headShakeY = Math.sin(effectiveTurnFrame * 0.65) * 0.14 * decay;
+  }
 
   // =========================================================================
   // 2. DETERMINISTIC EYE BLINK (Every 110 frames ~3.6s, lasts 4 frames)
@@ -382,9 +395,9 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
       </group>
 
       {/* =================================================================== */}
-      {/* 3. HEAD & NECK ASSEMBLY (Articulated Nodding & Tilting)             */}
+      {/* 3. HEAD & NECK ASSEMBLY (Articulated Nodding & Disbelief Shaking)   */}
       {/* =================================================================== */}
-      <group position={[0, -0.05, 0.05]} rotation={[speakNodX, 0, speakHeadTiltZ]}>
+      <group position={[0, -0.05, 0.05]} rotation={[speakNodX, headShakeY, speakHeadTiltZ]}>
         {/* Proper Low-Poly Connecting Neck */}
         <mesh position={[0, -0.42, 0.0]} material={skinMat}>
           <cylinderGeometry args={[0.24, 0.28, 0.35, 7]} />

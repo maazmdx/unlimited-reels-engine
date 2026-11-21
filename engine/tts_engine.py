@@ -457,7 +457,8 @@ def apply_broadcast_mastering(
     output_audio: str,
     ambient_bed_path: Optional[str] = None,
     ambient_db: float = -22.0,
-    sfx_track_path: Optional[str] = None
+    sfx_track_path: Optional[str] = None,
+    music_drop_sec: Optional[float] = None
 ) -> bool:
     """
     Applies clean broadcast mastering:
@@ -466,7 +467,8 @@ def apply_broadcast_mastering(
     - Gentle compressor (ratio=3.0, threshold=-18dB)
     - Removed hollow 'aecho' and pitch shifts
     - Adds subtle warm lo-fi ambient piano bed ducked quietly at -22 dB
-    - Mixes procedural UI SFX (whoosh at Turn 3 + chime at CTA) at -10 dB
+    - Automates 0.65s music drop right before roast punchline at music_drop_sec
+    - Mixes procedural UI SFX (whoosh at Turn 5 + punchline thud + chime at CTA) at -10 dB
     - Final Loudnorm to exactly -14.0 LUFS (True Peak -1.0 dB, LRA 7)
     """
     from engine.ambient_music import generate_ambient_music_bed, DEFAULT_AMBIENT_PATH
@@ -482,6 +484,15 @@ def apply_broadcast_mastering(
 
     has_sfx = bool(sfx_track_path and os.path.exists(sfx_track_path))
 
+    # Comedic 0.65s music drop volume automation before savage punchline
+    if music_drop_sec is not None and music_drop_sec >= 0:
+        music_filter = (
+            f"volume='if(between(t,{music_drop_sec:.3f},{music_drop_sec + 0.65:.3f}),0.0,1.0)':eval=frame,"
+            f"volume={ambient_db}dB,aloop=loop=-1:size=2e+09"
+        )
+    else:
+        music_filter = f"volume={ambient_db}dB,aloop=loop=-1:size=2e+09"
+
     if has_sfx:
         filter_chain = (
             "[0:a]highpass=f=75,"
@@ -489,7 +500,7 @@ def apply_broadcast_mastering(
             "equalizer=f=900:t=q:w=2.0:g=-1.5,"
             "equalizer=f=4000:t=q:w=1.5:g=2.0,"
             "acompressor=threshold=-18dB:ratio=3.0:attack=15:release=85:makeup=2.0dB[vocal];"
-            f"[1:a]volume={ambient_db}dB,aloop=loop=-1:size=2e+09[music];"
+            f"[1:a]{music_filter}[music];"
             "[2:a]volume=0dB[sfx];"
             "[vocal][music][sfx]amix=inputs=3:duration=first:dropout_transition=2,"
             "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
@@ -512,7 +523,7 @@ def apply_broadcast_mastering(
             "equalizer=f=900:t=q:w=2.0:g=-1.5,"
             "equalizer=f=4000:t=q:w=1.5:g=2.0,"
             "acompressor=threshold=-18dB:ratio=3.0:attack=15:release=85:makeup=2.0dB[vocal];"
-            f"[1:a]volume={ambient_db}dB,aloop=loop=-1:size=2e+09[music];"
+            f"[1:a]{music_filter}[music];"
             "[vocal][music]amix=inputs=2:duration=first:dropout_transition=2,"
             "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
         )
@@ -840,26 +851,37 @@ def generate_dialogue_speech(
         os.makedirs(os.path.dirname(os.path.abspath(out_audio)), exist_ok=True)
 
         vocal_dur = get_audio_duration(vocal_master_wav)
-        # Procedural UI SFX:
+        # Procedural UI SFX & Comedic Punchline Audio:
         # 1. Whoosh/pop at Turn 5 start_sec (Act 3 proof card open)
         whoosh_sec = turns_summary[5]["start_sec"] if len(turns_summary) > 5 else (turns_summary[3]["start_sec"] if len(turns_summary) > 3 else None)
         # 2. Subtle iOS chime at Turn 9 start_sec (Act 4 notification toast pop-in)
         toast_sec = turns_summary[9]["start_sec"] if len(turns_summary) > 9 else None
-        # 3. iOS-style chime at total_duration - 2.5s (Act 5 clean black End-Card)
+        # 3. Punchline deep bass thud right as Turn 9 roast lands
+        punchline_turn = turns_summary[9] if len(turns_summary) > 9 else (turns_summary[-2] if len(turns_summary) > 2 else None)
+        punchline_sec = punchline_turn["start_sec"] if punchline_turn else None
+        # 4. 0.65s music mute/drop 0.15s before the punchline
+        music_drop_sec = max(0.0, punchline_sec - 0.15) if punchline_sec is not None else None
+        # 5. iOS-style chime at total_duration - 2.5s (Act 5 clean black End-Card)
         chime_sec = max(0.0, vocal_dur - 2.5)
 
-        from engine.ambient_music import generate_sfx_track, generate_sfx_whoosh, generate_sfx_chime
+        from engine.ambient_music import generate_sfx_track, generate_sfx_whoosh, generate_sfx_chime, generate_sfx_bass_thud
         sfx_track_file = os.path.join(tmpdir, "sfx_track.wav")
         generate_sfx_track(
             total_duration_sec=vocal_dur + 1.0,
             whoosh_time_sec=whoosh_sec,
             toast_chime_sec=toast_sec,
+            punchline_thud_sec=punchline_sec,
             chime_time_sec=chime_sec,
             out_path=Path(sfx_track_file),
             volume_db=-10.0
         )
 
-        apply_broadcast_mastering(vocal_master_wav, out_audio, sfx_track_path=sfx_track_file)
+        apply_broadcast_mastering(
+            vocal_master_wav,
+            out_audio,
+            sfx_track_path=sfx_track_file,
+            music_drop_sec=music_drop_sec
+        )
 
         total_duration = get_audio_duration(out_audio)
         duration_in_frames = int(math.ceil((total_duration + 0.4) * 30))

@@ -211,7 +211,10 @@ class SceneDirectorAgent:
             "ctaKeyword": script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK"),
             "ctaText": script_data.get("cta_text") or script_data.get("ctaText") or f"💬 Comment {script_data.get('cta_keyword', 'LINK')} for the link",
             "environment": script_data.get("environment", "diner"),
-            "weather": script_data.get("weather", "raining"),
+            "weather": script_data.get("weather", "rain"),
+            "weatherMode": script_data.get("weatherMode") or script_data.get("weather", "rain"),
+            "episodeNumber": script_data.get("episode_number"),
+            "episodeStr": script_data.get("episode_str"),
             "characters": script_data.get("characters", []),
             "screenContent": script_data.get("screenContent", "code"),
             "hookHeadline": hook.get("headline", "AI VS HUMANS"),
@@ -355,6 +358,33 @@ class SceneDirectorAgent:
         render_sec = time.time() - start_time
         file_size_mb = final_output.stat().st_size / (1024 * 1024)
         print(f"✅ [Agent 4] Rendered successfully in {render_sec:.1f}s ({file_size_mb:.2f} MB)")
+
+        # Auto-Export 4:5 Grid-Safe Cover Still (Frame 15: opening hook + logo)
+        cover_still_path = final_output.with_name(f"{final_output.stem}_cover.png")
+        try:
+            print(f"📸 [Agent 4] Exporting 4:5 grid-safe cover still at Frame 15 -> {cover_still_path.name}...")
+            still_cmd = [
+                "npx", "remotion", "still",
+                "src/index.ts",
+                composition_id,
+                str(cover_still_path),
+                "--frame=15",
+                "--props=public/video-meta.json"
+            ]
+            res = subprocess.run(
+                still_cmd,
+                cwd=str(self.remotion_dir),
+                capture_output=True,
+                text=True,
+                timeout=90
+            )
+            if res.returncode == 0 and cover_still_path.exists():
+                print(f"✅ [Agent 4] Cover still exported successfully ({cover_still_path.stat().st_size / 1024:.1f} KB)")
+            else:
+                print(f"⚠️ [Agent 4] Cover still export notice (exit {res.returncode}): {res.stderr[:200]}")
+        except Exception as e_still:
+            print(f"⚠️ [Agent 4] Cover still export notice (non-fatal): {e_still}")
+
         return str(final_output)
 
     def _stream_remotion_render(self, cmd: list) -> tuple[int, str]:

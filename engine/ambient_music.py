@@ -15,6 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_AMBIENT_PATH = PROJECT_ROOT / "assets" / "audio" / "ambient_bed.wav"
 DEFAULT_SFX_WHOOSH_PATH = PROJECT_ROOT / "assets" / "audio" / "sfx_whoosh.wav"
 DEFAULT_SFX_CHIME_PATH = PROJECT_ROOT / "assets" / "audio" / "sfx_chime.wav"
+DEFAULT_SFX_BASS_THUD_PATH = PROJECT_ROOT / "assets" / "audio" / "sfx_bass_thud.wav"
 
 
 def note_to_freq(note_name: str) -> float:
@@ -180,11 +181,51 @@ def generate_sfx_chime(
     return str(out_path)
 
 
+def generate_sfx_bass_thud(
+    out_path: Path = DEFAULT_SFX_BASS_THUD_PATH,
+    sample_rate: int = 24000,
+    volume_db: float = -10.0
+) -> str:
+    """
+    Synthesizes a deep procedural bass thud / comedic punchline sting WAV via pure NumPy:
+    - Pitch glide from ~55 Hz down to 30 Hz over 0.35s duration.
+    - Punchy transient attack with exponential decay envelope.
+    - Scaled to volume_db (-10 dB by default) for a clean comedic sting.
+    """
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    dur = 0.35
+    n_samples = int(dur * sample_rate)
+    t = np.arange(n_samples) / sample_rate
+
+    # Exponential pitch glide from 55 Hz down to 30 Hz
+    decay_rate = 14.0
+    phi = 2.0 * np.pi * (30.0 * t + (55.0 - 30.0) * (1.0 - np.exp(-t * decay_rate)) / decay_rate)
+    sine_wave = np.sin(phi)
+
+    # Sub-harmonic saturation for warm punch
+    sub = 0.35 * np.sin(phi * 0.5)
+
+    # Fast transient attack (4ms) + smooth exponential decay
+    env = (1.0 - np.exp(-t * 220.0)) * np.exp(-t * 8.5)
+    thud_wave = (sine_wave + sub) * env
+
+    max_val = np.max(np.abs(thud_wave))
+    if max_val > 0:
+        target_amp = 10.0 ** (volume_db / 20.0)
+        thud_wave = (thud_wave / max_val) * target_amp
+
+    sf.write(str(out_path), thud_wave.astype(np.float32), sample_rate, subtype='PCM_16')
+    return str(out_path)
+
+
 def generate_sfx_track(
     total_duration_sec: float,
     whoosh_time_sec: Optional[float] = None,
     toast_chime_sec: Optional[float] = None,
     chime_time_sec: Optional[float] = None,
+    punchline_thud_sec: Optional[float] = None,
     out_path: Optional[Path] = None,
     sample_rate: int = 24000,
     volume_db: float = -10.0
@@ -193,6 +234,7 @@ def generate_sfx_track(
     Generates a full-length synchronized UI SFX track:
     - Places whoosh/pop at whoosh_time_sec (Turn 5 proof card appearance).
     - Places subtle iOS chime at toast_chime_sec (Turn 9 notification toast appearance).
+    - Places punchline bass thud at punchline_thud_sec (Turn 9/10 roast punchline sting).
     - Places iOS chime at chime_time_sec (End-Card cliffhanger).
     - All rendered at volume_db (-10 dB by default).
     """
@@ -219,7 +261,17 @@ def generate_sfx_track(
             chunk_len = end_idx - start_idx
             sfx_track[start_idx:end_idx] += chime_data[:chunk_len]
 
-    # 3. Overlay End-Card chime at chime_time_sec
+    # 3. Overlay punchline bass thud at punchline_thud_sec
+    if punchline_thud_sec is not None and punchline_thud_sec >= 0:
+        thud_file = generate_sfx_bass_thud(sample_rate=sample_rate, volume_db=volume_db)
+        thud_data, _ = sf.read(thud_file)
+        start_idx = int(punchline_thud_sec * sample_rate)
+        end_idx = min(total_samples, start_idx + len(thud_data))
+        if start_idx < total_samples and end_idx > start_idx:
+            chunk_len = end_idx - start_idx
+            sfx_track[start_idx:end_idx] += thud_data[:chunk_len]
+
+    # 4. Overlay End-Card chime at chime_time_sec
     if chime_time_sec is not None and chime_time_sec >= 0:
         chime_file = generate_sfx_chime(sample_rate=sample_rate, volume_db=volume_db)
         chime_data, _ = sf.read(chime_file)
@@ -241,4 +293,5 @@ if __name__ == "__main__":
     generate_ambient_music_bed(30.0)
     generate_sfx_whoosh()
     generate_sfx_chime()
-    print("Generated ambient bed, whoosh, and chime SFX.")
+    generate_sfx_bass_thud()
+    print("Generated ambient bed, whoosh, chime, and bass thud SFX.")
