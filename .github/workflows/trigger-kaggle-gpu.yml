@@ -27,28 +27,19 @@ jobs:
 
       - name: 📦 Install Kaggle CLI
         run: |
-          pip install --upgrade kaggle
-
-      - name: 🔑 Configure Kaggle API Credentials
-        env:
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-        run: |
-          if [ -z "$KAGGLE_USERNAME" ] || [ -z "$KAGGLE_KEY" ]; then
-            echo "❌ Error: KAGGLE_USERNAME or KAGGLE_KEY secret is not set!"
-            echo "Please configure KAGGLE_USERNAME and KAGGLE_KEY in GitHub Repository Secrets."
-            exit 1
-          fi
-          mkdir -p ~/.kaggle
-          echo "{\"username\":\"$KAGGLE_USERNAME\",\"key\":\"$KAGGLE_KEY\"}" > ~/.kaggle/kaggle.json
-          chmod 600 ~/.kaggle/kaggle.json
-          echo "✅ Kaggle API credentials configured."
+          pip install -q --upgrade kaggle
 
       - name: 🚀 Push & Trigger Kaggle GPU Kernel
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
         run: |
+          if [ -z "$KAGGLE_USERNAME" ] || [ -z "$KAGGLE_API_TOKEN" ]; then
+            echo "❌ Error: KAGGLE_USERNAME or KAGGLE_KEY secret is not set!"
+            echo "Please configure KAGGLE_USERNAME and KAGGLE_KEY in GitHub Repository Secrets."
+            exit 1
+          fi
+
           # Substitute username in metadata safely via Python JSON
           python3 -c '
           import json, os
@@ -60,27 +51,27 @@ jobs:
           '
           echo "📋 Prepared kernel-metadata.json:"
           cat kaggle/kernel-metadata.json
-          
-          # Write ~/.kaggle/kaggle.json safely via Python
+
+          # Write ~/.kaggle/access_token safely via Python and remove legacy kaggle.json
           python3 -c '
-          import json, os, pathlib
-          p = pathlib.Path.home() / ".kaggle" / "kaggle.json"
+          import os, pathlib
+          p = pathlib.Path.home() / ".kaggle" / "access_token"
           p.parent.mkdir(parents=True, exist_ok=True)
-          p.write_text(json.dumps({
-              "username": os.environ["KAGGLE_USERNAME"].strip(),
-              "key": os.environ["KAGGLE_KEY"].strip()
-          }))
+          p.write_text(os.environ["KAGGLE_API_TOKEN"].strip())
           p.chmod(0o600)
-          print("✅ Wrote ~/.kaggle/kaggle.json")
+          legacy = pathlib.Path.home() / ".kaggle" / "kaggle.json"
+          if legacy.exists():
+              legacy.unlink()
+          print("✅ Wrote ~/.kaggle/access_token (0600) and cleaned legacy kaggle.json")
           '
-          
+
           echo "☁️ Pushing notebook to Kaggle GPU..."
           kaggle kernels push -p kaggle/
-          
+
           echo "⏳ Checking kernel status..."
           sleep 5
           kaggle kernels status "$KAGGLE_USERNAME/daily-reels-gpu-runner" || true
-          
+
           echo ""
           echo "=========================================================================="
           echo "🎉 Kaggle GPU Kernel triggered successfully!"
