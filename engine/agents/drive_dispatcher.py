@@ -186,6 +186,34 @@ class DriveDispatcherAgent:
                 size_kb = f_path.stat().st_size / 1024
                 print(f"   ⬆️ Uploaded: {f_path.name} ({size_kb:.1f} KB)")
 
+                # If this file is a resource guide, make it publicly readable and inject into _autodm.json
+                if f_path.name.endswith("_resource_guide.html"):
+                    try:
+                        service.permissions().create(
+                            fileId=res["id"],
+                            body={"role": "reader", "type": "anyone"},
+                            fields="id"
+                        ).execute()
+                        guide_web_link = res.get("webViewLink") or f"https://drive.google.com/file/d/{res['id']}/view?usp=sharing"
+                        print(f"   📖 [Resource Guide] Public reader access granted: {guide_web_link}")
+
+                        # Find matching _autodm.json and inject real public guide link
+                        matching_autodm = f_path.with_name(f_path.name.replace("_resource_guide.html", "_autodm.json"))
+                        if matching_autodm.exists():
+                            with open(matching_autodm, "r", encoding="utf-8") as af:
+                                ad_data = json.load(af)
+                            ad_data["guide_drive_link"] = guide_web_link
+                            tpl = ad_data.get("dm_message_template", "")
+                            if "[DRIVE_GUIDE_LINK]" in tpl:
+                                ad_data["dm_message_template"] = tpl.replace("[DRIVE_GUIDE_LINK]", guide_web_link)
+                            with open(matching_autodm, "w", encoding="utf-8") as af:
+                                json.dump(ad_data, af, indent=2, ensure_ascii=False)
+                            # Re-upload updated autodm.json to Drive
+                            self.upload_file_to_folder(service, matching_autodm, subfolder_id)
+                            print(f"   💉 [Auto-DM] Injected live Drive guide link into {matching_autodm.name}")
+                    except Exception as e_guide:
+                        print(f"   ⚠️ [Resource Guide] Public permission notice: {e_guide}")
+
         folder_link = subfolder_info.get("webViewLink") or f"https://drive.google.com/drive/folders/{subfolder_id}"
         print(f"\n🎉 [Google Drive] {uploaded_count}/{len(all_files)} files uploaded successfully to subfolder '{subfolder_name}'!")
         print(f"🔗 Clickable Google Drive Folder Link:\n👉 {folder_link}\n")
@@ -314,6 +342,30 @@ class DriveDispatcherAgent:
                     res = self.upload_file_to_folder(service, f_item, sub_id)
                     if res:
                         upload_records.append({"file": f_item.name, "status": "UPLOADED_SERVICE_ACCOUNT", "id": res.get("id")})
+                        if f_item.name.endswith("_resource_guide.html"):
+                            try:
+                                service.permissions().create(
+                                    fileId=res["id"],
+                                    body={"role": "reader", "type": "anyone"},
+                                    fields="id"
+                                ).execute()
+                                guide_web_link = res.get("webViewLink") or f"https://drive.google.com/file/d/{res['id']}/view?usp=sharing"
+                                print(f"   📖 [Resource Guide] Public reader access granted: {guide_web_link}")
+
+                                matching_autodm = f_item.with_name(f_item.name.replace("_resource_guide.html", "_autodm.json"))
+                                if matching_autodm.exists():
+                                    with open(matching_autodm, "r", encoding="utf-8") as af:
+                                        ad_data = json.load(af)
+                                    ad_data["guide_drive_link"] = guide_web_link
+                                    tpl = ad_data.get("dm_message_template", "")
+                                    if "[DRIVE_GUIDE_LINK]" in tpl:
+                                        ad_data["dm_message_template"] = tpl.replace("[DRIVE_GUIDE_LINK]", guide_web_link)
+                                    with open(matching_autodm, "w", encoding="utf-8") as af:
+                                        json.dump(ad_data, af, indent=2, ensure_ascii=False)
+                                    self.upload_file_to_folder(service, matching_autodm, sub_id)
+                                    print(f"   💉 [Auto-DM] Injected live Drive guide link into {matching_autodm.name}")
+                            except Exception as e_guide:
+                                print(f"   ⚠️ [Resource Guide] Public permission notice: {e_guide}")
 
                 print(f"\n🎉 [Google Drive] Assets uploaded to dated subfolder '{subfolder_name}'!")
                 print(f"🔗 Clickable Google Drive Folder Link:\n👉 {drive_link}\n")

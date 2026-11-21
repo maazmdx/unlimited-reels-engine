@@ -36,6 +36,8 @@ from engine.agents.audio_director import AudioDirectorAgent
 from engine.agents.scene_director import SceneDirectorAgent
 from engine.agents.quality_auditor import QualityAuditorAgent
 from engine.agents.drive_dispatcher import DriveDispatcherAgent
+from engine.agents.instagram_publisher import InstagramPublisherAgent
+from engine.tts_engine import export_srt_file
 
 BANNER = r"""
 ======================================================================
@@ -265,7 +267,7 @@ def generate_autodm_config(script_data: Dict[str, Any]) -> Dict[str, Any]:
     """Generates structured config for ManyChat or Instagram Auto-DM automation."""
     cta_kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
     title = script_data.get("title", "Resource Guide")
-    dm_msg = script_data.get("dm_message") or f"Hey! Here is the direct link and guide for {title}: https://antigravity.run/r/{cta_kw.lower()}"
+    dm_msg = script_data.get("dm_message") or f"Hey! Here is the direct link and guide for {title}."
 
     return {
         "keyword": cta_kw,
@@ -281,7 +283,8 @@ def run_morning_batch(
     drive_sync: bool = False,
     drive_folder_id: Optional[str] = None,
     insta_url: Optional[str] = None,
-    scene_preset: str = "diner"
+    scene_preset: str = "diner",
+    auto_publish: bool = False
 ) -> Dict[str, Any]:
     """Executes the complete morning batch generation."""
     print(BANNER)
@@ -461,6 +464,15 @@ def run_morning_batch(
                 shutil.copy2(cover_src, cover_dest)
             print(f"🖼️ [Cover Still] Delivered beside MP4: {cover_dest.name}")
 
+        # Export clean, standard SubRip captions (.srt) beside MP4 in morning batch directory
+        final_srt_dest = batch_dir / f"{Path(output_filename).stem}.srt"
+        srt_source = audio_res.get("chunks") or (PROJECT_ROOT / "public" / "subs.json")
+        try:
+            export_srt_file(srt_source, final_srt_dest)
+            print(f"📝 [SRT Subtitles] Delivered beside MP4: {final_srt_dest.name}")
+        except Exception as e_srt:
+            print(f"⚠️ [SRT Subtitles] Notice: {e_srt}")
+
         # Copy audit keyframes to thumbs directory
         for kf in audit_res.get("keyframes", []):
             if kf.get("path") and Path(kf["path"]).exists():
@@ -482,6 +494,7 @@ def run_morning_batch(
 
         # Optional Cloud Drive Sync
         drive_status = "SKIPPED"
+        d_res = None
         if drive_dispatcher:
             try:
                 has_creds = (
@@ -509,6 +522,36 @@ def run_morning_batch(
             except Exception as e_drive:
                 print(f"ℹ️ Google Drive sync notice (non-fatal): {e_drive}")
                 drive_status = f"SKIPPED: {e_drive}"
+
+        # 7. Optional Official Meta Graph API Reels Auto-Publish (Default: OFF)
+        ig_publish_status = "SKIPPED_FLAG_OFF"
+        ig_permalink = None
+        if auto_publish:
+            try:
+                publisher = InstagramPublisherAgent()
+                if publisher.is_configured():
+                    public_vid_url = None
+                    if isinstance(drive_status, dict):
+                        public_vid_url = drive_status.get("drive_link")
+                    elif isinstance(d_res, dict):
+                        public_vid_url = d_res.get("drive_link")
+
+                    if public_vid_url:
+                        pub_res = publisher.publish_reel(
+                            video_url=public_vid_url,
+                            caption=seo_assets.get("caption_text", ""),
+                        )
+                        ig_publish_status = pub_res.get("status", "FAILED")
+                        ig_permalink = pub_res.get("permalink")
+                    else:
+                        print("ℹ️ [InstagramPublisher] No public video URL available for upload; skipping auto-publish.")
+                        ig_publish_status = "SKIPPED_NO_PUBLIC_URL"
+                else:
+                    print("ℹ️ [InstagramPublisher] IG_USER_ID or IG_ACCESS_TOKEN not set; skipping auto-publish.")
+                    ig_publish_status = "SKIPPED_NO_SECRETS"
+            except Exception as e_pub:
+                print(f"⚠️ [InstagramPublisher] Publishing notice: {e_pub}")
+                ig_publish_status = f"ERROR: {e_pub}"
 
         # Resolve autodm_data cleanly from seo_assets or autodm_file or script_data
         autodm_data = seo_assets.get("autodm_payload") or {}
@@ -545,6 +588,7 @@ def run_morning_batch(
             "title": script_data["title"],
             "video_path": str(final_video_dest),
             "cover_path": str(cover_dest) if cover_dest.exists() else None,
+            "srt_path": str(final_srt_dest) if final_srt_dest.exists() else None,
             "caption_path": str(caption_file),
             "autodm_path": str(autodm_file),
             "cta_keyword": cta_keyword_val,
@@ -553,7 +597,9 @@ def run_morning_batch(
             "duration": audit_res.get("duration", 0),
             "quality_score": audit_res.get("score", 100),
             "status": audit_res.get("status", "PASS"),
-            "drive_status": drive_status
+            "drive_status": drive_status,
+            "ig_status": ig_publish_status,
+            "ig_permalink": ig_permalink,
         })
 
     # Archive processed URLs
@@ -621,6 +667,7 @@ if __name__ == "__main__":
     parser.add_argument("--drive-folder", type=str, default=None, help="Google Drive folder ID")
     parser.add_argument("--insta-url", type=str, default=None, help="Specific Instagram/Shorts URL to recreate")
     parser.add_argument("--scene-preset", type=str, default="diner", choices=["diner", "desk", "auto"], help="3D Scene Preset")
+    parser.add_argument("--auto-publish", action="store_true", default=False, help="Automatically publish rendered reels to Instagram via Meta Graph API if credentials are set")
     args = parser.parse_args()
 
     if args.schedule:
@@ -632,4 +679,5 @@ if __name__ == "__main__":
             drive_folder_id=args.drive_folder,
             insta_url=args.insta_url,
             scene_preset=args.scene_preset,
+            auto_publish=args.auto_publish,
         )

@@ -345,6 +345,81 @@ def format_vtt_timestamp(seconds: float) -> str:
     return f"{hrs:02d}:{mins:02d}:{secs:02d}.{millis:03d}"
 
 
+def format_srt_timestamp(seconds: float) -> str:
+    """Converts seconds float into standard SubRip (.srt) timestamp: 00:00:00,000"""
+    hrs = int(seconds // 3600)
+    mins = int((seconds % 3600) // 60)
+    secs = int(seconds % 60)
+    millis = int(round((seconds - int(seconds)) * 1000))
+    if millis >= 1000:
+        millis = 999
+    return f"{hrs:02d}:{mins:02d}:{secs:02d},{millis:03d}"
+
+
+def clean_srt_text(text: str) -> str:
+    """Strips emojis and formatting glitches for clean, professional subtitles (2-5 words)."""
+    cleaned = re.sub(r'[\U00010000-\U0010ffff]', '', text)
+    cleaned = re.sub(r'[^\x00-\x7F]+', ' ', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    return cleaned
+
+
+def generate_srt_content(chunks: List[Dict[str, Any]]) -> str:
+    """Generates standard RFC/SubRip formatted .srt string from chunk timestamps."""
+    srt_blocks = []
+    idx = 1
+    for chunk in chunks:
+        start_ts = format_srt_timestamp(chunk.get("start", 0.0))
+        end_ts = format_srt_timestamp(chunk.get("end", 0.0))
+        clean_text = clean_srt_text(chunk.get("text", ""))
+        if not clean_text:
+            continue
+        srt_blocks.append(f"{idx}\n{start_ts} --> {end_ts}\n{clean_text}\n")
+        idx += 1
+    return "\n".join(srt_blocks)
+
+
+def export_srt_file(source: Any, dest_srt_path: Any) -> str:
+    """
+    Exports clean .srt captions file directly from timeline dict, subs.json, or chunk list.
+    """
+    dest = Path(dest_srt_path)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    chunks = []
+    if isinstance(source, list):
+        chunks = source
+    elif isinstance(source, (str, Path)):
+        p = Path(source)
+        if p.exists():
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                chunks = data.get("chunks") or data.get("all_chunks") or []
+                if not chunks and "turns" in data:
+                    for t in data["turns"]:
+                        chunks.append({
+                            "start": t.get("start_sec", 0.0),
+                            "end": t.get("end_sec", 0.0),
+                            "text": t.get("text", "")
+                        })
+            except Exception as e:
+                print(f"⚠️ Failed reading subtitle source {p}: {e}")
+    elif isinstance(source, dict):
+        chunks = source.get("chunks") or source.get("all_chunks") or []
+        if not chunks and "turns" in source:
+            for t in source["turns"]:
+                chunks.append({
+                    "start": t.get("start_sec", 0.0),
+                    "end": t.get("end_sec", 0.0),
+                    "text": t.get("text", "")
+                })
+
+    srt_text = generate_srt_content(chunks)
+    with open(dest, "w", encoding="utf-8") as f:
+        f.write(srt_text)
+    return str(dest)
+
+
 def get_audio_duration(file_path: str) -> float:
     """Calculates audio duration in seconds using ffprobe or soundfile."""
     try:
@@ -1085,16 +1160,21 @@ def generate_dialogue_speech(
         with open(os.path.join(d, "subs.json"), "w", encoding="utf-8") as f:
             json.dump(subs_data, f, indent=2, ensure_ascii=False)
 
-    # 3. Write WebVTT
+    # 3. Write WebVTT & SubRip (.srt)
     vtt_lines = ["WEBVTT\n"]
     for i, chunk in enumerate(all_chunks):
         start_ts = format_vtt_timestamp(chunk["start"])
         end_ts = format_vtt_timestamp(chunk["end"])
         vtt_lines.append(f"{i + 1}\n{start_ts} --> {end_ts}\n[{chunk['character_id'].upper()}] {chunk['text']}\n")
 
+    srt_text = generate_srt_content(all_chunks)
+
+    out_srt = str(PROJECT_ROOT / "public" / "subs.srt")
     for d in set(out_dirs):
         with open(os.path.join(d, "subs.vtt"), "w", encoding="utf-8") as f:
             f.write("\n".join(vtt_lines))
+        with open(os.path.join(d, "subs.srt"), "w", encoding="utf-8") as f:
+            f.write(srt_text)
 
     # 4. Copy audio and SFX files to both public folders (voice.mp3, voiceover.mp3, master.mp3, sfx_*.wav)
     for d in set(out_dirs):
@@ -1126,15 +1206,17 @@ def generate_dialogue_speech(
             json.dump(meta, f, indent=2, ensure_ascii=False)
 
     print(f"✅ Dialogue complete: {out_audio} ({total_duration:.2f}s, {duration_in_frames} frames @ 30fps)")
-    print(f"✅ Exported unified timeline.json with per-character 30fps lip-sync envelopes.")
+    print(f"✅ Exported unified timeline.json with per-character 30fps lip-sync envelopes and subs.srt.")
 
     return {
         "audio_path": out_audio,
         "vtt_path": out_vtt,
+        "srt_path": out_srt,
         "json_path": out_json,
         "timeline_path": timeline_json,
         "duration": total_duration,
         "frames": duration_in_frames,
         "turns": turns_summary,
+        "chunks": all_chunks,
         "mouth_envelopes": mouth_envelopes
     }
