@@ -470,6 +470,15 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           distance={5.0}
           decay={1.8}
         />
+
+        {/* Dedicated Front-Right Fill Light for Right Character (Reveals facets against night window) */}
+        <pointLight
+          position={[1.2, 0.6, 1.6]}
+          intensity={1.6}
+          color="#F1F5F9"
+          distance={5.0}
+          decay={1.6}
+        />
       </ThreeCanvas>
 
       {/* 4. Upper-Third Dynamic Proof Card (Act 3: Turns 5-7, step-by-step row highlighting) */}

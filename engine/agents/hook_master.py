@@ -75,6 +75,75 @@ def sanitize_simple_spoken_english(text: str) -> str:
     return strip_emojis(cleaned)
 
 
+def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -> str:
+    """Enforces single pronounceable dictionary English words for auto_dm_keyword (never RETROPC)."""
+    cleaned = re.sub(r"[^A-Z]", "", (raw_kw or "").strip().upper())
+    if cleaned in ["RETROPC", "RETRO_PC", "INTEL486", "PC", "BROWSER"]:
+        return "PLAY" if any(w in (category + title).lower() for w in ["game", "retro", "emulator"]) else "FREE"
+    if not cleaned or len(cleaned) < 3 or len(cleaned) > 7:
+        cat_lower = (str(category) + " " + str(title)).lower()
+        if any(w in cat_lower for w in ["repo", "github", "open-source", "open source"]):
+            return "REPO"
+        elif any(w in cat_lower for w in ["game", "retro", "play"]):
+            return "PLAY"
+        elif any(w in cat_lower for w in ["ai", "tool", "app"]):
+            return "TOOL"
+        else:
+            return "FREE"
+    return cleaned
+
+
+def call_groq_api(prompt: str, system_instruction: str, timeout: float = 35.0) -> Optional[str]:
+    """
+    Calls Groq Cloud API with llama-3.3-70b-versatile for ultra-fast, zero-cost JSON completions.
+    100% free via GROQ_API_KEY env var / Kaggle Secret, zero extra pip packages (uses requests).
+    """
+    groq_api_key = os.environ.get("GROQ_API_KEY")
+    if not groq_api_key:
+        try:
+            from kaggle_secrets import UserSecretsClient
+            groq_api_key = UserSecretsClient().get_secret("GROQ_API_KEY")
+        except Exception:
+            pass
+
+    if not groq_api_key:
+        return None
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {groq_api_key}",
+        "Content-Type": "application/json",
+        "User-Agent": "AntigravityHookMaster/3.0",
+    }
+    payload = {
+        "model": "llama-3.3-70b-versatile",
+        "messages": [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.7,
+        "response_format": {"type": "json_object"},
+    }
+
+    t0 = time.time()
+    try:
+        r = requests.post(url, json=payload, headers=headers, timeout=timeout)
+        if r.status_code == 200:
+            res_json = r.json()
+            choices = res_json.get("choices", [])
+            if choices:
+                text = choices[0].get("message", {}).get("content", "")
+                elapsed = time.time() - t0
+                print(f"⚡ [Groq API] Model 'llama-3.3-70b-versatile' succeeded in {elapsed:.2f}s ({len(text)} chars).")
+                return text
+        else:
+            print(f"⚠️ [Groq API] HTTP {r.status_code}: {r.text[:140]}")
+    except Exception as e:
+        print(f"⚠️ [Groq API] Request exception: {e}")
+
+    return None
+
+
 class HookMasterAgent:
     """
     Master Agent 2: Specializes in 0-3s retention hooks and high-engagement
@@ -107,8 +176,8 @@ class HookMasterAgent:
     # =========================================================================
 
     def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """Calls Gemini with 2026 free-tier models, clean 50s timeout, 1 retry on 504/timeout, and logs model."""
-        models = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]
+        """Calls Gemini with 2026 free-tier models, clean 45s timeout, 1 retry on 504/timeout, and logs model."""
+        models = ["gemini-2.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]
 
         if self.client:
             for m in models:
@@ -149,7 +218,7 @@ class HookMasterAgent:
                 for attempt in range(2):
                     t0 = time.time()
                     try:
-                        r = requests.post(url, json=payload, headers=self.headers, timeout=50.0)
+                        r = requests.post(url, json=payload, headers=self.headers, timeout=45.0)
                         if r.status_code == 200:
                             parts = r.json().get("candidates", [])[0].get("content", {}).get("parts", [])
                             if parts:
@@ -173,6 +242,24 @@ class HookMasterAgent:
                             continue
                         print(f"⚠️ HookMaster: REST {m} warning: {e}")
                         break
+
+        return None
+
+    def _call_llm(self, prompt: str, system_instruction: str) -> Optional[str]:
+        """
+        Dual-Engine LLM Caller:
+        1. Queries Gemini (gemini-2.5-flash, gemini-3.5-flash-lite) with clean 45s timeout.
+        2. If Gemini fails, hits 429 quota, or times out, immediately falls back to Groq llama-3.3-70b-versatile.
+        Guarantees ZERO reels ever fall back to stale offline templates!
+        """
+        res = self._call_gemini_api(prompt, system_instruction)
+        if res:
+            return res
+
+        print("🔄 [HookMaster] Gemini unavailable/exhausted; switching immediately to Groq (llama-3.3-70b-versatile)...")
+        res_groq = call_groq_api(prompt, system_instruction)
+        if res_groq:
+            return res_groq
 
         return None
 
@@ -245,7 +332,7 @@ JSON Schema:
 }}
 """
 
-        raw_json = self._call_gemini_api(prompt, system_instruction)
+        raw_json = self._call_llm(prompt, system_instruction)
         if raw_json:
             try:
                 cleaned = raw_json.strip()
@@ -323,14 +410,11 @@ JSON Schema:
         left_char = topic.get("left_character", "junior_dev")
         right_char = topic.get("right_character", "claude")
         scene_preset = topic.get("scene_preset", "diner")
-        # Clean auto_dm_keyword to single pronounceable dictionary word
-        raw_kw = str(topic.get("auto_dm_keyword", "LINK")).strip().upper()
-        clean_kw = re.sub(r"[^A-Z]", "", raw_kw)
-        if not clean_kw or len(clean_kw) < 3 or len(clean_kw) > 8:
-            clean_kw = "REPO" if "github" in str(category).lower() or "repo" in str(category).lower() else ("RETRO" if "game" in str(category).lower() else "FREE")
-        kw = clean_kw
-        winning_hook = sanitize_simple_spoken_english(hook_battle_result.get("winning_hook", f"Look at {title}."))
         category = topic.get("category", "Tech")
+        # Enforce single pronounceable English words for auto_dm_keyword (never RETROPC)
+        raw_kw = str(topic.get("auto_dm_keyword", "FREE")).strip().upper()
+        kw = sanitize_auto_dm_keyword(raw_kw, category, title)
+        winning_hook = sanitize_simple_spoken_english(hook_battle_result.get("winning_hook", f"Look at {title}."))
         is_gh = any(term in str(category).lower() or term in str(title).lower() for term in ["github", "repo", "open-source", "open source"])
         link_target = "GitHub repo link" if is_gh else "free link"
         cta_phrase = topic.get("cta_phrase") or f"Comment {kw} and I'll DM you the {link_target}."
@@ -451,7 +535,7 @@ JSON Schema:
 }}
 """
 
-        raw_json = self._call_gemini_api(prompt, system_instruction)
+        raw_json = self._call_llm(prompt, system_instruction)
         screenplay = None
         if raw_json:
             try:
@@ -826,13 +910,13 @@ JSON Schema:
 if __name__ == "__main__":
     hm = HookMasterAgent()
     sample_topic = {
-        "title": "Developer builds complete Intel 486 PC emulator in browser",
-        "category": "Retro & Browser Games",
-        "auto_dm_keyword": "RETRO",
+        "title": "LocalSend: The Free Open-Source AirDrop for Every Device",
+        "category": "Free Open-Source GitHub Repos",
+        "auto_dm_keyword": "REPO",
         "left_character": "junior_dev",
         "right_character": "claude",
         "scene_preset": "desk",
-        "core_conflict": "Dev nostalgia vs JavaScript V8 emulator performance",
+        "core_conflict": "Human struggling with cloud upload subscriptions vs instant local P2P transfer",
     }
     screenplay = hm.craft_reel_screenplay(sample_topic)
     print("\n--- HookMaster Output ---")

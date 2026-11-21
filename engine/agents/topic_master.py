@@ -32,6 +32,75 @@ except ImportError:
     genai = None
 
 
+def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -> str:
+    """Enforces single pronounceable dictionary English words for auto_dm_keyword (never RETROPC)."""
+    cleaned = re.sub(r"[^A-Z]", "", (raw_kw or "").strip().upper())
+    if cleaned in ["RETROPC", "RETRO_PC", "INTEL486", "PC", "BROWSER"]:
+        return "PLAY" if any(w in (category + title).lower() for w in ["game", "retro", "emulator"]) else "FREE"
+    if not cleaned or len(cleaned) < 3 or len(cleaned) > 7:
+        cat_lower = (str(category) + " " + str(title)).lower()
+        if any(w in cat_lower for w in ["repo", "github", "open-source", "open source"]):
+            return "REPO"
+        elif any(w in cat_lower for w in ["game", "retro", "play"]):
+            return "PLAY"
+        elif any(w in cat_lower for w in ["ai", "tool", "app"]):
+            return "TOOL"
+        else:
+            return "FREE"
+    return cleaned
+
+
+def call_groq_api(prompt: str, system_instruction: str, timeout: float = 35.0) -> Optional[str]:
+    """
+    Calls Groq Cloud API with llama-3.3-70b-versatile for ultra-fast, zero-cost JSON completions.
+    100% free via GROQ_API_KEY env var / Kaggle Secret, zero extra pip packages (uses requests).
+    """
+    groq_api_key = os.environ.get("GROQ_API_KEY")
+    if not groq_api_key:
+        try:
+            from kaggle_secrets import UserSecretsClient
+            groq_api_key = UserSecretsClient().get_secret("GROQ_API_KEY")
+        except Exception:
+            pass
+
+    if not groq_api_key:
+        return None
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {groq_api_key}",
+        "Content-Type": "application/json",
+        "User-Agent": "AntigravityTopicMaster/3.0",
+    }
+    payload = {
+        "model": "llama-3.3-70b-versatile",
+        "messages": [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.7,
+        "response_format": {"type": "json_object"},
+    }
+
+    t0 = time.time()
+    try:
+        r = requests.post(url, json=payload, headers=headers, timeout=timeout)
+        if r.status_code == 200:
+            res_json = r.json()
+            choices = res_json.get("choices", [])
+            if choices:
+                text = choices[0].get("message", {}).get("content", "")
+                elapsed = time.time() - t0
+                print(f"⚡ [Groq API] Model 'llama-3.3-70b-versatile' succeeded in {elapsed:.2f}s ({len(text)} chars).")
+                return text
+        else:
+            print(f"⚠️ [Groq API] HTTP {r.status_code}: {r.text[:140]}")
+    except Exception as e:
+        print(f"⚠️ [Groq API] Request exception: {e}")
+
+    return None
+
+
 class TopicMasterAgent:
     """
     Master Agent 1: Discovers and scores high-voltage, mass-appeal tech, gaming,
@@ -329,12 +398,12 @@ class TopicMasterAgent:
             print(f"⚠️ TopicMaster: Failed to write covered_topics.json: {e}")
 
     # =========================================================================
-    # 3. GEMINI 2.5 FLASH VIRAL SCORING GATE (0-100)
+    # 3. DUAL-ENGINE LLM (GEMINI + GROQ LLAMA-3.3-70B HIGH-SPEED FALLBACK)
     # =========================================================================
 
     def _call_gemini_api(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """Calls Gemini with 2026 free-tier models, clean 50s timeout, 1 retry on 504/timeout, and logs model."""
-        models = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]
+        """Calls Gemini with 2026 free-tier models, clean 45s timeout, 1 retry on 504/timeout, and logs model."""
+        models = ["gemini-2.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]
 
         if self.client:
             for m in models:
@@ -375,7 +444,7 @@ class TopicMasterAgent:
                 for attempt in range(2):
                     t0 = time.time()
                     try:
-                        r = requests.post(url, json=payload, headers=self.headers, timeout=50.0)
+                        r = requests.post(url, json=payload, headers=self.headers, timeout=45.0)
                         if r.status_code == 200:
                             parts = r.json().get("candidates", [])[0].get("content", {}).get("parts", [])
                             if parts:
@@ -399,6 +468,24 @@ class TopicMasterAgent:
                             continue
                         print(f"⚠️ TopicMaster: REST {m} warning: {e}")
                         break
+
+        return None
+
+    def _call_llm(self, prompt: str, system_instruction: str) -> Optional[str]:
+        """
+        Dual-Engine LLM Caller:
+        1. Queries Gemini (gemini-2.5-flash, gemini-3.5-flash-lite) with clean 45s timeout.
+        2. If Gemini fails, hits 429 quota, or times out, immediately falls back to Groq llama-3.3-70b-versatile.
+        Guarantees ZERO reels ever fall back to stale offline templates!
+        """
+        res = self._call_gemini_api(prompt, system_instruction)
+        if res:
+            return res
+
+        print("🔄 [TopicMaster] Gemini unavailable/exhausted; switching immediately to Groq (llama-3.3-70b-versatile)...")
+        res_groq = call_groq_api(prompt, system_instruction)
+        if res_groq:
+            return res_groq
 
         return None
 
@@ -491,9 +578,9 @@ JSON Schema:
 }}
 """
 
-        raw_json = self._call_gemini_api(prompt, system_instruction)
+        raw_json = self._call_llm(prompt, system_instruction)
         if not raw_json:
-            raise RuntimeError("Gemini failed to return scored topic candidates.")
+            raise RuntimeError("LLM (Gemini and Groq) failed to return scored topic candidates.")
 
         cleaned = raw_json.strip()
         if "```" in cleaned:
@@ -562,18 +649,25 @@ JSON Schema:
         slug = "".join(c if c.isalnum() else "_" for c in title.lower()).strip("_")[:45]
 
         left_char = "dad" if "dad" in str(item.get("left_character", "")).lower() else "junior_dev"
-        right_char = str(item.get("right_character", "claude")).lower()
-        if "gemini" in right_char:
-            right_char = "gemini"
-        elif "grok" in right_char:
+        
+        # Prefer claude (warm terracotta) and gemini (bright cyan) 80% of the time so diner visuals always pop
+        import random
+        right_raw = str(item.get("right_character", "")).lower()
+        if "grok" in right_raw and random.random() < 0.20:
             right_char = "grok"
-        else:
+        elif "gemini" in right_raw:
+            right_char = "gemini"
+        elif "claude" in right_raw:
             right_char = "claude"
+        else:
+            right_char = "gemini" if random.random() < 0.40 else "claude"
 
         scene_preset = "desk" if "desk" in str(item.get("scene_preset", "")).lower() else "diner"
 
-        raw_kw = str(item.get("auto_dm_keyword", "LINK")).strip().upper()
-        clean_kw = re.sub(r"[^A-Z0-9]", "", raw_kw) or "LINK"
+        # Enforce single pronounceable English words for auto_dm_keyword (never RETROPC)
+        category = item.get("category", "Viral Tech")
+        raw_kw = str(item.get("auto_dm_keyword", "FREE")).strip().upper()
+        clean_kw = sanitize_auto_dm_keyword(raw_kw, category, title)
 
         score = int(item.get("viral_score") or 85)
         breakdown = {

@@ -65,6 +65,74 @@ def sanitize_simple_spoken_english(text: str) -> str:
     return cleaned
 
 
+def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -> str:
+    """Enforces single pronounceable dictionary English words for auto_dm_keyword (never RETROPC)."""
+    cleaned = re.sub(r"[^A-Z]", "", (raw_kw or "").strip().upper())
+    if cleaned in ["RETROPC", "RETRO_PC", "INTEL486", "PC", "BROWSER"]:
+        return "PLAY" if any(w in (category + title).lower() for w in ["game", "retro", "emulator"]) else "FREE"
+    if not cleaned or len(cleaned) < 3 or len(cleaned) > 7:
+        cat_lower = (str(category) + " " + str(title)).lower()
+        if any(w in cat_lower for w in ["repo", "github", "open-source", "open source"]):
+            return "REPO"
+        elif any(w in cat_lower for w in ["game", "retro", "play"]):
+            return "PLAY"
+        elif any(w in cat_lower for w in ["ai", "tool", "app"]):
+            return "TOOL"
+        else:
+            return "FREE"
+    return cleaned
+
+
+def call_groq_api(prompt: str, system_instruction: str, timeout: float = 35.0) -> Optional[str]:
+    """
+    Calls Groq Cloud API with llama-3.3-70b-versatile for ultra-fast, zero-cost JSON completions.
+    100% free via GROQ_API_KEY env var / Kaggle Secret, zero extra pip packages (uses requests).
+    """
+    groq_api_key = os.environ.get("GROQ_API_KEY")
+    if not groq_api_key:
+        try:
+            from kaggle_secrets import UserSecretsClient
+            groq_api_key = UserSecretsClient().get_secret("GROQ_API_KEY")
+        except Exception:
+            pass
+
+    if not groq_api_key:
+        return None
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {groq_api_key}",
+        "Content-Type": "application/json",
+        "User-Agent": "AntigravitySEOMaster/3.0",
+    }
+    payload = {
+        "model": "llama-3.3-70b-versatile",
+        "messages": [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.7,
+        "response_format": {"type": "json_object"},
+    }
+
+    t0 = time.time()
+    try:
+        r = requests.post(url, json=payload, headers=headers, timeout=timeout)
+        if r.status_code == 200:
+            res_json = r.json()
+            choices = res_json.get("choices", [])
+            if choices:
+                text = choices[0].get("message", {}).get("content", "")
+                elapsed = time.time() - t0
+                print(f"⚡ [Groq API] Model 'llama-3.3-70b-versatile' succeeded in {elapsed:.2f}s ({len(text)} chars).")
+                return text
+        else:
+            print(f"⚠️ [Groq API] HTTP {r.status_code}: {r.text[:140]}")
+    except Exception as e:
+        print(f"⚠️ [Groq API] Exception: {e}")
+    return None
+
+
 class SEOMasterAgent:
     """
     Master Agent 3: Crafts Instagram search optimization, tiered hashtag sets,
@@ -72,7 +140,7 @@ class SEOMasterAgent:
     Uses fast free-tier Gemini fallback with zero-fail deterministic safety.
     """
 
-    FAST_MODELS = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]
+    FAST_MODELS = ["gemini-2.5-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"]
 
     def __init__(self, project_root: Optional[Path] = None):
         self.project_root = Path(project_root or Path(__file__).resolve().parent.parent.parent)
@@ -156,6 +224,25 @@ class SEOMasterAgent:
 
         return None
 
+    def _call_llm(self, prompt: str, system_instruction: str) -> Optional[str]:
+        """
+        Unified LLM fallback chain:
+        1. Fast Gemini Free-tier (gemini-2.5-flash, gemini-3.5-flash-lite, gemini-3.8-flash) with 45s timeout.
+        2. High-speed Groq API (llama-3.3-70b-versatile) fallback.
+        """
+        # Try Gemini first
+        res = self._call_gemini_api(prompt, system_instruction)
+        if res:
+            return res
+
+        # Try Groq API fallback
+        print("⚡ [SEOMaster] Gemini unavailable/exhausted, switching to Groq llama-3.3-70b-versatile...")
+        groq_res = call_groq_api(prompt, system_instruction)
+        if groq_res:
+            return groq_res
+
+        return None
+
     def _refine_with_ai(self, title: str, category: str, kw: str, raw_headline: str) -> Optional[Dict[str, Any]]:
         """Optional AI refinement pass to elevate headline, pinned comment, and replies."""
         prompt = (
@@ -179,7 +266,7 @@ class SEOMasterAgent:
             "Never use corporate buzzwords. Return ONLY valid JSON."
         )
         try:
-            raw = self._call_gemini_api(prompt, sys_inst)
+            raw = self._call_llm(prompt, sys_inst)
             if raw:
                 cleaned = raw.strip()
                 if cleaned.startswith("```"):
@@ -215,8 +302,9 @@ class SEOMasterAgent:
         headline = sanitize_simple_spoken_english(headline)
         subheadline = sanitize_simple_spoken_english(subheadline)
 
-        kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
         category = script_data.get("category", "Tech Innovation")
+        raw_kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
+        kw = sanitize_auto_dm_keyword(raw_kw, category, title)
 
         # 1. Generate 3 crisp value bullets from cardData rows (not raw metadata keys)
         card_data = script_data.get("cardData") or {}
@@ -275,7 +363,7 @@ class SEOMasterAgent:
         ]
 
         # 5. Optional AI refinement with fast free-tier fallback
-        if self.api_key:
+        if self.api_key or os.environ.get("GROQ_API_KEY"):
             ai_data = self._refine_with_ai(title, category, kw, seo_headline)
             if ai_data:
                 if ai_data.get("seo_headline"):
@@ -391,18 +479,20 @@ class SEOMasterAgent:
 if __name__ == "__main__":
     seo = SEOMasterAgent()
     sample_script = {
-        "title": "Developer builds complete Intel 486 PC emulator in browser",
-        "category": "Retro & Browser Games",
-        "cta_keyword": "RETRO",
+        "title": "LocalSend: The Free Open-Source AirDrop for Every Device",
+        "category": "Free Open-Source GitHub Repos",
+        "cta_keyword": "REPO",
         "hook": {
-            "headline": "INTEL 486 RUNNING IN CHROME",
-            "subheadline": "Someone just ported an entire 486 PC into Chrome.",
-            "tag": "🕹️ RETRO BREAKTHROUGH",
+            "headline": "FREE AIRDROP FOR EVERY DEVICE",
+            "subheadline": "Stop paying for cloud subscriptions just to send photos to your PC.",
+            "tag": "⚡ 100% FREE REPO",
         },
         "cardData": {
-            "engine": "100% Pure JavaScript",
-            "components": "Modular CPU, RAM, and VGA",
-            "performance": "Instant Boot in Tab",
+            "rows": [
+                {"label": "Cloud Uploads", "value": "Slow + paid tiers"},
+                {"label": "LocalSend", "value": "100% free + local Wi-Fi"},
+                {"label": "Security", "value": "End-to-end encrypted"},
+            ]
         },
     }
     assets = seo.generate_seo_assets(sample_script)

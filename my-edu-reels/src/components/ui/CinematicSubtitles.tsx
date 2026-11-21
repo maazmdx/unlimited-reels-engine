@@ -61,6 +61,11 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
   // Clean exit if no active turn or empty text
   if (!activeTurn || !activeTurn.text || !activeTurn.text.trim()) return null;
 
+  // Strict frame-boundary check: render subtitles strictly within this turn's frame range (prevents turn bleed)
+  if (frame < activeTurn.start_frame || frame > activeTurn.end_frame) {
+    return null;
+  }
+
   const words = activeTurn.words || [];
 
   // Group words into bite-sized chunks of 3-4 words for fast editorial reading

@@ -75,7 +75,7 @@ EMOTION_EXAGGERATION_MAP: Dict[str, Dict[str, float]] = {
 CHARACTER_VOICE_REF_SPECS = {
     "junior_dev": {
         "engine": "kokoro",
-        "voice": "am_puck",
+        "voice": "am_michael",
         "text": "Hello there. I am ready to test this project on my computer today without any delay.",
     },
     "claude": {
@@ -85,7 +85,7 @@ CHARACTER_VOICE_REF_SPECS = {
     },
     "gemini": {
         "engine": "kokoro",
-        "voice": "af_bella",
+        "voice": "af_heart",
         "text": "Welcome. Here is the verified technical breakdown and what you need to know.",
     },
     "grok": {
@@ -103,7 +103,7 @@ CHARACTER_VOICE_REF_SPECS = {
 
 def ensure_voice_reference(character_id: str) -> Optional[str]:
     """
-    Returns path to cached 5-second clean neutral reference WAV for the character.
+    Returns path to cached 5-second clean neutral 24000Hz mono reference WAV for the character.
     Generates and caches in .cache/voice_refs/<character_id>.wav if not already present.
     """
     VOICE_REFS_DIR.mkdir(parents=True, exist_ok=True)
@@ -129,7 +129,13 @@ def ensure_voice_reference(character_id: str) -> Optional[str]:
                 out_audio=str(ref_path)
             ))
         if ref_path.exists() and ref_path.stat().st_size > 5000:
-            print(f"✅ [VoiceRef] Cached reference audio: {ref_path}")
+            # Ensure strictly clean 24000Hz mono PCM_16 WAV
+            clean_wav = str(ref_path) + ".clean.wav"
+            cmd = ["ffmpeg", "-y", "-i", str(ref_path), "-ar", "24000", "-ac", "1", "-c:a", "pcm_s16le", clean_wav]
+            subprocess.run(cmd, capture_output=True, check=True)
+            if os.path.exists(clean_wav) and os.path.getsize(clean_wav) > 1000:
+                shutil.move(clean_wav, str(ref_path))
+            print(f"✅ [VoiceRef] Cached clean 24000Hz mono reference audio: {ref_path}")
             return str(ref_path)
     except Exception as e:
         print(f"⚠️ [VoiceRef] Generation notice for {character_id}: {e}")
@@ -147,7 +153,7 @@ def is_cuda_available() -> bool:
 
 
 def get_chatterbox():
-    """Returns initialized ChatterboxTurboTTS / ChatterboxTTS singleton on CUDA GPU."""
+    """Returns initialized ChatterboxTTS singleton on CUDA GPU with dynamic class inspection."""
     global _CHATTERBOX_INSTANCE
     if _CHATTERBOX_INSTANCE is not None:
         return _CHATTERBOX_INSTANCE
@@ -155,23 +161,38 @@ def get_chatterbox():
     if not is_cuda_available():
         return None
 
+    import traceback
     try:
-        ChatterboxClass = None
-        try:
-            from chatterbox import ChatterboxTurboTTS as ChatterboxClass
-        except ImportError:
+        # Dynamically inspect chatterbox / chatterbox.tts
+        TargetClass = None
+        for mod_name in ["chatterbox.tts", "chatterbox"]:
             try:
-                from chatterbox import ChatterboxTTS as ChatterboxClass
-            except ImportError:
+                mod = sys.modules.get(mod_name) or __import__(mod_name, fromlist=["*"])
+                for attr in ["ChatterboxTTS", "ChatterboxTurboTTS", "Chatterbox"]:
+                    if hasattr(mod, attr):
+                        TargetClass = getattr(mod, attr)
+                        break
+            except Exception:
                 pass
+            if TargetClass:
+                break
 
-        if ChatterboxClass:
-            print("🚀 [Chatterbox-Turbo] Initializing GPU Neural TTS with CUDA...")
-            _CHATTERBOX_INSTANCE = ChatterboxClass()
-            print("✅ [Chatterbox-Turbo] GPU Engine initialized.")
+        if TargetClass:
+            print(f"🚀 [Chatterbox GPU] Loading {TargetClass.__name__}.from_pretrained(device='cuda')...")
+            if hasattr(TargetClass, "from_pretrained"):
+                _CHATTERBOX_INSTANCE = TargetClass.from_pretrained(device="cuda")
+            else:
+                _CHATTERBOX_INSTANCE = TargetClass()
+            print(f"✅ [Chatterbox GPU] Engine loaded successfully: {TargetClass.__name__}")
             return _CHATTERBOX_INSTANCE
+        else:
+            try:
+                import chatterbox
+                print(f"⚠️ [Chatterbox GPU] No recognizable TTS class in chatterbox! dir(chatterbox)={dir(chatterbox)}")
+            except Exception as e:
+                print(f"⚠️ [Chatterbox GPU] chatterbox import error: {e}")
     except Exception as e:
-        print(f"⚠️ [Chatterbox-TTS] Notice: {e}")
+        print(f"❌ [Chatterbox GPU] Critical loading traceback:\n{traceback.format_exc()}")
 
     return None
 
@@ -613,6 +634,10 @@ def apply_broadcast_mastering(
     else:
         music_filter = f"volume={ambient_db}dB,aloop=loop=-1:size=2e+09"
 
+    vocal_dur = get_audio_duration(input_vocal_audio)
+    fade_start = max(0.0, vocal_dur - 1.0)
+    fade_filter = f",afade=t=out:st={fade_start:.2f}:d=1.0"
+
     if has_sfx:
         filter_chain = (
             "[0:a]highpass=f=75,"
@@ -623,7 +648,7 @@ def apply_broadcast_mastering(
             f"[1:a]{music_filter}[music];"
             "[2:a]volume=0dB[sfx];"
             "[vocal][music][sfx]amix=inputs=3:duration=first:dropout_transition=2,"
-            "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
+            f"loudnorm=I=-14.0:TP=-1.0:LRA=7{fade_filter}[out]"
         )
         cmd = [
             "ffmpeg", "-y",
@@ -645,7 +670,7 @@ def apply_broadcast_mastering(
             "acompressor=threshold=-18dB:ratio=3.0:attack=15:release=85:makeup=2.0dB[vocal];"
             f"[1:a]{music_filter}[music];"
             "[vocal][music]amix=inputs=2:duration=first:dropout_transition=2,"
-            "loudnorm=I=-14.0:TP=-1.0:LRA=7[out]"
+            f"loudnorm=I=-14.0:TP=-1.0:LRA=7{fade_filter}[out]"
         )
         cmd = [
             "ffmpeg", "-y",
@@ -666,7 +691,7 @@ def apply_broadcast_mastering(
         simple_cmd = [
             "ffmpeg", "-y",
             "-i", input_vocal_audio,
-            "-af", "highpass=f=75,acompressor=threshold=-18dB:ratio=3.0,loudnorm=I=-14.0:TP=-1.0:LRA=7",
+            "-af", f"highpass=f=75,acompressor=threshold=-18dB:ratio=3.0,loudnorm=I=-14.0:TP=-1.0:LRA=7{fade_filter}",
             "-c:a", "libmp3lame",
             "-b:a", "192k",
             output_audio
@@ -830,7 +855,8 @@ def generate_dialogue_speech(
                     exag_val = EMOTION_EXAGGERATION_MAP.get(emotion.lower(), {}).get("exaggeration", 0.65)
                     print(f"🎭 [Chatterbox GPU exag={exag_val:.2f}] Turn {idx} ({canonical_char}) synthesized ({turn_dur:.2f}s).")
                 except Exception as e_chatterbox:
-                    print(f"⚠️ Chatterbox GPU notice for turn {idx} ({canonical_char}): {e_chatterbox}. Falling back to Kokoro ONNX...")
+                    import traceback
+                    print(f"❌ [Chatterbox GPU Failure] Turn {idx} ({canonical_char}) exception:\n{traceback.format_exc()}\nFalling back to Kokoro ONNX...")
                     engine_type = "kokoro"
 
             # 2. Primary Engine (CPU Fallback): Kokoro-82M High-Energy ONNX

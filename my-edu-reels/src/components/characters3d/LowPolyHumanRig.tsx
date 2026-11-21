@@ -69,8 +69,8 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   // 3. COLOR PALETTE DEFINITION & FLAT-SHADED MATERIALS
   // =========================================================================
   const skinColor = isDad ? "#C58A5B" : "#E0A97A";
-  const primaryCloth = isDad ? "#C2410C" : "#1E293B"; // Dad Burnt Orange / Amber vs Junior Dark Teal/Navy Hoodie
-  const secondaryCloth = isDad ? "#FEF3C7" : "#0F172A"; // Dad Cream Collar vs Junior Dark Trim
+  const primaryCloth = isDad ? "#C2410C" : "#1E4E5F"; // Dad Burnt Orange vs Junior Stylized Dark Teal Hoodie (reel_DeIwE1-sxVr.mp4)
+  const secondaryCloth = isDad ? "#FEF3C7" : "#133541"; // Dad Cream Collar vs Junior Dark Teal Trim
   const hairColor = "#1E293B";
   const darkDetailColor = "#0F172A";
 
@@ -390,10 +390,14 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
       </group>
 
       {/* =================================================================== */}
-      {/* 2. ARTICULATED ARMS (Booth-Sitting / Desk Pose)                     */}
+      {/* 2. ARTICULATED ARMS (Booth-Sitting / Desk Pose, Flush-Connected)   */}
       {/* =================================================================== */}
-      {/* Left Arm */}
-      <group position={[-0.60, -0.72, 0]} rotation={[0.45, 0.2, -0.2]}>
+      {/* Left Arm (Flush into torso side, zero floating gap) */}
+      <group position={[-0.52, -0.72, 0]} rotation={[0.45, 0.2, -0.2]}>
+        {/* Seamless Shoulder Joint Sphere */}
+        <mesh position={[0, 0, 0]} material={clothPrimaryMat}>
+          <sphereGeometry args={[0.15, 8, 8]} />
+        </mesh>
         <mesh position={[0, -0.31, 0]} material={clothPrimaryMat}>
           <boxGeometry args={[0.22, 0.62, 0.22]} />
         </mesh>
@@ -407,8 +411,12 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
         </group>
       </group>
 
-      {/* Right Arm */}
-      <group position={[0.60, -0.72, 0]} rotation={[0.45, -0.2, 0.2]}>
+      {/* Right Arm (Flush into torso side, zero floating gap) */}
+      <group position={[0.52, -0.72, 0]} rotation={[0.45, -0.2, 0.2]}>
+        {/* Seamless Shoulder Joint Sphere */}
+        <mesh position={[0, 0, 0]} material={clothPrimaryMat}>
+          <sphereGeometry args={[0.15, 8, 8]} />
+        </mesh>
         <mesh position={[0, -0.31, 0]} material={clothPrimaryMat}>
           <boxGeometry args={[0.22, 0.62, 0.22]} />
         </mesh>
@@ -447,9 +455,9 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
           <boxGeometry args={[0.16, 0.13, 0.26]} />
         </mesh>
 
-        {/* Sculpted Nose */}
-        <mesh position={[0, -0.06, 0.64]} rotation={[0.25, 0, 0]} material={skinMat}>
-          <coneGeometry args={[0.065, 0.16, 5]} />
+        {/* Clean Warm Skin-Tone Low-Poly Nose (Zero dark underside block/shadow) */}
+        <mesh position={[0, -0.07, 0.63]} rotation={[-0.12, 0, 0]} material={skinMat}>
+          <boxGeometry args={[0.075, 0.12, 0.07]} />
         </mesh>
 
         {/* Low-Poly Ears */}
@@ -590,9 +598,9 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
               <mesh position={[0, mouthHeight * 0.5 + 0.007, 0.01]} material={lipMat}>
                 <boxGeometry args={[mouthWidthFlex, 0.014, 0.02]} />
               </mesh>
-              {/* Inner Dark Mouth Cavity */}
-              <mesh scale={[mouthWidthFlex / 0.20, mouthHeight / 0.05, 1]} material={innerMouthMat}>
-                <boxGeometry args={[0.20, 0.05, 0.06]} />
+              {/* Inner Dark Mouth Cavity (Recessed safely behind lips so it never clips forward) */}
+              <mesh position={[0, 0, -0.015]} scale={[mouthWidthFlex / 0.20, mouthHeight / 0.05, 1]} material={innerMouthMat}>
+                <boxGeometry args={[0.20, 0.05, 0.03]} />
               </mesh>
               {/* Crisp White Upper Tooth Bar */}
               {isToothVisible && (
