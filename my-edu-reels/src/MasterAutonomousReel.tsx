@@ -9,8 +9,12 @@ import {
   useVideoConfig,
 } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
-import { CozyDiner3D } from "./components/environments3d/CozyDiner3D";
-import { SunsetDesk3D } from "./components/environments3d/SunsetDesk3D";
+import {
+  CozyDiner3D,
+  SunsetDesk3D,
+  IndianLivingRoom3D,
+  RooftopNight3D,
+} from "./scenes";
 import { LowPolyHumanRig } from "./components/characters3d/LowPolyHumanRig";
 import { LowPolyAIOrbRig } from "./components/characters3d/LowPolyAIOrbRig";
 import {
@@ -52,7 +56,7 @@ export interface CharacterItemConfig {
 
 export interface MasterAutonomousReelProps {
   [key: string]: unknown;
-  scenePreset?: "diner" | "desk";
+  scenePreset?: "diner" | "desk" | "living_room" | "rooftop" | "auto" | string;
   environment?: string;
   timeline?: TimelineData;
   subtitles?: {
@@ -86,6 +90,8 @@ export interface MasterAutonomousReelProps {
   hookSubheadline?: string;
   hookTag?: string;
   topicLogoPath?: string;
+  logoPath?: string;
+  proofImagePath?: string;
   forcedCameraShot?: CameraShotType;
   ctaKeyword?: string;
   ctaText?: string;
@@ -126,6 +132,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   hasResourceLink,
   has_resource_link,
   topicLogoPath,
+  logoPath,
+  proofImagePath,
   hookHeadline,
   hookSubheadline,
   hookTag,
@@ -152,14 +160,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     (t) => frame >= t.start_frame && frame <= t.end_frame
   );
 
-  // 2. Resolve Environment (Diner vs Sunset Desk)
-  const isDeskPreset =
-    scenePreset === "desk" ||
-    environment.toLowerCase().includes("desk") ||
-    environment.toLowerCase().includes("sunset") ||
-    environment.toLowerCase().includes("home");
-
-  // 3. Resolve Cast (Left Human + Right AI Orb)
+  // 2. Resolve Cast (Left Human + Right AI Orb)
   let leftCharId: "junior_dev" | "dad" =
     leftCharacterId || cast?.left || "junior_dev";
   let rightCharId: "claude" | "gemini" | "grok" | "antigravity_bot" =
@@ -173,6 +174,33 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     if (charNames.some((n) => n.includes("dad"))) {
       leftCharId = "dad";
     }
+  }
+
+  // 3. Resolve Environment (4 Rotating 3D Sets: diner, desk, living_room, rooftop)
+  const envLower = (environment || "").toLowerCase();
+  const presetLower = (scenePreset || "").toLowerCase();
+  const isDad = leftCharId === "dad";
+
+  let activePreset: "diner" | "desk" | "living_room" | "rooftop" = "diner";
+  if (
+    presetLower === "living_room" ||
+    envLower.includes("living") ||
+    envLower.includes("home") ||
+    (presetLower === "auto" && isDad) ||
+    (!presetLower && isDad)
+  ) {
+    activePreset = "living_room";
+  } else if (
+    presetLower === "rooftop" ||
+    envLower.includes("rooftop") ||
+    envLower.includes("night") ||
+    envLower.includes("city")
+  ) {
+    activePreset = "rooftop";
+  } else if (presetLower === "desk" || envLower.includes("desk") || envLower.includes("sunset")) {
+    activePreset = "desk";
+  } else {
+    activePreset = "diner";
   }
 
   if (!rightCharacterId && !cast?.right && characters && characters.length > 0) {
@@ -407,8 +435,66 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           forcedShot={forcedCameraShot}
         />
 
-        {/* 3D Environment: CozyDiner3D or SunsetDesk3D */}
-        {isDeskPreset ? (
+        {/* 3D Environment: 4 Rotating Sets (diner, desk, living_room, rooftop) */}
+        {activePreset === "living_room" ? (
+          <IndianLivingRoom3D>
+            {/* Left Seat: Human Dev or Dad on L-Shaped Sofa */}
+            <LowPolyHumanRig
+              characterId={leftCharId}
+              isSpeaking={isLeftSpeaking}
+              mouthOpen={mouthOpenLeft}
+              emotion={leftEmotion}
+              turnFrame={turnFrame}
+              position={[-1.15, 0.22, 0.0]}
+              rotation={[
+                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
+                isLeftSpeaking ? 0.20 : 0.28,
+                0,
+              ]}
+              scale={0.65}
+            />
+
+            {/* Right Side: AI Orb hovering by TV console */}
+            <LowPolyAIOrbRig
+              characterId={rightCharId}
+              isSpeaking={isRightSpeaking}
+              mouthOpen={mouthOpenRight}
+              emotion={rightEmotion}
+              position={[1.05, 0.45, 0.05]}
+              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
+              scale={0.46}
+            />
+          </IndianLivingRoom3D>
+        ) : activePreset === "rooftop" ? (
+          <RooftopNight3D>
+            {/* Left Seat: Human Dev on Rooftop Bar Stool */}
+            <LowPolyHumanRig
+              characterId={leftCharId}
+              isSpeaking={isLeftSpeaking}
+              mouthOpen={mouthOpenLeft}
+              emotion={leftEmotion}
+              turnFrame={turnFrame}
+              position={[-1.15, 0.22, 0.0]}
+              rotation={[
+                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
+                isLeftSpeaking ? 0.20 : 0.28,
+                0,
+              ]}
+              scale={0.65}
+            />
+
+            {/* Right Side: AI Orb hovering over Night Skyline */}
+            <LowPolyAIOrbRig
+              characterId={rightCharId}
+              isSpeaking={isRightSpeaking}
+              mouthOpen={mouthOpenRight}
+              emotion={rightEmotion}
+              position={[1.05, 0.45, 0.05]}
+              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
+              scale={0.46}
+            />
+          </RooftopNight3D>
+        ) : activePreset === "desk" ? (
           <SunsetDesk3D>
             {/* Left Seat: Human Dev at Wooden Desk */}
             <LowPolyHumanRig
@@ -503,6 +589,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           durationFrames={cappedCardDuration}
           activeStepIndex={activeStepIndex}
           topicLogoPath={effectiveTopicLogo}
+          logoPath={logoPath || (cardData as any)?.logoPath || effectiveTopicLogo || undefined}
+          proofImagePath={proofImagePath || (cardData as any)?.proofImagePath || undefined}
         />
       )}
 

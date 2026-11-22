@@ -225,26 +225,34 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     topEyelidDrop = 0.55; // Cozy half-lidded sleepy expression
     emotionSlumpRotX = 0.12; // Slight forward slump
     gazeRotX = 0.08; // Downward gaze
-  } else if (emotion === "shocked") {
-    browL_Y = 0.25;
-    browR_Y = 0.25;
-    browL_RotZ = 0.15;
-    browR_RotZ = -0.15;
+  } else if (emotion === "shocked" || emotion === "shock") {
+    browL_Y = 0.26;
+    browR_Y = 0.26;
+    browL_RotZ = 0.22;
+    browR_RotZ = -0.22;
     topEyelidDrop = 0.0; // Wide open eyes
-    emotionSlumpRotX = -0.08; // Sudden upright lean-back
+    emotionSlumpRotX = 0.20; // Torso lean-forward on shock turns
   } else if (emotion === "angry") {
     browL_Y = 0.10;
     browR_Y = 0.10;
-    browL_RotZ = -0.26;
-    browR_RotZ = 0.26;
+    browL_RotZ = -0.35;
+    browR_RotZ = 0.35;
     topEyelidDrop = 0.35;
-    emotionSlumpRotX = 0.06;
+    emotionSlumpRotX = 0.08;
   } else if (emotion === "smug") {
-    browL_Y = 0.22;
+    browL_Y = 0.23;
     browR_Y = 0.13;
-    browL_RotZ = 0.16;
+    browL_RotZ = 0.18;
     browR_RotZ = -0.05;
-    topEyelidDrop = 0.40;
+    topEyelidDrop = 0.38;
+    emotionSlumpRotX = -0.05;
+  } else if (emotion === "deadpan") {
+    browL_Y = 0.15;
+    browR_Y = 0.15;
+    browL_RotZ = 0.0;
+    browR_RotZ = 0.0;
+    topEyelidDrop = 0.30;
+    emotionSlumpRotX = 0.0;
   }
 
   // Listening posture: when not speaking, angle head toward the AI orb (+0.28 rad)
@@ -278,6 +286,16 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     { pos: [0.22, 0.62, 0.12] as [number, number, number], scale: [0.21, 0.19, 0.18] as [number, number, number] },
     { pos: [-0.04, 0.62, -0.16] as [number, number, number], scale: [0.23, 0.20, 0.20] as [number, number, number] },
   ];
+
+  // Dynamic arm & hand gestures driven from mouth_envelopes (mouthOpen) while speaking
+  const speechEnergy = isSpeaking ? Math.min(1.0, mouthOpen * 1.5) : 0;
+  const leftArmRotX = 0.45 + (isSpeaking ? Math.sin(frame * 0.18) * 0.08 + speechEnergy * 0.10 : 0);
+  const leftForearmRotX = -0.75 - (isSpeaking ? Math.cos(frame * 0.22) * 0.10 + speechEnergy * 0.14 : 0);
+
+  const rightArmRotX = 0.45 + (isSpeaking ? Math.sin(frame * 0.24) * 0.12 + speechEnergy * 0.26 : 0);
+  const rightArmRotY = -0.20 - (isSpeaking ? Math.cos(frame * 0.20) * 0.08 + speechEnergy * 0.14 : 0);
+  const rightArmRotZ = 0.20 + (isSpeaking ? Math.sin(frame * 0.26) * 0.08 + speechEnergy * 0.16 : 0);
+  const rightForearmRotX = -0.75 - (isSpeaking ? Math.sin(frame * 0.28) * 0.14 + speechEnergy * 0.32 : 0);
 
   return (
     <group
@@ -390,10 +408,10 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
       </group>
 
       {/* =================================================================== */}
-      {/* 2. ARTICULATED ARMS (Booth-Sitting / Desk Pose, Flush-Connected)   */}
+      {/* 2. ARTICULATED ARMS (Booth-Sitting / Desk Pose, Dynamic Gesturing)  */}
       {/* =================================================================== */}
-      {/* Left Arm (Flush into torso side, zero floating gap) */}
-      <group position={[-0.52, -0.72, 0]} rotation={[0.45, 0.2, -0.2]}>
+      {/* Left Arm (Flush into torso side, dynamic gesturing) */}
+      <group position={[-0.52, -0.72, 0]} rotation={[leftArmRotX, 0.2, -0.2]}>
         {/* Seamless Shoulder Joint Sphere */}
         <mesh position={[0, 0, 0]} material={clothPrimaryMat}>
           <sphereGeometry args={[0.15, 8, 8]} />
@@ -401,18 +419,23 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
         <mesh position={[0, -0.31, 0]} material={clothPrimaryMat}>
           <boxGeometry args={[0.22, 0.62, 0.22]} />
         </mesh>
-        <group position={[0, -0.62, 0]} rotation={[-0.75, 0.1, 0]}>
+        <group position={[0, -0.62, 0]} rotation={[leftForearmRotX, 0.1, 0]}>
           <mesh position={[0, -0.27, 0]} material={clothPrimaryMat}>
             <boxGeometry args={[0.18, 0.54, 0.18]} />
           </mesh>
+          {/* Articulated Left Wrist & Palm */}
           <mesh position={[0, -0.58, 0]} material={skinMat}>
             <boxGeometry args={[0.15, 0.15, 0.12]} />
+          </mesh>
+          {/* Left Fingers */}
+          <mesh position={[0, -0.68, 0.03]} material={skinMat}>
+            <boxGeometry args={[0.13, 0.06, 0.14]} />
           </mesh>
         </group>
       </group>
 
-      {/* Right Arm (Flush into torso side, zero floating gap) */}
-      <group position={[0.52, -0.72, 0]} rotation={[0.45, -0.2, 0.2]}>
+      {/* Right Arm (Flush into torso side, dynamic conversational gestures) */}
+      <group position={[0.52, -0.72, 0]} rotation={[rightArmRotX, rightArmRotY, rightArmRotZ]}>
         {/* Seamless Shoulder Joint Sphere */}
         <mesh position={[0, 0, 0]} material={clothPrimaryMat}>
           <sphereGeometry args={[0.15, 8, 8]} />
@@ -420,12 +443,17 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
         <mesh position={[0, -0.31, 0]} material={clothPrimaryMat}>
           <boxGeometry args={[0.22, 0.62, 0.22]} />
         </mesh>
-        <group position={[0, -0.62, 0]} rotation={[-0.75, -0.1, 0]}>
+        <group position={[0, -0.62, 0]} rotation={[rightForearmRotX, -0.1, 0]}>
           <mesh position={[0, -0.27, 0]} material={clothPrimaryMat}>
             <boxGeometry args={[0.18, 0.54, 0.18]} />
           </mesh>
+          {/* Articulated Right Wrist & Palm */}
           <mesh position={[0, -0.58, 0]} material={skinMat}>
             <boxGeometry args={[0.15, 0.15, 0.12]} />
+          </mesh>
+          {/* Right Fingers (Expressive open hand gesture) */}
+          <mesh position={[0, -0.68, 0.04]} rotation={[0.1, 0, 0]} material={skinMat}>
+            <boxGeometry args={[0.14, 0.06, 0.15]} />
           </mesh>
         </group>
       </group>

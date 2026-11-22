@@ -127,9 +127,10 @@ def load_content_pillars_pool() -> List[Dict[str, Any]]:
 CURATED_MORNING_POOL = load_content_pillars_pool()
 
 SCENE_MOODS = [
-    ("diner", "rain"),    # 1. Rainy Midnight Diner
-    ("diner", "sunny"),   # 2. Sunny Morning Diner (warm sunbeams)
-    ("desk", "sunset"),   # 3. Purple Twilight Desk
+    ("diner", "rain"),        # 1. Rainy Midnight Cyber Diner
+    ("living_room", "warm"),  # 2. Indian Living Room (warm tubelight, 5G Wi-Fi, ceiling fan)
+    ("desk", "sunset"),       # 3. Purple Twilight Desk
+    ("rooftop", "night"),     # 4. Night Skyline Rooftop
 ]
 
 
@@ -283,7 +284,7 @@ def run_morning_batch(
     drive_sync: bool = False,
     drive_folder_id: Optional[str] = None,
     insta_url: Optional[str] = None,
-    scene_preset: str = "diner",
+    scene_preset: str = "auto",
     auto_publish: bool = False
 ) -> Dict[str, Any]:
     """Executes the complete morning batch generation."""
@@ -352,6 +353,7 @@ def run_morning_batch(
     covered_file = PROJECT_ROOT / "inbox" / "covered_topics.json"
     covered_history = load_covered_topics_history(covered_file)
     current_episode_count = len(covered_history)
+    used_presets_in_batch: List[str] = []
 
     # Execute sequential generation chain for each item
     for idx, item in enumerate(items_to_process, 1):
@@ -359,12 +361,30 @@ def run_morning_batch(
         ep_str = f"Ep. {ep_num:02d}"
         next_ep_str = f"Ep. {ep_num + 1:02d}"
 
-        # Auto-Rotate 3 distinct scene moods:
-        # 1. ("diner", "rain") — Rainy Midnight Diner
-        # 2. ("diner", "sunny") — Sunny Morning Diner (warm sunbeams)
-        # 3. ("desk", "sunset") — Purple Twilight Desk
-        preset_mood, weather_mood = SCENE_MOODS[(ep_num - 1) % len(SCENE_MOODS)]
-        selected_scene = scene_preset if (scene_preset and scene_preset != "auto") else preset_mood
+        # 4 Rotating 3D Sets: diner (rain), living_room (warm), desk (sunset), rooftop (night)
+        # Ensure Reel #1 and Reel #2 in the same batch always pick different sets.
+        topic_raw = item.get("data") if isinstance(item, dict) and isinstance(item.get("data"), dict) else {}
+        is_dad_topic = (
+            topic_raw.get("format_type") == "ai_vs_dad"
+            or "dad" in str(topic_raw.get("left_character", "")).lower()
+            or "dad" in str(topic_raw.get("title", "")).lower()
+            or "dad" in str(topic_raw.get("core_topic", "")).lower()
+        )
+
+        if scene_preset and scene_preset != "auto":
+            selected_scene = scene_preset
+            weather_mood = "rain" if selected_scene == "diner" else "warm" if selected_scene == "living_room" else "sunset" if selected_scene == "desk" else "night"
+        elif is_dad_topic:
+            selected_scene = "living_room"
+            weather_mood = "warm"
+        else:
+            available_moods = [m for m in SCENE_MOODS if m[0] not in used_presets_in_batch]
+            if not available_moods:
+                available_moods = SCENE_MOODS
+            preset_mood, weather_mood = available_moods[(ep_num - 1) % len(available_moods)]
+            selected_scene = preset_mood
+
+        used_presets_in_batch.append(selected_scene)
 
         print(f"\n" + "=" * 70)
         print(f"  🎬 PRODUCING MORNING REEL #{idx} OF {len(items_to_process)} [{ep_str}]")
@@ -666,7 +686,7 @@ if __name__ == "__main__":
     parser.add_argument("--drive", action="store_true", help="Enable Google Drive cloud upload")
     parser.add_argument("--drive-folder", type=str, default=None, help="Google Drive folder ID")
     parser.add_argument("--insta-url", type=str, default=None, help="Specific Instagram/Shorts URL to recreate")
-    parser.add_argument("--scene-preset", type=str, default="diner", choices=["diner", "desk", "auto"], help="3D Scene Preset")
+    parser.add_argument("--scene-preset", type=str, default="auto", choices=["diner", "desk", "living_room", "rooftop", "auto"], help="3D Scene Preset")
     parser.add_argument("--auto-publish", action="store_true", default=False, help="Automatically publish rendered reels to Instagram via Meta Graph API if credentials are set")
     args = parser.parse_args()
 

@@ -57,18 +57,21 @@ _CHATTERBOX_INSTANCE = None
 VOICE_REFS_DIR = PROJECT_ROOT / ".cache" / "voice_refs"
 
 # Emotion to Chatterbox Exaggeration & CFG Weight mapping
-# 0.45 tired/sad, 0.65 deadpan/smug, 0.85 shocked/roast, 0.95 angry/screaming
+# 0.65 calm/neutral/smug, 0.85 roast/shock, 0.95 climax/angry
 EMOTION_EXAGGERATION_MAP: Dict[str, Dict[str, float]] = {
-    "neutral": {"exaggeration": 0.65, "cfg_weight": 0.50},
-    "tired": {"exaggeration": 0.45, "cfg_weight": 0.55},
-    "sad": {"exaggeration": 0.45, "cfg_weight": 0.55},
-    "deadpan": {"exaggeration": 0.65, "cfg_weight": 0.50},
-    "smug": {"exaggeration": 0.65, "cfg_weight": 0.50},
-    "sarcastic": {"exaggeration": 0.75, "cfg_weight": 0.45},
-    "roast": {"exaggeration": 0.85, "cfg_weight": 0.40},
-    "shocked": {"exaggeration": 0.85, "cfg_weight": 0.40},
-    "excited": {"exaggeration": 0.85, "cfg_weight": 0.40},
+    "neutral": {"exaggeration": 0.65, "cfg_weight": 0.35},
+    "calm": {"exaggeration": 0.65, "cfg_weight": 0.35},
+    "tired": {"exaggeration": 0.65, "cfg_weight": 0.35},
+    "sad": {"exaggeration": 0.65, "cfg_weight": 0.35},
+    "deadpan": {"exaggeration": 0.65, "cfg_weight": 0.35},
+    "smug": {"exaggeration": 0.65, "cfg_weight": 0.35},
+    "sarcastic": {"exaggeration": 0.85, "cfg_weight": 0.35},
+    "roast": {"exaggeration": 0.85, "cfg_weight": 0.35},
+    "shocked": {"exaggeration": 0.85, "cfg_weight": 0.35},
+    "shock": {"exaggeration": 0.85, "cfg_weight": 0.35},
+    "excited": {"exaggeration": 0.85, "cfg_weight": 0.35},
     "angry": {"exaggeration": 0.95, "cfg_weight": 0.35},
+    "climax": {"exaggeration": 0.95, "cfg_weight": 0.35},
     "screaming": {"exaggeration": 0.95, "cfg_weight": 0.35},
 }
 
@@ -912,9 +915,9 @@ def generate_dialogue_speech(
 
             synthesis_success = False
 
-            # 1. Primary Engine (GPU): Chatterbox-Turbo / Chatterbox-TTS (if CUDA GPU is active)
+            # 1. Primary Engine (GPU): Chatterbox-Turbo / Chatterbox-TTS (Route ALL characters on CUDA GPU, never Edge-TTS on GPU)
             chatterbox_voice = voice_prof.get("chatterbox_voice") or canonical_char
-            if is_cuda_available() and engine_type != "edge_tts":
+            if is_cuda_available():
                 try:
                     ref_audio = ensure_voice_reference(canonical_char)
                     c_text = clean_text_for_speech(turn.get("text", ""), is_chatterbox=True)

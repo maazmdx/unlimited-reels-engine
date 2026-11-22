@@ -226,23 +226,9 @@ class SEOMasterAgent:
         return None
 
     def _call_llm(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """
-        Unified LLM fallback chain:
-        1. Fast Gemini Free-tier (gemini-2.5-flash, gemini-3.5-flash-lite, gemini-3.8-flash) with 45s timeout.
-        2. High-speed Groq API (llama-3.3-70b-versatile) fallback.
-        """
-        # Try Gemini first
-        res = self._call_gemini_api(prompt, system_instruction)
-        if res:
-            return res
-
-        # Try Groq API fallback
-        print("⚡ [SEOMaster] Gemini unavailable/exhausted, switching to Groq llama-3.3-70b-versatile...")
-        groq_res = call_groq_api(prompt, system_instruction)
-        if groq_res:
-            return groq_res
-
-        return None
+        """Routes LLM generation through the central zero-dependency LLMRouter."""
+        from engine.llm_router import generate_text
+        return generate_text(prompt, system_prompt=system_instruction, json_mode=True, temperature=0.7)
 
     def _refine_with_ai(self, title: str, category: str, kw: str, raw_headline: str) -> Optional[Dict[str, Any]]:
         """Optional AI refinement pass to elevate headline, pinned comment, and replies."""

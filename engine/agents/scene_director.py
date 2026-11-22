@@ -61,9 +61,18 @@ class SceneDirectorAgent:
         dialogue_turns = script_data.get("dialogue", [])
         fps = 30.0
 
-        # Resolve 3D scenePreset and cast (Strict 2-character cast: left human + right AI orb)
+        # Resolve 3D scenePreset and cast (4 Rotating Sets: diner, desk, living_room, rooftop)
         env_raw = str(script_data.get("environment", "diner")).lower()
-        scene_preset = script_data.get("scenePreset") or ("desk" if "desk" in env_raw or "sunset" in env_raw else "diner")
+        scene_preset = script_data.get("scenePreset") or script_data.get("scene_preset")
+        if not scene_preset or scene_preset == "auto":
+            if "living" in env_raw or "home" in env_raw or "dad" in str(script_data.get("dialogue", "")).lower():
+                scene_preset = "living_room"
+            elif "rooftop" in env_raw or "city" in env_raw or "night" in env_raw:
+                scene_preset = "rooftop"
+            elif "desk" in env_raw or "sunset" in env_raw:
+                scene_preset = "desk"
+            else:
+                scene_preset = "diner"
 
         cast = script_data.get("cast") or {}
         speakers = [str(t.get("speaker", "")).lower() for t in dialogue_turns]
@@ -174,17 +183,22 @@ class SceneDirectorAgent:
                 {"label": "Setup Speed", "value": "Instant Execution Under 60s", "badge": "FAST", "status": "FAST", "isPositive": True},
             ]
 
-        topic_logo = script_data.get("topicLogoPath")
-        if not topic_logo:
-            try:
-                from engine.agents.media_fetcher import fetch_topic_logo
-                topic_logo = fetch_topic_logo(
-                    script_data.get("title", ""),
-                    script_data.get("entity_name") or script_data.get("entity"),
-                )
-            except Exception as e:
-                print(f"⚠️ SceneDirector: media fetcher notice: {e}")
-                topic_logo = None
+        # Fetch verified media assets (SimpleIcons / IconHorse logo & GitHub OpenGraph / Thum.io proof card)
+        topic_logo = script_data.get("topicLogoPath") or script_data.get("logoPath")
+        proof_image = script_data.get("proofImagePath")
+        try:
+            from engine.agents.media_fetcher import fetch_topic_media_assets, attach_media_to_timeline
+            media_assets = fetch_topic_media_assets(script_data, self.public_dir)
+            if not topic_logo:
+                topic_logo = media_assets.get("logoPath")
+            if not proof_image:
+                proof_image = media_assets.get("proofImagePath")
+            if timeline_data:
+                timeline_data["logoPath"] = topic_logo
+                timeline_data["proofImagePath"] = proof_image
+                attach_media_to_timeline(timeline_path, topic_logo, proof_image)
+        except Exception as e:
+            print(f"⚠️ SceneDirector: media fetcher notice: {e}")
 
         compiled_card_data = {
             "title": card_title,
@@ -197,6 +211,8 @@ class SceneDirectorAgent:
             "durationSeconds": card_duration_frames / fps,
             "durationFrames": card_duration_frames,
             "topicLogoPath": topic_logo,
+            "logoPath": topic_logo,
+            "proofImagePath": proof_image,
         }
 
         props_data = {
@@ -208,6 +224,8 @@ class SceneDirectorAgent:
             "subtitles": subs_data,
             "audioSrc": "voice.mp3",
             "topicLogoPath": topic_logo,
+            "logoPath": topic_logo,
+            "proofImagePath": proof_image,
             "ctaKeyword": script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK"),
             "ctaText": script_data.get("cta_text") or script_data.get("ctaText") or f"💬 Comment {script_data.get('cta_keyword', 'LINK')} for the link",
             "environment": script_data.get("environment", "diner"),

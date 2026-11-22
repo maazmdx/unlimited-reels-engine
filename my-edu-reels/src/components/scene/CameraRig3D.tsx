@@ -185,20 +185,32 @@ export function getCameraRigParams(
 
   let fov = interpolate(transitionT, [0, 1], [prevBase.fov, targetBase.fov]);
 
-  // Subtle +4% comedic zoom punch-in when AI orb delivers a smug / sarcastic roast
+  // Crash zoom (fov snap -6.0 + 12-frame cubic ease) on high-emotion / roast turns
+  const activeEmotion = (activeTurn?.emotion || "").toLowerCase();
   const isSmugRoast =
-    activeTurn &&
+    !!activeTurn &&
     activeTurn.character_id === rightCharId &&
-    (activeTurn.emotion === "smug" || activeTurn.emotion === "sarcastic");
-  if (isSmugRoast) {
+    (activeEmotion === "smug" || activeEmotion === "sarcastic");
+
+  const isHighEmotionRoast =
+    !!activeTurn &&
+    (activeEmotion.includes("roast") ||
+      activeEmotion.includes("shock") ||
+      activeEmotion.includes("angr") ||
+      isSmugRoast);
+
+  if (isHighEmotionRoast && activeTurn) {
     const roastAge = Math.max(0, frame - activeTurn.start_frame);
-    const punchProgress = interpolate(roastAge, [0, 8], [0, 1], {
-      easing: Easing.out(Easing.cubic),
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
-    // Reducing FOV by 4% produces a clean comedic punch-in
-    fov *= 1 - 0.04 * punchProgress;
+    if (roastAge <= 12) {
+      const ease12 = interpolate(roastAge, [0, 12], [0, 1], {
+        easing: Easing.out(Easing.cubic),
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      });
+      // Snap in by -6 FOV and ease back
+      const fovSnap = interpolate(ease12, [0, 1], [-6.0, 0]);
+      fov += fovSnap;
+    }
   }
 
   // 3. Subtle camera push-in during active speaking turns (for turns > 0)
@@ -260,9 +272,21 @@ export function getCameraRigParams(
     toastTiltX = currentShot === "closeup_left" ? 0.07 : -0.07;
   }
 
+  // Subtle 6-frame camera shake on bass-thud beats / turn start
+  let shakeX = 0;
+  let shakeY = 0;
+  if (activeTurn) {
+    const turnAge = Math.max(0, frame - activeTurn.start_frame);
+    if (turnAge <= 6) {
+      const shakeDecay = (6 - turnAge) / 6;
+      shakeX = Math.sin(turnAge * 3.5) * 0.025 * shakeDecay;
+      shakeY = Math.cos(turnAge * 4.2) * 0.018 * shakeDecay;
+    }
+  }
+
   const position: [number, number, number] = [
-    baseX + orbitX + toastTiltX,
-    baseY + orbitY + toastTiltY,
+    baseX + orbitX + toastTiltX + shakeX,
+    baseY + orbitY + toastTiltY + shakeY,
     baseZ,
   ];
 

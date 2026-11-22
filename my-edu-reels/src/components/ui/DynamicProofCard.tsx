@@ -13,7 +13,7 @@ export interface DynamicCardData {
   title?: string;
   subtitle?: string;
   badge?: string;
-  type?: "code" | "benchmark" | "comparison" | "alert";
+  type?: "code" | "benchmark" | "comparison" | "alert" | "proof_card";
   codeSnippet?: string;
   language?: string;
   searchQuery?: string;
@@ -22,6 +22,8 @@ export interface DynamicCardData {
   rows?: CardProofItem[];
   highlight?: string;
   topicLogoPath?: string;
+  logoPath?: string;
+  proofImagePath?: string;
   durationSeconds?: number;
   startFrame?: number;
   durationFrames?: number;
@@ -33,49 +35,8 @@ export interface DynamicProofCardProps {
   durationFrames?: number;
   activeStepIndex?: number;
   topicLogoPath?: string;
-}
-
-/**
- * Highlights key power words / numbers ($19.99, 60 FPS, 100%, FREE, ZERO, etc.)
- * with bold glowing pills (#FEF08A / #DBEAFE).
- */
-function renderHighlightedValue(value: string, isCurrent: boolean) {
-  const powerWordRegex = /(\$?\d+[\d,.]*(?:\s*(?:FPS|DOWNLOADS?|K|M|B|X|%|ms|s|GB|TB))?|\bFREE\b|\bZERO\b|\bNATIVE\b|\bINSTANT\b|\bOFFICIAL\b|\bVERIFIED\b|100%|\$\d+(?:\.\d{2})?)/gi;
-
-  const parts = value.split(powerWordRegex);
-  if (parts.length <= 1) {
-    return value;
-  }
-
-  return parts.map((part, i) => {
-    if (!part) return null;
-    const isPowerMatch = part.match(powerWordRegex);
-    if (isPowerMatch) {
-      return (
-        <span
-          key={i}
-          style={{
-            backgroundColor: isCurrent ? "#FEF08A" : "#DBEAFE",
-            color: isCurrent ? "#854D0E" : "#1E40AF",
-            padding: "2px 8px",
-            borderRadius: 6,
-            fontWeight: 900,
-            boxShadow: isCurrent
-              ? "0 0 10px rgba(254, 240, 138, 0.7)"
-              : "0 0 8px rgba(219, 234, 254, 0.6)",
-            border: isCurrent
-              ? "1px solid rgba(250, 204, 21, 0.8)"
-              : "1px solid rgba(147, 197, 253, 0.7)",
-            display: "inline-block",
-            margin: "0 2px",
-          }}
-        >
-          {part}
-        </span>
-      );
-    }
-    return <span key={i}>{part}</span>;
-  });
+  logoPath?: string;
+  proofImagePath?: string;
 }
 
 function cleanTitleTruncation(text: string, maxChars: number = 32): string {
@@ -88,37 +49,39 @@ function cleanTitleTruncation(text: string, maxChars: number = 32): string {
 
 /**
  * DynamicProofCard:
- * - High-contrast light-mode frosted browser card (#F8FAFC with dark #0F172A text).
- * - Upper-third positioning (top: 220px, maxHeight: 500px, width: 920px), perfectly clearing seated characters.
- * - Dynamic Step-by-Step highlighting: highlights Row 1 on Turn 5, Row 2 on Turn 6, Row 3 on Turn 7.
- * - Pops cleanly against dark diner and desk backgrounds.
- * - Renders ONLY dynamic topic-specific cardData passed from HookMaster / SceneDirector.
+ * - Sleek dark-mode 2.5D full-screen visual proof cutaway (2.5–4s duration).
+ * - Replaces the tiny white macOS terminal box.
+ * - Displays the real logoPath + proofImagePath (GitHub card or live site screenshot)
+ *   with bold kinetic badge ("100% FREE") and animated highlight callout.
  */
 export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   cardData,
   startFrame = 90,
-  durationFrames = 360, // default ~12.0s @ 30fps for 3-turn interactive proof
-  activeStepIndex,
+  durationFrames = 105, // default 3.5s @ 30fps
+  activeStepIndex = 0,
   topicLogoPath,
+  logoPath,
+  proofImagePath,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   if (!cardData) return null;
 
-  const effectiveLogo = topicLogoPath || cardData.topicLogoPath;
+  const effectiveLogo = logoPath || topicLogoPath || cardData.logoPath || cardData.topicLogoPath;
+  const effectiveProofImage = proofImagePath || cardData.proofImagePath;
 
-  // Strict duration capping: allow interactive multi-step proof up to 14.0s (420 frames @ 30fps)
+  // Enforce 2.5s – 4.0s duration (75 to 120 frames @ 30fps)
   const effectiveStart = cardData.startFrame ?? startFrame;
-  const requestedDuration =
+  const rawDuration =
     durationFrames ??
     (cardData.durationSeconds
       ? Math.round(cardData.durationSeconds * fps)
-      : cardData.durationFrames ?? 360);
-  const cappedDuration = Math.min(Math.max(requestedDuration, 60), 420);
-  const effectiveEnd = effectiveStart + cappedDuration;
+      : cardData.durationFrames ?? 105);
+  const cutawayDuration = Math.min(Math.max(rawDuration, 75), 120);
+  const effectiveEnd = effectiveStart + cutawayDuration;
 
-  // Card visibility check
+  // Visibility window check
   if (frame < effectiveStart || frame > effectiveEnd) {
     return null;
   }
@@ -126,442 +89,308 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   const age = frame - effectiveStart;
   const exitAge = effectiveEnd - frame;
 
-  // Smooth spring entrance (deterministic, bounded by 30 frames)
+  // Spring entrance & exit interpolations
   const entrance = spring({
-    frame: Math.min(age, 25),
+    frame: Math.min(age, 22),
     fps,
     config: { damping: 14, stiffness: 140, mass: 0.8 },
   });
 
-  // Smooth exit fade / slide
-  const exitOpacity = interpolate(exitAge, [0, 12], [0, 1], {
+  const exitOpacity = interpolate(exitAge, [0, 10], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const exitSlide = interpolate(exitAge, [0, 12], [-20, 0], {
+  const exitScale = interpolate(exitAge, [0, 10], [0.95, 1.0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
   const opacity = entrance * exitOpacity;
-  const translateY = interpolate(entrance, [0, 1], [-40, 0]) + exitSlide;
-  const scale = interpolate(entrance, [0, 1], [0.94, 1.0]);
+  const scale = interpolate(entrance, [0, 1], [0.88, 1.0]) * exitScale;
+  const translateY = interpolate(entrance, [0, 1], [50, 0]);
 
-  // Extract topic-specific rows/items
+  // 2.5D subtle camera perspective tilt
+  const tiltX = interpolate(entrance, [0, 1], [6, 2]);
+  const subtleFloatY = Math.sin(age * 0.08) * 4;
+
+  // Kinetic pulse for the 100% FREE badge
+  const badgePulse = 1.0 + 0.05 * Math.sin(age * 0.22);
+
+  // Fallback rows if no screenshot proof card
   const rawItems = cardData.rows || cardData.items;
   let items: CardProofItem[] = [];
-
   if (rawItems && Array.isArray(rawItems) && rawItems.length > 0) {
     items = rawItems;
   } else {
-    // If cardData has direct custom key/value pairs (e.g. point_1, engine, etc.), normalize them
-    const ignoredKeys = new Set([
-      "title",
-      "subtitle",
-      "badge",
-      "type",
-      "codeSnippet",
-      "language",
-      "items",
-      "rows",
-      "highlight",
-      "durationSeconds",
-      "startFrame",
-      "durationFrames",
-    ]);
-    const customEntries = Object.entries(cardData).filter(([k]) => !ignoredKeys.has(k));
-    if (customEntries.length > 0) {
-      items = customEntries.slice(0, 3).map(([k, v]) => ({
-        label: k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-        value: String(v),
-        badge: "VERIFIED",
-        status: "VERIFIED",
-        isPositive: true,
-      }));
-    }
+    items = [
+      { label: "Execution Environment", value: "Browser WebAssembly / Native", badge: "VERIFIED", isPositive: true },
+      { label: "Access & Pricing", value: "Zero Cost / 100% Free", badge: "FREE", isPositive: true },
+      { label: "Setup Time", value: "Instant 0s Local Config", badge: "FAST", isPositive: true },
+    ];
   }
 
   const title = cardData.title
     ? cleanTitleTruncation(cardData.title, 34)
-    : (cardData.subtitle ? `${cleanTitleTruncation(cardData.subtitle, 26)} Specs` : "Verified Tech Specs");
-  const badge = cardData.badge || "VERIFIED PROOF";
-  const type = cardData.type || (cardData.codeSnippet ? "code" : "comparison");
-
-  // Deterministic Typing & Click Search Bar (Turn 5 Typing, Turns 6-7 Click + Verified Pill)
-  const cleanSearchTitle = cleanTitleTruncation(cardData.title || "", 30);
-  const rawSearchText =
-    cardData.searchQuery ||
-    cardData.command ||
-    (cleanSearchTitle
-      ? `verify --inspect "${cleanSearchTitle}"`
-      : "benchmark --live --official");
-
-  const typingAge = Math.max(0, age - 8);
-  const typingDuration = 36;
-  const typingProgress = interpolate(typingAge, [0, typingDuration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const typedLength =
-    activeStepIndex === 0
-      ? Math.floor(typingProgress * rawSearchText.length)
-      : rawSearchText.length;
-  const displayedSearchText = rawSearchText.slice(0, typedLength);
-  const isTypingDone = activeStepIndex !== 0 || typingProgress >= 1.0;
-  const showBlinkingCursor = !isTypingDone && (Math.floor(frame / 6) % 2 === 0);
-
-  const isTurn6Or7 = (activeStepIndex ?? 0) >= 1;
-  const searchPillLabel = isTurn6Or7 ? "✓ Verified" : "Active";
-  const searchPillBg = isTurn6Or7 ? "#16A34A" : "#0284C7";
-  const searchPillShadow = isTurn6Or7
-    ? "0 2px 10px rgba(22, 163, 74, 0.4)"
-    : "0 2px 8px rgba(2, 132, 199, 0.35)";
+    : "VERIFIED REAL PROOF";
+  const subtitle = cardData.subtitle
+    ? cleanTitleTruncation(cardData.subtitle, 48)
+    : "Live Execution & Feature Inspection";
+  const highlightText =
+    cardData.highlight ||
+    "⚡ 100% Free • Verified Zero Local Installation • Instant Access";
 
   return (
     <div
       style={{
         position: "absolute",
-        top: 220,
-        left: 80,
-        width: 920,
-        maxHeight: 500,
-        zIndex: 80,
+        top: 240,
+        left: 60,
+        width: 960,
+        zIndex: 95,
         opacity,
-        transform: `translateY(${translateY}px) scale(${scale})`,
-        transformOrigin: "center top",
+        transform: `perspective(1200px) rotateX(${tiltX}deg) translateY(${translateY + subtleFloatY}px) scale(${scale})`,
+        transformOrigin: "center center",
         pointerEvents: "none",
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
+      {/* 2.5D Glassmorphism Container */}
       <div
         style={{
-          background: "rgba(248, 250, 252, 0.96)",
-          backdropFilter: "blur(24px)",
-          borderRadius: 22,
-          border: "2px solid rgba(255, 255, 255, 0.95)",
+          background: "linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 28, 0.98) 100%)",
+          backdropFilter: "blur(28px)",
+          borderRadius: 28,
+          border: "2px solid rgba(56, 189, 248, 0.55)",
           boxShadow:
-            "0 28px 70px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.3), inset 0 1px 2px rgba(255, 255, 255, 1)",
+            "0 36px 90px rgba(0, 0, 0, 0.88), 0 0 50px rgba(56, 189, 248, 0.28), inset 0 1px 2px rgba(255, 255, 255, 0.15)",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        {/* Window Titlebar */}
+        {/* Header Bar */}
         <div
           style={{
-            height: 52,
-            backgroundColor: "rgba(241, 245, 249, 0.98)",
-            borderBottom: "1px solid rgba(203, 213, 225, 0.8)",
+            height: 72,
+            backgroundColor: "rgba(30, 41, 59, 0.85)",
+            borderBottom: "1px solid rgba(56, 189, 248, 0.25)",
             display: "flex",
             alignItems: "center",
-            padding: "0 20px",
             justifyContent: "space-between",
+            padding: "0 28px",
           }}
         >
-          {/* macOS Traffic Lights */}
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <div style={{ width: 13, height: 13, borderRadius: "50%", backgroundColor: "#EF4444" }} />
-            <div style={{ width: 13, height: 13, borderRadius: "50%", backgroundColor: "#F59E0B" }} />
-            <div style={{ width: 13, height: 13, borderRadius: "50%", backgroundColor: "#10B981" }} />
-            <span
-              style={{
-                marginLeft: 14,
-                fontSize: 14,
-                fontWeight: 700,
-                color: "#64748B",
-                letterSpacing: "0.2px",
-              }}
-            >
-              {cardData.language ? `proof.${cardData.language}` : "proof.verified"}
-            </span>
-          </div>
-
-          {/* Window Center Title with optional Topic Logo */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              fontSize: 16,
-              fontWeight: 800,
-              color: "#0F172A",
-              letterSpacing: "0.4px",
-              textTransform: "uppercase",
-            }}
-          >
-            {effectiveLogo && (
+          {/* Left: Logo & Title */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            {effectiveLogo ? (
               <Img
                 src={staticFile(effectiveLogo)}
                 style={{
-                  width: 26,
-                  height: 26,
-                  borderRadius: 6,
+                  width: 44,
+                  height: 44,
+                  borderRadius: 10,
                   objectFit: "contain",
-                  backgroundColor: "#FFFFFF",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
-                  border: "1px solid rgba(203, 213, 225, 0.8)",
-                  padding: 2,
+                  backgroundColor: "#0F172A",
+                  padding: 4,
+                  border: "1px solid rgba(56, 189, 248, 0.4)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
                 }}
               />
+            ) : (
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 10,
+                  backgroundColor: "#0284C7",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 22,
+                }}
+              >
+                ⚡
+              </div>
             )}
-            <span>{title}</span>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span
+                style={{
+                  fontSize: 20,
+                  fontWeight: 900,
+                  color: "#F8FAFC",
+                  letterSpacing: "0.5px",
+                  textTransform: "uppercase",
+                }}
+              >
+                {title}
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#94A3B8",
+                  letterSpacing: "0.2px",
+                }}
+              >
+                {subtitle}
+              </span>
+            </div>
           </div>
 
-          {/* Badge Pill */}
+          {/* Right: Bold Kinetic 100% FREE Badge */}
           <div
             style={{
-              backgroundColor: "#0284C7",
+              backgroundColor: "#059669",
               color: "#FFFFFF",
-              padding: "5px 14px",
-              borderRadius: 12,
-              fontSize: 12,
-              fontWeight: 800,
-              letterSpacing: "0.8px",
-              boxShadow: "0 2px 8px rgba(2, 132, 199, 0.35)",
-            }}
-          >
-            {badge}
-          </div>
-        </div>
-
-        {/* Interactive Search / Command Action Bar (Turn 5 Typing -> Turn 6-7 Click + Pill Toggle) */}
-        <div
-          style={{
-            position: "relative",
-            margin: "12px 24px 0 24px",
-            padding: "8px 16px",
-            backgroundColor: "rgba(241, 245, 249, 0.95)",
-            border: isTurn6Or7 ? "1.5px solid rgba(22, 163, 74, 0.6)" : "1.5px solid rgba(203, 213, 225, 0.9)",
-            borderRadius: 12,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            boxShadow: "inset 0 1px 3px rgba(0,0,0,0.06)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10, overflow: "hidden", flex: 1 }}>
-            <span style={{ fontSize: 13, color: "#64748B" }}>🔍</span>
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#0F172A",
-                whiteSpace: "nowrap",
-                letterSpacing: "-0.2px",
-              }}
-            >
-              {displayedSearchText}
-              {showBlinkingCursor && (
-                <span style={{ color: "#0284C7", fontWeight: 900 }}>|</span>
-              )}
-            </span>
-          </div>
-
-          {/* Interactive Pill Toggle Button */}
-          <div
-            style={{
-              backgroundColor: searchPillBg,
-              color: "#FFFFFF",
-              padding: "4px 14px",
-              borderRadius: 8,
-              fontSize: 11,
-              fontWeight: 800,
-              letterSpacing: "0.5px",
+              padding: "8px 20px",
+              borderRadius: 9999,
+              fontSize: 15,
+              fontWeight: 900,
+              letterSpacing: "1.0px",
               textTransform: "uppercase",
-              boxShadow: searchPillShadow,
+              boxShadow: "0 0 20px rgba(16, 185, 129, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5)",
+              border: "1px solid rgba(52, 211, 153, 0.8)",
+              transform: `scale(${badgePulse})`,
+              transformOrigin: "center",
               display: "flex",
               alignItems: "center",
-              gap: 4,
-              transform:
-                activeStepIndex === 1
-                  ? `scale(${interpolate(age % 24, [0, 6, 12, 24], [1, 0.92, 1, 1])})`
-                  : "scale(1)",
-              transformOrigin: "center",
+              gap: 8,
             }}
           >
-            <span>{searchPillLabel}</span>
+            <span>✓</span>
+            <span>100% FREE</span>
           </div>
+        </div>
 
-          {/* Animated Cursor Click on Turn 6 (activeStepIndex === 1) */}
-          {activeStepIndex === 1 && (
+        {/* Center: Real Visual Proof Display */}
+        <div style={{ padding: "24px 28px 16px 28px" }}>
+          {effectiveProofImage ? (
+            /* Real Screenshot / GitHub OpenGraph Visual Proof Card */
             <div
               style={{
-                position: "absolute",
-                right: 20,
-                top: 14,
-                transform: `scale(${interpolate(age % 24, [0, 6, 12, 24], [1, 0.85, 1, 1])})`,
-                pointerEvents: "none",
-                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))",
-                zIndex: 10,
+                position: "relative",
+                width: "100%",
+                height: 380,
+                borderRadius: 18,
+                overflow: "hidden",
+                border: "2px solid rgba(56, 189, 248, 0.35)",
+                boxShadow: "0 12px 36px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.4)",
+                backgroundColor: "#020617",
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#0F172A" stroke="#FFFFFF" strokeWidth="1.5">
-                <path d="M4 3l13 8-7 2-3 7L4 3z" />
-              </svg>
+              <Img
+                src={staticFile(effectiveProofImage)}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+              {/* Corner Live Proof Badge */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 14,
+                  right: 14,
+                  backgroundColor: "rgba(15, 23, 42, 0.90)",
+                  border: "1px solid rgba(56, 189, 248, 0.6)",
+                  padding: "5px 14px",
+                  borderRadius: 8,
+                  fontSize: 12,
+                  fontWeight: 800,
+                  color: "#38BDF8",
+                  letterSpacing: "0.5px",
+                  backdropFilter: "blur(8px)",
+                }}
+              >
+                LIVE VERIFIED PROOF
+              </div>
+            </div>
+          ) : (
+            /* High-Contrast Interactive 3-Step Spec Rows */
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {items.slice(0, 3).map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    backgroundColor: "rgba(30, 41, 59, 0.75)",
+                    border: "1px solid rgba(56, 189, 248, 0.3)",
+                    borderRadius: 14,
+                    padding: "16px 22px",
+                    boxShadow: "0 4px 14px rgba(0, 0, 0, 0.4)",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 8,
+                        backgroundColor: "#0284C7",
+                        color: "#FFFFFF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 14,
+                        fontWeight: 900,
+                      }}
+                    >
+                      {idx + 1}
+                    </div>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: "#E2E8F0" }}>
+                      {item.label}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      backgroundColor: "#0F172A",
+                      border: "1px solid rgba(56, 189, 248, 0.4)",
+                      color: "#38BDF8",
+                      padding: "6px 16px",
+                      borderRadius: 8,
+                      fontSize: 14,
+                      fontWeight: 800,
+                    }}
+                  >
+                    {item.value}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Content Body */}
-        <div style={{ padding: "16px 24px", color: "#0F172A" }}>
-          {cardData.subtitle && (
-            <div
-              style={{
-                fontSize: 15,
-                fontWeight: 600,
-                color: "#475569",
-                marginBottom: 14,
-                letterSpacing: "-0.2px",
-              }}
-            >
-              {cardData.subtitle}
-            </div>
-          )}
-
-          {type === "code" && cardData.codeSnippet ? (
-            <div
-              style={{
-                backgroundColor: "#0F172A",
-                borderRadius: 14,
-                padding: "16px 20px",
-                border: "1px solid rgba(15, 23, 42, 0.9)",
-                fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
-                fontSize: 17,
-                lineHeight: 1.5,
-                color: "#F8FAFC",
-                whiteSpace: "pre-wrap",
-                boxShadow: "inset 0 2px 6px rgba(0,0,0,0.5)",
-              }}
-            >
-              {cardData.codeSnippet}
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {items.map((item, idx) => {
-                const isStepMode = activeStepIndex !== undefined;
-                const isCurrent = isStepMode && idx === activeStepIndex;
-                const isPast = isStepMode && idx < activeStepIndex;
-                const isFuture = isStepMode && idx > activeStepIndex;
-                const isPos = item.isPositive !== false;
-
-                // Step-by-step interactive styling
-                let rowBg = isPos ? "rgba(241, 245, 249, 0.95)" : "rgba(254, 242, 242, 0.95)";
-                let rowBorder = isPos ? "1px solid rgba(203, 213, 225, 0.9)" : "1px solid rgba(252, 165, 165, 0.8)";
-                let rowShadow = "none";
-                let rowOpacity = 1.0;
-                let badgeBg = isPos ? "#0F172A" : "#DC2626";
-                let badgeText = item.badge || item.status || "VERIFIED";
-
-                if (isCurrent) {
-                  rowBg = "rgba(240, 249, 255, 0.98)";
-                  rowBorder = "2px solid #0284C7";
-                  rowShadow = "0 4px 18px rgba(2, 132, 199, 0.25), inset 0 0 12px rgba(56, 189, 248, 0.12)";
-                  badgeBg = "#0284C7";
-                  badgeText = item.status || "ACTIVE";
-                } else if (isPast) {
-                  rowBg = "rgba(240, 253, 244, 0.95)";
-                  rowBorder = "1px solid rgba(134, 239, 172, 0.85)";
-                  badgeBg = "#16A34A";
-                  badgeText = "✓ CHECKED";
-                } else if (isFuture) {
-                  rowBg = "rgba(248, 250, 252, 0.65)";
-                  rowBorder = "1px solid rgba(226, 232, 240, 0.6)";
-                  rowOpacity = 0.55;
-                  badgeBg = "#CBD5E1";
-                  badgeText = "PENDING";
-                }
-
-                return (
-                  <div
-                    key={idx}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      backgroundColor: rowBg,
-                      border: rowBorder,
-                      borderRadius: 14,
-                      padding: "10px 18px",
-                      boxShadow: rowShadow,
-                      opacity: rowOpacity,
-                      transform: isCurrent ? "scale(1.015)" : "scale(1.0)",
-                      transformOrigin: "center left",
-                    }}
-                  >
-                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        {isStepMode && (
-                          <span
-                            style={{
-                              fontSize: 12,
-                              fontWeight: 800,
-                              color: isCurrent ? "#0284C7" : isPast ? "#16A34A" : "#94A3B8",
-                              letterSpacing: "0.5px",
-                            }}
-                          >
-                            STEP {idx + 1}
-                          </span>
-                        )}
-                        <span style={{ fontSize: 13, fontWeight: 700, color: "#475569" }}>
-                          {item.label}
-                        </span>
-                      </div>
-                      <span
-                        style={{
-                          fontSize: 20,
-                          fontWeight: 800,
-                          color: isCurrent ? "#0284C7" : isPast ? "#14532D" : isPos ? "#0F172A" : "#B91C1C",
-                          letterSpacing: "-0.5px",
-                        }}
-                      >
-                        {renderHighlightedValue(item.value, isCurrent)}
-                      </span>
-                    </div>
-                    <span
-                      style={{
-                        padding: "5px 12px",
-                        borderRadius: 8,
-                        fontSize: 11,
-                        fontWeight: 800,
-                        backgroundColor: badgeBg,
-                        color: isFuture ? "#475569" : "#FFFFFF",
-                        letterSpacing: "0.5px",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {badgeText}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Bottom highlight pill */}
-          {cardData.highlight && (
-            <div
-              style={{
-                marginTop: 14,
-                padding: "10px 16px",
-                backgroundColor: "rgba(224, 242, 254, 0.85)",
-                borderRadius: 12,
-                border: "1px solid rgba(56, 189, 248, 0.5)",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                fontSize: 14,
-                fontWeight: 700,
-                color: "#0369A1",
-              }}
-            >
-              <span>⚡</span>
-              <span>{cardData.highlight}</span>
-            </div>
-          )}
+        {/* Bottom Animated Highlight Callout Banner */}
+        <div
+          style={{
+            margin: "0 28px 24px 28px",
+            padding: "14px 20px",
+            borderRadius: 14,
+            backgroundColor: "rgba(56, 189, 248, 0.12)",
+            border: "1px solid rgba(56, 189, 248, 0.45)",
+            boxShadow: "0 4px 20px rgba(56, 189, 248, 0.15)",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <span style={{ fontSize: 18 }}>💡</span>
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 800,
+              color: "#E0F2FE",
+              letterSpacing: "0.2px",
+            }}
+          >
+            {highlightText}
+          </span>
         </div>
       </div>
     </div>
   );
 };
+export default DynamicProofCard;

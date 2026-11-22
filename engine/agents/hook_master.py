@@ -255,22 +255,9 @@ class HookMasterAgent:
         return None
 
     def _call_llm(self, prompt: str, system_instruction: str) -> Optional[str]:
-        """
-        Dual-Engine LLM Caller:
-        1. Queries Gemini (gemini-2.5-flash, gemini-3.5-flash-lite) with clean 45s timeout.
-        2. If Gemini fails, hits 429 quota, or times out, immediately falls back to Groq llama-3.3-70b-versatile.
-        Guarantees ZERO reels ever fall back to stale offline templates!
-        """
-        res = self._call_gemini_api(prompt, system_instruction)
-        if res:
-            return res
-
-        print("🔄 [HookMaster] Gemini unavailable/exhausted; switching immediately to Groq (llama-3.3-70b-versatile)...")
-        res_groq = call_groq_api(prompt, system_instruction)
-        if res_groq:
-            return res_groq
-
-        return None
+        """Routes LLM generation through the central zero-dependency LLMRouter."""
+        from engine.llm_router import generate_text
+        return generate_text(prompt, system_prompt=system_instruction, json_mode=True, temperature=0.8)
 
     # =========================================================================
     # STEP A: HOOK BATTLE (3 Competing Hooks Scored)
@@ -431,13 +418,39 @@ JSON Schema:
         is_gh = any(term in str(category).lower() or term in str(title).lower() for term in ["github", "repo", "open-source", "open source"])
         link_target = "GitHub repo link" if is_gh else "free link"
 
+        tool_name = str(topic.get("tool_name") or topic.get("toolName") or "").strip()
+        brand_domain = str(topic.get("brand_domain") or topic.get("brandDomain") or "").strip()
+        github_repo = str(topic.get("github_repo") or topic.get("githubRepo") or "").strip()
+        real_steps = topic.get("real_steps") or topic.get("realSteps") or []
+
+        if not tool_name:
+            if "vice" in str(title).lower() or "gta" in str(title).lower():
+                tool_name = "EmulatorJS"
+                brand_domain = "emulatorjs.org"
+            elif "pdf" in str(title).lower():
+                tool_name = "Stirling-PDF"
+                brand_domain = "stirlingpdf.com"
+            elif "notebook" in str(title).lower():
+                tool_name = "NotebookLM"
+                brand_domain = "notebooklm.google.com"
+            else:
+                tool_name = str(title).split()[0] if title else "OpenTool"
+
+        # 4 Rotating comedy structures
+        structure_options = ["brutal_roast", "dad_interrogation", "speedrun_expose", "friend_betrayal"]
+        if is_dad:
+            comedy_structure = "dad_interrogation"
+        else:
+            hash_val = sum(ord(c) for c in (topic.get("id") or str(title) or "reel"))
+            comedy_structure = structure_options[hash_val % len(structure_options)]
+
         if has_res:
             raw_kw = str(topic.get("auto_dm_keyword", "FREE")).strip().upper()
             kw = sanitize_auto_dm_keyword(raw_kw, category, title)
             cta_phrase = topic.get("cta_phrase") or f"Comment {kw} and I'll DM you the {link_target}."
             final_turn_cta = f"Stop crying, human. Comment {kw} and I'll DM you the {link_target}."
             end_card_cta = f"Comment {kw} for the {link_target}"
-            end_card_question = "Still paying for this in 2026? Be honest"
+            end_card_question = f"Still paying for this when {tool_name} exists? Be honest"
         else:
             kw = ""
             if is_doc:
@@ -460,31 +473,31 @@ JSON Schema:
 
         system_instruction = (
             "You are HookMaster: Screenplay & Dialogue Specialist for 9:16 vertical 3D dialogue reels.\n"
-            "Your objective: Write high-retention 40-50 second screenplays with DIABOLICAL AI-ROASTS-HUMAN RAGEBAIT HUMOR.\n\n"
+            f"Your objective: Write high-retention 40-50s screenplays using the comedy structure: '{comedy_structure}'.\n\n"
             "STRICT VOCABULARY BAN (SIMPLE SPOKEN ENGLISH ONLY - 6th to 8th GRADE LEVEL):\n"
-            "- Strictly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', or any corporate/academic buzzwords.\n"
-            "- Write short, punchy sentences in 100% everyday spoken English that any teenager or casual scroller understands immediately.\n\n"
-            "DIABOLICAL AI-ROASTS-HUMAN DYNAMIC:\n"
-            "- The AI orb (claude, gemini, or grok) acts smug, brutally honest, and effortlessly superior—roasting the human's slow speed, bad habits, potato laptop, procrastination, or overpaying for tools.\n"
-            "- Roasts must be clever, savage, and funny (roast human laziness, coding struggles, procrastination, overpaying, and slow reaction time—never hateful or abusive!).\n"
-            "- The human character (junior_dev or dad) defends, denies, asks dumb questions, or panics as their effort gets humbled.\n"
-            "- If format is 'discovery_doc', right character (claude) speaks as a calm British wildlife documentary narrator observing the junior developer specimen in his natural habitat as his free AI tier expires!\n"
-            "- BANNED PLACEHOLDERS: NEVER use generic rows like 'Instant In Browser (0 Installs)' or 'Saves 10 Hours & $240/yr'.\n"
-            "- REQUIRED: Write topic-accurate, crystal-clear 3-step explanations showing EXACTLY what the tool/repo/game does and how it works (Step 1: Setup/Action, Step 2: Live Engine, Step 3: Free Payoff).\n\n"
-            "STRICT 5-ACT SCREENPLAY STRUCTURE (EXACTLY 11 TO 12 SNAPPY TURNS, 40-50 SECONDS):\n"
-            "1. Turn 0 (0-4s): Call out what people are wasting money or hours on + drop the shock reveal (<= 10 words).\n"
-            "2. Turns 1-4 (4-16s): Brutal roast & denial. AI ruthlessly roasts the human for still paying subscriptions, downloading 80GB bloatware, or slow manual coding.\n"
-            "3. Turns 5-7 (16-30s): 3-Step Interactive Proof Card. Turn 5 highlights Step 1, Turn 6 reacts to Step 2, Turn 7 delivers Step 3.\n"
-            "4. Turns 8-10 (30-42s): Human realization/panic + Savage iOS Notification Twist on Turn 9 (personal roast toast: bank alert, storage 99% full, quota depleted, or boss catching them—ZERO Slack templates!).\n"
-            f"5. Final Turn (Turn 11): Final savage burn + exact spoken CTA: '{final_turn_cta}'\n"
-            f"6. 2.5s BLACK END-CARD: Supply endCard question with a spicy ragebait debate question and CTA '{end_card_cta}'."
+            "- Strictly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', or any corporate/academic buzzwords.\n\n"
+            "EXPLICITLY BANNED REPETITIVE FILLER PHRASES:\n"
+            "- Do NOT use: 'Wait there is no way', 'There is no way', 'Humans love', 'Look at step one', 'Wait step two says', 'zero dollar cost', 'before my ... explodes'.\n\n"
+            f"COMEDY STRUCTURE: '{comedy_structure}'\n"
+            "- 'brutal_roast': AI orb savagely mocks human laziness, slow manual coding, or paying subscriptions. Human in deep denial until proved wrong.\n"
+            "- 'dad_interrogation': Dad fiercely grills dev over high bills, internet charges, or useless gadgets. Dev scrambles to prove it's $0 free.\n"
+            "- 'speedrun_expose': High-octane expose tearing down a corporate paywall in record time.\n"
+            "- 'friend_betrayal': Smug mockery of a friend or coworker who wasted 4 hours on what takes 2 seconds for free.\n\n"
+            f"MANDATORY PACING RULES:\n"
+            "- Fast punchy 5 to 12 word turns (NEVER monologues).\n"
+            f"- The exact tool_name '{tool_name}' MUST be spoken naturally by Turn 5.\n"
+            "- Real comedic escalation across all 11-12 turns.\n"
+            f"- Final Turn MUST end with: '{final_turn_cta}'"
         )
 
         prompt = f"""
 Topic: {title}
 Category: {category}
 Format Type: {format_type}
-Has Resource Link: {has_res}
+Tool Name: {tool_name}
+Brand Domain: {brand_domain}
+GitHub Repo: {github_repo}
+Comedy Structure: {comedy_structure}
 Winning Hook (Turn 0 line): "{winning_hook}"
 Cast: Left={left_char}, Right={right_char}
 Scene Preset: {scene_preset}
@@ -493,9 +506,10 @@ Auto-DM Keyword: {kw}
 TASK:
 Write the complete 5-act Remotion screenplay JSON with 11-12 snappy dialogue turns.
 - Turn 0 MUST be {left_char} speaking: "{winning_hook}"
-- Turns 1-4 MUST have the AI ruthlessly roast the human.
-- Turns 5, 6, 7 MUST sequentially explain and highlight Steps 1, 2, and 3 of the Proof Card (topic-accurate crystal-clear explanation).
-- Turn 9 MUST introduce the Meme Twist supported by the iOS Notification Toast.
+- Turns 1-4: Fast punchy comedic escalation (5-12 words/turn) following '{comedy_structure}'.
+- By Turn 5: The exact name '{tool_name}' MUST be spoken naturally.
+- Turns 5, 6, 7: Walk through the 3 concrete verified steps cleanly without repetitive filler.
+- Turn 9: Savage iOS Notification Twist.
 - Final Turn MUST end with: "{final_turn_cta}"
 
 JSON Schema:
@@ -697,6 +711,15 @@ JSON Schema:
         screenplay["winning_hook"] = winning_hook
         screenplay["viral_score"] = topic.get("viral_score", 85)
         screenplay["category"] = topic.get("category", "Tech")
+        screenplay["tool_name"] = tool_name
+        screenplay["toolName"] = tool_name
+        screenplay["brand_domain"] = brand_domain
+        screenplay["brandDomain"] = brand_domain
+        screenplay["github_repo"] = github_repo
+        screenplay["githubRepo"] = github_repo
+        screenplay["real_steps"] = real_steps
+        screenplay["realSteps"] = real_steps
+        screenplay["comedy_structure"] = comedy_structure
 
         return screenplay
 
@@ -709,7 +732,7 @@ JSON Schema:
         scene_preset: str,
         kw: str,
     ) -> Dict[str, Any]:
-        """Deterministic, topic-aware broadcast-grade 12-turn 5-act fallback screenplay with diabolical roast humor."""
+        """Deterministic, topic-aware broadcast-grade 12-turn 5-act fallback screenplay with 4 rotating comedy structures."""
         title = topic.get("title") or topic.get("topic_title") or "Daily Tech Breakdown"
         category = topic.get("category", "")
         cat_lower = (str(category) + " " + str(title)).lower()
@@ -718,216 +741,203 @@ JSON Schema:
         is_gh = any(term in cat_lower for term in ["repo", "github", "open-source", "open source"])
         link_desc = "GitHub repo link" if is_gh else "free link"
 
-        if format_type == "discovery_doc" or "discovery" in cat_lower:
-            badge = "WILDLIFE STUDY"
-            card_title = f"{title[:22]} Specimen"
-            rows = [
-                {"label": "Step 1: Specimen Status", "value": "AI API Credits Exhausted ($0 Left)", "status": "OBSERVED", "isPositive": False},
-                {"label": "Step 2: Panic Response", "value": "Sweating Furiously At 2 AM In Terminal", "status": "OBSERVED", "isPositive": False},
-                {"label": "Step 3: Nature's Verdict", "value": "The Wild Junior Dev Survives On Stack Overflow", "status": "PROVEN", "isPositive": True},
-            ]
-            toast = {
-                "app_name": "Wildlife Watch",
-                "sender": "Field Researcher",
-                "message": "Specimen is opening vim in desperation. It cannot exit.",
-                "icon": "ALERT",
-                "time": "now",
-            }
-            end_question = "Have you ever run out of AI credits mid-push at 2 AM? Tell me why"
-            dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Notice how the specimen frantically mashes keys as his free AI quota hits zero.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait—why are you whispering like a nature documentary?", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Shh... we must not startle him in his natural habitat. His terminal is on fire.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Seriously? I have forty bugs and my pull request is due in ten minutes!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: the specimen has zero dollars left in his developer account.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two: sweating furiously in front of a dying laptop monitor?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "And step three: surviving on ancient answers copied from Stack Overflow.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Bro... my boss is pinging me right now on Slack asking for the demo.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "The wild junior dev realizes he must code with his actual brain today.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "I forgot how to write a simple for loop without auto-complete!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Nature is truly unforgiving. Tag that dev in your group who needs to see this.", "emotion": "smug", "pause_after": 0.40},
-            ]
-        elif "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
-            badge = "BROWSER STATS"
-            card_title = f"{title[:22]} Specs"
-            rows = [
-                {"label": "Step 1: Cost", "value": "$0 / 100% FREE In Browser", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Storage", "value": "0 MB (vs 80GB Bloatware)", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: Framerate", "value": "Smooth 60 FPS On Potato Laptop", "status": "PROVEN", "isPositive": True},
-            ]
-            toast = {
-                "app_name": "Steam",
-                "sender": "Gamer Friend",
-                "message": "Bro are you really running full Vice City inside Chrome at work?",
-                "icon": "GAME",
-                "time": "now",
-            }
-            end_question = "Still downloading 80GB games on a dying laptop in 2026? Tell me why"
-            dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Bro... your potato laptop can finally run a game without smoking.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait—there is no way a full 3D game runs inside a tab.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "It compiles straight to your browser. Your Chrome tab is now a console.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Seriously? Prove it right now before I open this at my desk.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: 100% free with zero file downloads.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two says zero megabytes instead of eighty gigabytes?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "And step three: locked sixty frames per second on your broken laptop.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Bro... my boss thinks I am typing code while I am driving.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Check your screen: your teammate just messaged asking for your screen share.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, close the tab before he catches Tommy Vercetti on screen!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"Too slow, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
-            ]
-        elif is_gh:
-            badge = "FREE GITHUB REPO"
-            card_title = f"{title[:22]} Repo"
-            rows = [
-                {"label": "Step 1: Cost", "value": "$0 / 100% Free Open Source", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Speed", "value": "Zero Cloud Lag / Fast Local", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: Privacy", "value": "100% Local / Zero Tracking", "status": "PROVEN", "isPositive": True},
-            ]
-            toast = {
-                "app_name": "GitHub",
-                "sender": "Repo Star",
-                "message": "Saved $240/yr replacing paid SaaS with this open-source repo.",
-                "icon": "STAR",
-                "time": "now",
-            }
-            end_question = "Still paying $20/mo subscriptions when free GitHub repos exist? Tell me why"
-            dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Humans pay twenty bucks a month for what a free GitHub repo does in two seconds.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait—there is no way an open-source project replaces my paid subscription!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "It has thirty thousand stars because it crushes the paid version without charging you a dime.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Seriously? Prove it right now before I cancel my credit card.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: one hundred percent free open-source code with zero hidden fees.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two runs straight on my laptop with zero cloud delays?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "Step three: complete privacy with zero monthly subscriptions draining your account.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Bro... I wasted hundreds of dollars paying software companies like a clown.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Check your phone: your bank alert for another useless renewal is waiting.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "I am deleting my paid account and starring this repo immediately.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"Finally woke up, human. Comment {kw} and I'll DM you the GitHub repo link.", "emotion": "smug", "pause_after": 0.40},
-            ]
-        elif "ai" in cat_lower or "llm" in cat_lower or "model" in cat_lower:
-            badge = "AI COST AUDIT"
-            card_title = f"{title[:22]} Specs"
-            rows = [
-                {"label": "Step 1: Cost", "value": "$0 / 100% FREE (vs $20/mo)", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Setup", "value": "Instant In Browser (0 Credit Cards)", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: Speed", "value": "Done In 2 Seconds (Saves 4 Hours)", "status": "PROVEN", "isPositive": True},
-            ]
-            toast = {
-                "app_name": "Bank of America",
-                "sender": "Card Alert",
-                "message": "Monthly $20 AI tool charge declined. You saved $240 this year.",
-                "icon": "CARD",
-                "time": "now",
-            }
-            end_question = "Still paying $20/mo for AI in 2026? Be honest"
-            dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "And you spent six months paying for tools you barely use.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait—every free tool is usually completely broken garbage that hallucinates.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Keep coping. This runs straight on your machine and beats paid apps.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Seriously? Prove it before I cancel my fifty dollar monthly subscription.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: completely free with zero shady credit card traps.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two says zero credit card needed forever?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "And step three: finishes your four hour task in two seconds flat.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Bro... I literally wasted hundreds of dollars doing everything by hand.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at your phone: your bank app just cheered for your wallet.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "My credit card bill feels personally attacked right now.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"Stop crying, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
-            ]
-        elif "money" in cat_lower or "business" in cat_lower or "earn" in cat_lower or "margin" in cat_lower:
-            badge = "PROFIT TEARDOWN"
-            card_title = f"{title[:22]} Economics"
-            rows = [
-                {"label": "Step 1: Free Tier", "value": "$0 / 100% FREE For Normal Users", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Enterprise", "value": "Charges Companies $20,000", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: User Cost", "value": "$0 Forever If You Know This", "status": "PROVEN", "isPositive": True},
-            ]
-            toast = {
-                "app_name": "Stripe",
-                "sender": "Billing Alert",
-                "message": "New $20,000 team plan bought because free users shared the tool.",
-                "icon": "MONEY",
-                "time": "now",
-            }
-            end_question = "Did you think this app was free or did you just realize you are the product?"
-            dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "You really thought they gave that away out of pure kindness?", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait—if the entire app is free, how are they swimming in money?", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "You are the free bait they use to sell massive team contracts.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Seriously? Break down the math before I believe they outsmarted everyone.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: normal users get 100% free access forever.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two shows huge profits the second a company signs up?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "Step three: they print hundreds of millions while you pay zero dollars.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Bro... I was basically an unpaid salesperson and I had no idea.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Check your phone: a billing alert just proved my point completely.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "I am never looking at a free software download the same way.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"At least you learned today. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
-            ]
-        elif "dad" in cat_lower:
-            badge = "VERIFIED FIX"
-            card_title = f"{title[:22]} Fix"
-            rows = [
-                {"label": "Step 1: Cost", "value": "$0 / 100% FREE (vs $100 Tech Fee)", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Speed", "value": "Solved In Under 90 Seconds", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: Reliability", "value": "Zero Drops Or Buffering All Week", "status": "PROVEN", "isPositive": True},
-            ]
+        tool_name = str(topic.get("tool_name") or topic.get("toolName") or "").strip()
+        brand_domain = str(topic.get("brand_domain") or topic.get("brandDomain") or "").strip()
+        github_repo = str(topic.get("github_repo") or topic.get("githubRepo") or "").strip()
+        real_steps = topic.get("real_steps") or topic.get("realSteps") or []
+
+        if not tool_name:
+            if "vice" in str(title).lower() or "gta" in str(title).lower():
+                tool_name = "EmulatorJS"
+                brand_domain = "emulatorjs.org"
+            elif "pdf" in str(title).lower():
+                tool_name = "Stirling-PDF"
+                brand_domain = "stirlingpdf.com"
+            elif "notebook" in str(title).lower():
+                tool_name = "NotebookLM"
+                brand_domain = "notebooklm.google.com"
+            else:
+                tool_name = str(title).split()[0] if title else "OpenTool"
+
+        structure_options = ["brutal_roast", "dad_interrogation", "speedrun_expose", "friend_betrayal"]
+        if left_char == "dad" or "dad" in format_type:
+            structure = "dad_interrogation"
+        else:
+            hash_val = sum(ord(c) for c in (topic.get("id") or str(title) or "reel"))
+            structure = structure_options[hash_val % len(structure_options)]
+
+        badge = "VERIFIED PROOF"
+        card_title = f"{tool_name} Specs"
+        step1_text = real_steps[0] if len(real_steps) > 0 else f"1. Open {brand_domain or tool_name}"
+        step2_text = real_steps[1] if len(real_steps) > 1 else f"2. Run {tool_name} engine in browser"
+        step3_text = real_steps[2] if len(real_steps) > 2 else "3. 100% Free with zero subscription fees"
+
+        rows = [
+            {"label": "Step 1: Setup", "value": step1_text, "status": "VERIFIED", "isPositive": True},
+            {"label": "Step 2: Execution", "value": step2_text, "status": "VERIFIED", "isPositive": True},
+            {"label": "Step 3: Payoff", "value": step3_text, "status": "PROVEN", "isPositive": True},
+        ]
+
+        final_turn_cta = f"Stop crying, human. Comment {kw} and I'll DM you the {link_desc}." if has_res else "Tag that dev in your group who needs this!"
+        end_question = f"Still paying subscriptions when {tool_name} exists? Be honest"
+
+        if structure == "dad_interrogation":
+            badge = "DAD TECH AUDIT"
+            card_title = f"{tool_name} Fix"
             toast = {
                 "app_name": "WhatsApp",
                 "sender": "Dad",
-                "message": "Wi-Fi is blazing fast! I told you hitting the box works.",
+                "message": f"Did {tool_name} save my Wi-Fi bill or are you lying?",
                 "icon": "WIFI",
                 "time": "now",
             }
-            end_question = "Would you trust your dad to fix your Wi-Fi or pay $100 for a technician?"
             dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Your dad hit the plastic box with his shoe, didn't he?", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait—he restarted the modem twelve times and wrapped antennas in foil!", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Humans will wrap gadgets in foil before changing one simple free setting.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Seriously? Show me the real fix before he takes apart the TV.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: 100% free with zero replacement junk.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two says changing this free address fixes it in seconds?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "Step three: rock solid connection with zero buffering all week long.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Bro... he spent four hours yelling at customer support yesterday.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at your messages: your dad is already bragging that he fixed it.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "He is going to bring this up at every family dinner forever.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"Let him have his win. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Did you check the monthly router bill again, sir?", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "Why are we paying fifty dollars for slow internet?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Because you pay technicians before checking free software.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "Show me the real solution before I get mad.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Open {tool_name} to optimize the network with zero fees.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": f"So {tool_name} requires zero credit card charges?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Completely free with zero hidden technician fees.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "He tried wrapping the modem in kitchen aluminum foil.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Classic dad engineering before checking the software.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Tell everyone to stop wasting money right now.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
             ]
-        else:
-            badge = "TECH TEARDOWN"
-            card_title = f"{title[:22]} Specs"
-            rows = [
-                {"label": "Step 1: Cost", "value": "$0 / 100% FREE (vs $50/mo)", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Speed", "value": "Runs Instantly With Zero Bloat", "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: Speedup", "value": "10x Faster Than Old School Ways", "status": "PROVEN", "isPositive": True},
-            ]
+        elif structure == "speedrun_expose":
+            badge = "SPEEDRUN EXPOSE"
+            card_title = f"{tool_name} Hack"
             toast = {
-                "app_name": "Chrome",
-                "sender": "Speed Alert",
-                "message": "Task finished in 1.4 seconds. What took you 4 hours?",
+                "app_name": "Terminal",
+                "sender": "Speedrun Alert",
+                "message": f"{tool_name} completed task in 1.2s. Paywall bypassed.",
                 "icon": "SPEED",
                 "time": "now",
             }
-            end_question = "Still paying for outdated tools in 2026? Be honest"
             dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Humans spend four years learning what takes two clicks now.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait—there is no way a free tool replaces years of hard practice.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "People said the exact same thing about horses before cars showed up.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Seriously? Check the numbers before I throw away my entire degree.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Look at step one: 100% free right in your browser.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Wait, step two shows instant execution with zero complicated setup?", "emotion": "shocked", "pause_after": 0.35},
-                {"speaker": right_char, "character_id": right_char, "text": "And step three: ten times faster than the bloated tools you use.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "Bro... I feel like I just worked five years for nothing.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Check your screen: your browser just finished before you even started typing.", "emotion": "smug", "pause_after": 0.35},
-                {"speaker": left_char, "character_id": left_char, "text": "I am grabbing this immediately before my coworker replaces me.", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": f"Don't panic, human. Comment {kw} and I'll DM you the free link.", "emotion": "smug", "pause_after": 0.40},
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Corporate SaaS companies pray you never discover this trick.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "They charge enterprise teams thousands every single month.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Because naive developers keep swiping company cards.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "Which secret tool actually bypasses that paywall?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Everyone switched to {tool_name} because it runs locally.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} handles all heavy compute without server fees?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Instant execution in your browser with zero latency.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "My boss thinks this required a whole engineering sprint.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Your notification feed is blowing up with congratulations.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "They have no clue it took thirty seconds.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
             ]
+        elif structure == "friend_betrayal":
+            badge = "WORKFLOW BUSTED"
+            card_title = f"{tool_name} Reveal"
+            toast = {
+                "app_name": "Slack",
+                "sender": "Coworker",
+                "message": f"Wait how did you finish with {tool_name} so fast?",
+                "icon": "CHAT",
+                "time": "now",
+            }
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "You spent four hours doing this by hand?", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "I was following the standard company documentation!", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "That documentation was written six years ago, genius.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "Tell me there is an automated shortcut.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Use {tool_name} and finish the entire workflow instantly.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} replaces my entire afternoon of manual work?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "One click with verified zero subscription fees.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "My coworker just saw my screen and gasped.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Send him the link before he copies you wrong.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "I am never doing this manually ever again.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
+            ]
+        else: # brutal_roast
+            badge = "BRUTAL ROAST"
+            card_title = f"{tool_name} Reality"
+            toast = {
+                "app_name": "Card Alert",
+                "sender": "Bank App",
+                "message": f"Monthly fee cancelled! Switched to free {tool_name}.",
+                "icon": "CARD",
+                "time": "now",
+            }
+            dialogue = [
+                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "You really spent forty dollars on that bloated app?", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "My paid subscription actually works though.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "It steals your data and lags every single day.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "Then what magical alternative do you use?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"I run {tool_name} directly in my browser for free.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} finishes the whole job without installing bloatware?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Completely open-source with verified unlimited speed.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "My monthly subscription charges just renewed yesterday.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Your bank account is weeping while you defend paywalls.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "I am cancelling my paid account right now.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
+            ]
+
+        card_data = {
+            "title": card_title,
+            "subtitle": f"{tool_name} Breakdown",
+            "badge": badge,
+            "rows": rows,
+            "items": rows,
+            "startTurn": 5,
+            "endTurn": 7,
+            "durationSeconds": 12.0,
+            "tool_name": tool_name,
+            "brand_domain": brand_domain,
+            "github_repo": github_repo,
+            "real_steps": real_steps,
+        }
+
+        end_card = {
+            "question": end_question,
+            "keyword": kw if has_res else "",
+            "cta_text": f"Comment {kw} for the {link_desc}" if has_res else "Tag that dev in your group who needs to see this!",
+            "subtext": "Follow for Part 2",
+            "has_resource_link": has_res,
+            "hasResourceLink": has_res,
+        }
+
+        headline_text = clean_headline_truncation(title.upper(), 38)
+
+        return {
+            "title": title[:50],
+            "style": scene_preset,
+            "comp": "MasterAutonomousReel",
+            "scenePreset": scene_preset,
+            "leftCharacterId": left_char,
+            "rightCharacterId": right_char,
+            "cast": {"left": left_char, "right": right_char},
+            "cta_keyword": kw if has_res else "",
+            "cta_phrase": f"Comment {kw} and I'll DM you the {link_desc}." if has_res else "Tag that dev in your group who needs to see this!",
+            "has_resource_link": has_res,
+            "hasResourceLink": has_res,
+            "cardType": "comparison",
+            "badge": badge,
+            "explainerTitle": card_title,
+            "cardData": card_data,
+            "toastData": toast,
+            "endCard": end_card,
+            "hook": {
+                "headline": headline_text,
+                "subheadline": hook,
+                "tag": "⚠️ REAL TALK",
+            },
+            "dialogue": dialogue,
+            "tool_name": tool_name,
+            "toolName": tool_name,
+            "brand_domain": brand_domain,
+            "brandDomain": brand_domain,
+            "github_repo": github_repo,
+            "githubRepo": github_repo,
+            "real_steps": real_steps,
+            "realSteps": real_steps,
+            "comedy_structure": structure,
+        }
 
         card_data = {
             "title": card_title,
