@@ -22,6 +22,32 @@ class DriveDispatcherAgent:
 
     def __init__(self, target_folder_name: str = "Daily_AI_Reels"):
         self.target_folder_name = target_folder_name
+        env_folder = os.environ.get("GDRIVE_FOLDER_ID")
+        if env_folder:
+            clean = self.sanitize_folder_id(env_folder)
+            if clean:
+                os.environ["GDRIVE_FOLDER_ID"] = clean
+
+    @staticmethod
+    def sanitize_folder_id(folder_id: Optional[str]) -> Optional[str]:
+        """
+        Sanitizes GDRIVE_FOLDER_ID on load by stripping whitespace, query strings (?...),
+        fragments (#...), and full Drive folder URL prefixes (/folders/<id>) so only
+        the raw folder ID is sent to the Drive API.
+        """
+        if not folder_id:
+            return None
+        clean = str(folder_id).strip()
+        if not clean:
+            return None
+        # Strip query strings and URL fragments
+        clean = clean.split("?")[0].split("#")[0].strip().rstrip("/")
+        # Extract folder ID from URL if full Drive URL is passed (e.g. .../folders/<id>)
+        if "/folders/" in clean:
+            clean = clean.split("/folders/")[-1].strip().rstrip("/")
+        elif clean.startswith("http://") or clean.startswith("https://"):
+            clean = clean.split("/")[-1].strip().rstrip("/")
+        return clean or None
 
     def get_drive_service(self):
         """
@@ -146,17 +172,18 @@ class DriveDispatcherAgent:
             print(f"⚠️ [DriveDispatcher] Batch directory not found: {batch_dir}")
             return None
 
-        parent_id = drive_parent_folder_id or os.environ.get("GDRIVE_FOLDER_ID")
-        if not parent_id:
+        raw_parent_id = drive_parent_folder_id or os.environ.get("GDRIVE_FOLDER_ID")
+        if not raw_parent_id:
             try:
                 from kaggle_secrets import UserSecretsClient
-                parent_id = UserSecretsClient().get_secret("GDRIVE_FOLDER_ID")
-                if parent_id:
-                    os.environ["GDRIVE_FOLDER_ID"] = parent_id
+                raw_parent_id = UserSecretsClient().get_secret("GDRIVE_FOLDER_ID")
             except Exception:
                 pass
 
-        if not parent_id:
+        parent_id = self.sanitize_folder_id(raw_parent_id)
+        if parent_id:
+            os.environ["GDRIVE_FOLDER_ID"] = parent_id
+        else:
             print("ℹ️ [DriveDispatcher] GDRIVE_FOLDER_ID not set; skipping Drive upload cleanly.")
             return None
 
@@ -303,15 +330,17 @@ class DriveDispatcherAgent:
         if not video_file.exists():
             raise FileNotFoundError(f"Video file not found: {video_path}")
 
-        drive_folder = drive_folder_id or os.environ.get("GDRIVE_FOLDER_ID")
-        if not drive_folder:
+        raw_folder = drive_folder_id or os.environ.get("GDRIVE_FOLDER_ID")
+        if not raw_folder:
             try:
                 from kaggle_secrets import UserSecretsClient
-                drive_folder = UserSecretsClient().get_secret("GDRIVE_FOLDER_ID")
-                if drive_folder:
-                    os.environ["GDRIVE_FOLDER_ID"] = drive_folder
+                raw_folder = UserSecretsClient().get_secret("GDRIVE_FOLDER_ID")
             except Exception:
                 pass
+
+        drive_folder = self.sanitize_folder_id(raw_folder)
+        if drive_folder:
+            os.environ["GDRIVE_FOLDER_ID"] = drive_folder
 
         upload_records = []
         drive_link = None

@@ -34,6 +34,8 @@ jobs:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN || secrets.KAGGLE_KEY }}
         run: |
+          KAGGLE_USERNAME="$(printf '%s' "$KAGGLE_USERNAME" | tr -d '[:space:]')"
+          export KAGGLE_USERNAME
           if [ -z "$KAGGLE_USERNAME" ] || [ -z "$KAGGLE_API_TOKEN" ]; then
             echo "❌ Error: KAGGLE_USERNAME or KAGGLE_API_TOKEN / KAGGLE_KEY secret is not set!"
             echo "Please configure KAGGLE_USERNAME and KAGGLE_API_TOKEN in GitHub Repository Secrets."
@@ -66,7 +68,7 @@ jobs:
           '
 
           echo "☁️ Pushing notebook to Kaggle GPU..."
-          kaggle kernels push -p kaggle/
+          kaggle kernels push -p kaggle/ --accelerator NvidiaTeslaT4 || kaggle kernels push -p kaggle/
 
           echo "⏳ Checking kernel status..."
           sleep 5
