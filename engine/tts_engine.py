@@ -127,7 +127,7 @@ def ensure_voice_reference(character_id: str) -> Optional[str]:
         else:
             asyncio.run(_synthesize_edge_tts(
                 text=spec["text"],
-                voice_name=spec["voice"],
+                voice=spec["voice"],
                 rate="+0%",
                 out_audio=str(ref_path)
             ))
@@ -529,6 +529,9 @@ def _synthesize_kokoro(
     Synthesizes speech using Kokoro-82M ONNX on CPU.
     Returns (word_timings, duration).
     """
+    if voice_id in ["dad", "indian_dad"] or voice_id.startswith("en-IN"):
+        voice_id = "bm_lewis"
+
     kokoro = get_kokoro()
     if kokoro is None:
         raise RuntimeError("Kokoro ONNX engine unavailable.")
@@ -942,9 +945,10 @@ def generate_dialogue_speech(
             if not synthesis_success and engine_type == "kokoro":
                 try:
                     k_text = clean_text_for_speech(turn.get("text", ""), is_chatterbox=False)
+                    k_voice = "bm_lewis" if canonical_char == "dad" else (voice_prof.get("fallback_kokoro_voice") or voice_id)
                     word_timings, turn_dur = _synthesize_kokoro(
                         text=k_text,
-                        voice_id=voice_id,
+                        voice_id=k_voice,
                         speed=speed,
                         out_audio=turn_wav_raw
                     )

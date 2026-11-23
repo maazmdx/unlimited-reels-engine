@@ -4,7 +4,7 @@ engine/llm_router.py - Zero-Dependency Multi-Provider LLM Waterfall Router
 Supports:
 0. Custom Gateway: LLM_GATEWAY_URL / LLM_GATEWAY_KEY / LLM_GATEWAY_MODEL (OmniRoute / FreeLLMAPI)
 1. Google Gemini: gemini-2.5-flash ONLY via GEMINI_API_KEY (zero weak flash-lite fallbacks)
-2. Groq Cloud: llama-3.3-70b-versatile via GROQ_API_KEY
+2. Groq Cloud: openai/gpt-oss-120b -> openai/gpt-oss-20b via GROQ_API_KEY
 3. OpenRouter: google/gemma-4-31b-it:free -> openrouter/free via OPENROUTER_API_KEY
 4. Mistral AI: mistral-large-latest -> mistral-small-latest via MISTRAL_API_KEY
 5. LLM7.io: keyless free fallback with model 'default'
@@ -217,17 +217,21 @@ def _call_groq(
     if not api_key:
         return None
     url = "https://api.groq.com/openai/v1/chat/completions"
-    return _call_openai_compat(
-        url=url,
-        api_key=api_key,
-        model="llama-3.3-70b-versatile",
-        prompt=prompt,
-        system_prompt=system_prompt,
-        json_mode=json_mode,
-        temperature=temperature,
-        provider_name="groq",
-        timeout=timeout,
-    )
+    for model in ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]:
+        res = _call_openai_compat(
+            url=url,
+            api_key=api_key,
+            model=model,
+            prompt=prompt,
+            system_prompt=system_prompt,
+            json_mode=json_mode,
+            temperature=temperature,
+            provider_name="groq",
+            timeout=timeout,
+        )
+        if res:
+            return res
+    return None
 
 
 def _call_openrouter(
@@ -327,7 +331,7 @@ def generate_text(
     if res:
         return res
 
-    # 2. Groq (llama-3.3-70b-versatile)
+    # 2. Groq (openai/gpt-oss-120b -> openai/gpt-oss-20b)
     res = _call_groq(prompt, system_prompt, json_mode, temperature)
     if res:
         return res

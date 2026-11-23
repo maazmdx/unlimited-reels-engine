@@ -69,6 +69,7 @@ class DriveDispatcherAgent:
 
         try:
             from google.oauth2 import service_account
+            from google.oauth2.credentials import Credentials
             from googleapiclient.discovery import build
         except ImportError:
             print("ℹ️ [DriveDispatcher] 'google-api-python-client' or 'google-auth' not available; using fallback.")
@@ -78,14 +79,19 @@ class DriveDispatcherAgent:
         try:
             # Check if it's a file path
             if os.path.exists(creds_data) and os.path.isfile(creds_data):
-                creds = service_account.Credentials.from_service_account_file(creds_data, scopes=scopes)
+                with open(creds_data, "r", encoding="utf-8") as f:
+                    info = json.load(f)
             else:
                 # Parse as JSON string
                 info = json.loads(creds_data)
+
+            if isinstance(info, dict) and (info.get("type") == "authorized_user" or "refresh_token" in info):
+                creds = Credentials.from_authorized_user_info(info, scopes=scopes)
+            else:
                 creds = service_account.Credentials.from_service_account_info(info, scopes=scopes)
             return build("drive", "v3", credentials=creds, cache_discovery=False)
         except Exception as e:
-            print(f"⚠️ [DriveDispatcher] Google Service Account auth notice: {e}")
+            print(f"⚠️ [DriveDispatcher] Google Drive auth notice: {e}")
             return None
 
     def get_or_create_subfolder(self, service, parent_folder_id: str, subfolder_name: str) -> Optional[Dict[str, str]]:
