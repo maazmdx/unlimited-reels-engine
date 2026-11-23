@@ -542,8 +542,12 @@ def trim_silence(input_audio: str, output_audio: str) -> bool:
         subprocess.run(cmd, capture_output=True, check=True)
         return True
     except Exception as e:
-        if os.path.realpath(str(input_audio)) != os.path.realpath(str(output_audio)):
-            shutil.copy2(input_audio, output_audio)
+        try:
+            if os.path.realpath(str(input_audio)) != os.path.realpath(str(output_audio)):
+                if not (os.path.exists(output_audio) and os.path.samefile(input_audio, output_audio)):
+                    shutil.copy2(input_audio, output_audio)
+        except (shutil.SameFileError, FileExistsError):
+            pass
         return False
 
 
@@ -868,8 +872,12 @@ def apply_broadcast_mastering(
             subprocess.run(simple_cmd, capture_output=True, check=True)
             return True
         except Exception:
-            if os.path.realpath(str(input_vocal_audio)) != os.path.realpath(str(output_audio)):
-                shutil.copy2(input_vocal_audio, output_audio)
+            try:
+                if os.path.realpath(str(input_vocal_audio)) != os.path.realpath(str(output_audio)):
+                    if not (os.path.exists(output_audio) and os.path.samefile(input_vocal_audio, output_audio)):
+                        shutil.copy2(input_vocal_audio, output_audio)
+            except (shutil.SameFileError, FileExistsError):
+                pass
             return False
 
 
@@ -1062,8 +1070,12 @@ def generate_dialogue_speech(
 
             # Store turn audio file path for envelope analysis
             persistent_turn_audio = os.path.join(tmpdir, f"turn_{idx:03d}_final.wav")
-            if os.path.realpath(str(turn_wav_trimmed)) != os.path.realpath(str(persistent_turn_audio)):
-                shutil.copy2(turn_wav_trimmed, persistent_turn_audio)
+            try:
+                if os.path.realpath(str(turn_wav_trimmed)) != os.path.realpath(str(persistent_turn_audio)):
+                    if not (os.path.exists(persistent_turn_audio) and os.path.samefile(turn_wav_trimmed, persistent_turn_audio)):
+                        shutil.copy2(turn_wav_trimmed, persistent_turn_audio)
+            except (shutil.SameFileError, FileExistsError):
+                pass
 
             # Build clean word timestamps from disp_text (preserves 'bleachbit.org', 'GitHub', 'you're')
             disp_words = disp_text.split()

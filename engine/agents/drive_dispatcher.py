@@ -435,15 +435,23 @@ class DriveDispatcherAgent:
         local_drive_mirror.mkdir(parents=True, exist_ok=True)
 
         target_vid = local_drive_mirror / video_file.name
-        if os.path.realpath(str(video_file)) != os.path.realpath(str(target_vid)):
-            shutil.copy2(video_file, target_vid)
+        try:
+            if os.path.realpath(str(video_file)) != os.path.realpath(str(target_vid)):
+                if not (target_vid.exists() and os.path.samefile(video_file, target_vid)):
+                    shutil.copy2(video_file, target_vid)
+        except (shutil.SameFileError, FileExistsError):
+            pass
         print(f"📁 Synced to Drive Mirror Folder: {target_vid}")
 
         target_vtt = None
         if vtt_path and Path(vtt_path).exists():
             target_vtt = local_drive_mirror / Path(vtt_path).name
-            if os.path.realpath(str(vtt_path)) != os.path.realpath(str(target_vtt)):
-                shutil.copy2(vtt_path, target_vtt)
+            try:
+                if os.path.realpath(str(vtt_path)) != os.path.realpath(str(target_vtt)):
+                    if not (target_vtt.exists() and os.path.samefile(vtt_path, target_vtt)):
+                        shutil.copy2(vtt_path, target_vtt)
+            except (shutil.SameFileError, FileExistsError):
+                pass
             print(f"📝 Synced Captions: {target_vtt}")
 
         # Write episode delivery report
