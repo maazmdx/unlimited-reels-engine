@@ -113,31 +113,58 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   const tiltX = interpolate(entrance, [0, 1], [6, 2]);
   const subtleFloatY = Math.sin(age * 0.08) * 4;
 
-  // Kinetic pulse for the 100% FREE badge
+  const isComedy =
+    cardData.badge === "FACT CHECK" ||
+    cardData.badge === "COMEDY" ||
+    cardData.badge === "DAD TECH AUDIT" ||
+    /dad/i.test(cardData.title || "") ||
+    /dad/i.test(cardData.subtitle || "") ||
+    /wifi/i.test(cardData.title || "");
+
+  // Kinetic pulse for the proof badge
   const badgePulse = 1.0 + 0.05 * Math.sin(age * 0.22);
 
   // Fallback rows if no screenshot proof card
   const rawItems = cardData.rows || cardData.items;
   let items: CardProofItem[] = [];
   if (rawItems && Array.isArray(rawItems) && rawItems.length > 0) {
-    items = rawItems;
+    items = rawItems.map((it) => {
+      if (isComedy && it.value && typeof it.value === "string") {
+        return {
+          ...it,
+          value: it.value
+            .replace(/\$50\/mo/gi, "₹999/mo")
+            .replace(/\$100 technician/gi, "₹999 router technician")
+            .replace(/\$150 ISP/gi, "₹999 ISP"),
+        };
+      }
+      return it;
+    });
   } else {
-    items = [
-      { label: "Execution Environment", value: "Browser WebAssembly / Native", badge: "VERIFIED", isPositive: true },
-      { label: "Access & Pricing", value: "Zero Cost / 100% Free", badge: "FREE", isPositive: true },
-      { label: "Setup Time", value: "Instant 0s Local Config", badge: "FAST", isPositive: true },
-    ];
+    items = isComedy
+      ? [
+          { label: "Wi-Fi Bill Audit", value: "Standard ₹999/mo ISP Charge", badge: "AUDIT", isPositive: false },
+          { label: "Hardware Reset", value: "Zero Aluminum Foil Required", badge: "FACT", isPositive: true },
+          { label: "Final Outcome", value: "Wi-Fi Restored • Monthly Bill: ₹0", badge: "VERIFIED", isPositive: true },
+        ]
+      : [
+          { label: "Execution Environment", value: "Browser WebAssembly / Native", badge: "VERIFIED", isPositive: true },
+          { label: "Access & Pricing", value: "Zero Cost / 100% Free", badge: "FREE", isPositive: true },
+          { label: "Setup Time", value: "Instant 0s Local Config", badge: "FAST", isPositive: true },
+        ];
   }
 
   const title = cardData.title
     ? cleanTitleTruncation(cardData.title, 34)
-    : "VERIFIED REAL PROOF";
+    : (isComedy ? "FACT CHECK BREAKDOWN" : "VERIFIED REAL PROOF");
   const subtitle = cardData.subtitle
     ? cleanTitleTruncation(cardData.subtitle, 48)
-    : "Live Execution & Feature Inspection";
+    : (isComedy ? "Verified Reality Check & Tech Audit" : "Live Execution & Feature Inspection");
   const highlightText =
     cardData.highlight ||
-    "⚡ 100% Free • Verified Zero Local Installation • Instant Access";
+    (isComedy
+      ? "⚡ Real Relatable Tech Breakdown • Zero Hidden Fees"
+      : "⚡ 100% Free • Verified Zero Local Installation • Instant Access");
 
   return (
     <div
@@ -237,10 +264,10 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
             </div>
           </div>
 
-          {/* Right: Bold Kinetic 100% FREE Badge */}
+          {/* Right: Bold Kinetic Proof Badge (Clean comedy / fact-check header or 100% FREE) */}
           <div
             style={{
-              backgroundColor: "#059669",
+              backgroundColor: isComedy ? "#D97706" : "#059669",
               color: "#FFFFFF",
               padding: "8px 20px",
               borderRadius: 9999,
@@ -248,8 +275,12 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
               fontWeight: 900,
               letterSpacing: "1.0px",
               textTransform: "uppercase",
-              boxShadow: "0 0 20px rgba(16, 185, 129, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5)",
-              border: "1px solid rgba(52, 211, 153, 0.8)",
+              boxShadow: isComedy
+                ? "0 0 20px rgba(245, 158, 11, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5)"
+                : "0 0 20px rgba(16, 185, 129, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5)",
+              border: isComedy
+                ? "1px solid rgba(251, 191, 36, 0.8)"
+                : "1px solid rgba(52, 211, 153, 0.8)",
               transform: `scale(${badgePulse})`,
               transformOrigin: "center",
               display: "flex",
@@ -258,7 +289,7 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
             }}
           >
             <span>✓</span>
-            <span>100% FREE</span>
+            <span>{isComedy ? (cardData.badge || "FACT CHECK") : "100% FREE"}</span>
           </div>
         </div>
 

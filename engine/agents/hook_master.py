@@ -485,8 +485,9 @@ JSON Schema:
             "- 'friend_betrayal': Smug mockery of a friend or coworker who wasted 4 hours on what takes 2 seconds for free.\n\n"
             f"MANDATORY PACING RULES:\n"
             "- Fast punchy 5 to 12 word turns (NEVER monologues).\n"
-            f"- The exact tool_name '{tool_name}' MUST be spoken naturally by Turn 5.\n"
+            f"- The exact tool_name '{tool_name}' MUST be spoken naturally by Turn 2 or Turn 3 (NEVER delay until Turn 5).\n"
             "- Real comedic escalation across all 11-12 turns.\n"
+            f"- Turn 9 Notification: MUST match the exact topic '{title}' (e.g. 'Task Finished • 0 Ads • $0 Saved' or 'Wi-Fi Restored • Bill: ₹0'). NEVER generic 'lead engineer five tickets'.\n"
             f"- Final Turn MUST end with: '{final_turn_cta}'"
         )
 
@@ -507,9 +508,9 @@ TASK:
 Write the complete 5-act Remotion screenplay JSON with 11-12 snappy dialogue turns.
 - Turn 0 MUST be {left_char} speaking: "{winning_hook}"
 - Turns 1-4: Fast punchy comedic escalation (5-12 words/turn) following '{comedy_structure}'.
-- By Turn 5: The exact name '{tool_name}' MUST be spoken naturally.
+- By Turn 2 or Turn 3: The exact name '{tool_name}' MUST be spoken naturally.
 - Turns 5, 6, 7: Walk through the 3 concrete verified steps cleanly without repetitive filler.
-- Turn 9: Savage iOS Notification Twist.
+- Turn 9: Notification popup alert that strictly matches the topic '{title}'.
 - Final Turn MUST end with: "{final_turn_cta}"
 
 JSON Schema:
@@ -579,16 +580,16 @@ JSON Schema:
   }},
   "dialogue": [
     {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "{winning_hook}", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Bro, your slow workflow is finally getting humbled.", "emotion": "smug", "pause_after": 0.30}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait—there is no way this replaces hours of manual work.", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Humans love doing things the hard way just to feel busy.", "emotion": "smug", "pause_after": 0.30}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Seriously? Prove it right now before I waste another morning.", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Look at step one: it launches in seconds with zero complicated setup.", "emotion": "smug", "pause_after": 0.35}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, step two says it runs directly on my own machine?", "emotion": "shocked", "pause_after": 0.35}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "And step three: zero dollar cost so nobody charges you fifty dollars.", "emotion": "smug", "pause_after": 0.35}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Bro... I have been doing this like an amateur.", "emotion": "shocked", "pause_after": 0.30}},
-    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Look at your screen: your lead engineer already sent you five tickets.", "emotion": "smug", "pause_after": 0.35}},
-    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "I am opening this right now before I get exposed.", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Stop overpaying for software when {tool_name} is free.", "emotion": "smug", "pause_after": 0.30}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Are you sure {tool_name} handles this with zero fees?", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Verified open-source execution directly on your device.", "emotion": "smug", "pause_after": 0.30}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Show me the real breakdown right now.", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Step one: open {brand_domain or tool_name} in your browser.", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "And it runs instantly without installing sketchy software?", "emotion": "shocked", "pause_after": 0.35}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Completely free with zero subscription charges.", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "I was paying every single month for this.", "emotion": "shocked", "pause_after": 0.30}},
+    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Your account just confirmed your savings on screen.", "emotion": "smug", "pause_after": 0.35}},
+    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "I am switching to {tool_name} right now.", "emotion": "shocked", "pause_after": 0.30}},
     {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "{final_turn_cta}", "emotion": "smug", "pause_after": 0.40}}
   ]
 }}
@@ -787,14 +788,14 @@ JSON Schema:
             toast = {
                 "app_name": "WhatsApp",
                 "sender": "Dad",
-                "message": f"Did {tool_name} save my Wi-Fi bill or are you lying?",
+                "message": f"Wi-Fi Restored • Monthly Bill: ₹0",
                 "icon": "WIFI",
                 "time": "now",
             }
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": "Did you check the monthly router bill again, sir?", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "Why are we paying fifty dollars for slow internet?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "Why are we paying ₹999 every month for slow internet?", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": "Because you pay technicians before checking free software.", "emotion": "smug", "pause_after": 0.25},
                 {"speaker": left_char, "character_id": left_char, "text": "Show me the real solution before I get mad.", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": f"Open {tool_name} to optimize the network with zero fees.", "emotion": "smug", "pause_after": 0.30},
@@ -825,7 +826,7 @@ JSON Schema:
                 {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} handles all heavy compute without server fees?", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Instant execution in your browser with zero latency.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "My boss thinks this required a whole engineering sprint.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Your notification feed is blowing up with congratulations.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Your screen confirmed: task finished with zero ads.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "They have no clue it took thirty seconds.", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
             ]

@@ -57,57 +57,63 @@ _CHATTERBOX_INSTANCE = None
 VOICE_REFS_DIR = PROJECT_ROOT / ".cache" / "voice_refs"
 
 # Emotion to Chatterbox Exaggeration & CFG Weight mapping
-# 0.65 calm/neutral/smug, 0.85 roast/shock, 0.95 climax/angry
+# Emotion exaggeration & cfg_weight profile for ChatterboxTTS
+# 0.75 normal/neutral/smug, 0.90 shocked/roast/angry/climax
 EMOTION_EXAGGERATION_MAP: Dict[str, Dict[str, float]] = {
-    "neutral": {"exaggeration": 0.65, "cfg_weight": 0.35},
-    "calm": {"exaggeration": 0.65, "cfg_weight": 0.35},
-    "tired": {"exaggeration": 0.65, "cfg_weight": 0.35},
-    "sad": {"exaggeration": 0.65, "cfg_weight": 0.35},
-    "deadpan": {"exaggeration": 0.65, "cfg_weight": 0.35},
-    "smug": {"exaggeration": 0.65, "cfg_weight": 0.35},
-    "sarcastic": {"exaggeration": 0.85, "cfg_weight": 0.35},
-    "roast": {"exaggeration": 0.85, "cfg_weight": 0.35},
-    "shocked": {"exaggeration": 0.85, "cfg_weight": 0.35},
-    "shock": {"exaggeration": 0.85, "cfg_weight": 0.35},
-    "excited": {"exaggeration": 0.85, "cfg_weight": 0.35},
-    "angry": {"exaggeration": 0.95, "cfg_weight": 0.35},
-    "climax": {"exaggeration": 0.95, "cfg_weight": 0.35},
-    "screaming": {"exaggeration": 0.95, "cfg_weight": 0.35},
+    "neutral": {"exaggeration": 0.75, "cfg_weight": 0.30},
+    "calm": {"exaggeration": 0.75, "cfg_weight": 0.30},
+    "tired": {"exaggeration": 0.75, "cfg_weight": 0.30},
+    "sad": {"exaggeration": 0.75, "cfg_weight": 0.30},
+    "deadpan": {"exaggeration": 0.75, "cfg_weight": 0.30},
+    "smug": {"exaggeration": 0.75, "cfg_weight": 0.30},
+    "sarcastic": {"exaggeration": 0.90, "cfg_weight": 0.30},
+    "roast": {"exaggeration": 0.90, "cfg_weight": 0.30},
+    "shocked": {"exaggeration": 0.90, "cfg_weight": 0.30},
+    "shock": {"exaggeration": 0.90, "cfg_weight": 0.30},
+    "excited": {"exaggeration": 0.90, "cfg_weight": 0.30},
+    "angry": {"exaggeration": 0.90, "cfg_weight": 0.30},
+    "climax": {"exaggeration": 0.90, "cfg_weight": 0.30},
+    "screaming": {"exaggeration": 0.90, "cfg_weight": 0.30},
 }
 
 CHARACTER_VOICE_REF_SPECS = {
     "junior_dev": {
         "engine": "kokoro",
         "voice": "am_michael",
-        "text": "Hello there. I am ready to test this project on my computer today without any delay.",
+        "text": "Wait, did you really think I was going to pay for that? Look at this tool right now!",
     },
     "claude": {
         "engine": "kokoro",
-        "voice": "bm_george",
-        "text": "Greetings. Let us examine the technical architecture and the verified facts objectively.",
+        "voice": "am_fenrir",
+        "text": "You spent three hours doing that by hand? Stop embarrassing yourself and look at the real data.",
+    },
+    "ai_roaster": {
+        "engine": "kokoro",
+        "voice": "am_fenrir",
+        "text": "You spent three hours doing that by hand? Stop embarrassing yourself and look at the real data.",
     },
     "gemini": {
         "engine": "kokoro",
-        "voice": "af_heart",
-        "text": "Welcome. Here is the verified technical breakdown and what you need to know.",
+        "voice": "af_bella",
+        "text": "Here is the exact technical breakdown! It runs locally in seconds with zero configuration.",
     },
     "grok": {
         "engine": "kokoro",
         "voice": "am_fenrir",
-        "text": "Look at the numbers. The data shows this runs faster and smoother than you think.",
+        "text": "Look at the numbers! The data proves this runs faster and smoother than corporate paywalls.",
     },
     "dad": {
-        "engine": "edge_tts",
-        "voice": "en-IN-PrabhatNeural",
-        "text": "Listen to me, check this carefully and do not waste any more money on useless things.",
+        "engine": "kokoro",
+        "voice": "bm_lewis",
+        "text": "Why are you paying fifty dollars for this? Check this carefully and stop wasting our money right now!",
     },
 }
 
 
 def ensure_voice_reference(character_id: str) -> Optional[str]:
     """
-    Returns path to cached 5-second clean neutral 24000Hz mono reference WAV for the character.
-    Generates and caches in .cache/voice_refs/<character_id>.wav if not already present.
+    Returns path to cached 5-6 second clean expressive 24000Hz mono reference WAV for the character.
+    Generates 100% locally via Kokoro-82M ONNX (zero network, zero Edge-TTS failure risk).
     """
     VOICE_REFS_DIR.mkdir(parents=True, exist_ok=True)
     ref_path = VOICE_REFS_DIR / f"{character_id}.wav"
@@ -115,22 +121,14 @@ def ensure_voice_reference(character_id: str) -> Optional[str]:
         return str(ref_path)
 
     spec = CHARACTER_VOICE_REF_SPECS.get(character_id, CHARACTER_VOICE_REF_SPECS["junior_dev"])
-    print(f"🎙️ [VoiceRef] Generating 5s reference audio for {character_id} ({spec['voice']})...")
+    print(f"🎙️ [VoiceRef] Generating 6s local Kokoro reference audio for {character_id} ({spec['voice']})...")
     try:
-        if spec["engine"] == "kokoro":
-            _synthesize_kokoro(
-                text=spec["text"],
-                voice_id=spec["voice"],
-                speed=1.0,
-                out_audio=str(ref_path)
-            )
-        else:
-            asyncio.run(_synthesize_edge_tts(
-                text=spec["text"],
-                voice=spec["voice"],
-                rate="+0%",
-                out_audio=str(ref_path)
-            ))
+        _synthesize_kokoro(
+            text=spec["text"],
+            voice_id=spec["voice"],
+            speed=1.0,
+            out_audio=str(ref_path)
+        )
         if ref_path.exists() and ref_path.stat().st_size > 5000:
             # Ensure strictly clean 24000Hz mono PCM_16 WAV
             clean_wav = str(ref_path) + ".clean.wav"
@@ -267,7 +265,7 @@ def canonicalize_character_id(speaker_str: str) -> str:
         return "junior_dev"
     if s in ["dad", "father", "indian_dad", "boomer_dad", "parent"]:
         return "dad"
-    if s in ["claude", "claude_ai", "anthropic"]:
+    if s in ["claude", "claude_ai", "anthropic", "ai_roaster"]:
         return "claude"
     if s in ["gemini", "gemini_ai", "google_gemini"]:
         return "gemini"
@@ -308,17 +306,43 @@ def convert_years_to_words(text: str) -> str:
     return re.sub(r'\b(19\d{2}|20\d{2})\b', _rep, text)
 
 
+def normalize_tts_pronunciation(text: str) -> str:
+    """
+    Normalizes technical acronyms and tool names for clean speech synthesis
+    while keeping the written subtitle text completely untouched.
+    """
+    replacements = [
+        (r'\byt-dlp\b', 'Y T D L P'),
+        (r'\bffmpeg\b', 'F F mpeg'),
+        (r'\bCLI\b', 'C L I'),
+        (r'\bGUI\b', 'G U I'),
+        (r'\bAPI\b', 'A P I'),
+        (r'\b5G\b', '5 G'),
+        (r'\bGitHub\b', 'Git Hub'),
+        (r'\bgithub\b', 'git hub'),
+        (r'\bOLED\b', 'O LED'),
+    ]
+    res = text
+    for pat, rep in replacements:
+        res = re.sub(pat, rep, res)
+    return res
+
+
 def clean_text_for_speech(text: str, is_chatterbox: bool = False) -> str:
     """
     Cleans text of Markdown formatting, asterisks, brackets for clean TTS synthesis.
     - Replaces em-dash / en-dash (— / –) with a natural pause comma (, ).
     - Converts 4-digit years (1993 -> nineteen ninety-three) in TTS text only.
+    - Normalizes acronyms (yt-dlp, ffmpeg, CLI, GUI, API, 5G, GitHub, OLED) for TTS.
     - Strips ALL bracketed cues ([chuckle], [sigh], [laugh], [gasp], [groan], etc.)
       BEFORE passing text to Chatterbox, Kokoro, or Edge-TTS so it NEVER speaks
       the word "chuckle" or "sigh" aloud!
     """
     # Replace em-dash and en-dash with comma pause
     text = text.replace("—", ", ").replace("–", ", ")
+
+    # Normalize technical acronyms for clear speech pronunciation only
+    text = normalize_tts_pronunciation(text)
 
     # Convert 4-digit years into spoken words
     text = convert_years_to_words(text)
@@ -360,8 +384,9 @@ def format_srt_timestamp(seconds: float) -> str:
 
 
 def clean_srt_text(text: str) -> str:
-    """Strips emojis and formatting glitches for clean, professional subtitles (2-5 words)."""
-    cleaned = re.sub(r'[\U00010000-\U0010ffff]', '', text)
+    """Strips emojis and formatting glitches for clean, professional subtitles (preserves apostrophes/contractions)."""
+    cleaned = text.replace("’", "'").replace("‘", "'")
+    cleaned = re.sub(r'[\U00010000-\U0010ffff]', '', cleaned)
     cleaned = re.sub(r'[^\x00-\x7F]+', ' ', cleaned)
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
     return cleaned
@@ -568,7 +593,7 @@ def _synthesize_kokoro(
     for i, w in enumerate(words):
         dur = (weights[i] / total_w) * duration
         word_timings.append({
-            "word": re.sub(r'[^\w]', '', w) or w,
+            "word": re.sub(r"[^\w']", "", w).strip("'") or w,
             "raw": w,
             "start": round(current_t, 3),
             "end": round(current_t + dur, 3)
@@ -593,6 +618,13 @@ def _synthesize_chatterbox(
     model = get_chatterbox()
     if model is None:
         raise RuntimeError("Chatterbox GPU engine unavailable.")
+
+    # HARD GUARD: Never call ChatterboxTTS with audio_prompt_path=None (prevents voice bleed between turns)
+    if not audio_prompt_path or not os.path.exists(audio_prompt_path):
+        ref = ensure_voice_reference(voice_id)
+        if not ref or not os.path.exists(ref):
+            ref = ensure_voice_reference("junior_dev")
+        audio_prompt_path = ref
 
     emo_cfg = EMOTION_EXAGGERATION_MAP.get(emotion.lower(), EMOTION_EXAGGERATION_MAP["neutral"])
     exaggeration = emo_cfg["exaggeration"]
@@ -665,7 +697,7 @@ def _synthesize_chatterbox(
     for i, w in enumerate(clean_words):
         dur = (weights[i] / total_w) * duration
         word_timings.append({
-            "word": re.sub(r'[^\w]', '', w) or w,
+            "word": re.sub(r"[^\w']", "", w).strip("'") or w,
             "raw": w,
             "start": round(current_t, 3),
             "end": round(current_t + dur, 3)

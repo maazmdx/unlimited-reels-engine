@@ -31,21 +31,21 @@ export interface CinematicSubtitlesProps {
 
 /**
  * Strips non-ASCII emoji characters and symbol ranges so headless Linux/Kaggle
- * never renders broken placeholder boxes (□).
+ * never renders broken placeholder boxes (□), while preserving contractions and apostrophes.
  */
 const stripEmojis = (str: string): string => {
   return (str || "")
     .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}]/gu, "")
+    .replace(/[’‘]/g, "'")
     .trim();
 };
 
 /**
  * CinematicSubtitles:
- * - Floating editorial typography (fontSize: 52px, fontWeight: 700, soft drop-shadow).
- * - Zero generic black rounded pill box or speaker label badge.
- * - Human in #FFFFFF, AI in #FCD34D (Claude), #7DD3FC (Gemini), #FCA5A5 (Grok).
- * - Strictly enforces 1080x1920 Instagram safe zone (top: 280px / bottom: 320px).
- * - Zero CSS transition, zero Math.random(), zero modulo spring resets.
+ * - High-contrast kinetic typography (fontSize: 58px, fontWeight: 900, 6px stroke, dark shadow).
+ * - Permanently locked to lower-middle safe zone (bottom: 340px) above Instagram UI bar.
+ * - Active words in electric yellow (#FDE047), resting in pure white (#FFFFFF).
+ * - Preserves apostrophes and contractions ("I'm", "doesn't", "you're", "I'll").
  */
 export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
   activeTurn,
@@ -98,42 +98,18 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
     }
   }
 
-  // Positioning: top: 280px for normal shots; bottom: 320px when proof card or toast is active
-  const isBottom = isProofCardActive || isCtaActive;
-  const positionStyle: React.CSSProperties = isBottom
-    ? {
-        position: "absolute",
-        bottom: 320,
-        left: 60,
-        right: 60,
-        zIndex: 95,
-      }
-    : {
-        position: "absolute",
-        top: 280,
-        left: 60,
-        right: 60,
-        zIndex: 95,
-      };
+  // Permanently locked in lower-middle safe zone (bottom: 340px, strictly above Instagram 280px UI bar)
+  // Never jumps or overlaps top badge pill / robot head during proof cards
+  const positionStyle: React.CSSProperties = {
+    position: "absolute",
+    bottom: 340,
+    left: 60,
+    right: 60,
+    zIndex: 99,
+  };
 
-  // Color mapping: Human in #FFFFFF, AI in designated color
-  const charId = (activeTurn.character_id || "").toLowerCase();
-  const isHumanChar = charId === "junior_dev" || charId === "dad" || (!isAI && !charId.includes("claude") && !charId.includes("gemini") && !charId.includes("grok"));
-
-  let primaryColor = "#FFFFFF";
-  if (!isHumanChar) {
-    if (charId.includes("gemini")) {
-      primaryColor = "#7DD3FC";
-    } else if (charId.includes("grok")) {
-      primaryColor = "#FCA5A5";
-    } else {
-      primaryColor = speakerAccentColor || "#FCD34D"; // Claude default #FCD34D
-    }
-  }
-
-  const inactiveColor = isHumanChar
-    ? "rgba(255, 255, 255, 0.72)"
-    : `${primaryColor}B3`;
+  const activeWordColor = "#FDE047"; // Electric yellow
+  const inactiveWordColor = "#FFFFFF"; // Pure white
 
   return (
     <div
@@ -143,7 +119,7 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 95,
+        zIndex: 99,
         pointerEvents: "none",
         textAlign: "center",
       }}
@@ -175,15 +151,16 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
                 style={{
                   fontFamily:
                     "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                  fontSize: 52,
-                  fontWeight: 700,
+                  fontSize: 58,
+                  fontWeight: 900,
                   letterSpacing: "-0.5px",
                   lineHeight: 1.25,
-                  color: isActive ? primaryColor : inactiveColor,
-                  textShadow: isActive
-                    ? `0 4px 18px rgba(0, 0, 0, 0.95), 0 0 24px ${primaryColor}88`
-                    : "0 4px 18px rgba(0, 0, 0, 0.85)",
-                  transform: isActive ? "scale(1.05)" : "scale(1.0)",
+                  color: isActive ? activeWordColor : inactiveWordColor,
+                  WebkitTextStroke: "6px #000000",
+                  paintOrder: "stroke fill",
+                  textShadow:
+                    "0 6px 20px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 1.0)",
+                  transform: isActive ? "scale(1.08)" : "scale(1.0)",
                   display: "inline-block",
                 }}
               >
@@ -196,12 +173,15 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
             style={{
               fontFamily:
                 "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-              fontSize: 52,
-              fontWeight: 700,
+              fontSize: 58,
+              fontWeight: 900,
               letterSpacing: "-0.5px",
               lineHeight: 1.25,
-              color: primaryColor,
-              textShadow: `0 4px 18px rgba(0, 0, 0, 0.85), 0 0 16px ${primaryColor}66`,
+              color: activeWordColor,
+              WebkitTextStroke: "6px #000000",
+              paintOrder: "stroke fill",
+              textShadow:
+                "0 6px 20px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 1.0)",
             }}
           >
             {stripEmojis(activeTurn.text)}

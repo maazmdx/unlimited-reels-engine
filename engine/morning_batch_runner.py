@@ -259,7 +259,7 @@ def generate_social_caption(script_data: Dict[str, Any]) -> str:
         f"{bullets_text}\n\n"
         f"🔍 Search keywords: {seo_str}\n\n"
         f"💬 Comment \"{cta_kw}\" below and I'll send you the link right to your DMs!\n\n"
-        f"Follow @antigravity for daily zero-dollar AI workflows, developer humor & deep breakdowns!\n\n"
+        f"Follow @canidoai for daily zero-dollar AI workflows, developer humor & deep breakdowns!\n\n"
         f"{hashtags_str}"
     )
     return caption

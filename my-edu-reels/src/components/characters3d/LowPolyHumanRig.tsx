@@ -288,14 +288,15 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   ];
 
   // Dynamic arm & hand gestures driven from mouth_envelopes (mouthOpen) while speaking
+  // Arms angle forward/inward so hands rest naturally on desk/couch and right arm never clips backward into desk lamp
   const speechEnergy = isSpeaking ? Math.min(1.0, mouthOpen * 1.5) : 0;
-  const leftArmRotX = 0.45 + (isSpeaking ? Math.sin(frame * 0.18) * 0.08 + speechEnergy * 0.10 : 0);
-  const leftForearmRotX = -0.75 - (isSpeaking ? Math.cos(frame * 0.22) * 0.10 + speechEnergy * 0.14 : 0);
+  const leftArmRotX = (isDad ? 0.58 : 0.45) + (isSpeaking ? Math.sin(frame * 0.18) * 0.08 + speechEnergy * 0.10 : 0);
+  const leftForearmRotX = (isDad ? -0.85 : -0.75) - (isSpeaking ? Math.cos(frame * 0.22) * 0.10 + speechEnergy * 0.14 : 0);
 
-  const rightArmRotX = 0.45 + (isSpeaking ? Math.sin(frame * 0.24) * 0.12 + speechEnergy * 0.26 : 0);
-  const rightArmRotY = -0.20 - (isSpeaking ? Math.cos(frame * 0.20) * 0.08 + speechEnergy * 0.14 : 0);
-  const rightArmRotZ = 0.20 + (isSpeaking ? Math.sin(frame * 0.26) * 0.08 + speechEnergy * 0.16 : 0);
-  const rightForearmRotX = -0.75 - (isSpeaking ? Math.sin(frame * 0.28) * 0.14 + speechEnergy * 0.32 : 0);
+  const rightArmRotX = (isDad ? 0.58 : 0.42) + (isSpeaking ? Math.sin(frame * 0.24) * 0.10 + speechEnergy * 0.16 : 0);
+  const rightArmRotY = (isDad ? 0.14 : 0.08) + (isSpeaking ? Math.cos(frame * 0.20) * 0.05 : 0);
+  const rightArmRotZ = (isDad ? -0.08 : -0.04) + (isSpeaking ? Math.sin(frame * 0.26) * 0.05 : 0);
+  const rightForearmRotX = (isDad ? -0.85 : -0.78) - (isSpeaking ? Math.sin(frame * 0.28) * 0.12 + speechEnergy * 0.18 : 0);
 
   return (
     <group

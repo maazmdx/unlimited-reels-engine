@@ -115,7 +115,7 @@ def fetch_topic_logo(
     remotion_target.parent.mkdir(parents=True, exist_ok=True)
 
     headers = {
-        "User-Agent": "UnlimitedReelsEngine/1.0 (educational-reels-bot; contact@antigravity.run)",
+        "User-Agent": "UnlimitedReelsEngine/1.0 (educational-reels-bot; contact@canidoai.com)",
         "Accept": "image/*,application/json;q=0.9",
     }
 
@@ -169,6 +169,13 @@ def fetch_topic_logo(
             pass
 
     # Strategy C: Wikipedia REST page summary thumbnail fallback
+    # For comedy / dad clash topics: skip Wikipedia thumbnail scraping completely
+    # (prevents random Wikipedia article images or crests appearing in comedy reels)
+    is_comedy = "dad" in query_lower or (topic_title and "dad" in str(topic_title).lower()) or "clash" in query_lower
+    if is_comedy:
+        print(f"ℹ️ [MediaFetcher] Skipping Wikipedia logo scrape for comedy/dad topic '{query}'.")
+        return None
+
     wiki_candidates = []
     if matched and matched.get("wiki"):
         wiki_candidates.append(matched["wiki"])

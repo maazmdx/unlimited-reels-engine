@@ -222,29 +222,57 @@ export const IndianLivingRoom3D: React.FC<IndianLivingRoom3DProps> = ({ children
         </group>
       </group>
 
-      {/* 7. POSTER WALL (Back Wall Framed Art) */}
-      <group position={[-1.2, 1.1, -2.15]}>
-        {/* Frame */}
+      {/* 7. WALL DECOR: SUBTLE FRAMED ART & TRADITIONAL WALL CLOCK */}
+      {/* Left: Framed Scenery Landscape Art */}
+      <group position={[-1.2, 1.15, -2.15]}>
+        {/* Dark Teak Frame */}
         <mesh>
           <boxGeometry args={[0.75, 1.05, 0.03]} />
-          <meshStandardMaterial color="#1E293B" flatShading roughness={0.5} />
+          <meshStandardMaterial color="#2A1810" flatShading roughness={0.6} />
         </mesh>
-        {/* Poster Canvas */}
+        {/* Warm Canvas Background */}
         <mesh position={[0, 0, 0.02]}>
           <planeGeometry args={[0.65, 0.95]} />
-          <meshStandardMaterial color="#EA580C" flatShading roughness={0.6} />
+          <meshStandardMaterial color="#E8E0D5" flatShading roughness={0.8} />
+        </mesh>
+        {/* Subtle Sun Accent */}
+        <mesh position={[0.12, 0.18, 0.025]}>
+          <circleGeometry args={[0.09, 16]} />
+          <meshStandardMaterial color="#F59E0B" flatShading roughness={0.6} />
+        </mesh>
+        {/* Distant Mountain Ridge */}
+        <mesh position={[0, -0.15, 0.025]}>
+          <planeGeometry args={[0.65, 0.35]} />
+          <meshStandardMaterial color="#64748B" flatShading roughness={0.8} />
         </mesh>
       </group>
-      <group position={[1.0, 1.3, -2.15]}>
-        {/* Frame 2 */}
-        <mesh>
-          <boxGeometry args={[0.65, 0.85, 0.03]} />
-          <meshStandardMaterial color="#78350F" flatShading roughness={0.5} />
+
+      {/* Right: Traditional Round Indian Wall Clock */}
+      <group position={[1.0, 1.35, -2.15]}>
+        {/* Wooden Clock Bezel */}
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.34, 0.34, 0.04, 24]} />
+          <meshStandardMaterial color="#451A03" flatShading roughness={0.6} />
         </mesh>
-        {/* Poster Canvas 2 */}
-        <mesh position={[0, 0, 0.02]}>
-          <planeGeometry args={[0.55, 0.75]} />
-          <meshStandardMaterial color="#0284C7" flatShading roughness={0.6} />
+        {/* Off-White Clock Face */}
+        <mesh position={[0, 0, 0.022]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.29, 0.29, 0.005, 24]} />
+          <meshStandardMaterial color="#FFFBEB" flatShading roughness={0.5} />
+        </mesh>
+        {/* Hour Hand (Points to 10) */}
+        <mesh position={[-0.04, 0.05, 0.028]} rotation={[0, 0, 0.65]}>
+          <boxGeometry args={[0.018, 0.13, 0.006]} />
+          <meshStandardMaterial color="#1E293B" flatShading />
+        </mesh>
+        {/* Minute Hand (Points to 2) */}
+        <mesh position={[0.05, 0.07, 0.028]} rotation={[0, 0, -0.55]}>
+          <boxGeometry args={[0.014, 0.18, 0.006]} />
+          <meshStandardMaterial color="#1E293B" flatShading />
+        </mesh>
+        {/* Center Brass Pivot Pin */}
+        <mesh position={[0, 0, 0.03]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, 0.01, 12]} />
+          <meshStandardMaterial color="#B45309" metalness={0.4} roughness={0.3} />
         </mesh>
       </group>
 

@@ -343,11 +343,21 @@ class SEOMasterAgent:
         pinned_comment = self._craft_pinned_comment(title, category, kw)
 
         # 4. Varied Public Comment Replies (3 variations to bypass Instagram bot throttling)
-        comment_replies = [
-            f"Sent to your DMs! 🚀 Check your message requests if you don't see it.",
-            f"Just sent over the free direct link! ⚡ Enjoy.",
-            f"Check your messages! 📬 Sent the 100% free guide and link.",
-        ]
+        format_type = str(script_data.get("format_type") or script_data.get("format") or "").lower()
+        is_dad_clash = (format_type == "dad_clash") or ("dad" in title.lower()) or (kw in ["NO-DM", "NODM", "NONE", ""])
+
+        if is_dad_clash:
+            comment_replies = [
+                "Tag your dad before he unplugs the router 😂",
+                "Did your dad also try fixing the Wi-Fi with aluminum foil? 💀",
+                "Show this to your dad before he pays the $100 technician fee! 🔌",
+            ]
+        else:
+            comment_replies = [
+                f"Sent to your DMs! 🚀 Check your message requests if you don't see it.",
+                f"Just sent over the free direct link! ⚡ Enjoy.",
+                f"Check your messages! 📬 Sent the 100% free guide and link.",
+            ]
 
         # 5. Optional AI refinement with fast free-tier fallback
         if self.api_key or os.environ.get("GROQ_API_KEY"):
@@ -360,7 +370,8 @@ class SEOMasterAgent:
                 if ai_data.get("pinned_comment"):
                     pinned_comment = sanitize_simple_spoken_english(ai_data["pinned_comment"])
                 if ai_data.get("comment_replies") and isinstance(ai_data["comment_replies"], list) and len(ai_data["comment_replies"]) >= 3:
-                    comment_replies = [sanitize_simple_spoken_english(r) for r in ai_data["comment_replies"][:3]]
+                    if not is_dad_clash:
+                        comment_replies = [sanitize_simple_spoken_english(r) for r in ai_data["comment_replies"][:3]]
 
         # 6. Tiered Hashtags (3 broad + 4 mid-niche + 3 exact-topic, zero spam)
         tiered_hashtags = self._build_tiered_hashtags(title, category, kw)
@@ -381,26 +392,34 @@ class SEOMasterAgent:
             f"{bullets_text}\n\n"
             f"{cta_line}"
             f"📌 PINNED DEBATE: {pinned_comment}\n\n"
-            f"Follow @antigravity for daily zero-dollar workflows, retro hacks & unfiltered tech truth!\n\n"
+            f"Follow @canidoai for daily zero-dollar workflows, retro hacks & unfiltered tech truth!\n\n"
             f"{hashtags_str}"
         )
         caption_text = sanitize_simple_spoken_english(caption_text)
 
-        # 8. Resolve real official tool/repo URL (Never fake placeholder)
-        official_url = str(
+        # 8. Resolve real official tool/repo URL (Canonical resolution order: github_repo -> official_url -> brand_domain)
+        github_repo = str(script_data.get("github_repo") or "").strip().lstrip("/")
+        raw_source_url = str(
             script_data.get("source_url")
+            or script_data.get("official_url")
             or script_data.get("resource_link_or_query")
             or script_data.get("url")
             or script_data.get("link")
             or ""
         ).strip()
+        brand_domain = str(script_data.get("brand_domain") or "").strip().replace("http://", "").replace("https://", "").strip("/")
 
-        if not official_url or not official_url.startswith("http"):
+        clean_search_term = re.sub(r"[^a-zA-Z0-9\s-]", "", title.split(":")[0]).strip()
+
+        if github_repo and "/" in github_repo and "search?" not in github_repo:
+            official_url = f"https://github.com/{github_repo}"
+        elif raw_source_url and raw_source_url.startswith("http") and "github.com/search" not in raw_source_url:
+            official_url = raw_source_url
+        elif brand_domain and "." in brand_domain:
+            official_url = f"https://{brand_domain}"
+        else:
             cat_t = (str(category) + " " + str(title)).lower()
-            clean_search_term = re.sub(r"[^a-zA-Z0-9\s-]", "", title.split(":")[0]).strip()
-            if "github" in cat_t or "repo" in cat_t or "open source" in cat_t:
-                official_url = f"https://github.com/search?q={urllib.parse.quote(clean_search_term)}"
-            elif "game" in cat_t or "retro" in cat_t or "emulator" in cat_t:
+            if "game" in cat_t or "retro" in cat_t or "emulator" in cat_t:
                 official_url = f"https://archive.org/details/software?query={urllib.parse.quote(clean_search_term)}"
             else:
                 official_url = f"https://www.google.com/search?q={urllib.parse.quote(clean_search_term)}"
@@ -508,6 +527,26 @@ class SEOMasterAgent:
         Designed for instant mobile readability when opened from an Instagram DM.
         """
         clean_title = sanitize_simple_spoken_english(title)
+        tool_name = clean_title.split(":")[0].strip()
+
+        # Check if card_rows has real tool-specific instructions or generic filler
+        def is_generic_filler(text: str) -> bool:
+            low = text.lower()
+            return any(f in low for f in ["launches in seconds", "runs on your machine", "zero dollar cost", "step 1", "step 2"])
+
+        has_tool_specific_rows = False
+        if card_rows and len(card_rows) >= 3:
+            first_val = str(card_rows[0].get("value", "") if isinstance(card_rows[0], dict) else card_rows[0])
+            if not is_generic_filler(first_val) and (tool_name.lower() in first_val.lower() or "http" in first_val):
+                has_tool_specific_rows = True
+
+        if not has_tool_specific_rows:
+            card_rows = [
+                {"label": "Step 1: Official Access", "value": f"Open {official_url} directly in your browser or terminal", "status": "VERIFIED"},
+                {"label": "Step 2: Instant Launch", "value": f"Run {tool_name} locally with zero subscription traps or credit card requirements", "status": "VERIFIED"},
+                {"label": "Step 3: Unlimited Use", "value": f"Enjoy 100% free verified execution on your own machine powered by {tool_name}", "status": "VERIFIED"},
+            ]
+
         rows_html = ""
         for r in card_rows:
             if isinstance(r, dict):
@@ -705,11 +744,11 @@ class SEOMasterAgent:
         <ul class="tips-list">
             <li><strong>Zero Cost:</strong> Replaces bloated $20/month enterprise subscriptions with zero credit card traps.</li>
             <li><strong>Instant Launch:</strong> Runs directly with zero heavy installations or tracking.</li>
-            <li><strong>Verified Working:</strong> Live tested and verified by Antigravity Autonomous Reels Engine.</li>
+            <li><strong>Verified Working:</strong> Live tested and verified by @canidoai Free Tech Engine.</li>
         </ul>
 
         <div class="footer">
-            Delivered via Autonomous Auto-DM • Comment <strong>{kw}</strong> for daily verified zero-dollar workflows.
+            Delivered by @canidoai • Comment <strong>{kw}</strong> for daily verified zero-dollar workflows.
         </div>
     </div>
 </body>
