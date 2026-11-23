@@ -1265,12 +1265,22 @@ def generate_dialogue_speech(
     for d in set(out_dirs):
         for audio_name in ["voice.mp3", "voiceover.mp3", "master.mp3"]:
             dest_audio = os.path.join(d, audio_name)
-            if os.path.realpath(str(out_audio)) != os.path.realpath(str(dest_audio)):
-                shutil.copy2(out_audio, dest_audio)
+            try:
+                if os.path.realpath(str(out_audio)) != os.path.realpath(str(dest_audio)):
+                    if not (os.path.exists(dest_audio) and os.path.samefile(out_audio, dest_audio)):
+                        shutil.copy2(out_audio, dest_audio)
+            except (shutil.SameFileError, FileExistsError):
+                pass
         for sfx_name in ["sfx_whoosh.wav", "sfx_chime.wav"]:
             src_sfx = PROJECT_ROOT / "assets" / "audio" / sfx_name
             if src_sfx.exists():
-                shutil.copy2(str(src_sfx), os.path.join(d, sfx_name))
+                dest_sfx = os.path.join(d, sfx_name)
+                try:
+                    if os.path.realpath(str(src_sfx)) != os.path.realpath(str(dest_sfx)):
+                        if not (os.path.exists(dest_sfx) and os.path.samefile(str(src_sfx), dest_sfx)):
+                            shutil.copy2(str(src_sfx), dest_sfx)
+                except (shutil.SameFileError, FileExistsError):
+                    pass
 
     # 5. Write video metadata
     meta = {

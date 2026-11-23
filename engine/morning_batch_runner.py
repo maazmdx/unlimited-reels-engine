@@ -640,15 +640,24 @@ def run_morning_batch(
 
         # Copy finalized video & thumbnails into morning batch directory
         final_video_dest = batch_dir / output_filename
-        if Path(rendered_mp4).exists() and os.path.realpath(str(rendered_mp4)) != os.path.realpath(str(final_video_dest)):
-            shutil.copy2(rendered_mp4, final_video_dest)
+        if Path(rendered_mp4).exists():
+            try:
+                if os.path.realpath(str(rendered_mp4)) != os.path.realpath(str(final_video_dest)):
+                    if not (final_video_dest.exists() and os.path.samefile(rendered_mp4, final_video_dest)):
+                        shutil.copy2(rendered_mp4, final_video_dest)
+            except (shutil.SameFileError, FileExistsError):
+                pass
 
         # Copy exported 4:5 cover still beside the MP4 in morning batch directory
         cover_src = Path(rendered_mp4).with_name(f"{Path(rendered_mp4).stem}_cover.png")
         cover_dest = batch_dir / f"{Path(output_filename).stem}_cover.png"
         if cover_src.exists():
-            if os.path.realpath(str(cover_src)) != os.path.realpath(str(cover_dest)):
-                shutil.copy2(cover_src, cover_dest)
+            try:
+                if os.path.realpath(str(cover_src)) != os.path.realpath(str(cover_dest)):
+                    if not (cover_dest.exists() and os.path.samefile(cover_src, cover_dest)):
+                        shutil.copy2(cover_src, cover_dest)
+            except (shutil.SameFileError, FileExistsError):
+                pass
             print(f"🖼️ [Cover Still] Delivered beside MP4: {cover_dest.name}")
 
         # Export clean, standard SubRip captions (.srt) beside MP4 in morning batch directory
@@ -665,8 +674,12 @@ def run_morning_batch(
             if kf.get("path") and Path(kf["path"]).exists():
                 src_kf = kf["path"]
                 dst_kf = thumbs_dir / Path(kf["path"]).name
-                if os.path.realpath(str(src_kf)) != os.path.realpath(str(dst_kf)):
-                    shutil.copy2(src_kf, dst_kf)
+                try:
+                    if os.path.realpath(str(src_kf)) != os.path.realpath(str(dst_kf)):
+                        if not (dst_kf.exists() and os.path.samefile(src_kf, dst_kf)):
+                            shutil.copy2(src_kf, dst_kf)
+                except (shutil.SameFileError, FileExistsError):
+                    pass
 
         # Optional Cloud Drive Sync
         drive_status = "SKIPPED"
