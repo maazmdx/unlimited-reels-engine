@@ -84,6 +84,15 @@ def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -
     return cleaned
 
 
+def clean_headline_truncation(text: str, max_chars: int = 40) -> str:
+    """Truncates text at a word boundary without cutting off mid-word."""
+    text = (text or "").strip()
+    if len(text) <= max_chars:
+        return text
+    truncated = text[:max_chars].rsplit(" ", 1)[0]
+    return truncated if len(truncated) > 10 else text[:max_chars]
+
+
 def call_groq_api(prompt: str, system_instruction: str, timeout: float = 35.0) -> Optional[str]:
     """
     Calls Groq Cloud API with llama-3.3-70b-versatile for ultra-fast, zero-cost JSON completions.
@@ -293,64 +302,75 @@ class SEOMasterAgent:
         raw_kw = str(script_data.get("cta_keyword") or script_data.get("ctaKeyword", "LINK")).strip().upper()
         kw = sanitize_auto_dm_keyword(raw_kw, category, title)
 
-        # 1. Generate 3 crisp value bullets from cardData rows (not raw metadata keys)
+        tool_name = str(script_data.get("tool_name") or script_data.get("toolName") or "").strip()
+        brand_domain = str(script_data.get("brand_domain") or script_data.get("brandDomain") or "").strip()
+        real_steps = script_data.get("real_steps") or script_data.get("realSteps") or []
+        format_type = str(script_data.get("format_type") or script_data.get("format") or "").lower()
+        is_dad_clash = (format_type == "dad_clash") or ("dad" in title.lower()) or (kw in ["NO-DM", "NODM", "NONE", ""])
+
+        # 1. Generate 3 concise, tool-specific steps naming the real tool and what it replaces for $0
         card_data = script_data.get("cardData") or {}
         bullets = []
-        if isinstance(card_data, dict):
-            raw_rows = card_data.get("rows") or card_data.get("items")
-            if isinstance(raw_rows, list) and len(raw_rows) > 0:
-                for item in raw_rows[:3]:
-                    if isinstance(item, dict):
-                        lbl = str(item.get("label") or item.get("name") or "").strip()
-                        val = str(item.get("value") or item.get("desc") or "").strip()
-                        if lbl and val:
-                            bullets.append(f"• {sanitize_simple_spoken_english(lbl)}: {sanitize_simple_spoken_english(val)}")
-                        elif lbl:
-                            bullets.append(f"• {sanitize_simple_spoken_english(lbl)}")
-                        elif val:
-                            bullets.append(f"• {sanitize_simple_spoken_english(val)}")
-                    elif isinstance(item, str):
-                        bullets.append(f"• {sanitize_simple_spoken_english(item.strip())}")
-            else:
-                # Filter out raw metadata keys (title, subtitle, badge, etc.)
-                ignored_keys = {
-                    "title", "subtitle", "badge", "type", "highlight",
-                    "durationseconds", "durationframes", "startframe",
-                    "toastdata", "topiclogopath", "rows", "items", "codesnippet", "language"
-                }
-                for k, v in card_data.items():
-                    if k.lower() not in ignored_keys and not isinstance(v, (dict, list)):
-                        clean_k = k.replace("_", " ").title()
-                        bullets.append(f"• {sanitize_simple_spoken_english(clean_k)}: {sanitize_simple_spoken_english(str(v))}")
-                        if len(bullets) >= 3:
-                            break
+        if real_steps and len(real_steps) >= 3:
+            for s in real_steps[:3]:
+                bullets.append(f"• {sanitize_simple_spoken_english(str(s).lstrip('0123456789. '))}")
+        elif isinstance(card_data, dict) and card_data.get("rows"):
+            for item in card_data["rows"][:3]:
+                if isinstance(item, dict):
+                    lbl = str(item.get("label") or "").strip()
+                    val = str(item.get("value") or "").strip()
+                    if lbl and val:
+                        bullets.append(f"• {sanitize_simple_spoken_english(lbl)}: {sanitize_simple_spoken_english(val)}")
+                    elif val:
+                        bullets.append(f"• {sanitize_simple_spoken_english(val)}")
 
-        if not bullets:
+        if len(bullets) < 3:
+            t_disp = tool_name or "this tool"
+            d_disp = brand_domain or "official website"
             bullets = [
-                "• 100% Free: $0 setup running directly in your browser",
-                "• The Catch: What paid tools charged you $20/mo for",
-                "• Instant Access: Step-by-step setup with zero installs",
+                f"• Setup: Open {d_disp} directly in your browser (zero install)",
+                f"• How it works: Run {t_disp} locally on your machine with zero server lag",
+                f"• The Payoff: Replaces expensive $20/month subscription traps for $0",
             ]
-        bullets_text = "\n".join(bullets)
+        bullets_text = "\n".join(bullets[:3])
 
-        # 2. Front-loaded High-CTR SEO Headline (emphasize 100% FREE in simple spoken English)
-        seo_headline = f"{tag} {headline.title() if headline.isupper() else headline}"
-        if not any(f in seo_headline.lower() for f in ["100% free", "free", "$0", "zero dollar", "0 dollar"]):
-            seo_headline = f"{seo_headline} [100% FREE]"
-        seo_headline = sanitize_simple_spoken_english(seo_headline)
+        # 2. Line 1: High-CTR Curiosity/Contrast Hook (strictly <= 60 chars before Instagram "...more" truncation)
+        if is_dad_clash:
+            if "ram" in title.lower() or "cleaner" in title.lower():
+                line1_hook = "⚡ Dad installed 4 'RAM Cleaner' apps on his phone"
+            elif "scam" in title.lower() or "whatsapp" in title.lower():
+                line1_hook = "⚡ Dad almost sent his bank info to a WhatsApp bot"
+            elif "battery" in title.lower() or "overnight" in title.lower():
+                line1_hook = "⚡ Dad thinks overnight charging doubles phone battery"
+            else:
+                line1_hook = f"⚡ Dad vs Tech: {title}"
+        elif tool_name:
+            cat_t = (title + " " + category).lower()
+            if "pdf" in cat_t:
+                line1_hook = f"⚡ Free open-source alternative to Adobe PDF: {tool_name}"
+            elif "photo" in cat_t:
+                line1_hook = f"⚡ Free open-source Photoshop alternative: {tool_name}"
+            elif "game" in cat_t or "retro" in cat_t:
+                line1_hook = f"⚡ Free retro games in your browser: {tool_name}"
+            elif "send" in cat_t or "airdrop" in cat_t:
+                line1_hook = f"⚡ Free open-source AirDrop alternative: {tool_name}"
+            else:
+                line1_hook = f"⚡ Free open-source alternative: {tool_name} ($0)"
+        else:
+            line1_hook = f"⚡ Free open-source alternative: {clean_headline_truncation(title, 25)}"
+
+        line1_hook = clean_headline_truncation(line1_hook, max_chars=60)
+        seo_headline = line1_hook
 
         # 3. Pinned Comment Bait (spicy ragebait debate trigger)
         pinned_comment = self._craft_pinned_comment(title, category, kw)
 
         # 4. Varied Public Comment Replies (3 variations to bypass Instagram bot throttling)
-        format_type = str(script_data.get("format_type") or script_data.get("format") or "").lower()
-        is_dad_clash = (format_type == "dad_clash") or ("dad" in title.lower()) or (kw in ["NO-DM", "NODM", "NONE", ""])
-
         if is_dad_clash:
             comment_replies = [
-                "Tag your dad before he unplugs the router 😂",
-                "Did your dad also try fixing the Wi-Fi with aluminum foil? 💀",
-                "Show this to your dad before he pays the $100 technician fee! 🔌",
+                "Tag your dad before his phone hits 90 degrees 😂",
+                "Send this to your dad before he clicks another WhatsApp link 💀",
+                "Does your dad also think closing background apps saves battery? 🔌",
             ]
         else:
             comment_replies = [
@@ -364,16 +384,17 @@ class SEOMasterAgent:
             ai_data = self._refine_with_ai(title, category, kw, seo_headline)
             if ai_data:
                 if ai_data.get("seo_headline"):
-                    seo_headline = sanitize_simple_spoken_english(ai_data["seo_headline"])
-                    if not any(f in seo_headline.lower() for f in ["100% free", "free", "$0", "zero dollar", "0 dollar"]):
-                        seo_headline = f"{seo_headline} [100% FREE]"
+                    cand_h = clean_headline_truncation(sanitize_simple_spoken_english(ai_data["seo_headline"]), 60)
+                    if cand_h:
+                        seo_headline = cand_h
+                        line1_hook = cand_h
                 if ai_data.get("pinned_comment"):
                     pinned_comment = sanitize_simple_spoken_english(ai_data["pinned_comment"])
                 if ai_data.get("comment_replies") and isinstance(ai_data["comment_replies"], list) and len(ai_data["comment_replies"]) >= 3:
                     if not is_dad_clash:
                         comment_replies = [sanitize_simple_spoken_english(r) for r in ai_data["comment_replies"][:3]]
 
-        # 6. Tiered Hashtags (3 broad + 4 mid-niche + 3 exact-topic, zero spam)
+        # 6. Tiered Hashtags (5-7 targeted niche + search hashtags, zero spam)
         tiered_hashtags = self._build_tiered_hashtags(title, category, kw)
         hashtags_str = " ".join(tiered_hashtags)
 
@@ -384,15 +405,15 @@ class SEOMasterAgent:
         else:
             cta_line = f"💬 {cta_phrase}\n\n"
 
-        # 7. Full Caption Text (Simple, direct, searchable)
+        # 7. Full Caption Text (Line 1 <= 60 chars, 3-step breakdown, pinned debate, 5-7 hashtags)
         caption_text = (
-            f"{seo_headline}\n\n"
+            f"{line1_hook}\n\n"
             f"{subheadline}\n\n"
-            f"Key Breakdown:\n"
+            f"3-Step Breakdown:\n"
             f"{bullets_text}\n\n"
             f"{cta_line}"
             f"📌 PINNED DEBATE: {pinned_comment}\n\n"
-            f"Follow @canidoai for daily zero-dollar workflows, retro hacks & unfiltered tech truth!\n\n"
+            f"Follow @canidoai for daily zero-dollar tools, retro hacks & tech truth!\n\n"
             f"{hashtags_str}"
         )
         caption_text = sanitize_simple_spoken_english(caption_text)
@@ -755,43 +776,55 @@ class SEOMasterAgent:
 </html>"""
 
     def _craft_pinned_comment(self, title: str, category: str, kw: str) -> str:
-        """Crafts a sharp, opinionated ragebait debate question to pin in the comments."""
+        """Crafts a sharp, opinionated 1-line debate question to pin in the comments."""
         lower_t = (title + " " + category).lower()
-        if "browser" in lower_t or "retro" in lower_t or "game" in lower_t:
-            return "Still downloading 80GB games on a dying potato laptop in 2026? Drop your excuse below 👇"
+        if "pdf" in lower_t:
+            return "Still paying Adobe $20/month just to merge two PDFs in 2026? Be honest 👇"
+        elif "photo" in lower_t or "psd" in lower_t:
+            return "Would you rather pay $240/yr for Photoshop or use Photopea for $0? 👇"
+        elif "localsend" in lower_t or "airdrop" in lower_t or "send" in lower_t:
+            return "AirDrop or LocalSend? Which one actually works between Android and PC? 👇"
+        elif "browser" in lower_t or "retro" in lower_t or "game" in lower_t:
+            return "What's the best PS2 or retro game of all time? Don't say GTA San Andreas 👇"
+        elif "ram" in lower_t or "cleaner" in lower_t or "booster" in lower_t:
+            return "Does your dad have 4 'cleaner' apps on his phone right now? Check his phone 😂👇"
+        elif "scam" in lower_t or "whatsapp" in lower_t or "lottery" in lower_t:
+            return "Has anyone in your family actually clicked a 'Free iPhone' WhatsApp link? 💀👇"
+        elif "adblock" in lower_t or "ublock" in lower_t:
+            return "Do people really still browse the web without an ad-blocker in 2026? Be honest 👇"
         elif "ai" in lower_t or "agent" in lower_t or "model" in lower_t:
             return "Still paying $20/month for AI in 2026? Be honest—would you even pass your job interview without it? 💀"
-        elif "cost" in lower_t or "earn" in lower_t or "margin" in lower_t or "money" in lower_t or "business" in lower_t:
-            return "Did you really think their free app was a gift or did you just realize you're the product? 💀 Debate below 👇"
         elif "dad" in lower_t or "wifi" in lower_t or "bill" in lower_t:
             return "Would you trust your dad to fix your Wi-Fi or pay $100 for a technician? Be honest 😂👇"
         else:
-            return "Still paying monthly fees for software when 100% free tools exist? Drop your excuse below 👇"
+            return "Still paying monthly fees for software when 100% free open-source tools exist? Drop your excuse below 👇"
 
     def _build_tiered_hashtags(self, title: str, category: str, kw: str) -> List[str]:
         """
-        Assembles 9-10 tiered hashtags:
-        - 3 broad reach tags
-        - 4 mid-niche community tags
-        - 3 exact-topic tags
+        Assembles 5-7 targeted niche + search hashtags (zero spam).
         """
-        broad = ["#TechReels", "#DeveloperLife", "#SoftwareEngineering"]
+        broad = ["#TechHacks", "#FreeSoftware"]
+        lower_t = (title + " " + category).lower()
 
-        lower_t = title.lower()
         if "game" in lower_t or "retro" in lower_t:
-            mid = ["#BrowserGames", "#RetroGaming", "#WebAssembly", "#CodingHumor"]
-            exact = ["#PCGaming", f"#{kw.title()}Game", "#WebDev"]
+            niche = ["#BrowserGames", "#RetroGaming", "#PCGaming"]
         elif "dad" in lower_t:
-            mid = ["#IndianDad", "#TechHumor", "#FamilyHumor", "#RelatableMemes"]
-            exact = ["#DesiMemes", "#DadLogic", f"#{kw.title()}Meme"]
-        elif "money" in lower_t or "earn" in lower_t or "margin" in lower_t or "business" in lower_t:
-            mid = ["#BusinessModels", "#TechEconomics", "#StartupStrategy", "#TechNews"]
-            exact = ["#UnitEconomics", "#BusinessStrategy", f"#{kw.title()}Teardown"]
+            niche = ["#DesiMemes", "#TechHumor", "#IndianDad"]
+        elif "pdf" in lower_t or "file" in lower_t:
+            niche = ["#OpenSource", "#ProductivityTools", "#PDFHacks"]
+        elif "photo" in lower_t or "creative" in lower_t:
+            niche = ["#Photopea", "#OpenSourceDesign", "#FreeTools"]
+        elif "privacy" in lower_t or "adblock" in lower_t or "cleaner" in lower_t:
+            niche = ["#PrivacyTools", "#SystemSpeedup", "#OpenSource"]
         else:
-            mid = ["#AIUpdates", "#TechHacks", "#CodingCommunity", "#WebDevelopment"]
-            exact = ["#ArtificialIntelligence", f"#{kw.title()}Guide", "#TechTrends"]
+            niche = ["#OpenSource", "#UsefulWebsites", "#TechTips"]
 
-        return (broad + mid + exact)[:10]
+        exact = []
+        if kw and kw not in ["NO-DM", "NODM", "NONE"]:
+            exact.append(f"#{kw.title()}Tool")
+
+        tags = broad + niche + exact
+        return tags[:7]
 
 
 if __name__ == "__main__":

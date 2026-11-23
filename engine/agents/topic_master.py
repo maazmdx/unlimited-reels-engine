@@ -12,10 +12,11 @@ import sys
 import json
 import re
 import time
+import hashlib
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set, Tuple
 
 import requests
 
@@ -32,6 +33,215 @@ except ImportError:
     genai = None
 
 
+# 6 Distinct Mass-Appeal Free Niches for Reel #1 (Rotates deterministically by date YYYY-MM-DD)
+DAILY_FREE_NICHES = [
+    {
+        "id": "file_utility",
+        "name": "Everyday File, PDF & Media Utility",
+        "target_audience": "Everyday phone and laptop users tired of paywalls",
+        "guidance": "100% free offline tools that replace Adobe Acrobat, heavy media converters, and file-sharing bloat (e.g. LocalSend, Stirling-PDF, HandBrake, Upscayl, LosslessCut).",
+        "example_tools": ["LocalSend", "Stirling-PDF", "Upscayl", "HandBrake", "LosslessCut"],
+    },
+    {
+        "id": "retro_browser_game",
+        "name": "Free Browser & Retro Game / Emulator",
+        "target_audience": "Students, casual gamers, and nostalgia fans with potato laptops",
+        "guidance": "Playable retro games or native emulators running directly inside Chrome tabs on potato laptops with zero downloads (e.g. EmulatorJS, WebVM, DOSBox Pure Web, v86).",
+        "example_tools": ["EmulatorJS", "WebVM", "DOSBox Pure Web", "v86"],
+    },
+    {
+        "id": "privacy_system_speedup",
+        "name": "Privacy, Ad-Block & System Speedup Tool",
+        "target_audience": "Anyone whose laptop or phone is slow or plagued by YouTube/web ads",
+        "guidance": "100% free open-source tools that block all ads, kill background bloatware, and speed up PCs/phones (e.g. uBlock Origin, Pi-hole, BleachBit, Proton VPN Free).",
+        "example_tools": ["uBlock Origin", "BleachBit", "Proton VPN Free", "Pi-hole"],
+    },
+    {
+        "id": "local_ai_creative",
+        "name": "Free Local AI & Creative App",
+        "target_audience": "Creators and students who refuse to pay $20/month for Photoshop or ChatGPT Plus",
+        "guidance": "Zero-dollar private local AI models and creative tools running on your machine (e.g. Photopea, Ollama, Jan AI, Whisper Web, Krita).",
+        "example_tools": ["Photopea", "Ollama", "Jan", "Whisper Web", "Krita"],
+    },
+    {
+        "id": "student_productivity",
+        "name": "Student & Everyday Productivity Shortcut",
+        "target_audience": "Students and knowledge workers drowning in tabs and expensive subscriptions",
+        "guidance": "Secret free productivity hacks and student lifesavers replacing paid software (e.g. Obsidian, NotebookLM, Zotero, Draw.io, Anki).",
+        "example_tools": ["NotebookLM", "Obsidian", "Draw.io", "Zotero", "Anki"],
+    },
+    {
+        "id": "hidden_os_hack",
+        "name": "Hidden GitHub OS Hack & Power Tool",
+        "target_audience": "Windows and Mac users who want modern OS power features for $0",
+        "guidance": "Open-source system utilities that make Windows or Mac feel 10x faster (e.g. Microsoft PowerToys, QuickLook for Windows, SpaceSniffer, RustDesk).",
+        "example_tools": ["QuickLook", "RustDesk", "Microsoft PowerToys", "SpaceSniffer"],
+    },
+]
+
+# Fresh Relatable Household & Tech-Myth Premises for Reel #2 (Dad Clash)
+# (5G/Wi-Fi bills and AI side hustles are strictly excluded)
+DAD_CLASH_PREMISES = [
+    {
+        "tag": "dad_ram_booster",
+        "premise": "phone storage cleaner / RAM booster apps",
+        "title": "Dad Installed 4 'RAM Booster' Apps on His Phone",
+        "myth": "Dad thinks downloading 4 different phone cleaner apps speeds up his Android, but they actually drain 80% battery showing full-screen ads.",
+        "hook": "Dad, why did you install 4 'RAM Booster' apps?",
+        "conflict": "Dev explaining modern Android RAM management vs Dad proud of the turbo rocket cleaning animation",
+    },
+    {
+        "tag": "dad_scam_link",
+        "premise": "WhatsApp lottery / scam link forwards",
+        "title": "Dad Believes He Won an iPhone 17 on WhatsApp",
+        "myth": "Dad gets a forward claiming he won a free car or phone and is about to forward it to 20 family groups.",
+        "hook": "Dad is about to send his bank details to a WhatsApp bot.",
+        "conflict": "Dev warning about phishing scams vs Dad insisting 'It has the official logo!'",
+    },
+    {
+        "tag": "dad_battery_myth",
+        "premise": "battery 100% charging and overnight myths",
+        "title": "Dad Sets an Alarm to Unplug His Phone at Exactly 80%",
+        "myth": "Dad watched a WhatsApp video claiming charging past 80% explodes the battery and now charges in 10-minute intervals.",
+        "hook": "Dad sets an alarm every night just to unplug his phone at 80%.",
+        "conflict": "Dev explaining modern battery BMS chips vs Dad citing WhatsApp University",
+    },
+    {
+        "tag": "dad_printer_rage",
+        "premise": "printer ink cartridge extortion",
+        "title": "Dad vs The Color Ink Cartridge Extortion",
+        "myth": "Dad trying to print a black-and-white government form, but the printer refuses because 'Cyan is empty'.",
+        "hook": "The printer won't print black text because Cyan is empty.",
+        "conflict": "Dad threatening the printer with a screwdriver vs Dev explaining printer DRM chips",
+    },
+    {
+        "tag": "dad_shady_apk",
+        "premise": "shady APK downloads / modded WhatsApp",
+        "title": "Dad Downloaded 'Gold WhatsApp' from a Sketchy Website",
+        "myth": "Dad downloaded a sketchy APK because a video promised it can read deleted messages from 2018.",
+        "hook": "Dad downloaded a sketchy APK from a random website.",
+        "conflict": "Dev discovering 15 malware popups vs Dad bragging about his secret gold theme",
+    },
+    {
+        "tag": "dad_tv_mic",
+        "premise": "smart TV spying & mic listening myths",
+        "title": "Dad Covers the Smart TV with a Towel",
+        "myth": "Dad saw shoe ads on his phone after talking about shoes and now covers the TV sensor with tape and a towel.",
+        "hook": "Dad covered the Smart TV because he thinks it's listening to him.",
+        "conflict": "Dev explaining cross-app ad tracking vs Dad whispering in the living room",
+    },
+]
+
+STOPWORDS_SET = {
+    "a", "about", "all", "also", "an", "and", "any", "are", "as", "at", "be", "because",
+    "been", "before", "being", "between", "both", "but", "by", "can", "could", "did",
+    "do", "does", "doing", "down", "during", "each", "few", "for", "from", "further",
+    "had", "has", "have", "having", "he", "her", "here", "hers", "herself", "him",
+    "himself", "his", "how", "i", "if", "in", "into", "is", "it", "its", "itself",
+    "just", "me", "more", "most", "my", "myself", "no", "nor", "not", "now", "of",
+    "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves",
+    "out", "over", "own", "same", "she", "should", "so", "some", "such", "than",
+    "that", "the", "their", "theirs", "them", "themselves", "then", "there", "these",
+    "they", "this", "those", "through", "to", "too", "under", "until", "up", "very",
+    "was", "we", "were", "what", "when", "where", "which", "while", "who", "whom",
+    "why", "with", "would", "you", "your", "yours", "yourself", "yourselves",
+    "free", "tool", "app", "new", "vs", "running", "100", "browser", "chrome", "pc",
+    "laptop", "turns", "right", "now", "stop", "paying", "online", "use", "make",
+    "install", "installed", "get", "runs"
+}
+
+
+def normalize_entity_name(text: Optional[str]) -> str:
+    """Normalizes tool names or premise tags for exact comparison."""
+    if not text:
+        return ""
+    return re.sub(r"[^a-z0-9]", "", str(text).lower())
+
+
+def normalize_github_repo(repo: Optional[str]) -> str:
+    """Normalizes GitHub repo owner/repo string."""
+    if not repo:
+        return ""
+    clean = str(repo).strip().lower()
+    clean = re.sub(r"^https?://github\.com/", "", clean)
+    clean = re.sub(r"\.git$", "", clean)
+    return clean.strip("/")
+
+
+def normalize_brand_domain(domain: Optional[str]) -> str:
+    """Normalizes brand domain name."""
+    if not domain:
+        return ""
+    clean = str(domain).strip().lower()
+    clean = re.sub(r"^https?://", "", clean)
+    clean = re.sub(r"^www\.", "", clean)
+    return clean.split("/")[0].strip()
+
+
+def extract_topic_keywords(text: Optional[str]) -> Set[str]:
+    """Extracts non-stopword alphanumeric keyword tokens for topic overlap matching."""
+    words = re.findall(r"[a-z0-9]+", str(text or "").lower())
+    return {w for w in words if len(w) >= 3 and w not in STOPWORDS_SET}
+
+
+def check_topic_duplication(
+    candidate: Dict[str, Any],
+    covered_history: List[Dict[str, Any]],
+    current_batch: Optional[List[Dict[str, Any]]] = None,
+) -> Tuple[bool, str]:
+    """
+    Strict Zero-Repeat Deduplication:
+    Rejects any candidate sharing the same tool_name, github_repo, brand_domain,
+    or >= 45% non-stopword keyword overlap with any historical record or current batch entry.
+    """
+    all_records = list(covered_history) + (list(current_batch) if current_batch else [])
+
+    c_tool = normalize_entity_name(candidate.get("tool_name"))
+    c_repo = normalize_github_repo(candidate.get("github_repo"))
+    c_domain = normalize_brand_domain(candidate.get("brand_domain"))
+    c_tag = normalize_entity_name(candidate.get("angle_tag") or candidate.get("premise"))
+    c_title = candidate.get("topic_title") or candidate.get("title") or ""
+    c_keywords = extract_topic_keywords(c_title)
+
+    generic_tools = {"opentool", "ai", "app", "tool", "freetool", "aiapp"}
+    generic_domains = {"github.com", "google.com", "archive.org", "wikipedia.org", "youtube.com"}
+
+    for rec in all_records:
+        r_tool = normalize_entity_name(rec.get("tool_name"))
+        r_repo = normalize_github_repo(rec.get("github_repo"))
+        r_domain = normalize_brand_domain(rec.get("brand_domain"))
+        r_tag = normalize_entity_name(rec.get("angle_tag") or rec.get("premise"))
+        r_title = rec.get("topic_title") or rec.get("title") or ""
+        r_keywords = extract_topic_keywords(r_title)
+
+        # 1. Identical tool_name match
+        if c_tool and r_tool and c_tool == r_tool and c_tool not in generic_tools:
+            return True, f"Identical tool_name '{c_tool}'"
+
+        # 2. Identical github_repo match
+        if c_repo and r_repo and c_repo == r_repo:
+            return True, f"Identical github_repo '{c_repo}'"
+
+        # 3. Identical brand_domain match
+        if c_domain and r_domain and c_domain == r_domain and c_domain not in generic_domains:
+            return True, f"Identical brand_domain '{c_domain}'"
+
+        # 4. Same angle/premise tag match
+        if c_tag and r_tag and c_tag == r_tag:
+            return True, f"Identical premise tag '{c_tag}'"
+
+        # 5. >= 45% Non-stopword keyword overlap
+        if c_keywords and r_keywords:
+            common = c_keywords.intersection(r_keywords)
+            smaller_len = min(len(c_keywords), len(r_keywords))
+            if smaller_len > 0:
+                overlap_ratio = len(common) / smaller_len
+                if overlap_ratio >= 0.45:
+                    return True, f"Keyword overlap {overlap_ratio:.0%} ({common}) with covered topic '{r_title}'"
+
+    return False, ""
+
+
 def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -> str:
     """Enforces single pronounceable dictionary English words for auto_dm_keyword (never RETROPC)."""
     cleaned = re.sub(r"[^A-Z]", "", (raw_kw or "").strip().upper())
@@ -43,6 +253,8 @@ def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -
             return "REPO"
         elif any(w in cat_lower for w in ["game", "retro", "play"]):
             return "PLAY"
+        elif any(w in cat_lower for w in ["pdf"]):
+            return "PDF"
         elif any(w in cat_lower for w in ["ai", "tool", "app"]):
             return "TOOL"
         else:
@@ -462,8 +674,42 @@ class TopicMasterAgent:
                 titles.append(t)
         return titles
 
+    def get_covered_blocklist(self, limit: int = 30) -> Dict[str, Any]:
+        """Extracts recent titles, all covered tool names, and covered dad/funny premises."""
+        history = self.load_covered_history()
+        titles = [item.get("title") or item.get("topic_title") or item.get("slug") for item in history[-limit:] if item.get("title") or item.get("slug")]
+
+        tools = set()
+        premises = set()
+        for item in history:
+            t = normalize_entity_name(item.get("tool_name"))
+            if t and t not in {"opentool", "ai", "app", "tool", "freetool", "aiapp"}:
+                tools.add(item.get("tool_name"))
+            p = item.get("angle_tag") or item.get("premise")
+            if p:
+                premises.add(str(p))
+            t_low = (item.get("title") or "").lower()
+            if "ram" in t_low and "cleaner" in t_low:
+                premises.add("phone storage cleaner / RAM booster apps")
+            elif "scam" in t_low or "whatsapp" in t_low or "lottery" in t_low:
+                premises.add("WhatsApp lottery / scam link forwards")
+            elif "battery" in t_low or "overnight" in t_low:
+                premises.add("battery 100% charging and overnight myths")
+            elif "printer" in t_low or "cartridge" in t_low:
+                premises.add("printer ink cartridge scam")
+            elif "apk" in t_low:
+                premises.add("shady APK downloads")
+            elif "smart tv" in t_low or "tv spying" in t_low:
+                premises.add("smart TV spying / mic paranoia")
+
+        return {
+            "titles": titles,
+            "tools": sorted(list(tools)),
+            "dad_premises": sorted(list(premises)),
+        }
+
     def record_covered_topics(self, new_topics: List[Dict[str, Any]]):
-        """Appends freshly selected topics to inbox/covered_topics.json."""
+        """Appends freshly selected topics to inbox/covered_topics.json with rich entity metadata."""
         history = self.load_covered_history()
         today_str = datetime.now().strftime("%Y-%m-%d")
 
@@ -477,13 +723,18 @@ class TopicMasterAgent:
                 "auto_dm_keyword": topic.get("auto_dm_keyword", "LINK"),
                 "category": topic.get("category", "Trending Tech"),
                 "viral_score": topic.get("viral_score", 85),
+                "tool_name": topic.get("tool_name") or topic.get("toolName", ""),
+                "github_repo": topic.get("github_repo") or topic.get("githubRepo", ""),
+                "brand_domain": topic.get("brand_domain") or topic.get("brandDomain", ""),
+                "angle_tag": topic.get("angle_tag") or topic.get("premise", ""),
+                "format_type": topic.get("format_type", ""),
             })
 
         self.covered_topics_file.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(self.covered_topics_file, "w", encoding="utf-8") as f:
                 json.dump(history, f, indent=2, ensure_ascii=False)
-            print(f"💾 [TopicMaster] Saved {len(new_topics)} topic(s) into inbox/covered_topics.json.")
+            print(f"💾 [TopicMaster] Saved {len(new_topics)} topic(s) with entity tags into inbox/covered_topics.json.")
         except Exception as e:
             print(f"⚠️ TopicMaster: Failed to write covered_topics.json: {e}")
 
@@ -580,13 +831,25 @@ class TopicMasterAgent:
         Rejects anything < 78 or smelling like narrow CS trivia. Returns top N winners.
         """
         today_str = datetime.now().strftime("%B %d, %Y")
+        today_date_str = datetime.now().strftime("%Y-%m-%d")
+        seed_int = int(hashlib.md5(today_date_str.encode()).hexdigest(), 16)
+        today_niche = DAILY_FREE_NICHES[seed_int % len(DAILY_FREE_NICHES)]
 
         signals_summary = []
         for idx, s in enumerate(signals[:20], 1):
             signals_summary.append(f"{idx}. [{s['source']}] {s['title']}")
         signals_text = "\n".join(signals_summary) if signals_summary else "No live feeds available."
 
-        excluded_text = "\n".join(f"- {t}" for t in covered_history[-50:]) if covered_history else "- None."
+        blocklist = self.get_covered_blocklist(limit=30)
+        covered_tools_str = ", ".join(blocklist["tools"][:35]) if blocklist["tools"] else "None yet."
+        covered_premises_str = ", ".join(blocklist["dad_premises"][:15]) if blocklist["dad_premises"] else "None yet."
+        covered_titles_str = "\n".join(f"- {t}" for t in blocklist["titles"][-30:]) if blocklist["titles"] else "- None."
+
+        uncovered_dad_premises = [
+            p for p in DAD_CLASH_PREMISES
+            if p["premise"] not in blocklist["dad_premises"] and p["tag"] not in blocklist["dad_premises"]
+        ]
+        today_dad = uncovered_dad_premises[seed_int % len(uncovered_dad_premises)] if uncovered_dad_premises else DAD_CLASH_PREMISES[seed_int % len(DAD_CLASH_PREMISES)]
 
         system_instruction = (
             "You are TopicMaster: The World-Class Viral Media Strategist for short-form video (Instagram Reels / YouTube Shorts).\n"
@@ -604,7 +867,7 @@ class TopicMasterAgent:
             "  * Underrated AI & App Workflows: 100% free zero-cost AI workflows that replace $20/mo subscriptions.\n"
             "  * Tech Business Models: Shocking company profit breakdowns (NVIDIA, Costco, Spotify).\n"
             "  * Breaking Tech & Gadgets: Wild hardware drops and humanoid robots making old human skills look prehistoric.\n"
-            "  * Relatable Tech / Dev / Indian Dad Memes: Generational tech comedy (Dad vs WiFi / cloud storage bills).\n\n"
+            "  * Relatable Tech / Dev / Indian Dad Memes: Generational tech comedy (Dad vs phone storage cleaner apps / scam links / battery myths).\n\n"
             "OBJECTIVE VIRAL SCORING RUBRIC (0-100):\n"
             "1. Mass-Appeal Curiosity (0-25): Would a casual viewer, student, or dev freeze their thumb in the first 2 seconds?\n"
             "2. Save/DM Demand (0-25): Would thousands of viewers comment a keyword to get the 100% free link, playable port, or cheat sheet?\n"
@@ -615,7 +878,7 @@ class TopicMasterAgent:
 
         mem = self.load_channel_memory()
         f_counts = mem.get("format_counts", {})
-        funny_options = ["discovery_doc", "dad_clash", "dev_meme", "tech_secrets"]
+        funny_options = ["dad_clash", "discovery_doc", "dev_meme", "tech_secrets"]
         suggested_funny = min(funny_options, key=lambda f: f_counts.get(f, 0))
 
         prompt = f"""
@@ -624,28 +887,40 @@ Today's Date: {today_str}
 LIVE SOURCE SIGNALS TODAY:
 {signals_text}
 
-PREVIOUSLY COVERED (DO NOT REPEAT):
-{excluded_text}
+MANDATORY ROTATION TARGETS FOR TODAY:
+- REEL #1 NICHE: {today_niche['name']}
+  * Target Audience: {today_niche['target_audience']}
+  * Guidance: {today_niche['guidance']}
+  * Example Tool Inspirations: {', '.join(today_niche['example_tools'])}
+
+- REEL #2 PREMISE (DAD CLASH): {today_dad['title']}
+  * Relatable Myth: {today_dad['myth']}
+  * Relatable Conflict: {today_dad['conflict']}
+  * 0-3s Hook: "{today_dad['hook']}"
+
+STRICT DO-NOT-REPEAT BLOCKLIST:
+- BANNED TOOLS (DO NOT repeat or select these previously covered tools): {covered_tools_str}
+- BANNED PREMISES / MEMES (DO NOT repeat): {covered_premises_str}
+- RECENTLY COVERED TITLES:
+{covered_titles_str}
 
 MANDATORY DYNAMIC 2-REEL DAILY MIX (WHEN COUNT >= 2):
 If count >= 2:
-- Reel #1 MUST BE 'informative_roast': A 100% FREE tool, underrated AI app, free browser game, or open-source GitHub repo.
+- Reel #1 MUST BE 'informative_roast': A 100% FREE tool, underrated AI app, free browser game, or open-source GitHub repo matching today's niche '{today_niche['name']}'.
   * format_type: 'informative_roast'
   * has_resource_link: true
-  * auto_dm_keyword: Single real English word (e.g. 'PLAY', 'FREE', 'REPO', 'MAC', 'TOOL')
-  * tool_name: EXACT app, repository, or game name (e.g. 'EmulatorJS', 'NotebookLM', 'Stirling-PDF', 'Ollama'). NEVER a generic placeholder like 'Free Tool' or 'AI App'.
-  * brand_domain: Official website domain (e.g. 'emulatorjs.org', 'github.com', 'ollama.com').
-  * github_repo: GitHub 'owner/repo' slug if open-source (e.g. 'emulator-js/emulator.js' or 'Frooodle/Stirling-PDF'), else empty string.
+  * auto_dm_keyword: Single real English word (e.g. 'PLAY', 'FREE', 'REPO', 'PDF', 'TOOL')
+  * tool_name: EXACT app, repository, or game name (e.g. 'LocalSend', 'Stirling-PDF', 'EmulatorJS', 'Photopea'). NEVER a generic placeholder like 'Free Tool' or 'AI App'.
+  * brand_domain: Official website domain (e.g. 'localsend.org', 'stirlingpdf.com', 'emulatorjs.org').
+  * github_repo: GitHub 'owner/repo' slug if open-source (e.g. 'localsend/localsend' or 'Frooodle/Stirling-PDF'), else empty string.
   * real_steps: Exactly 3 concrete, real, reproducible steps (never generic fluff like 'Download and install').
-- Reel #2 MUST BE 'funny_story' with rotation style '{suggested_funny}':
-  * format_type: '{suggested_funny}'
+- Reel #2 MUST BE 'dad_clash' (or '{suggested_funny}'):
+  * format_type: 'dad_clash'
   * has_resource_link: false
   * auto_dm_keyword: '' (empty string, NO DM link keyword)
-  * cta_phrase: Viral share/tag CTA (e.g. 'Tag that dev in your group whose credits just ran out.' if discovery_doc, or 'Send this to your friend who still codes without AI.')
-  * Core humor:
-    - If discovery_doc: British documentary narrator (claude) observing the frantic junior developer in his natural habitat whose free AI tier just expired!
-    - If dad_clash: Indian Dad vs Tech (Dad investigating the tech bill / 5G router).
-    - If dev_meme: Developer survival meme / coding without AI.
+  * cta_phrase: Viral share/tag CTA (e.g. 'Send this to your dad before he installs another RAM booster.')
+  * Core humor: Indian Dad vs Tech ({today_dad['conflict']}).
+    - Strictly block previously covered premises like 5G/Wi-Fi bills or AI side hustles.
 
 TASK:
 1. Brainstorm 8 diverse candidate reel angles inspired by the live signals and our core categories.
@@ -753,35 +1028,39 @@ JSON Schema:
 
         valid_candidates.sort(key=lambda x: x.get("viral_score", 0), reverse=True)
 
-        # Dynamic 2-Reel Mix Selection: 1 Informative Roast + 1 Funny Story / Wildlife Doc
+        # Dynamic 2-Reel Mix Selection: 1 Informative Roast + 1 Funny Story / Dad Clash
+        full_history = self.load_covered_history()
         if count >= 2:
             info_picks = [c for c in valid_candidates if c.get("has_resource_link") is not False and c.get("format_type") not in ["discovery_doc", "dad_clash", "dev_meme"]]
             funny_picks = [c for c in valid_candidates if c.get("has_resource_link") is False or c.get("format_type") in ["discovery_doc", "dad_clash", "dev_meme", "tech_secrets", "funny_story"]]
             selected = []
-            if info_picks:
-                selected.append(info_picks[0])
-            elif valid_candidates:
-                selected.append(valid_candidates[0])
 
-            if funny_picks:
-                for fp in funny_picks:
-                    if not selected or fp.get("topic_title") != selected[0].get("topic_title"):
-                        selected.append(fp)
-                        break
+            # 1. Select Informative Reel (Reel #1) matching today's niche
+            for cand in (info_picks or valid_candidates):
+                is_dup, reason = check_topic_duplication(cand, full_history, selected)
+                if is_dup:
+                    print(f"⚠️ [TopicMaster] Rejecting duplicate candidate '{cand.get('topic_title')}': {reason}")
+                    continue
+                cand["angle_tag"] = today_niche["id"]
+                selected.append(cand)
+                break
 
-            if len(selected) < 2 and len(valid_candidates) > 1:
-                cand2 = dict(valid_candidates[1])
-                cand2["format_type"] = suggested_funny
-                cand2["has_resource_link"] = False
-                cand2["auto_dm_keyword"] = ""
-                cand2["right_character"] = "claude" if suggested_funny == "discovery_doc" else cand2.get("right_character", "claude")
-                cand2["left_character"] = "dad" if suggested_funny == "dad_clash" else "junior_dev"
-                selected.append(cand2)
-            elif len(selected) < 2:
-                selected.append({
-                    "topic_title": "A Day in the Life of a Dev After Free AI Credits Run Out",
-                    "category": "Wildlife Dev Doc",
-                    "format_type": "discovery_doc",
+            # 2. Select Funny / Dad Clash Reel (Reel #2)
+            for fp in funny_picks:
+                is_dup, reason = check_topic_duplication(fp, full_history, selected)
+                if is_dup:
+                    print(f"⚠️ [TopicMaster] Rejecting duplicate funny candidate '{fp.get('topic_title')}': {reason}")
+                    continue
+                fp["angle_tag"] = today_dad["tag"]
+                selected.append(fp)
+                break
+
+            # If no non-duplicate candidates found, safely add today's fresh dad clash premise directly
+            if len(selected) < 2:
+                cand2 = {
+                    "topic_title": today_dad["title"],
+                    "category": "Indian Dad vs Tech",
+                    "format_type": "dad_clash",
                     "has_resource_link": False,
                     "auto_dm_keyword": "",
                     "viral_score": 96,
@@ -789,17 +1068,29 @@ JSON Schema:
                     "save_demand_score": 22,
                     "debate_potential_score": 24,
                     "roast_ragebait_score": 25,
-                    "why_viral": "Wildlife documentary parody of a junior dev panicking without AI autocomplete.",
-                    "roast_angle": "Calm British Claude voice narrates the dev struggling to remember basic syntax.",
-                    "left_character": "junior_dev",
-                    "right_character": "claude",
+                    "why_viral": f"Relatable household tech conflict: {today_dad['myth']}",
+                    "roast_angle": today_dad["conflict"],
+                    "left_character": "dad",
+                    "right_character": "junior_dev",
                     "scene_preset": "diner",
                     "resource_link_or_query": "",
-                    "core_conflict": "Nature documentary narrator vs frantic developer specimen",
-                })
+                    "core_conflict": today_dad["conflict"],
+                    "angle_tag": today_dad["tag"],
+                    "premise": today_dad["premise"],
+                }
+                selected.append(cand2)
             winners = [self._sanitize_topic(it) for it in selected[:count]]
         else:
-            winners = [self._sanitize_topic(it) for it in valid_candidates[:count]]
+            selected = []
+            for c in valid_candidates:
+                is_dup, reason = check_topic_duplication(c, full_history, selected)
+                if not is_dup:
+                    selected.append(c)
+                    if len(selected) >= count:
+                        break
+            if not selected and valid_candidates:
+                selected = valid_candidates[:count]
+            winners = [self._sanitize_topic(it) for it in selected[:count]]
 
         return winners
 
@@ -931,6 +1222,8 @@ JSON Schema:
             "githubRepo": github_repo,
             "real_steps": real_steps,
             "realSteps": real_steps,
+            "angle_tag": item.get("angle_tag", ""),
+            "premise": item.get("premise", ""),
         }
 
     # =========================================================================
@@ -938,62 +1231,108 @@ JSON Schema:
     # =========================================================================
 
     def _offline_fallback(self, count: int, covered_history: List[str]) -> List[Dict[str, Any]]:
-        """Selects high-performing uncovered topics from content_pillars.json."""
-        print("⚠️ [TopicMaster] Live feeds/Gemini unreachable; falling back to content_pillars.json.")
-        pool = []
-        if self.pillars_file.exists():
-            try:
-                with open(self.pillars_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                for pillar in data.get("pillars", []):
-                    for topic in pillar.get("topics", []):
-                        item = dict(topic)
-                        item["category"] = pillar.get("name")
-                        pool.append(item)
-            except Exception as e:
-                print(f"⚠️ TopicMaster: Failed reading content_pillars.json: {e}")
+        """Selects high-performing uncovered topics matching today's niche rotation and dad premise."""
+        print("⚠️ [TopicMaster] Live feeds/Gemini unreachable; falling back to offline curated rotation.")
+        full_history = self.load_covered_history()
+        today_date_str = datetime.now().strftime("%Y-%m-%d")
+        seed_int = int(hashlib.md5(today_date_str.encode()).hexdigest(), 16)
+        today_niche = DAILY_FREE_NICHES[seed_int % len(DAILY_FREE_NICHES)]
 
-        uncovered = [t for t in pool if t.get("title") not in covered_history and t.get("id") not in covered_history]
-        candidates = uncovered if uncovered else pool
+        blocklist = self.get_covered_blocklist(limit=30)
+        uncovered_dad_premises = [
+            p for p in DAD_CLASH_PREMISES
+            if p["premise"] not in blocklist["dad_premises"] and p["tag"] not in blocklist["dad_premises"]
+        ]
+        today_dad = uncovered_dad_premises[seed_int % len(uncovered_dad_premises)] if uncovered_dad_premises else DAD_CLASH_PREMISES[seed_int % len(DAD_CLASH_PREMISES)]
 
-        fallback_tools = [
-            {"tool": "EmulatorJS", "domain": "emulatorjs.org", "repo": "emulator-js/emulator.js", "steps": ["1. Open emulatorjs.org in Chrome", "2. Drag retro ROM into browser canvas", "3. Play full 60 FPS with zero lag"]},
-            {"tool": "Stirling-PDF", "domain": "stirlingpdf.com", "repo": "Frooodle/Stirling-PDF", "steps": ["1. Open self-hosted Stirling-PDF web app", "2. Select split, merge, or OCR operation", "3. 100% private offline PDF editing for $0"]},
-            {"tool": "NotebookLM", "domain": "notebooklm.google.com", "repo": "", "steps": ["1. Navigate to notebooklm.google.com", "2. Upload 50-page PDF or technical doc", "3. Generate podcast overview with Gemini 2.5 Flash"]},
-            {"tool": "Ollama", "domain": "ollama.com", "repo": "ollama/ollama", "steps": ["1. Run 'ollama run deepseek-r1' in terminal", "2. Local private inference on laptop GPU", "3. Cancel $20/month subscription traps forever"]}
+        mass_appeal_catalog = [
+            {"niche": "file_utility", "tool": "LocalSend", "domain": "localsend.org", "repo": "localsend/localsend", "title": "Free Open-Source AirDrop for Every Device", "steps": ["1. Install LocalSend on PC and phone", "2. Connect to same local Wi-Fi", "3. Share files at 50MB/s with zero cloud uploads"], "kw": "REPO"},
+            {"niche": "file_utility", "tool": "Stirling-PDF", "domain": "stirlingpdf.com", "repo": "Frooodle/Stirling-PDF", "title": "Stop Paying $20/mo to Edit PDFs Offline", "steps": ["1. Open self-hosted Stirling-PDF web app", "2. Select split, merge, or OCR operation", "3. 100% private offline PDF editing for $0"], "kw": "PDF"},
+            {"niche": "file_utility", "tool": "Upscayl", "domain": "upscayl.org", "repo": "upscayl/upscayl", "title": "AI Image Upscaler That Runs 100% Free on PC", "steps": ["1. Download open-source Upscayl app", "2. Drop blurry 720p photo or screenshot", "3. AI upscales to crisp 4K locally with $0 fees"], "kw": "FREE"},
+            {"niche": "retro_browser_game", "tool": "EmulatorJS", "domain": "emulatorjs.org", "repo": "emulator-js/emulator.js", "title": "Play Retro Games In Chrome on Potato Laptops", "steps": ["1. Open emulatorjs.org in Chrome", "2. Drag retro ROM into browser canvas", "3. Play full 60 FPS with zero lag"], "kw": "PLAY"},
+            {"niche": "retro_browser_game", "tool": "WebVM", "domain": "webvm.io", "repo": "leaningtech/webvm", "title": "Full Linux Virtual Machine In Chrome Tab", "steps": ["1. Navigate to webvm.io in browser", "2. Boot full Linux virtual machine in Chrome", "3. Run C/C++ and Doom with zero install"], "kw": "PLAY"},
+            {"niche": "privacy_system_speedup", "tool": "uBlock Origin", "domain": "ublockorigin.com", "repo": "gorhill/uBlock", "title": "Block Every Single YouTube Ad for Free", "steps": ["1. Add uBlock Origin extension to browser", "2. Enable advanced filter lists", "3. Block every YouTube and website ad for $0"], "kw": "FREE"},
+            {"niche": "privacy_system_speedup", "tool": "BleachBit", "domain": "bleachbit.org", "repo": "bleachbit/bleachbit", "title": "Free 30GB Disk Space With Open-Source Cleaner", "steps": ["1. Open open-source BleachBit", "2. Select system cache and browser bloat", "3. Free 30GB disk space in 10 seconds"], "kw": "TOOL"},
+            {"niche": "local_ai_creative", "tool": "Photopea", "domain": "photopea.com", "repo": "", "title": "Free Browser Alternative to Adobe Photoshop", "steps": ["1. Open photopea.com in any browser", "2. Load any PSD or RAW photo file", "3. 100% free Photoshop alternative for $0"], "kw": "TOOL"},
+            {"niche": "local_ai_creative", "tool": "Ollama", "domain": "ollama.com", "repo": "ollama/ollama", "title": "Run Private AI Models Locally on Any Laptop", "steps": ["1. Run 'ollama run deepseek-r1' in terminal", "2. Local private AI inference on laptop GPU", "3. Cancel $20/month subscription traps forever"], "kw": "REPO"},
+            {"niche": "student_productivity", "tool": "NotebookLM", "domain": "notebooklm.google.com", "repo": "", "title": "Turn Any 50-Page PDF Into a Free Audio Podcast", "steps": ["1. Navigate to notebooklm.google.com", "2. Upload 50-page PDF or technical doc", "3. Generate interactive podcast overview with Gemini"], "kw": "TOOL"},
+            {"niche": "student_productivity", "tool": "Draw.io", "domain": "app.diagrams.net", "repo": "jgraph/drawio", "title": "Free Architecture Diagrams With Zero Paywalls", "steps": ["1. Open app.diagrams.net in browser", "2. Create architecture diagrams and flowcharts", "3. Export SVG with zero account or paywall"], "kw": "TOOL"},
+            {"niche": "hidden_os_hack", "tool": "QuickLook", "domain": "pooi.moe/QuickLook", "repo": "QL-Win/QuickLook", "title": "Get Mac Spacebar Preview on Windows for $0", "steps": ["1. Install QuickLook from GitHub", "2. Highlight any file in Windows Explorer", "3. Hit Spacebar for instant macOS file preview"], "kw": "REPO"},
+            {"niche": "hidden_os_hack", "tool": "RustDesk", "domain": "rustdesk.com", "repo": "rustdesk/rustdesk", "title": "Free Open-Source Remote Desktop Alternative", "steps": ["1. Download open-source RustDesk", "2. Enter target device 9-digit ID", "3. 100% free self-hosted remote desktop with zero time limits"], "kw": "REPO"},
         ]
 
-        winners = []
-        for i in range(count):
-            pick = candidates[i % len(candidates)] if candidates else {}
-            fb = fallback_tools[i % len(fallback_tools)]
-            is_informative = (i == 0)
-            sanitized = self._sanitize_topic({
-                "topic_title": pick.get("title", f"Play 3D Games In Chrome With {fb['tool']}"),
-                "category": pick.get("category", "Free Tools & Repos") if is_informative else "Wildlife Dev Doc",
-                "format_type": "informative_roast" if is_informative else "discovery_doc",
-                "has_resource_link": is_informative,
-                "viral_score": 90,
-                "curiosity_score": 24,
-                "save_demand_score": 23,
-                "debate_potential_score": 21,
-                "roast_ragebait_score": 22,
-                "why_viral": "Proven high-retention evergreen ragebait archetype.",
-                "roast_angle": "AI roasts human wasting hours on manual effort vs instant automated tools.",
-                "auto_dm_keyword": pick.get("cta_keyword", "PLAY") if is_informative else "",
-                "left_character": pick.get("left_character", "junior_dev"),
-                "right_character": pick.get("right_character", "claude"),
-                "scene_preset": "diner",
-                "resource_link_or_query": f"https://{fb['domain']}",
-                "core_conflict": pick.get("core_conflict", "Human manual struggle vs AI effortless roast facts"),
-                "tool_name": fb["tool"],
-                "brand_domain": fb["domain"],
-                "github_repo": fb["repo"],
-                "real_steps": fb["steps"],
-            })
-            winners.append(sanitized)
+        # Prioritize tools matching today's niche that haven't been covered
+        niche_matches = [t for t in mass_appeal_catalog if t["niche"] == today_niche["id"]]
+        uncovered_niche_tools = []
+        for t in niche_matches:
+            cand_test = {"tool_name": t["tool"], "github_repo": t["repo"], "brand_domain": t["domain"], "topic_title": t["title"]}
+            is_dup, _ = check_topic_duplication(cand_test, full_history)
+            if not is_dup:
+                uncovered_niche_tools.append(t)
 
-        return winners
+        if not uncovered_niche_tools:
+            for t in mass_appeal_catalog:
+                cand_test = {"tool_name": t["tool"], "github_repo": t["repo"], "brand_domain": t["domain"], "topic_title": t["title"]}
+                is_dup, _ = check_topic_duplication(cand_test, full_history)
+                if not is_dup:
+                    uncovered_niche_tools.append(t)
+
+        selected_fb = uncovered_niche_tools[0] if uncovered_niche_tools else mass_appeal_catalog[0]
+
+        winners = []
+        # Reel #1: Informative Roast
+        reel1 = self._sanitize_topic({
+            "topic_title": selected_fb["title"],
+            "category": today_niche["name"],
+            "format_type": "informative_roast",
+            "has_resource_link": True,
+            "viral_score": 95,
+            "curiosity_score": 25,
+            "save_demand_score": 24,
+            "debate_potential_score": 22,
+            "roast_ragebait_score": 24,
+            "why_viral": f"Replaces paid subscriptions with 100% free {selected_fb['tool']}.",
+            "roast_angle": f"AI roasts humans still wasting money on paid tools when {selected_fb['tool']} exists for $0.",
+            "auto_dm_keyword": selected_fb["kw"],
+            "left_character": "junior_dev",
+            "right_character": "claude",
+            "scene_preset": "diner",
+            "resource_link_or_query": f"https://{selected_fb['domain']}",
+            "core_conflict": f"Paying expensive subscriptions vs instant free {selected_fb['tool']}",
+            "tool_name": selected_fb["tool"],
+            "brand_domain": selected_fb["domain"],
+            "github_repo": selected_fb["repo"],
+            "real_steps": selected_fb["steps"],
+            "angle_tag": today_niche["id"],
+        })
+        winners.append(reel1)
+
+        if count >= 2:
+            # Reel #2: Fresh Relatable Dad Clash Premise
+            reel2 = self._sanitize_topic({
+                "topic_title": today_dad["title"],
+                "category": "Indian Dad vs Tech",
+                "format_type": "dad_clash",
+                "has_resource_link": False,
+                "auto_dm_keyword": "",
+                "viral_score": 96,
+                "curiosity_score": 25,
+                "save_demand_score": 22,
+                "debate_potential_score": 24,
+                "roast_ragebait_score": 25,
+                "why_viral": f"Relatable household tech conflict: {today_dad['myth']}",
+                "roast_angle": today_dad["conflict"],
+                "left_character": "dad",
+                "right_character": "junior_dev",
+                "scene_preset": "diner",
+                "resource_link_or_query": "",
+                "core_conflict": today_dad["conflict"],
+                "angle_tag": today_dad["tag"],
+                "premise": today_dad["premise"],
+            })
+            winners.append(reel2)
+
+        return winners[:count]
 
     # =========================================================================
     # 5. PUBLIC DISCOVERY INTERFACE

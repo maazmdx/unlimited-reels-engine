@@ -34,7 +34,8 @@ except ImportError:
 BANNED_WORDS = [
     "framework", "paradigm", "optimize", "optimization", "optimizing",
     "biometric", "infrastructure", "synergy", "synergies", "utilize", "utilizing",
-    "collaboration", "delivers", "delivering", "latency", "ecosystem"
+    "collaboration", "delivers", "delivering", "latency", "ecosystem",
+    "workflow", "workflows", "manual coding", "leverage", "leveraging", "unlock", "unlocking"
 ]
 
 VOCABULARY_REPLACEMENTS = [
@@ -53,6 +54,11 @@ VOCABULARY_REPLACEMENTS = [
     (re.compile(r"\bdelivers\b", re.IGNORECASE), "gives"),
     (re.compile(r"\blatency\b", re.IGNORECASE), "delay"),
     (re.compile(r"\becosystems?\b", re.IGNORECASE), "setup"),
+    (re.compile(r"\bworkflows?\b", re.IGNORECASE), "setup"),
+    (re.compile(r"\bmanual coding\b", re.IGNORECASE), "coding by hand"),
+    (re.compile(r"\bleverag(e|ed|es|ing)\b", re.IGNORECASE), "use"),
+    (re.compile(r"\bunlock(ed|s|ing)?\b", re.IGNORECASE), "get"),
+    (re.compile(r"\bhumans love doing\b", re.IGNORECASE), "why do people"),
 ]
 
 
@@ -277,11 +283,11 @@ class HookMasterAgent:
             "You are HookMaster: The World's Foremost 0-3s Short-Form Video Retention Scientist.\n"
             "Your motto: The first 3 seconds decide if 100,000 people watch or swipe away.\n\n"
             "STRICT VOCABULARY RULE (SIMPLE SPOKEN ENGLISH ONLY - 6th to 8th GRADE LEVEL):\n"
-            "- Explicitly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem'.\n"
+            "- Explicitly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', 'workflow', 'manual coding', 'leverage', 'unlock'.\n"
             "- Write in short, punchy, everyday spoken English that anyone on Instagram understands instantly.\n\n"
-            "STORY-FIRST DRAMATIC HOOK MANDATE (ZERO AD/INFOMERCIAL OPENERS):\n"
-            "- STRICTLY BANNED: Ad lines, infomercial openers, or generic pitches like 'Run X in your browser', 'Look at X', 'Why is nobody talking about X', 'Check this tool out', 'Stop doing X by hand'.\n"
-            "- MANDATORY: Start mid-conversation with raw human pain, shock, disbelief, financial embarrassment, or broken hardware (e.g., 'Bro... my laptop literally died just opening Chrome.', 'Claude... my card just got charged twenty dollars for what?', 'Wait... why is my computer smoking right now?').\n"
+            "STORY-FIRST DRAMATIC PATTERN-INTERRUPT HOOK (ZERO GENERIC / AD OPENERS):\n"
+            "- STRICTLY BANNED OPENERS: 'Bro your slow workflow...', 'Humans love doing...', 'Humans love...', 'Wait there is no way...', 'There is no way...', 'Look at this tool right now...', 'Stop doing X by hand...', 'Why is nobody talking about...', 'Check this tool out'.\n"
+            "- MANDATORY: Start with a concrete 0-3s pattern-interrupt contrast or shock (e.g. 'Still paying twenty dollars a month to edit PDFs?', 'Dad, why did you install 4 RAM booster apps?', 'My laptop literally froze opening a two-megabyte file.').\n"
             "- MAXIMUM 10 WORDS. Zero exceptions.\n"
             "- ZERO FILLER: Never start with 'Hey guys', 'Did you know', 'So today'.\n\n"
             "You must write and score 3 distinct hooks:\n"
@@ -338,7 +344,21 @@ JSON Schema:
                 parsed = json.loads(cleaned.strip())
                 if "winning_hook" in parsed:
                     # Sanitize winning hook to simple spoken English
-                    parsed["winning_hook"] = sanitize_simple_spoken_english(parsed["winning_hook"])
+                    win_h = sanitize_simple_spoken_english(parsed["winning_hook"])
+                    # Guard against generic openers
+                    banned_prefixes = [
+                        "bro your slow workflow", "humans love doing", "humans love",
+                        "wait there is no way", "there is no way", "look at this tool",
+                        "stop doing", "why is nobody talking", "check this tool out"
+                    ]
+                    if any(win_h.lower().startswith(bp) for bp in banned_prefixes) or len(win_h.split()) < 3:
+                        if "pdf" in (str(category) + " " + str(title)).lower():
+                            win_h = "Still paying twenty dollars a month to edit PDFs?"
+                        elif "dad" in (str(category) + " " + str(title)).lower() or "ram" in (str(category) + " " + str(title)).lower():
+                            win_h = "Dad, why did you install four RAM booster apps?"
+                        else:
+                            win_h = f"Wait... why am I paying monthly fees for this?"
+                    parsed["winning_hook"] = win_h
                     for h in parsed.get("hooks", []):
                         if "hook" in h:
                             h["hook"] = sanitize_simple_spoken_english(h["hook"])
@@ -348,7 +368,19 @@ JSON Schema:
 
         # Deterministic fallback battle in story-first spoken English
         cat_lower = str(category).lower() + " " + str(title).lower()
-        if "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
+        if "pdf" in cat_lower:
+            fallback_h1 = "Still paying twenty dollars a month to edit PDFs?"
+            fallback_h2 = "Wait... Adobe charged me twenty bucks just to sign this?"
+            fallback_h3 = "Why am I paying twenty dollars to merge two files?"
+        elif "ram" in cat_lower or "cleaner" in cat_lower or ("dad" in cat_lower and "booster" in cat_lower):
+            fallback_h1 = "Dad, why did you install four RAM booster apps?"
+            fallback_h2 = "Dad, your phone is literally burning hot right now."
+            fallback_h3 = "Dad believes downloading four cleaner apps doubles his RAM."
+        elif "scam" in cat_lower or "whatsapp" in cat_lower or "lottery" in cat_lower:
+            fallback_h1 = "Dad is about to send bank details on WhatsApp."
+            fallback_h2 = "Dad, you did not win a free iPhone on WhatsApp."
+            fallback_h3 = "Dad is forwarding scam lottery links to twenty family groups."
+        elif "game" in cat_lower or "retro" in cat_lower or "emulator" in cat_lower:
             fallback_h1 = "Bro... my laptop literally starts smoking when I open Steam."
             fallback_h2 = "Wait... my fan sounds like a dying jet engine right now."
             fallback_h3 = "Bro... I am not downloading eighty gigabytes just to play."
@@ -365,7 +397,7 @@ JSON Schema:
             fallback_h2 = "Bro... this free app made twenty billion dollars off us."
             fallback_h3 = "Claude... tell me why everyone is going broke on subscriptions."
         elif "dad" in cat_lower:
-            fallback_h1 = "Bro... my Wi-Fi is completely dead and support put me on hold."
+            fallback_h1 = "Dad, why did you install four RAM booster apps?"
             fallback_h2 = "Dad... why did you just hit the router with a shoe?"
             fallback_h3 = "Bro... my internet went down right before my meeting."
         else:
@@ -475,19 +507,19 @@ JSON Schema:
             "You are HookMaster: Screenplay & Dialogue Specialist for 9:16 vertical 3D dialogue reels.\n"
             f"Your objective: Write high-retention 40-50s screenplays using the comedy structure: '{comedy_structure}'.\n\n"
             "STRICT VOCABULARY BAN (SIMPLE SPOKEN ENGLISH ONLY - 6th to 8th GRADE LEVEL):\n"
-            "- Strictly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', or any corporate/academic buzzwords.\n\n"
+            "- Strictly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', 'workflow', 'manual coding', 'leverage', 'unlock', or any corporate/academic buzzwords.\n\n"
             "EXPLICITLY BANNED REPETITIVE FILLER PHRASES:\n"
-            "- Do NOT use: 'Wait there is no way', 'There is no way', 'Humans love', 'Look at step one', 'Wait step two says', 'zero dollar cost', 'before my ... explodes'.\n\n"
+            "- Do NOT use: 'Wait there is no way', 'There is no way', 'Humans love', 'Look at step one', 'Wait step two says', 'zero dollar cost', 'before my ... explodes', 'bro your slow workflow'.\n\n"
             f"COMEDY STRUCTURE: '{comedy_structure}'\n"
             "- 'brutal_roast': AI orb savagely mocks human laziness, slow manual coding, or paying subscriptions. Human in deep denial until proved wrong.\n"
-            "- 'dad_interrogation': Dad fiercely grills dev over high bills, internet charges, or useless gadgets. Dev scrambles to prove it's $0 free.\n"
+            "- 'dad_interrogation': Dad fiercely grills dev or gets busted over RAM booster apps, scam WhatsApp links, or battery myths.\n"
             "- 'speedrun_expose': High-octane expose tearing down a corporate paywall in record time.\n"
             "- 'friend_betrayal': Smug mockery of a friend or coworker who wasted 4 hours on what takes 2 seconds for free.\n\n"
             f"MANDATORY PACING RULES:\n"
-            "- Fast punchy 5 to 12 word turns (NEVER monologues).\n"
-            f"- The exact tool_name '{tool_name}' MUST be spoken naturally by Turn 2 or Turn 3 (NEVER delay until Turn 5).\n"
-            "- Real comedic escalation across all 11-12 turns.\n"
-            f"- Turn 9 Notification: MUST match the exact topic '{title}' (e.g. 'Task Finished • 0 Ads • $0 Saved' or 'Wi-Fi Restored • Bill: ₹0'). NEVER generic 'lead engineer five tickets'.\n"
+            "- Fast punchy 8 to 14 word turns (snappy back-and-forth banter, zero monologues, natural contractions).\n"
+            f"- The exact tool_name '{tool_name}' MUST be spoken naturally by Turn 2 or Turn 3 for Reel #1 (NEVER delay until Turn 5).\n"
+            "- Turn 8-9 Escalation: MUST feature a genuine relatable escalation or roast twist tied directly to the topic (e.g. unexpected cancellation fee, overheating phone alert, boss walking by). NEVER generic office ticket filler.\n"
+            f"- Turn 9 Notification: MUST match the exact topic '{title}' (e.g. 'Task Finished • 0 Ads • $0 Saved' or 'Battery Alert • 88°C').\n"
             f"- Final Turn MUST end with: '{final_turn_cta}'"
         )
 
@@ -760,10 +792,10 @@ JSON Schema:
             else:
                 tool_name = str(title).split()[0] if title else "OpenTool"
 
-        structure_options = ["brutal_roast", "dad_interrogation", "speedrun_expose", "friend_betrayal"]
         if left_char == "dad" or "dad" in format_type:
             structure = "dad_interrogation"
         else:
+            structure_options = ["brutal_roast", "speedrun_expose", "friend_betrayal"]
             hash_val = sum(ord(c) for c in (topic.get("id") or str(title) or "reel"))
             structure = structure_options[hash_val % len(structure_options)]
 
@@ -784,28 +816,51 @@ JSON Schema:
 
         if structure == "dad_interrogation":
             badge = "DAD TECH AUDIT"
-            card_title = f"{tool_name} Fix"
-            toast = {
-                "app_name": "WhatsApp",
-                "sender": "Dad",
-                "message": f"Wi-Fi Restored • Monthly Bill: ₹0",
-                "icon": "WIFI",
-                "time": "now",
-            }
-            dialogue = [
-                {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Did you check the monthly router bill again, sir?", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "Why are we paying ₹999 every month for slow internet?", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Because you pay technicians before checking free software.", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "Show me the real solution before I get mad.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": f"Open {tool_name} to optimize the network with zero fees.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": f"So {tool_name} requires zero credit card charges?", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Completely free with zero hidden technician fees.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "He tried wrapping the modem in kitchen aluminum foil.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Classic dad engineering before checking the software.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "Tell everyone to stop wasting money right now.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
-            ]
+            card_title = f"{clean_headline_truncation(title, 20)}"
+            if any(k in cat_lower for k in ["scam", "whatsapp", "lottery", "iphone", "bank"]):
+                toast = {
+                    "app_name": "WhatsApp",
+                    "sender": "Security Alert",
+                    "message": "Phishing Blocked • Scam Link Neutralized",
+                    "icon": "ALERT",
+                    "time": "now",
+                }
+                dialogue = [
+                    {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "I just won a brand new phone on WhatsApp today!", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": "Dad, please do not forward that link to your family groups.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "The message has a gold badge and says congratulations, sir!", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": "Scammers made that fake website three hours ago to steal passwords.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "They only asked for my card details to pay ten rupees shipping.", "emotion": "smug", "pause_after": 0.30},
+                    {"speaker": left_char, "character_id": left_char, "text": "That small shipping fee will empty your entire retirement bank account.", "emotion": "shocked", "pause_after": 0.30},
+                    {"speaker": right_char, "character_id": right_char, "text": "Wait, so nobody is delivering a free smartphone to our door?", "emotion": "smug", "pause_after": 0.30},
+                    {"speaker": left_char, "character_id": left_char, "text": "Your bank app just blocked two unauthorized foreign transaction attempts!", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "Delete that message immediately and lock my online debit card.", "emotion": "smug", "pause_after": 0.30},
+                    {"speaker": left_char, "character_id": left_char, "text": "Never click random WhatsApp prize links ever again in your life.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
+                ]
+            else:
+                toast = {
+                    "app_name": "Android System",
+                    "sender": "Battery Guard",
+                    "message": "Overheating Alert • CPU 88°C • Cleaner Apps Active",
+                    "icon": "ALERT",
+                    "time": "now",
+                }
+                dialogue = [
+                    {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "Because the turbo rocket animation speeds up my phone memory nicely!", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": "Modern phones manage memory automatically without downloading shady task killer apps.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "Then why did the speed booster app give me ninety percent?", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": "Those apps show full-screen ads and drain eighty percent of battery.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "They promised to clean junk files and double my processor speed.", "emotion": "smug", "pause_after": 0.30},
+                    {"speaker": left_char, "character_id": left_char, "text": "Your phone is literally burning hot right now in your hand.", "emotion": "shocked", "pause_after": 0.30},
+                    {"speaker": right_char, "character_id": right_char, "text": "That warmth means the turbo cleaner engine is running very hard!", "emotion": "smug", "pause_after": 0.30},
+                    {"speaker": left_char, "character_id": left_char, "text": "Look at this notification: your battery temperature just reached eighty degrees.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": "Uninstall them quickly before this phone explodes in the living room.", "emotion": "smug", "pause_after": 0.30},
+                    {"speaker": left_char, "character_id": left_char, "text": "Deleting all four apps right now, and stop clicking random ads.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
+                ]
         elif structure == "speedrun_expose":
             badge = "SPEEDRUN EXPOSE"
             card_title = f"{tool_name} Hack"
@@ -818,20 +873,20 @@ JSON Schema:
             }
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Corporate SaaS companies pray you never discover this trick.", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "They charge enterprise teams thousands every single month.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Because naive developers keep swiping company cards.", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "Which secret tool actually bypasses that paywall?", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": f"Everyone switched to {tool_name} because it runs locally.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} handles all heavy compute without server fees?", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Instant execution in your browser with zero latency.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "My boss thinks this required a whole engineering sprint.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Your screen confirmed: task finished with zero ads.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "They have no clue it took thirty seconds.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Corporate software companies pray you never discover this free trick.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": f"Wait, {tool_name} actually bypasses their entire expensive paywall?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Everyone switched to {tool_name} because it runs directly on your machine.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "They charge enterprise teams thousands of dollars every single month.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Because naive users keep swiping their cards without searching first.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": f"So {tool_name} handles all heavy compute without any server fees?", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Instant execution in your browser with zero delay and zero limits.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "The sales team just emailed asking why we cancelled enterprise licenses!", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Tell them open-source software just saved the company thirty thousand dollars.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "I am sending this to our whole team right now.", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
             ]
         elif structure == "friend_betrayal":
-            badge = "WORKFLOW BUSTED"
+            badge = "TASK BUSTED"
             card_title = f"{tool_name} Reveal"
             toast = {
                 "app_name": "Slack",
@@ -842,16 +897,16 @@ JSON Schema:
             }
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "You spent four hours doing this by hand?", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "I was following the standard company documentation!", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "That documentation was written six years ago, genius.", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "Tell me there is an automated shortcut.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": f"Use {tool_name} and finish the entire workflow instantly.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} replaces my entire afternoon of manual work?", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "One click with verified zero subscription fees.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "My coworker just saw my screen and gasped.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Send him the link before he copies you wrong.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "I am never doing this manually ever again.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "You spent four hours doing this by hand like that?", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": f"Is there a secret tool that finishes this immediately?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Use {tool_name} and finish the entire setup in two clicks.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} replaces my entire afternoon of manual boring work?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "One click in your browser with verified zero subscription fees.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "My coworker just saw my finished screen and gasped aloud.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "Send him the link before he copies your old method.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Our boss just walked in asking how we finished so fast!", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Tell him free tools just saved our entire team four hours.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "I am never doing this by hand ever again.", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
             ]
         else: # brutal_roast
@@ -866,16 +921,16 @@ JSON Schema:
             }
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "You really spent forty dollars on that bloated app?", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "My paid subscription actually works though.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "It steals your data and lags every single day.", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "Then what magical alternative do you use?", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": f"I run {tool_name} directly in my browser for free.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} finishes the whole job without installing bloatware?", "emotion": "shocked", "pause_after": 0.30},
-                {"speaker": right_char, "character_id": right_char, "text": "Completely open-source with verified unlimited speed.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "My monthly subscription charges just renewed yesterday.", "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Your bank account is weeping while you defend paywalls.", "emotion": "smug", "pause_after": 0.30},
-                {"speaker": left_char, "character_id": left_char, "text": "I am cancelling my paid account right now.", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "You really spent twenty dollars on that bloated subscription app?", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": "My paid subscription works fine, so why change anything?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Because {tool_name} does the exact same thing completely free.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": f"Wait, {tool_name} runs locally without any monthly subscription fees?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Zero subscription fees, zero cloud bloat, and runs right now.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Show me how it finishes this task without paid plugins.", "emotion": "shocked", "pause_after": 0.30},
+                {"speaker": right_char, "character_id": right_char, "text": "One click in your browser and your file is ready.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "Adobe just sent an alert trying to charge a cancellation fee!", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": "Classic paywall panic when humans discover free open-source software.", "emotion": "smug", "pause_after": 0.30},
+                {"speaker": left_char, "character_id": left_char, "text": "I am deleting that paid account and saving two hundred dollars.", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
             ]
 
