@@ -282,7 +282,18 @@ def test_pre_render_assertion_gate_negative_tests():
     except AssertionError as e:
         assert "2024" in str(e)
 
-    print("  ✅ Pre-Render Assertion Gate successfully blocked all 5 corrupted screenplay variants.")
+    # Positive: Auto-scrub of stray slop emojis from external LLM in seo_assets
+    clean_script = hook_master._fallback_screenplay(topic_payload, "Hook line", "junior_dev", "claude", "diner", "TOOL")
+    seo_with_slop_emojis = {
+        "caption_text": "Paid ad blocker? 🚀 Kills all ads ⚡️ fast 🤯!",
+        "pinned_comment": "Still paying in 2026? ⚡"
+    }
+    assert_screenplay_pre_render_integrity(clean_script, seo_with_slop_emojis)
+    assert "🚀" not in seo_with_slop_emojis["caption_text"], "Gate failed to scrub 🚀"
+    assert "⚡" not in seo_with_slop_emojis["caption_text"], "Gate failed to scrub ⚡"
+    assert "🤯" not in seo_with_slop_emojis["caption_text"], "Gate failed to scrub 🤯"
+
+    print("  ✅ Pre-Render Assertion Gate successfully blocked corrupted variants and auto-scrubbed stray emojis.")
 
 
 def test_zero_purple_components():

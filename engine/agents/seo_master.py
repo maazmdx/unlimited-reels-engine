@@ -58,11 +58,31 @@ VOCABULARY_REPLACEMENTS = [
 ]
 
 
+BANNED_SLOP_PURGE = [
+    ("🚀", ""),
+    ("⚡️", ""),
+    ("⚡", ""),
+    ("🤯", ""),
+    ("zero-dollar workflows", "verified free open-source tools"),
+    ("zero dollar workflows", "verified free open-source tools"),
+    ("verified zero local installation", "runs locally"),
+    ("stop crying human", "let's fix this"),
+    ("stop crying, human", "let's fix this"),
+    ("game-changer", "must-have tool"),
+    ("game changer", "must-have tool"),
+    ("revolutionize", "replace"),
+]
+
+
 def sanitize_simple_spoken_english(text: str) -> str:
-    """Replaces corporate buzzwords with simple, 6th-8th grade conversational English."""
-    cleaned = text
+    """Replaces corporate buzzwords and purges banned AI slop emojis and phrases."""
+    cleaned = str(text or "")
     for pattern, repl in VOCABULARY_REPLACEMENTS:
         cleaned = pattern.sub(repl, cleaned)
+    for target, repl in BANNED_SLOP_PURGE:
+        cleaned = re.sub(re.escape(target), repl, cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\bunlock\b", "access", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
     return cleaned
 
 
@@ -281,12 +301,13 @@ class SEOMasterAgent:
             f"Current Year: {current_year}\n"
             f"Draft Headline: {raw_headline}\n\n"
             "STRICT RULES (SIMPLE SPOKEN ENGLISH ONLY - 6th-8th GRADE LEVEL):\n"
-            "- Explicitly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', or any corporate fluff.\n"
+            "- Explicitly FORBIDDEN words and emojis: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', 'unlock', 'game-changer', 'revolutionize', 'zero-dollar workflows', 'stop crying human'.\n"
+            "- BANNED EMOJIS: NEVER use '🚀', '⚡', '⚡️', '🤯'.\n"
             "- Write in punchy, short sentences that anyone on Instagram understands in half a second.\n"
-            "- 'seo_headline': MUST explicitly emphasize '100% FREE' or '$0' in the title (e.g., 'Play Full GTA in Chrome [100% FREE]' or 'This $0 Tool Replaces 4 Hours of Work').\n"
+            "- 'seo_headline': MUST explicitly emphasize '100% FREE' or '$0' in the title (e.g., 'Play Full GTA in Chrome [100% FREE]' or 'This $0 Tool Replaces 4 Hours of Work'). Zero rocket or lightning emojis.\n"
             f"- 'pinned_comment': MUST be a spicy, diabolical ragebait debate question referencing the current year {current_year} (e.g., 'Still paying for PC cleaners in {current_year}? Be honest 💀' or 'Still downloading 80GB games on a potato laptop in {current_year}? Drop your excuse below 👇'). Never use 2024 or 2025.\n\n"
             "Return JSON with:\n"
-            "- 'seo_headline': A high-CTR, front-loaded Instagram SEO title with emoji and '100% FREE' (simple spoken English only)\n"
+            "- 'seo_headline': A high-CTR, front-loaded Instagram SEO title with '100% FREE' (simple spoken English, zero rocket/lightning emojis)\n"
             "- 'pinned_comment': A spicy ragebait debate question triggering instant comments\n"
             "- 'comment_replies': Exactly 3 friendly, distinct public comment replies confirming DM sent (to avoid IG bot throttle)"
         )
@@ -482,6 +503,9 @@ class SEOMasterAgent:
                 pinned_comment = f"{pinned_comment} in {current_year}"
 
         # 6. Tiered Hashtags (5-7 targeted niche + search hashtags, zero spam)
+        pinned_comment = sanitize_simple_spoken_english(pinned_comment)
+        seo_headline = sanitize_simple_spoken_english(seo_headline)
+        comment_replies = [sanitize_simple_spoken_english(r) for r in comment_replies]
         tiered_hashtags = self._build_tiered_hashtags(title, category, kw)
         hashtags_str = " ".join(tiered_hashtags)
 

@@ -343,7 +343,39 @@ def assert_screenplay_pre_render_integrity(
             if any("step 1" in str(r.get("label", "")).lower() for r in card_d["rows"]):
                 raise AssertionError("Pre-Render Gate Failed: Dad clash screenplay has software step cardData rows.")
 
-    # 4. Banned Placeholders and AI Slop Check across all screenplay text
+    # 4. Auto-scrub any stray slop emojis from screenplay and seo_assets before checking
+    slop_emojis = ["🚀", "⚡️", "⚡", "🤯"]
+    for sym in slop_emojis:
+        for d in dialogue:
+            if "text" in d and sym in d["text"]:
+                d["text"] = d["text"].replace(sym, "").strip()
+        card_data = script_data.get("cardData") or {}
+        if isinstance(card_data, dict):
+            for r in card_data.get("rows", []):
+                if isinstance(r, dict):
+                    if "label" in r and sym in r["label"]:
+                        r["label"] = r["label"].replace(sym, "").strip()
+                    if "value" in r and sym in r["value"]:
+                        r["value"] = r["value"].replace(sym, "").strip()
+        toast_data = script_data.get("toastData") or {}
+        if isinstance(toast_data, dict):
+            if "app_name" in toast_data and sym in toast_data["app_name"]:
+                toast_data["app_name"] = toast_data["app_name"].replace(sym, "").strip()
+            if "message" in toast_data and sym in toast_data["message"]:
+                toast_data["message"] = toast_data["message"].replace(sym, "").strip()
+        if seo_assets:
+            if "caption_text" in seo_assets and sym in seo_assets["caption_text"]:
+                seo_assets["caption_text"] = seo_assets["caption_text"].replace(sym, "")
+                if seo_assets.get("caption_path"):
+                    try:
+                        with open(seo_assets["caption_path"], "w", encoding="utf-8") as f:
+                            f.write(seo_assets["caption_text"])
+                    except Exception:
+                        pass
+            if "pinned_comment" in seo_assets and sym in seo_assets["pinned_comment"]:
+                seo_assets["pinned_comment"] = seo_assets["pinned_comment"].replace(sym, "")
+
+    # Banned Placeholders and AI Slop Check across all screenplay text
     from engine.agents.hook_master import BANNED_PLACEHOLDERS
     all_blobs = [str(d.get("text", "")) for d in dialogue]
     card_data = script_data.get("cardData") or {}
