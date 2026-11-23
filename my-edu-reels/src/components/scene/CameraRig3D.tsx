@@ -83,7 +83,7 @@ export function getCameraRigParams(
   let currentShot: CameraShotType = "wide";
   let prevShot: CameraShotType = "wide";
   let transitionStartFrame = 0;
-  const transitionDuration = 10; // 10-frame cubic ease-out
+  const transitionDuration = 6; // 6-frame cubic ease-out whip-pan transition
 
   if (forcedShot) {
     currentShot = forcedShot;
@@ -185,7 +185,14 @@ export function getCameraRigParams(
 
   let fov = interpolate(transitionT, [0, 1], [prevBase.fov, targetBase.fov]);
 
-  // Crash zoom (fov snap -6.0 + 12-frame cubic ease) on high-emotion / roast turns
+  // Crash zoom (12-18% punch-in snap -7.0 FOV + 12-frame cubic ease) on hook (Turn 0) and roast/twist turns (Turns 3, 8, 9)
+  const isHookTurn = !!activeTurn && activeTurn.turn_index === 0;
+  const isTwistTurn =
+    !!activeTurn &&
+    (activeTurn.turn_index === 3 ||
+      activeTurn.turn_index === 8 ||
+      activeTurn.turn_index === 9);
+
   const activeEmotion = (activeTurn?.emotion || "").toLowerCase();
   const isSmugRoast =
     !!activeTurn &&
@@ -199,7 +206,7 @@ export function getCameraRigParams(
       activeEmotion.includes("angr") ||
       isSmugRoast);
 
-  if (isHighEmotionRoast && activeTurn) {
+  if ((isHookTurn || isTwistTurn || isHighEmotionRoast) && activeTurn) {
     const roastAge = Math.max(0, frame - activeTurn.start_frame);
     if (roastAge <= 12) {
       const ease12 = interpolate(roastAge, [0, 12], [0, 1], {
@@ -207,8 +214,8 @@ export function getCameraRigParams(
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp",
       });
-      // Snap in by -6 FOV and ease back
-      const fovSnap = interpolate(ease12, [0, 1], [-6.0, 0]);
+      // Snap in by -7 FOV (~16% crash zoom) and ease back
+      const fovSnap = interpolate(ease12, [0, 1], [-7.0, 0]);
       fov += fovSnap;
     }
   }
@@ -284,9 +291,23 @@ export function getCameraRigParams(
     }
   }
 
+  // 6-frame notification pop-in screen shake on Turn 9 / Toast alert
+  let toastShakeX = 0;
+  let toastShakeY = 0;
+  if (turn9) {
+    const toastAge = frame - turn9.start_frame;
+    if (toastAge >= 0 && toastAge <= 8) {
+      const decay = (8 - toastAge) / 8;
+      toastShakeX = Math.sin(toastAge * 4.5) * 0.035 * decay;
+      toastShakeY = Math.cos(toastAge * 5.0) * 0.025 * decay;
+    }
+  } else if (isToastActive) {
+    toastShakeX = Math.sin(frame * 0.8) * 0.01;
+  }
+
   const position: [number, number, number] = [
-    baseX + orbitX + toastTiltX + shakeX,
-    baseY + orbitY + toastTiltY + shakeY,
+    baseX + orbitX + toastTiltX + shakeX + toastShakeX,
+    baseY + orbitY + toastTiltY + shakeY + toastShakeY,
     baseZ,
   ];
 

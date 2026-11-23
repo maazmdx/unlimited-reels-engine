@@ -328,7 +328,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     isProofCardActive,
     leftCharId,
     rightCharId,
-    forcedCameraShot
+    forcedCameraShot,
+    isToastActive
   );
 
   // Active speaker styling for subtitles
@@ -433,6 +434,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           leftCharId={leftCharId}
           rightCharId={rightCharId}
           forcedShot={forcedCameraShot}
+          isToastActive={isToastActive}
         />
 
         {/* 3D Environment: 4 Rotating Sets (diner, desk, living_room, rooftop) */}

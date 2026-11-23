@@ -326,11 +326,23 @@ class SEOMasterAgent:
 
         if len(bullets) < 3:
             t_disp = tool_name or "this tool"
-            d_disp = brand_domain or "official website"
+            d_disp = brand_domain or (f"github.com/{script_data.get('github_repo')}" if script_data.get("github_repo") else "official site")
+            rep_disp = script_data.get("replaces_paid_app") or "expensive $20/month subscriptions"
+            summary_hint = script_data.get("readme_summary") or script_data.get("real_description") or ""
+            step2_action = f"Run {t_disp} locally with zero cloud lag or server tracking"
+            if "browser" in summary_hint.lower() or "canvas" in summary_hint.lower():
+                step2_action = f"Run {t_disp} directly in your browser with zero installation"
+            elif "upscale" in summary_hint.lower():
+                step2_action = "Drop low-res photos to upscale with local AI models for free"
+            elif "pdf" in summary_hint.lower():
+                step2_action = "Split, merge, or OCR documents offline with 100% privacy"
+            elif "airdrop" in summary_hint.lower() or "transfer" in summary_hint.lower():
+                step2_action = "Transfer files at 50MB/s over local Wi-Fi without cloud uploads"
+
             bullets = [
-                f"• Setup: Open {d_disp} directly in your browser (zero install)",
-                f"• How it works: Run {t_disp} locally on your machine with zero server lag",
-                f"• The Payoff: Replaces expensive $20/month subscription traps for $0",
+                f"• Access: Open {d_disp} directly (zero payment or credit card)",
+                f"• Feature: {step2_action}",
+                f"• Payoff: 100% free forever, replacing {rep_disp}",
             ]
         bullets_text = "\n".join(bullets[:3])
 
@@ -400,7 +412,9 @@ class SEOMasterAgent:
 
         has_res = script_data.get("has_resource_link", script_data.get("hasResourceLink", True))
         cta_phrase = script_data.get("cta_phrase") or script_data.get("ctaText") or "Tag that dev in your group who needs to see this! 👇"
-        if has_res and kw:
+        if is_dad_clash:
+            cta_line = "💬 Send this to your dad or friend before they pay for another scam! 👇\n\n"
+        elif has_res and kw:
             cta_line = f"💬 Comment \"{kw}\" below and I'll DM you the free link!\n\n"
         else:
             cta_line = f"💬 {cta_phrase}\n\n"

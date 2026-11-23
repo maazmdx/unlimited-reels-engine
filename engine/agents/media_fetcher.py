@@ -15,8 +15,20 @@ import os
 import re
 import urllib.parse
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 import requests
+
+try:
+    from PIL import Image, ImageDraw, ImageFont
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
 
 from engine.dns_utils import enable_fast_dns
 enable_fast_dns()
@@ -212,16 +224,130 @@ def fetch_topic_logo(
     return None
 
 
+def is_blank_or_invalid_image(file_path: Path) -> bool:
+    """
+    Checks if saved image is blank, uniform, or corrupted:
+    - Size < 8192 bytes (< 8 KB).
+    - If PIL/numpy available, checks if > 92% of pixels are uniform / white / black.
+    """
+    if not file_path.exists():
+        return True
+    try:
+        size = file_path.stat().st_size
+        if size < 8192:
+            return True
+        if not HAS_PIL:
+            return False
+
+        with Image.open(file_path) as img:
+            rgb = img.convert("RGB")
+            w, h = rgb.size
+            if w < 100 or h < 100:
+                return True
+
+            if HAS_NUMPY:
+                arr = np.array(rgb)
+                # Check near-white pixels (R>235, G>235, B>235)
+                white_pixels = np.all(arr > 235, axis=-1)
+                white_ratio = float(np.mean(white_pixels))
+                if white_ratio > 0.92:
+                    return True
+                # Check near-black pixels (R<15, G<15, B<15)
+                black_pixels = np.all(arr < 15, axis=-1)
+                black_ratio = float(np.mean(black_pixels))
+                if black_ratio > 0.92:
+                    return True
+                # Check standard deviation across channels
+                if float(np.std(arr)) < 5.0:
+                    return True
+            else:
+                pixels = list(rgb.getdata())
+                sample = pixels[::max(1, len(pixels) // 2000)]
+                white_count = sum(1 for p in sample if p[0] > 235 and p[1] > 235 and p[2] > 235)
+                if (white_count / len(sample)) > 0.92:
+                    return True
+        return False
+    except Exception as e:
+        print(f"⚠️ [MediaFetcher] Error inspecting image {file_path}: {e}")
+        return True
+
+
+def generate_dark_proof_card(
+    tool_name: str,
+    brand_domain: str,
+    real_steps: Optional[List[Any]] = None,
+    out_path: Optional[Path] = None,
+    remotion_target: Optional[Path] = None,
+) -> Optional[str]:
+    """Generates a high-contrast dark card (900x600) so a reel NEVER renders a blank box."""
+    if not HAS_PIL:
+        return None
+    try:
+        width, height = 900, 600
+        img = Image.new("RGB", (width, height), color=(15, 23, 42))  # #0F172A slate-900
+        draw = ImageDraw.Draw(img)
+
+        # Draw outer rounded border
+        draw.rounded_rectangle([20, 20, width - 20, height - 20], radius=24, outline=(51, 65, 85), width=3)  # slate-700
+        # Draw header bar
+        draw.rounded_rectangle([40, 40, width - 40, 130], radius=16, fill=(30, 41, 59))  # slate-800
+
+        # Badge
+        draw.rounded_rectangle([60, 58, 260, 112], radius=10, fill=(16, 185, 129))  # emerald-500
+        draw.text((80, 72), "100% FREE PROOF", fill=(255, 255, 255))
+
+        # Title
+        display_title = (tool_name or "Verified Free Tool")[:35]
+        draw.text((290, 68), display_title, fill=(248, 250, 252))
+
+        # Subtitle / domain
+        domain_disp = brand_domain or "Official Open-Source Software"
+        draw.text((290, 96), domain_disp, fill=(148, 163, 184))
+
+        # Draw 3 step rows
+        steps = real_steps or [
+            "1. Open official link in Chrome or Safari",
+            "2. Run locally on device with zero tracking",
+            "3. 100% free functionality replacing paid traps"
+        ]
+        y = 170
+        for i, s in enumerate(steps[:3]):
+            draw.rounded_rectangle([40, y, width - 40, y + 110], radius=14, fill=(24, 33, 47), outline=(51, 65, 85), width=2)
+            # Step number circle
+            draw.ellipse([65, y + 25, 125, y + 85], fill=(59, 130, 246))  # blue-500
+            draw.text((88, y + 42), str(i + 1), fill=(255, 255, 255))
+            # Step text
+            clean_s = str(s).lstrip("0123456789. ")
+            draw.text((150, y + 42), clean_s[:60], fill=(241, 245, 249))
+            y += 130
+
+        if out_path:
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            img.save(out_path, format="PNG")
+        if remotion_target and remotion_target.resolve() != out_path.resolve():
+            remotion_target.parent.mkdir(parents=True, exist_ok=True)
+            img.save(remotion_target, format="PNG")
+
+        print(f"✅ [MediaFetcher] Generated dark-mode proof card fallback -> {out_path}")
+        return "assets/proof_card.png"
+    except Exception as e:
+        print(f"⚠️ [MediaFetcher] Failed to generate dark proof card: {e}")
+        return None
+
+
 def fetch_proof_card(
     github_repo: Optional[str] = None,
     official_url: Optional[str] = None,
     brand_domain: Optional[str] = None,
+    tool_name: Optional[str] = None,
+    real_steps: Optional[List[Any]] = None,
     out_path: Optional[str] = None,
 ) -> Optional[str]:
     """
     Fetches real visual proof card:
     (a) https://opengraph.githubassets.com/1/<github_repo> if GitHub repo exists.
     (b) Live website screenshot via https://image.thum.io/get/width/900/crop/600/noanimate/<official_url>
+    (c) High-contrast dark-mode fallback proof card with PIL (never a blank white box).
     Saves to public/assets/proof_card.png and mirrors to my-edu-reels/public/assets/proof_card.png.
     Returns relative path ('assets/proof_card.png') on success, or None on failure.
     """
@@ -248,10 +374,13 @@ def fetch_proof_card(
             r = requests.get(og_url, headers=headers, timeout=6.0)
             if r.status_code == 200 and len(r.content) > 1200:
                 out_target.write_bytes(r.content)
-                if remotion_target.resolve() != out_target.resolve():
-                    remotion_target.write_bytes(r.content)
-                print(f"✅ [MediaFetcher] Saved GitHub proof card for '{clean_repo}' ({len(r.content)} bytes) -> {out_target}")
-                return "assets/proof_card.png"
+                if not is_blank_or_invalid_image(out_target):
+                    if remotion_target.resolve() != out_target.resolve():
+                        remotion_target.write_bytes(r.content)
+                    print(f"✅ [MediaFetcher] Saved GitHub proof card for '{clean_repo}' ({len(r.content)} bytes) -> {out_target}")
+                    return "assets/proof_card.png"
+                else:
+                    print(f"⚠️ [MediaFetcher] GitHub OpenGraph returned blank/invalid image for '{clean_repo}'.")
         except Exception as e:
             print(f"⚠️ [MediaFetcher] GitHub OpenGraph fetch failed for '{clean_repo}': {e}")
 
@@ -271,12 +400,27 @@ def fetch_proof_card(
             r = requests.get(screenshot_url, headers=headers, timeout=7.5)
             if r.status_code == 200 and len(r.content) > 1200:
                 out_target.write_bytes(r.content)
-                if remotion_target.resolve() != out_target.resolve():
-                    remotion_target.write_bytes(r.content)
-                print(f"✅ [MediaFetcher] Saved live website screenshot for '{clean_url}' ({len(r.content)} bytes) -> {out_target}")
-                return "assets/proof_card.png"
+                if not is_blank_or_invalid_image(out_target):
+                    if remotion_target.resolve() != out_target.resolve():
+                        remotion_target.write_bytes(r.content)
+                    print(f"✅ [MediaFetcher] Saved live website screenshot for '{clean_url}' ({len(r.content)} bytes) -> {out_target}")
+                    return "assets/proof_card.png"
+                else:
+                    print(f"⚠️ [MediaFetcher] Thum.io screenshot returned blank/white image for '{clean_url}'.")
         except Exception as e:
             print(f"⚠️ [MediaFetcher] Thum.io screenshot fetch failed for '{clean_url}': {e}")
+
+    # 3. Strategy C: High-Contrast Dark-Mode Fallback Proof Card (Never render a blank box!)
+    if tool_name or brand_domain or clean_repo:
+        fallback_res = generate_dark_proof_card(
+            tool_name=tool_name or brand_domain or "Free Open-Source App",
+            brand_domain=brand_domain or (f"github.com/{clean_repo}" if clean_repo else "official site"),
+            real_steps=real_steps,
+            out_path=out_target,
+            remotion_target=remotion_target,
+        )
+        if fallback_res:
+            return fallback_res
 
     print(f"ℹ️ [MediaFetcher] No proof card fetched for repo='{github_repo}', url='{target_url}'.")
     return None
@@ -330,6 +474,22 @@ def fetch_topic_media_assets(
     github_repo = topic_data.get("github_repo") or topic_data.get("repo")
     official_url = topic_data.get("official_url") or topic_data.get("url")
 
+    format_type = str(topic_data.get("format_type") or "").lower()
+    left_char = str(topic_data.get("left_character") or "").lower()
+    title_str = str(topic_data.get("title") or topic_data.get("topic_title") or "").lower()
+    is_dad_skit = (format_type == "dad_clash") or (left_char == "dad") or ("dad" in title_str)
+
+    t_path = (public_dir / "timeline.json") if public_dir else (PROJECT_ROOT / "public" / "timeline.json")
+
+    if is_dad_skit:
+        print(f"ℹ️ [MediaFetcher] Dad comedy skit detected ('{topic_data.get('title')}'): suppressing logo and proof card.")
+        if t_path.exists():
+            attach_media_to_timeline(t_path, None, None)
+        return {
+            "logoPath": None,
+            "proofImagePath": None,
+        }
+
     # If tool_name is still missing, attempt heuristic from title
     if not tool_name and topic_data.get("title"):
         tool_name = topic_data["title"].split(":")[0].split(" - ")[0].strip()
@@ -346,9 +506,10 @@ def fetch_topic_media_assets(
         github_repo=github_repo,
         official_url=official_url,
         brand_domain=brand_domain,
+        tool_name=tool_name,
+        real_steps=topic_data.get("real_steps") or topic_data.get("realSteps"),
     )
 
-    t_path = (public_dir / "timeline.json") if public_dir else (PROJECT_ROOT / "public" / "timeline.json")
     if t_path.exists():
         attach_media_to_timeline(t_path, logo_path, proof_image_path)
 

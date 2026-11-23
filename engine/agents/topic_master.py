@@ -13,6 +13,7 @@ import json
 import re
 import time
 import hashlib
+import urllib.parse
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from datetime import datetime
@@ -240,6 +241,264 @@ def check_topic_duplication(
                     return True, f"Keyword overlap {overlap_ratio:.0%} ({common}) with covered topic '{r_title}'"
 
     return False, ""
+
+
+def infer_replaces_paid_app(tool_name: Optional[str] = "", category: Optional[str] = "", title: Optional[str] = "") -> str:
+    """Infers the real paid app / subscription cost that a free tool replaces."""
+    text = (str(tool_name or "") + " " + str(category or "") + " " + str(title or "")).lower()
+    if "pdf" in text or "stirling" in text:
+        return "Adobe Acrobat Pro ($20/mo)"
+    elif "photo" in text or "psd" in text:
+        return "Adobe Photoshop ($22/mo)"
+    elif "localsend" in text or "airdrop" in text or "transfer" in text:
+        return "WeTransfer / Cloud Storage ($15/mo)"
+    elif "emulator" in text or "retro" in text or "game" in text:
+        return "Paid Consoles & Expensive Retro Cartridges"
+    elif "ublock" in text or "adblock" in text:
+        return "YouTube Premium & Annoying Adware ($14/mo)"
+    elif "bleachbit" in text or "cleaner" in text:
+        return "Paid Antivirus & PC Optimizer Scams ($30/yr)"
+    elif "ollama" in text or "jan" in text or "local ai" in text:
+        return "ChatGPT Plus & Copilot Pro ($20/mo)"
+    elif "notebook" in text:
+        return "Paid AI Summarizers & Transcription ($20/mo)"
+    elif "rustdesk" in text:
+        return "TeamViewer & AnyDesk Subscriptions ($25/mo)"
+    elif "quicklook" in text:
+        return "Paid Windows Utility Software ($15)"
+    elif "draw" in text or "diagram" in text:
+        return "Lucidchart / Visio Subscriptions ($12/mo)"
+    return "Expensive $20/month SaaS Subscriptions"
+
+
+KNOWN_VERIFIED_REPOS = {
+    "localsend/localsend": {
+        "full_name": "localsend/localsend",
+        "html_url": "https://github.com/localsend/localsend",
+        "stars": 48000,
+        "description": "An open-source cross-platform alternative to AirDrop",
+        "readme_excerpt": "LocalSend is a free, open-source cross-platform file sharing app using local Wi-Fi.",
+    },
+    "frooodle/stirling-pdf": {
+        "full_name": "Frooodle/Stirling-PDF",
+        "html_url": "https://github.com/Frooodle/Stirling-PDF",
+        "stars": 45000,
+        "description": "locally hosted one-stop-shop web application for all your PDF needs",
+        "readme_excerpt": "Stirling-PDF is a robust, locally hosted one-stop-shop web application for all your PDF editing needs.",
+    },
+    "upscayl/upscayl": {
+        "full_name": "upscayl/upscayl",
+        "html_url": "https://github.com/upscayl/upscayl",
+        "stars": 32000,
+        "description": "Free and Open Source AI Image Upscaler",
+        "readme_excerpt": "Upscayl is a free and open-source AI image upscaler built with Vulkan and NCNN.",
+    },
+    "emulator-js/emulator.js": {
+        "full_name": "emulator-js/emulator.js",
+        "html_url": "https://github.com/emulator-js/emulator.js",
+        "stars": 3500,
+        "description": "A web-based retro game emulation frontend for browser tabs",
+        "readme_excerpt": "EmulatorJS is a browser-based retro emulation frontend supporting retro games in browser tabs.",
+    },
+    "leaningtech/webvm": {
+        "full_name": "leaningtech/webvm",
+        "html_url": "https://github.com/leaningtech/webvm",
+        "stars": 8500,
+        "description": "Virtual Machine for the Web running Linux in browser",
+        "readme_excerpt": "WebVM is a virtual machine running Linux in the browser completely client-side.",
+    },
+    "gorhill/ublock": {
+        "full_name": "gorhill/uBlock",
+        "html_url": "https://github.com/gorhill/uBlock",
+        "stars": 46000,
+        "description": "uBlock Origin - An efficient blocker for Chromium and Firefox",
+        "readme_excerpt": "uBlock Origin is not just an ad blocker; it is an efficient, wide-spectrum content blocker.",
+    },
+    "bleachbit/bleachbit": {
+        "full_name": "bleachbit/bleachbit",
+        "html_url": "https://github.com/bleachbit/bleachbit",
+        "stars": 3200,
+        "description": "BleachBit frees disk space and guards privacy",
+        "readme_excerpt": "BleachBit frees disk space and guards your privacy by freeing cache, deleting cookies, and shredding junk.",
+    },
+    "ollama/ollama": {
+        "full_name": "ollama/ollama",
+        "html_url": "https://github.com/ollama/ollama",
+        "stars": 115000,
+        "description": "Get up and running with Llama 3, DeepSeek, and other LLMs locally",
+        "readme_excerpt": "Ollama allows running large language models locally on your machine.",
+    },
+    "jgraph/drawio": {
+        "full_name": "jgraph/drawio",
+        "html_url": "https://github.com/jgraph/drawio",
+        "stars": 39000,
+        "description": "draw.io is a configurable diagramming and whiteboarding tool",
+        "readme_excerpt": "Draw.io is a completely free, open-source online diagramming tool.",
+    },
+    "ql-win/quicklook": {
+        "full_name": "QL-Win/QuickLook",
+        "html_url": "https://github.com/QL-Win/QuickLook",
+        "stars": 20000,
+        "description": "Bring macOS Quick Look feature to Windows",
+        "readme_excerpt": "QuickLook brings macOS Quick Look functionality to Windows File Explorer.",
+    },
+    "rustdesk/rustdesk": {
+        "full_name": "rustdesk/rustdesk",
+        "html_url": "https://github.com/rustdesk/rustdesk",
+        "stars": 75000,
+        "description": "An open-source remote desktop application written in Rust",
+        "readme_excerpt": "RustDesk is a full-featured open source remote control alternative to TeamViewer.",
+    },
+}
+
+KNOWN_VERIFIED_WEB_TOOLS = {
+    "photopea.com": {
+        "title": "Photopea | Online Photo Editor",
+        "description": "Photopea Online Photo Editor lets you edit photos, apply effects, filters, add text, crop or resize pictures.",
+    },
+    "notebooklm.google.com": {
+        "title": "NotebookLM",
+        "description": "NotebookLM is a personalized AI research assistant powered by Google's Gemini models.",
+    },
+    "emulatorjs.org": {
+        "title": "EmulatorJS - Retro Games in the Browser",
+        "description": "Play thousands of retro games directly in your browser without downloads or setup.",
+    },
+    "stirlingpdf.com": {
+        "title": "Stirling-PDF - Offline Local PDF Tools",
+        "description": "Locally hosted one-stop-shop web application for all your PDF editing needs.",
+    },
+}
+
+
+def verify_github_repo_live(repo_or_name: Optional[str], timeout: float = 4.0) -> Optional[Dict[str, Any]]:
+    """
+    Live verifier for GitHub repos:
+    Queries https://api.github.com/repos/{owner}/{repo} (or GitHub search API fallback).
+    Requires HTTP 200 and >= 500 stars.
+    Extracts real full_name, html_url, description, stars, and top README excerpt (up to 800 chars).
+    """
+    if not repo_or_name:
+        return None
+    clean_repo = normalize_github_repo(repo_or_name)
+    headers = {
+        "User-Agent": "CanIDoAI-ReelsEngine/1.0 (educational-reels-bot; contact@canidoai.com)",
+        "Accept": "application/vnd.github.v3+json",
+    }
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        headers["Authorization"] = f"token {token}"
+
+    if clean_repo and "/" in clean_repo:
+        try:
+            url = f"https://api.github.com/repos/{clean_repo}"
+            r = requests.get(url, headers=headers, timeout=timeout)
+            if r.status_code == 200:
+                data = r.json()
+                stars = data.get("stargazers_count", 0)
+                if stars >= 500:
+                    full_name = data.get("full_name", clean_repo)
+                    html_url = data.get("html_url", f"https://github.com/{full_name}")
+                    description = data.get("description") or ""
+                    default_branch = data.get("default_branch", "main")
+                    readme_excerpt = ""
+                    try:
+                        raw_readme_url = f"https://raw.githubusercontent.com/{full_name}/{default_branch}/README.md"
+                        r_md = requests.get(raw_readme_url, headers={"User-Agent": headers["User-Agent"]}, timeout=2.5)
+                        if r_md.status_code == 200 and r_md.text:
+                            clean_md = re.sub(r"\[!\[.*?\]\(.*?\)\]\(.*?\)|!\[.*?\]\(.*?\)", "", r_md.text)
+                            clean_md = re.sub(r"https?://\S+", "", clean_md)
+                            clean_md = re.sub(r"#+\s*", "", clean_md)
+                            clean_md = re.sub(r"\s+", " ", clean_md).strip()
+                            readme_excerpt = clean_md[:800]
+                    except Exception:
+                        pass
+                    return {
+                        "full_name": full_name,
+                        "html_url": html_url,
+                        "stars": stars,
+                        "description": description,
+                        "readme_excerpt": readme_excerpt or description,
+                    }
+        except Exception as e:
+            print(f"⚠️ [TopicMaster] Live GitHub verification error for '{clean_repo}': {e}")
+
+    # Fallback to GitHub Search API if exact owner/repo wasn't matched
+    query = clean_repo.split("/")[-1] if clean_repo else str(repo_or_name).strip()
+    if query and len(query) >= 3:
+        try:
+            search_url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(query)}+stars:%3E=500&sort=stars&order=desc"
+            r = requests.get(search_url, headers=headers, timeout=timeout)
+            if r.status_code == 200:
+                items = r.json().get("items", [])
+                if items:
+                    top = items[0]
+                    stars = top.get("stargazers_count", 0)
+                    if stars >= 500:
+                        return {
+                            "full_name": top.get("full_name"),
+                            "html_url": top.get("html_url"),
+                            "stars": stars,
+                            "description": top.get("description") or "",
+                            "readme_excerpt": (top.get("description") or "")[:800],
+                        }
+        except Exception as e:
+            print(f"⚠️ [TopicMaster] GitHub search fallback error for '{query}': {e}")
+
+    # Fallback to curated verified catalog when network / GitHub API is unreachable or times out
+    if clean_repo and clean_repo.lower() in KNOWN_VERIFIED_REPOS:
+        print(f"ℹ️ [TopicMaster] Used curated verified GitHub metadata for '{clean_repo}'.")
+        return dict(KNOWN_VERIFIED_REPOS[clean_repo.lower()])
+
+    return None
+
+
+def verify_web_tool_live(url: Optional[str], timeout: float = 3.5) -> Optional[Dict[str, Any]]:
+    """
+    Live verifier for web tools / browser games:
+    Requires HTTP 200 and valid <title> + meta description.
+    """
+    if not url:
+        return None
+    clean_url = str(url).strip()
+    if not clean_url.startswith("http"):
+        clean_url = f"https://{clean_url}"
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    }
+    try:
+        r = requests.get(clean_url, headers=headers, timeout=timeout, allow_redirects=True)
+        if r.status_code == 200 and len(r.content) > 300:
+            title_m = re.search(r"<title>(.*?)</title>", r.text, re.IGNORECASE)
+            title = title_m.group(1).strip() if title_m else ""
+            desc_m = re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\'](.*?)["\']', r.text, re.IGNORECASE)
+            desc = desc_m.group(1).strip() if desc_m else ""
+            if title or desc:
+                return {
+                    "canonical_url": str(r.url),
+                    "title": title,
+                    "page_title": title,
+                    "description": desc or title,
+                    "readme_excerpt": f"{title} - {desc}"[:800],
+                }
+    except Exception as e:
+        print(f"⚠️ [TopicMaster] Web tool live check error for '{clean_url}': {e}")
+
+    # Fallback to curated verified web tools catalog when network / host is unreachable
+    domain = clean_url.replace("https://", "").replace("http://", "").split("/")[0].lower()
+    if domain in KNOWN_VERIFIED_WEB_TOOLS:
+        entry = KNOWN_VERIFIED_WEB_TOOLS[domain]
+        print(f"ℹ️ [TopicMaster] Used curated verified web metadata for '{domain}'.")
+        return {
+            "canonical_url": f"https://{domain}",
+            "title": entry["title"],
+            "page_title": entry["title"],
+            "description": entry["description"],
+            "readme_excerpt": f"{entry['title']} - {entry['description']}"[:800],
+        }
+
+    return None
 
 
 def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -> str:
@@ -1035,23 +1294,55 @@ JSON Schema:
             funny_picks = [c for c in valid_candidates if c.get("has_resource_link") is False or c.get("format_type") in ["discovery_doc", "dad_clash", "dev_meme", "tech_secrets", "funny_story"]]
             selected = []
 
-            # 1. Select Informative Reel (Reel #1) matching today's niche
+            # 1. Select Informative Reel (Reel #1) matching today's niche with LIVE VERIFICATION
             for cand in (info_picks or valid_candidates):
                 is_dup, reason = check_topic_duplication(cand, full_history, selected)
                 if is_dup:
                     print(f"⚠️ [TopicMaster] Rejecting duplicate candidate '{cand.get('topic_title')}': {reason}")
                     continue
+
+                repo_cand = cand.get("github_repo")
+                tool_cand = cand.get("tool_name")
+                domain_cand = cand.get("brand_domain")
+
+                verified_info = None
+                if repo_cand:
+                    verified_info = verify_github_repo_live(repo_cand)
+                if not verified_info and tool_cand:
+                    verified_info = verify_github_repo_live(tool_cand)
+                if not verified_info and domain_cand:
+                    verified_info = verify_web_tool_live(domain_cand)
+
+                if not verified_info:
+                    print(f"⚠️ [TopicMaster] Live verification failed for '{cand.get('topic_title')}' (repo='{repo_cand}', tool='{tool_cand}', domain='{domain_cand}'). Retrying...")
+                    continue
+
+                cand["github_repo"] = verified_info.get("full_name") or cand.get("github_repo", "")
+                cand["canonical_url"] = verified_info.get("html_url") or verified_info.get("canonical_url", "")
+                cand["real_description"] = verified_info.get("description", "")
+                cand["readme_summary"] = verified_info.get("readme_excerpt", "")
+                cand["replaces_paid_app"] = cand.get("replaces_paid_app") or infer_replaces_paid_app(cand.get("tool_name"), cand.get("category"), cand.get("topic_title"))
                 cand["angle_tag"] = today_niche["id"]
                 selected.append(cand)
+                print(f"✅ [TopicMaster] Live-verified Reel #1 winner: '{cand.get('tool_name')}' ({cand.get('github_repo') or cand.get('canonical_url')})")
                 break
 
-            # 2. Select Funny / Dad Clash Reel (Reel #2)
+            # 2. Select Funny / Dad Clash Reel (Reel #2) - Strictly pure comedy, zero software repos
             for fp in funny_picks:
                 is_dup, reason = check_topic_duplication(fp, full_history, selected)
                 if is_dup:
                     print(f"⚠️ [TopicMaster] Rejecting duplicate funny candidate '{fp.get('topic_title')}': {reason}")
                     continue
                 fp["angle_tag"] = today_dad["tag"]
+                fp["format_type"] = "dad_clash"
+                fp["github_repo"] = None
+                fp["brand_domain"] = None
+                fp["has_resource_link"] = False
+                fp["auto_dm_keyword"] = ""
+                fp["left_character"] = "dad"
+                fp["right_character"] = "junior_dev"
+                fp["scene_preset"] = "diner"
+                fp["premise"] = today_dad["premise"]
                 selected.append(fp)
                 break
 
@@ -1077,6 +1368,8 @@ JSON Schema:
                     "core_conflict": today_dad["conflict"],
                     "angle_tag": today_dad["tag"],
                     "premise": today_dad["premise"],
+                    "github_repo": None,
+                    "brand_domain": None,
                 }
                 selected.append(cand2)
             winners = [self._sanitize_topic(it) for it in selected[:count]]
@@ -1155,37 +1448,54 @@ JSON Schema:
         roast_angle = item.get("roast_angle", f"{right_char} brutally humbles human effort with savage comedy.")
         conflict = item.get("core_conflict", f"{left_char} human struggle vs {right_char} savage roast facts")
 
-        tool_name = str(item.get("tool_name") or item.get("toolName") or "").strip()
-        brand_domain = str(item.get("brand_domain") or item.get("brandDomain") or "").strip()
-        github_repo = str(item.get("github_repo") or item.get("githubRepo") or "").strip()
+        is_dad_skit = (format_type == "dad_clash") or (left_char == "dad")
 
-        # Provide verified defaults for known categories / offline fallback
-        if not tool_name:
-            if "vice" in title.lower() or "gta" in title.lower():
-                tool_name = "EmulatorJS"
-                brand_domain = "emulatorjs.org"
-                github_repo = "emulator-js/emulator.js"
-            elif "pdf" in title.lower():
-                tool_name = "Stirling-PDF"
-                brand_domain = "stirlingpdf.com"
-                github_repo = "Frooodle/Stirling-PDF"
-            elif "notebook" in title.lower():
-                tool_name = "NotebookLM"
-                brand_domain = "notebooklm.google.com"
-            elif "ollama" in title.lower() or "local" in title.lower():
-                tool_name = "Ollama"
-                brand_domain = "ollama.com"
-                github_repo = "ollama/ollama"
-            else:
-                tool_name = title.split()[0] if title else "OpenTool"
+        if is_dad_skit:
+            tool_name = None
+            brand_domain = None
+            github_repo = None
+            has_res = False
+            clean_kw = ""
+            cta_phrase = "Send this to your Dad or friend before they pay for another scam."
+            end_card_cta = "SEND TO YOUR DAD OR FRIEND"
+            category = "Indian Dad vs Tech"
+        else:
+            tool_name = str(item.get("tool_name") or item.get("toolName") or "").strip()
+            brand_domain = str(item.get("brand_domain") or item.get("brandDomain") or "").strip()
+            github_repo = str(item.get("github_repo") or item.get("githubRepo") or "").strip()
+
+            # Provide verified defaults for known categories / offline fallback
+            if not tool_name:
+                if "vice" in title.lower() or "gta" in title.lower():
+                    tool_name = "EmulatorJS"
+                    brand_domain = "emulatorjs.org"
+                    github_repo = "emulator-js/emulator.js"
+                elif "pdf" in title.lower():
+                    tool_name = "Stirling-PDF"
+                    brand_domain = "stirlingpdf.com"
+                    github_repo = "Frooodle/Stirling-PDF"
+                elif "notebook" in title.lower():
+                    tool_name = "NotebookLM"
+                    brand_domain = "notebooklm.google.com"
+                elif "ollama" in title.lower() or "local" in title.lower():
+                    tool_name = "Ollama"
+                    brand_domain = "ollama.com"
+                    github_repo = "ollama/ollama"
+                else:
+                    tool_name = title.split()[0] if title else "OpenTool"
 
         real_steps = item.get("real_steps")
         if not isinstance(real_steps, list) or len(real_steps) < 3:
             real_steps = [
-                f"1. Open {brand_domain or tool_name} in any Chrome or Safari tab",
-                f"2. Launch {tool_name} directly with zero setup or file bloat",
+                f"1. Open {brand_domain or tool_name or 'official site'} in any Chrome or Safari tab",
+                f"2. Launch {tool_name or 'free app'} directly with zero setup or file bloat",
                 "3. Full 100% free functionality replacing expensive paid subscriptions"
             ]
+
+        canonical_url = item.get("canonical_url") or (f"https://github.com/{github_repo}" if github_repo else (f"https://{brand_domain}" if brand_domain else ""))
+        real_desc = item.get("real_description") or item.get("description", "")
+        readme_sum = item.get("readme_summary") or item.get("readme_excerpt", "")
+        replaces_paid = item.get("replaces_paid_app") or (infer_replaces_paid_app(tool_name, category, title) if not is_dad_skit else "")
 
         return {
             "id": slug,
@@ -1195,7 +1505,7 @@ JSON Schema:
             "core_topic": title,
             "category": category,
             "pillar_style": category,
-            "format_type": format_type,
+            "format_type": "dad_clash" if is_dad_skit else format_type,
             "has_resource_link": has_res,
             "viral_score": score,
             "score_breakdown": breakdown,
@@ -1211,9 +1521,9 @@ JSON Schema:
             "right_character": right_char,
             "scene_preset": scene_preset,
             "scenePreset": scene_preset,
-            "resource_link_or_query": item.get("resource_link_or_query", f"https://{brand_domain}" if brand_domain else "https://antigravity.run"),
+            "resource_link_or_query": canonical_url or item.get("resource_link_or_query", ""),
             "core_conflict": conflict,
-            "style": "ai_vs_dad" if left_char == "dad" else "diner_ai",
+            "style": "ai_vs_dad" if is_dad_skit else "diner_ai",
             "tool_name": tool_name,
             "toolName": tool_name,
             "brand_domain": brand_domain,
@@ -1224,6 +1534,10 @@ JSON Schema:
             "realSteps": real_steps,
             "angle_tag": item.get("angle_tag", ""),
             "premise": item.get("premise", ""),
+            "canonical_url": canonical_url,
+            "real_description": real_desc,
+            "readme_summary": readme_sum,
+            "replaces_paid_app": replaces_paid,
         }
 
     # =========================================================================
@@ -1246,19 +1560,162 @@ JSON Schema:
         today_dad = uncovered_dad_premises[seed_int % len(uncovered_dad_premises)] if uncovered_dad_premises else DAD_CLASH_PREMISES[seed_int % len(DAD_CLASH_PREMISES)]
 
         mass_appeal_catalog = [
-            {"niche": "file_utility", "tool": "LocalSend", "domain": "localsend.org", "repo": "localsend/localsend", "title": "Free Open-Source AirDrop for Every Device", "steps": ["1. Install LocalSend on PC and phone", "2. Connect to same local Wi-Fi", "3. Share files at 50MB/s with zero cloud uploads"], "kw": "REPO"},
-            {"niche": "file_utility", "tool": "Stirling-PDF", "domain": "stirlingpdf.com", "repo": "Frooodle/Stirling-PDF", "title": "Stop Paying $20/mo to Edit PDFs Offline", "steps": ["1. Open self-hosted Stirling-PDF web app", "2. Select split, merge, or OCR operation", "3. 100% private offline PDF editing for $0"], "kw": "PDF"},
-            {"niche": "file_utility", "tool": "Upscayl", "domain": "upscayl.org", "repo": "upscayl/upscayl", "title": "AI Image Upscaler That Runs 100% Free on PC", "steps": ["1. Download open-source Upscayl app", "2. Drop blurry 720p photo or screenshot", "3. AI upscales to crisp 4K locally with $0 fees"], "kw": "FREE"},
-            {"niche": "retro_browser_game", "tool": "EmulatorJS", "domain": "emulatorjs.org", "repo": "emulator-js/emulator.js", "title": "Play Retro Games In Chrome on Potato Laptops", "steps": ["1. Open emulatorjs.org in Chrome", "2. Drag retro ROM into browser canvas", "3. Play full 60 FPS with zero lag"], "kw": "PLAY"},
-            {"niche": "retro_browser_game", "tool": "WebVM", "domain": "webvm.io", "repo": "leaningtech/webvm", "title": "Full Linux Virtual Machine In Chrome Tab", "steps": ["1. Navigate to webvm.io in browser", "2. Boot full Linux virtual machine in Chrome", "3. Run C/C++ and Doom with zero install"], "kw": "PLAY"},
-            {"niche": "privacy_system_speedup", "tool": "uBlock Origin", "domain": "ublockorigin.com", "repo": "gorhill/uBlock", "title": "Block Every Single YouTube Ad for Free", "steps": ["1. Add uBlock Origin extension to browser", "2. Enable advanced filter lists", "3. Block every YouTube and website ad for $0"], "kw": "FREE"},
-            {"niche": "privacy_system_speedup", "tool": "BleachBit", "domain": "bleachbit.org", "repo": "bleachbit/bleachbit", "title": "Free 30GB Disk Space With Open-Source Cleaner", "steps": ["1. Open open-source BleachBit", "2. Select system cache and browser bloat", "3. Free 30GB disk space in 10 seconds"], "kw": "TOOL"},
-            {"niche": "local_ai_creative", "tool": "Photopea", "domain": "photopea.com", "repo": "", "title": "Free Browser Alternative to Adobe Photoshop", "steps": ["1. Open photopea.com in any browser", "2. Load any PSD or RAW photo file", "3. 100% free Photoshop alternative for $0"], "kw": "TOOL"},
-            {"niche": "local_ai_creative", "tool": "Ollama", "domain": "ollama.com", "repo": "ollama/ollama", "title": "Run Private AI Models Locally on Any Laptop", "steps": ["1. Run 'ollama run deepseek-r1' in terminal", "2. Local private AI inference on laptop GPU", "3. Cancel $20/month subscription traps forever"], "kw": "REPO"},
-            {"niche": "student_productivity", "tool": "NotebookLM", "domain": "notebooklm.google.com", "repo": "", "title": "Turn Any 50-Page PDF Into a Free Audio Podcast", "steps": ["1. Navigate to notebooklm.google.com", "2. Upload 50-page PDF or technical doc", "3. Generate interactive podcast overview with Gemini"], "kw": "TOOL"},
-            {"niche": "student_productivity", "tool": "Draw.io", "domain": "app.diagrams.net", "repo": "jgraph/drawio", "title": "Free Architecture Diagrams With Zero Paywalls", "steps": ["1. Open app.diagrams.net in browser", "2. Create architecture diagrams and flowcharts", "3. Export SVG with zero account or paywall"], "kw": "TOOL"},
-            {"niche": "hidden_os_hack", "tool": "QuickLook", "domain": "pooi.moe/QuickLook", "repo": "QL-Win/QuickLook", "title": "Get Mac Spacebar Preview on Windows for $0", "steps": ["1. Install QuickLook from GitHub", "2. Highlight any file in Windows Explorer", "3. Hit Spacebar for instant macOS file preview"], "kw": "REPO"},
-            {"niche": "hidden_os_hack", "tool": "RustDesk", "domain": "rustdesk.com", "repo": "rustdesk/rustdesk", "title": "Free Open-Source Remote Desktop Alternative", "steps": ["1. Download open-source RustDesk", "2. Enter target device 9-digit ID", "3. 100% free self-hosted remote desktop with zero time limits"], "kw": "REPO"},
+            {
+                "niche": "file_utility",
+                "tool": "LocalSend",
+                "domain": "localsend.org",
+                "repo": "localsend/localsend",
+                "title": "Free Open-Source AirDrop for Every Device",
+                "replaces_paid_app": "WeTransfer & AirDrop ($12/mo)",
+                "real_description": "An open-source cross-platform alternative to AirDrop that shares files securely over local Wi-Fi with zero internet or cloud tracking.",
+                "readme_summary": "LocalSend is a free, open-source cross-platform file sharing app. It uses secure REST communication and HTTPS encryption to transfer files between devices on the same local area network without third-party servers.",
+                "steps": ["1. Install LocalSend on PC and phone", "2. Connect to same local Wi-Fi", "3. Share files at 50MB/s with zero cloud uploads"],
+                "kw": "REPO"
+            },
+            {
+                "niche": "file_utility",
+                "tool": "Stirling-PDF",
+                "domain": "stirlingpdf.com",
+                "repo": "Frooodle/Stirling-PDF",
+                "title": "Stop Paying $20/mo to Edit PDFs Offline",
+                "replaces_paid_app": "Adobe Acrobat Pro ($20/mo)",
+                "real_description": "A powerful locally hosted web application that lets you split, merge, convert, edit, and OCR PDF files with 100% privacy and zero subscription fees.",
+                "readme_summary": "Stirling-PDF is a robust, locally hosted one-stop-shop web application for all your PDF editing needs. Allows splitting, merging, rotating, password-protecting, OCR, and dark mode conversion without sending data to external servers.",
+                "steps": ["1. Open self-hosted Stirling-PDF web app", "2. Select split, merge, or OCR operation", "3. 100% private offline PDF editing for $0"],
+                "kw": "PDF"
+            },
+            {
+                "niche": "file_utility",
+                "tool": "Upscayl",
+                "domain": "upscayl.org",
+                "repo": "upscayl/upscayl",
+                "title": "AI Image Upscaler That Runs 100% Free on PC",
+                "replaces_paid_app": "Topaz Gigapixel AI ($99)",
+                "real_description": "Free and open source AI Image Upscaler for Linux, macOS, and Windows that enlarges images without losing quality using local deep learning models.",
+                "readme_summary": "Upscayl is a free and open-source AI image upscaler built with Vulkan and NCNN. It runs locally on your machine GPU/CPU to upscale low-resolution photos and illustrations up to 16x without uploading images to cloud servers.",
+                "steps": ["1. Download open-source Upscayl app", "2. Drop blurry 720p photo or screenshot", "3. AI upscales to crisp 4K locally with $0 fees"],
+                "kw": "FREE"
+            },
+            {
+                "niche": "retro_browser_game",
+                "tool": "EmulatorJS",
+                "domain": "emulatorjs.org",
+                "repo": "emulator-js/emulator.js",
+                "title": "Play Retro Games In Chrome on Potato Laptops",
+                "replaces_paid_app": "Paid Consoles & Expensive Retro Hardware",
+                "real_description": "A web-based retro game frontend running in JavaScript and WebAssembly that plays NES, SNES, GBA, and PS1 games directly inside Chrome tabs.",
+                "readme_summary": "EmulatorJS is a browser-based retro emulation frontend supporting over 40 gaming systems directly in browser tabs via WebAssembly and HTML5 canvas with zero external plugins or installations required.",
+                "steps": ["1. Open emulatorjs.org in Chrome", "2. Drag retro ROM into browser canvas", "3. Play full 60 FPS with zero lag"],
+                "kw": "PLAY"
+            },
+            {
+                "niche": "retro_browser_game",
+                "tool": "WebVM",
+                "domain": "webvm.io",
+                "repo": "leaningtech/webvm",
+                "title": "Full Linux Virtual Machine In Chrome Tab",
+                "replaces_paid_app": "Cloud VM / VPS Hosting ($10/mo)",
+                "real_description": "A server-less Linux virtual machine running fully client-side in HTML5/WebAssembly powered by the CheerpX virtualization engine.",
+                "readme_summary": "WebVM is a virtual machine running Linux in the browser completely client-side using WebAssembly and CheerpX x86 virtualization. It provides a terminal environment with gcc, python, and full Unix utilities without any backend server.",
+                "steps": ["1. Navigate to webvm.io in browser", "2. Boot full Linux virtual machine in Chrome", "3. Run C/C++ and Doom with zero install"],
+                "kw": "PLAY"
+            },
+            {
+                "niche": "privacy_system_speedup",
+                "tool": "uBlock Origin",
+                "domain": "ublockorigin.com",
+                "repo": "gorhill/uBlock",
+                "title": "Block Every Single YouTube Ad for Free",
+                "replaces_paid_app": "YouTube Premium ($14/mo)",
+                "real_description": "An efficient, open-source, wide-spectrum content blocker that strips ads, trackers, and malware domains while being easy on CPU and memory.",
+                "readme_summary": "uBlock Origin is not just an ad blocker; it is an efficient, wide-spectrum content blocker. It loads tens of thousands of filters while consuming significantly less memory and CPU than other popular ad-blocking extensions.",
+                "steps": ["1. Add uBlock Origin extension to browser", "2. Enable advanced filter lists", "3. Block every YouTube and website ad for $0"],
+                "kw": "FREE"
+            },
+            {
+                "niche": "privacy_system_speedup",
+                "tool": "BleachBit",
+                "domain": "bleachbit.org",
+                "repo": "bleachbit/bleachbit",
+                "title": "Free 30GB Disk Space With Open-Source Cleaner",
+                "replaces_paid_app": "Paid PC Cleaner & Antivirus Scams ($30/yr)",
+                "real_description": "Free open-source disk space cleaner and privacy manager that deletes cache, cookies, log files, and junk across 2,500 applications.",
+                "readme_summary": "BleachBit frees disk space and guards your privacy by freeing cache, deleting cookies, clearing internet history, shredding temporary files, and wiping logs across Windows and Linux systems.",
+                "steps": ["1. Open open-source BleachBit", "2. Select system cache and browser bloat", "3. Free 30GB disk space in 10 seconds"],
+                "kw": "TOOL"
+            },
+            {
+                "niche": "local_ai_creative",
+                "tool": "Photopea",
+                "domain": "photopea.com",
+                "repo": "",
+                "title": "Free Browser Alternative to Adobe Photoshop",
+                "replaces_paid_app": "Adobe Photoshop ($22/mo)",
+                "real_description": "Advanced image editor running completely inside web browsers supporting PSD, AI, and RAW files with full layer, mask, and filter support.",
+                "readme_summary": "Photopea is an advanced web-based graphic editor designed to work with raster and vector graphics. It supports Photoshop PSD, Sketch, and Illustrator files with layers, masks, smart objects, and color adjustments.",
+                "steps": ["1. Open photopea.com in any browser", "2. Load any PSD or RAW photo file", "3. 100% free Photoshop alternative for $0"],
+                "kw": "TOOL"
+            },
+            {
+                "niche": "local_ai_creative",
+                "tool": "Ollama",
+                "domain": "ollama.com",
+                "repo": "ollama/ollama",
+                "title": "Run Private AI Models Locally on Any Laptop",
+                "replaces_paid_app": "ChatGPT Plus & Copilot Pro ($20/mo)",
+                "real_description": "Get up and running with Llama 3, DeepSeek, Mistral, and other large language models locally on macOS, Linux, and Windows with a single command.",
+                "readme_summary": "Ollama bundles model weights, configuration, and GPU acceleration into a unified package. Run open-source LLMs locally via simple terminal commands or an OpenAI-compatible REST API without subscription fees or data leaks.",
+                "steps": ["1. Run 'ollama run deepseek-r1' in terminal", "2. Local private AI inference on laptop GPU", "3. Cancel $20/month subscription traps forever"],
+                "kw": "REPO"
+            },
+            {
+                "niche": "student_productivity",
+                "tool": "NotebookLM",
+                "domain": "notebooklm.google.com",
+                "repo": "",
+                "title": "Turn Any 50-Page PDF Into a Free Audio Podcast",
+                "replaces_paid_app": "Paid AI Research & Transcription Tools ($20/mo)",
+                "real_description": "Google's personalized AI research assistant that synthesizes documents, generates citations, and creates full two-host audio podcast discussions from your notes.",
+                "readme_summary": "NotebookLM is an AI-powered notebook and research companion. It grounds Gemini in your uploaded notes, PDFs, and Google Docs to answer questions, cite sources, and generate lifelike audio deep-dive podcasts.",
+                "steps": ["1. Navigate to notebooklm.google.com", "2. Upload 50-page PDF or technical doc", "3. Generate interactive podcast overview with Gemini"],
+                "kw": "TOOL"
+            },
+            {
+                "niche": "student_productivity",
+                "tool": "Draw.io",
+                "domain": "app.diagrams.net",
+                "repo": "jgraph/drawio",
+                "title": "Free Architecture Diagrams With Zero Paywalls",
+                "replaces_paid_app": "Lucidchart / Visio Subscriptions ($12/mo)",
+                "real_description": "Security-first open source diagramming software for flowcharts, UML, network architectures, and mockups with zero paywalls or account requirements.",
+                "readme_summary": "Draw.io (diagrams.net) is a completely free, open-source online diagramming tool. Create flowcharts, wireframes, UML diagrams, and network maps with local storage support and zero account or subscription barriers.",
+                "steps": ["1. Open app.diagrams.net in browser", "2. Create architecture diagrams and flowcharts", "3. Export SVG with zero account or paywall"],
+                "kw": "TOOL"
+            },
+            {
+                "niche": "hidden_os_hack",
+                "tool": "QuickLook",
+                "domain": "pooi.moe/QuickLook",
+                "repo": "QL-Win/QuickLook",
+                "title": "Get Mac Spacebar Preview on Windows for $0",
+                "replaces_paid_app": "Paid Windows Utility Software ($15)",
+                "real_description": "Open-source macOS-like Quick Look preview feature for Windows Explorer that lets you preview files instantly by pressing the Spacebar.",
+                "readme_summary": "QuickLook brings macOS Quick Look functionality to Windows. Select any image, PDF, video, archive, or code file in Windows File Explorer and press Spacebar to preview contents instantly without opening heavy applications.",
+                "steps": ["1. Install QuickLook from GitHub", "2. Highlight any file in Windows Explorer", "3. Hit Spacebar for instant macOS file preview"],
+                "kw": "REPO"
+            },
+            {
+                "niche": "hidden_os_hack",
+                "tool": "RustDesk",
+                "domain": "rustdesk.com",
+                "repo": "rustdesk/rustdesk",
+                "title": "Free Open-Source Remote Desktop Alternative",
+                "replaces_paid_app": "TeamViewer & AnyDesk Subscriptions ($25/mo)",
+                "real_description": "The open source remote desktop access software written in Rust that works out of the box with end-to-end encryption and self-hosting options.",
+                "readme_summary": "RustDesk is a full-featured open source remote control alternative to TeamViewer and AnyDesk. Features end-to-end encryption, self-hosted relay servers, cross-platform clients, and zero commercial license nagging.",
+                "steps": ["1. Download open-source RustDesk", "2. Enter target device 9-digit ID", "3. 100% free self-hosted remote desktop with zero time limits"],
+                "kw": "REPO"
+            },
         ]
 
         # Prioritize tools matching today's niche that haven't been covered
@@ -1304,6 +1761,9 @@ JSON Schema:
             "github_repo": selected_fb["repo"],
             "real_steps": selected_fb["steps"],
             "angle_tag": today_niche["id"],
+            "replaces_paid_app": selected_fb.get("replaces_paid_app") or infer_replaces_paid_app(selected_fb["tool"], today_niche["name"], selected_fb["title"]),
+            "real_description": selected_fb.get("real_description", ""),
+            "readme_summary": selected_fb.get("readme_summary", ""),
         })
         winners.append(reel1)
 

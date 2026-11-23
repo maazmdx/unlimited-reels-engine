@@ -226,19 +226,19 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     emotionSlumpRotX = 0.12; // Slight forward slump
     gazeRotX = 0.08; // Downward gaze
   } else if (emotion === "shocked" || emotion === "shock") {
-    browL_Y = 0.26;
-    browR_Y = 0.26;
-    browL_RotZ = 0.22;
-    browR_RotZ = -0.22;
+    browL_Y = 0.28;
+    browR_Y = 0.28;
+    browL_RotZ = 0.28;
+    browR_RotZ = -0.28;
     topEyelidDrop = 0.0; // Wide open eyes
-    emotionSlumpRotX = 0.20; // Torso lean-forward on shock turns
+    emotionSlumpRotX = 0.24; // Stronger torso lean-forward on shock turns
   } else if (emotion === "angry") {
-    browL_Y = 0.10;
-    browR_Y = 0.10;
-    browL_RotZ = -0.35;
-    browR_RotZ = 0.35;
+    browL_Y = 0.08;
+    browR_Y = 0.08;
+    browL_RotZ = -0.40;
+    browR_RotZ = 0.40;
     topEyelidDrop = 0.35;
-    emotionSlumpRotX = 0.08;
+    emotionSlumpRotX = 0.14; // Torso forward on angry turns
   } else if (emotion === "smug") {
     browL_Y = 0.23;
     browR_Y = 0.13;
@@ -289,14 +289,14 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
 
   // Dynamic arm & hand gestures driven from mouth_envelopes (mouthOpen) while speaking
   // Arms angle forward/inward so hands rest naturally on desk/couch and right arm never clips backward into desk lamp
-  const speechEnergy = isSpeaking ? Math.min(1.0, mouthOpen * 1.5) : 0;
-  const leftArmRotX = (isDad ? 0.58 : 0.45) + (isSpeaking ? Math.sin(frame * 0.18) * 0.08 + speechEnergy * 0.10 : 0);
-  const leftForearmRotX = (isDad ? -0.85 : -0.75) - (isSpeaking ? Math.cos(frame * 0.22) * 0.10 + speechEnergy * 0.14 : 0);
+  const speechEnergy = isSpeaking ? Math.min(1.0, mouthOpen * 1.8) : 0;
+  const leftArmRotX = (isDad ? 0.58 : 0.45) + (isSpeaking ? Math.sin(frame * 0.18) * 0.10 + speechEnergy * 0.16 : 0);
+  const leftForearmRotX = (isDad ? -0.85 : -0.75) - (isSpeaking ? Math.cos(frame * 0.22) * 0.12 + speechEnergy * 0.20 : 0);
 
-  const rightArmRotX = (isDad ? 0.58 : 0.42) + (isSpeaking ? Math.sin(frame * 0.24) * 0.10 + speechEnergy * 0.16 : 0);
-  const rightArmRotY = (isDad ? 0.14 : 0.08) + (isSpeaking ? Math.cos(frame * 0.20) * 0.05 : 0);
-  const rightArmRotZ = (isDad ? -0.08 : -0.04) + (isSpeaking ? Math.sin(frame * 0.26) * 0.05 : 0);
-  const rightForearmRotX = (isDad ? -0.85 : -0.78) - (isSpeaking ? Math.sin(frame * 0.28) * 0.12 + speechEnergy * 0.18 : 0);
+  const rightArmRotX = (isDad ? 0.58 : 0.42) + (isSpeaking ? Math.sin(frame * 0.24) * 0.12 + speechEnergy * 0.22 : 0);
+  const rightArmRotY = (isDad ? 0.14 : 0.08) + (isSpeaking ? Math.cos(frame * 0.20) * 0.06 : 0);
+  const rightArmRotZ = (isDad ? -0.08 : -0.04) + (isSpeaking ? Math.sin(frame * 0.26) * 0.06 : 0);
+  const rightForearmRotX = (isDad ? -0.85 : -0.78) - (isSpeaking ? Math.sin(frame * 0.28) * 0.14 + speechEnergy * 0.24 : 0);
 
   return (
     <group

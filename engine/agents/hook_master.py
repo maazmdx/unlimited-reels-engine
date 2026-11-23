@@ -14,7 +14,7 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 import requests
 
@@ -157,6 +157,70 @@ def call_groq_api(prompt: str, system_instruction: str, timeout: float = 35.0) -
         print(f"⚠️ [Groq API] Request exception: {e}")
 
     return None
+
+
+def validate_screenplay_quality_gate(screenplay: Dict[str, Any], topic: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    """
+    Programmatic Script Quality Gate:
+    1. Reject if banned generic phrases appear ('company documentation', 'entire workflow', 'manual work',
+       'hours of coding', 'manual coding', 'overdue tickets', 'monthly router bill' on non-router topics).
+    2. Reel #1 (Tool/Repo):
+       - 'tool_name' MUST be spoken naturally by Turn 2 or Turn 3 (case-insensitive substring in Turns 0..3).
+       - Paid alternative / cost mention MUST appear in Turns 0..2.
+       - Average words per turn <= 16 words.
+    3. Reel #2 (Dad clash / comedy):
+       - Zero GitHub / repo / software-install terminology ('github', 'repo', 'git clone', 'pip install', 'npm install').
+    4. Dialog turn count >= 11 and <= 13.
+    """
+    violations = []
+    dialogue = screenplay.get("dialogue") or []
+    if not isinstance(dialogue, list) or len(dialogue) < 11:
+        violations.append(f"Dialogue turn count is {len(dialogue)}, must be between 11 and 13 turns.")
+        return False, violations
+
+    title = str(topic.get("title") or topic.get("topic_title") or "").lower()
+    format_type = str(topic.get("format_type") or "").lower()
+    left_char = str(topic.get("left_character") or "").lower()
+    is_dad_skit = (format_type == "dad_clash") or (left_char == "dad") or ("dad" in title)
+
+    # 1. Check for banned generic phrases across all turns
+    banned_generic = [
+        "company documentation", "entire workflow", "manual work",
+        "hours of coding", "manual coding", "overdue tickets"
+    ]
+    all_turns_text = " ".join(str(d.get("text", "")) for d in dialogue).lower()
+    for phrase in banned_generic:
+        if phrase in all_turns_text:
+            violations.append(f"Found banned generic phrase '{phrase}' in screenplay.")
+
+    if "monthly router bill" in all_turns_text and "router" not in title and "wifi" not in title:
+        violations.append("Found 'monthly router bill' in screenplay for non-router topic.")
+
+    # 2. Word count checks
+    word_counts = [len(str(d.get("text", "")).split()) for d in dialogue]
+    avg_words = sum(word_counts) / len(word_counts) if word_counts else 0
+    if avg_words > 16.0:
+        violations.append(f"Average turn length is {avg_words:.1f} words (limit: 16 words per turn).")
+
+    # 3. Reel #1 vs Reel #2 checks
+    if is_dad_skit:
+        banned_dad_terms = ["github", "repo", "git clone", "pip install", "npm install", "pull request"]
+        for term in banned_dad_terms:
+            if term in all_turns_text:
+                violations.append(f"Found developer term '{term}' in Dad clash comedy script.")
+    else:
+        tool_name = str(topic.get("tool_name") or topic.get("toolName") or "").strip().lower()
+        if tool_name and tool_name not in {"opentool", "ai", "app", "tool", "freetool"}:
+            early_turns = " ".join(str(dialogue[i].get("text", "")) for i in range(min(4, len(dialogue)))).lower()
+            if tool_name not in early_turns:
+                violations.append(f"tool_name '{tool_name}' was not spoken in Turns 0-3.")
+
+        turns_0_2 = " ".join(str(dialogue[i].get("text", "")) for i in range(min(3, len(dialogue)))).lower()
+        cost_indicators = ["$", "dollar", "pay", "paid", "cost", "subscri", "fee", "twenty", "expensive", "free", "hundred"]
+        if not any(ci in turns_0_2 for ci in cost_indicators):
+            violations.append("No paid alternative, cost ($/dollars), or fee contrast in Turns 0-2.")
+
+    return len(violations) == 0, violations
 
 
 class HookMasterAgent:
@@ -627,21 +691,30 @@ JSON Schema:
 }}
 """
 
-        raw_json = self._call_llm(prompt, system_instruction)
         screenplay = None
-        if raw_json:
-            try:
-                cleaned = raw_json.strip()
-                if cleaned.startswith("```"):
-                    cleaned = re.sub(r"^```(?:json)?\n", "", cleaned)
-                    cleaned = re.sub(r"\n```$", "", cleaned)
-                parsed = json.loads(cleaned.strip())
-                if "dialogue" in parsed and len(parsed["dialogue"]) >= 11:
-                    screenplay = parsed
-            except Exception as e:
-                print(f"⚠️ HookMaster: Screenplay parse error: {e}")
+        current_prompt = prompt
+        for attempt in range(3):
+            raw_json = self._call_llm(current_prompt, system_instruction)
+            if raw_json:
+                try:
+                    cleaned = raw_json.strip()
+                    if cleaned.startswith("```"):
+                        cleaned = re.sub(r"^```(?:json)?\n", "", cleaned)
+                        cleaned = re.sub(r"\n```$", "", cleaned)
+                    parsed = json.loads(cleaned.strip())
+                    if "dialogue" in parsed and len(parsed["dialogue"]) >= 11:
+                        is_valid, violations = validate_screenplay_quality_gate(parsed, topic)
+                        if is_valid:
+                            screenplay = parsed
+                            break
+                        else:
+                            print(f"⚠️ [HookMaster] LLM screenplay attempt {attempt + 1} failed quality gate: {violations}")
+                            current_prompt = prompt + f"\n\nCRITICAL FIXES REQUIRED (Previous attempt failed with: {violations}):\nEnsure tool_name '{tool_name}' is spoken by Turn 2-3, paid alternative/cost ($) is in Turns 0-2, keep turns punchy (<= 14 words), and strictly avoid any banned generic phrases."
+                except Exception as e:
+                    print(f"⚠️ HookMaster: Screenplay parse error attempt {attempt + 1}: {e}")
 
         if not screenplay:
+            print("⚠️ [HookMaster] LLM unavailable or failed quality gate; using broadcast fallback screenplay.")
             screenplay = self._fallback_screenplay(topic, winning_hook, left_char, right_char, scene_preset, kw)
 
         # Enforce guarantees
@@ -873,7 +946,7 @@ JSON Schema:
             }
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "Corporate software companies pray you never discover this free trick.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Stop paying twenty dollars a month when {tool_name} is free.", "emotion": "smug", "pause_after": 0.25},
                 {"speaker": left_char, "character_id": left_char, "text": f"Wait, {tool_name} actually bypasses their entire expensive paywall?", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": f"Everyone switched to {tool_name} because it runs directly on your machine.", "emotion": "smug", "pause_after": 0.25},
                 {"speaker": left_char, "character_id": left_char, "text": "They charge enterprise teams thousands of dollars every single month.", "emotion": "shocked", "pause_after": 0.25},
@@ -897,10 +970,10 @@ JSON Schema:
             }
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "You spent four hours doing this by hand like that?", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": f"Is there a secret tool that finishes this immediately?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"Stop paying twenty dollars a month when {tool_name} is free.", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": f"Wait, {tool_name} actually replaces that paid tool?", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": f"Use {tool_name} and finish the entire setup in two clicks.", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": f"{tool_name} replaces my entire afternoon of manual boring work?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": f"And {tool_name} handles all this with zero fees?", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": "One click in your browser with verified zero subscription fees.", "emotion": "smug", "pause_after": 0.30},
                 {"speaker": left_char, "character_id": left_char, "text": "My coworker just saw my finished screen and gasped aloud.", "emotion": "shocked", "pause_after": 0.30},
                 {"speaker": right_char, "character_id": right_char, "text": "Send him the link before he copies your old method.", "emotion": "smug", "pause_after": 0.30},
@@ -921,8 +994,8 @@ JSON Schema:
             }
             dialogue = [
                 {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                {"speaker": right_char, "character_id": right_char, "text": "You really spent twenty dollars on that bloated subscription app?", "emotion": "smug", "pause_after": 0.25},
-                {"speaker": left_char, "character_id": left_char, "text": "My paid subscription works fine, so why change anything?", "emotion": "shocked", "pause_after": 0.25},
+                {"speaker": right_char, "character_id": right_char, "text": f"You really spent twenty dollars on that app when {tool_name} is free?", "emotion": "smug", "pause_after": 0.25},
+                {"speaker": left_char, "character_id": left_char, "text": f"Wait, does {tool_name} really replace my paid setup?", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": f"Because {tool_name} does the exact same thing completely free.", "emotion": "smug", "pause_after": 0.25},
                 {"speaker": left_char, "character_id": left_char, "text": f"Wait, {tool_name} runs locally without any monthly subscription fees?", "emotion": "shocked", "pause_after": 0.25},
                 {"speaker": right_char, "character_id": right_char, "text": "Zero subscription fees, zero cloud bloat, and runs right now.", "emotion": "smug", "pause_after": 0.30},
@@ -993,54 +1066,6 @@ JSON Schema:
             "real_steps": real_steps,
             "realSteps": real_steps,
             "comedy_structure": structure,
-        }
-
-        card_data = {
-            "title": card_title,
-            "subtitle": f"{title[:28]} Breakdown",
-            "badge": badge,
-            "rows": rows,
-            "items": rows,
-            "startTurn": 5,
-            "endTurn": 7,
-            "durationSeconds": 12.0,
-        }
-
-        end_card = {
-            "question": end_question,
-            "keyword": kw if has_res else "",
-            "cta_text": f"Comment {kw} for the {link_desc}" if has_res else "Tag that dev in your group who needs to see this!",
-            "subtext": "Follow for Part 2",
-            "has_resource_link": has_res,
-            "hasResourceLink": has_res,
-        }
-
-        headline_text = clean_headline_truncation(title.upper(), 38)
-
-        return {
-            "title": title[:50],
-            "style": scene_preset,
-            "comp": "MasterAutonomousReel",
-            "scenePreset": scene_preset,
-            "leftCharacterId": left_char,
-            "rightCharacterId": right_char,
-            "cast": {"left": left_char, "right": right_char},
-            "cta_keyword": kw if has_res else "",
-            "cta_phrase": f"Comment {kw} and I'll DM you the {link_desc}." if has_res else "Tag that dev in your group who needs to see this!",
-            "has_resource_link": has_res,
-            "hasResourceLink": has_res,
-            "cardType": "comparison",
-            "badge": badge,
-            "explainerTitle": card_title,
-            "cardData": card_data,
-            "toastData": toast,
-            "endCard": end_card,
-            "hook": {
-                "headline": headline_text,
-                "subheadline": hook,
-                "tag": "⚠️ REAL TALK",
-            },
-            "dialogue": dialogue,
         }
 
     # =========================================================================

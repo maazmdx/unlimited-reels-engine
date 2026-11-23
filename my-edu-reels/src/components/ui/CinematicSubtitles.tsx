@@ -162,6 +162,7 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
                     "0 6px 20px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 1.0)",
                   transform: isActive ? "scale(1.08)" : "scale(1.0)",
                   display: "inline-block",
+                  marginRight: 14,
                 }}
               >
                 {displayWord}
