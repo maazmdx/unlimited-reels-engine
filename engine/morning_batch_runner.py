@@ -36,6 +36,7 @@ from engine.agents.audio_director import AudioDirectorAgent
 from engine.agents.scene_director import SceneDirectorAgent
 from engine.agents.quality_auditor import QualityAuditorAgent
 from engine.agents.drive_dispatcher import DriveDispatcherAgent
+from engine.agents.telegram_dispatcher import TelegramDispatcherAgent
 from engine.agents.instagram_publisher import InstagramPublisherAgent
 from engine.tts_engine import export_srt_file
 
@@ -283,6 +284,7 @@ def run_morning_batch(
     count: int = 2,
     drive_sync: bool = False,
     drive_folder_id: Optional[str] = None,
+    telegram_sync: bool = True,
     insta_url: Optional[str] = None,
     scene_preset: str = "auto",
     auto_publish: bool = False
@@ -649,6 +651,14 @@ def run_morning_batch(
         print(f"  🎬 Reel #{r['index']:02d}: {r['title']} [{r['duration']:.1f}s | Score: {r['quality_score']}/100 | Auto-DM: {r.get('cta_keyword')}]")
     print("=" * 70)
 
+    # Automatic Telegram delivery
+    if telegram_sync:
+        try:
+            tg_dispatcher = TelegramDispatcherAgent()
+            tg_dispatcher.dispatch_batch(batch_dir)
+        except Exception as e_tg:
+            print(f"ℹ️ Telegram dispatch notice (non-fatal): {e_tg}")
+
     return batch_report
 
 
@@ -683,6 +693,8 @@ if __name__ == "__main__":
     parser.add_argument("--schedule", action="store_true", help="Set up daily morning crontab schedule (08:30 AM)")
     parser.add_argument("--hour", type=int, default=8, help="Cron schedule hour (default: 8)")
     parser.add_argument("--minute", type=int, default=30, help="Cron schedule minute (default: 30)")
+    parser.add_argument("--telegram", action="store_true", default=True, help="Enable Telegram cloud dispatch (default: True)")
+    parser.add_argument("--no-telegram", action="store_false", dest="telegram", help="Disable Telegram cloud dispatch")
     parser.add_argument("--drive", action="store_true", help="Enable Google Drive cloud upload")
     parser.add_argument("--drive-folder", type=str, default=None, help="Google Drive folder ID")
     parser.add_argument("--insta-url", type=str, default=None, help="Specific Instagram/Shorts URL to recreate")
@@ -697,6 +709,7 @@ if __name__ == "__main__":
             count=args.count,
             drive_sync=args.drive,
             drive_folder_id=args.drive_folder,
+            telegram_sync=args.telegram,
             insta_url=args.insta_url,
             scene_preset=args.scene_preset,
             auto_publish=args.auto_publish,
