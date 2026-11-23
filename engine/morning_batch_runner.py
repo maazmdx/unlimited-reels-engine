@@ -13,7 +13,7 @@ Generates 2 to 3 recreated AI reels every morning:
 
 import os
 import sys
-import os
+import re
 import subprocess
 import json
 import time
@@ -273,11 +273,128 @@ def generate_autodm_config(script_data: Dict[str, Any]) -> Dict[str, Any]:
 
     return {
         "keyword": cta_kw,
-        "reply_comment_text": "Check your DMs! 🚀 Sent the full guide.",
+        "reply_comment_text": "Check your messages! Sent the full guide.",
         "dm_message_template": dm_msg,
         "resource_topic": title,
         "created_at": datetime.now().isoformat()
     }
+
+
+def assert_screenplay_pre_render_integrity(
+    script_data: Dict[str, Any],
+    seo_assets: Optional[Dict[str, Any]] = None,
+    remotion_src_dir: Optional[Path] = None,
+) -> None:
+    """
+    Hard Pre-Render Assertion Gate:
+    Enforces that broken text, wrong speakers, human step-reading, or placeholders
+    can NEVER reach Remotion render. Raises AssertionError on any violation.
+    """
+    dialogue = script_data.get("dialogue") or []
+    if not isinstance(dialogue, list) or len(dialogue) < 11:
+        raise AssertionError(f"Pre-Render Gate Failed: Dialogue has {len(dialogue)} turns, requires at least 11.")
+
+    title = str(script_data.get("title", "")).lower()
+    left_char = str(script_data.get("leftCharacterId") or "junior_dev").lower()
+    right_char = str(script_data.get("rightCharacterId") or "claude").lower()
+    is_dad = (left_char == "dad") or ("dad" in title) or (script_data.get("format_type") == "dad_clash")
+
+    # 1. Cast validation & locked voices
+    active_cast = script_data.get("active_cast")
+    if not active_cast or not isinstance(active_cast, (list, tuple)):
+        active_cast = [left_char, right_char]
+    cast_set = {str(c).lower().strip() for c in active_cast}
+
+    from engine.tts_engine import CHARACTER_VOICE_REF_SPECS
+    for c in cast_set:
+        if c not in CHARACTER_VOICE_REF_SPECS:
+            raise AssertionError(f"Pre-Render Gate Failed: Character '{c}' in active_cast has no Kokoro voice spec.")
+
+    # 2. Strict alternation and speaker existence
+    prev_speaker = None
+    HUMAN_SPEAKERS = {"junior_dev", "senior_dev", "friend_riya", "dad"}
+    for idx, d in enumerate(dialogue):
+        spk = str(d.get("speaker") or d.get("character_id") or "").lower()
+        if spk not in cast_set:
+            raise AssertionError(f"Pre-Render Gate Failed: Turn {idx} speaker '{spk}' is not in active_cast {cast_set}.")
+        if prev_speaker and spk == prev_speaker:
+            raise AssertionError(f"Pre-Render Gate Failed: Turns {idx-1} and {idx} have consecutive speaker '{spk}' (alternation required).")
+        prev_speaker = spk
+
+        # Human rule: Humans NEVER read steps or install commands!
+        txt_low = str(d.get("text", "")).lower()
+        if spk in HUMAN_SPEAKERS:
+            if any(s in txt_low for s in ["step 1", "step 2", "step 3", "step one", "step two", "step three"]):
+                raise AssertionError(f"Pre-Render Gate Failed: Human '{spk}' recited tutorial step in Turn {idx}: '{txt_low}'")
+            if any(cmd in txt_low for cmd in ["git clone", "pip install", "npm install", "brew install", "apt-get"]):
+                raise AssertionError(f"Pre-Render Gate Failed: Human '{spk}' recited CLI install command in Turn {idx}: '{txt_low}'")
+
+    # 3. Dad POV Check
+    if is_dad:
+        dad_turns = [d.get("text", "") for d in dialogue if str(d.get("speaker") or d.get("character_id")).lower() == "dad"]
+        for dt in dad_turns:
+            dt_low = dt.lower()
+            if re.search(r"\b(dad just|my dad|dad thinks|dad sets|dad installed|dad downloaded|dad covers|my boss)\b", dt_low):
+                raise AssertionError(f"Pre-Render Gate Failed: Dad spoke in 3rd person: '{dt}'")
+
+        # Dad clash must not show software steps cardData
+        card_d = script_data.get("cardData")
+        if card_d and isinstance(card_d, dict) and card_d.get("rows"):
+            if any("step 1" in str(r.get("label", "")).lower() for r in card_d["rows"]):
+                raise AssertionError("Pre-Render Gate Failed: Dad clash screenplay has software step cardData rows.")
+
+    # 4. Banned Placeholders and AI Slop Check across all screenplay text
+    from engine.agents.hook_master import BANNED_PLACEHOLDERS
+    all_blobs = [str(d.get("text", "")) for d in dialogue]
+    card_data = script_data.get("cardData") or {}
+    if isinstance(card_data, dict):
+        for r in card_data.get("rows", []):
+            if isinstance(r, dict):
+                all_blobs.append(str(r.get("label", "")))
+                all_blobs.append(str(r.get("value", "")))
+    toast_data = script_data.get("toastData") or {}
+    if isinstance(toast_data, dict):
+        all_blobs.append(str(toast_data.get("app_name", "")))
+        all_blobs.append(str(toast_data.get("message", "")))
+    end_card = script_data.get("endCard") or {}
+    if isinstance(end_card, dict):
+        all_blobs.append(str(end_card.get("question", "")))
+        all_blobs.append(str(end_card.get("cta_text", "")))
+
+    if seo_assets:
+        all_blobs.append(str(seo_assets.get("caption_text", "")))
+        all_blobs.append(str(seo_assets.get("pinned_comment", "")))
+
+    full_text = " ".join(all_blobs).lower()
+    for ph in BANNED_PLACEHOLDERS:
+        if ph in full_text:
+            raise AssertionError(f"Pre-Render Gate Failed: Found banned placeholder or AI slop '{ph}' in screenplay/assets.")
+
+    if "2024" in full_text:
+        raise AssertionError("Pre-Render Gate Failed: Found hardcoded '2024' string in screenplay or SEO assets.")
+
+    # 5. Check Turn 9 notification reaction
+    if len(dialogue) > 9:
+        t9_text = str(dialogue[9].get("text", "")).strip()
+        t9_lower = t9_text.lower()
+        if any(sym in t9_text for sym in ["•", "|", "—"]):
+            raise AssertionError(f"Pre-Render Gate Failed: Turn 9 contains forbidden bullet/glitch symbols: '{t9_text}'")
+        clean_title = re.sub(r"[^a-zA-Z0-9\s]", "", title).strip()
+        if len(clean_title) > 12 and clean_title in t9_lower:
+            raise AssertionError(f"Pre-Render Gate Failed: Turn 9 repeats reel title verbatim: '{t9_text}'")
+
+    # 6. Verify zero purple hex codes in EndCard / follow screen / progress bar
+    src_dir = Path(remotion_src_dir) if remotion_src_dir else (PROJECT_ROOT / "my-edu-reels" / "src")
+    banned_purple_hexes = ["#7c3aed", "#6366f1", "#4c1d95", "#3b0764", "#8b5cf6", "#a855f7", "#9333ea", "#c084fc", "#5b21b6", "#7e22ce"]
+    for comp_name in ["MasterAutonomousReel.tsx", "components/ProgressBar.tsx"]:
+        comp_file = src_dir / comp_name
+        if comp_file.exists():
+            content = comp_file.read_text(encoding="utf-8").lower()
+            for hex_code in banned_purple_hexes:
+                if hex_code in content:
+                    raise AssertionError(f"Pre-Render Gate Failed: Found purple color '{hex_code}' in {comp_name}")
+
+    print("🛡️ [Pre-Render Gate] ALL INTEGRITY CHECKS PASSED: Screenplay, voices, roles, and visual styling verified!")
 
 
 def run_morning_batch(
@@ -446,12 +563,28 @@ def run_morning_batch(
             script_data["endCard"] = {}
         script_data["endCard"]["subtext"] = f"Follow for {next_ep_str}"
 
-        # 3. AudioDirector Stage (Neural character voices & DSP mastering)
+        safe_title = "".join(c if c.isalnum() else "_" for c in script_data["title"].lower()).strip("_")[:30]
+        file_prefix = f"reel_{idx:02d}_{safe_title}"
+
+        # 3. SEOMaster Stage (SEO headline, pinned comment bait, clean caption & 1-page guide)
+        print("🔍 [SEOMaster] Generating SEO headline, pinned comment bait, and 3-reply Auto-DM config...")
+        seo_assets = seo_master.generate_seo_assets(
+            script_data=script_data,
+            batch_dir=batch_dir,
+            file_prefix=file_prefix,
+        )
+        caption_file = seo_assets["caption_path"]
+        autodm_file = seo_assets["autodm_path"]
+
+        # 4. HARD PRE-RENDER ASSERTION GATE: Validates screenplay, roles, and visual styling before rendering
+        print("🛡️ [Pre-Render Gate] Validating screenplay integrity, voice roster, and zero-purple styling...")
+        assert_screenplay_pre_render_integrity(script_data, seo_assets)
+
+        # 5. AudioDirector Stage (Neural character voices & DSP mastering)
         print("🎙️ [AudioDirector] Synthesizing neural character voices & audio mastering...")
         audio_res = audio_director.synthesize_soundtrack(script_data)
 
-        # 4 & 5. SceneDirector & QualityAuditor Stages (Remotion Render & 5-Stage Audit Loop)
-        safe_title = "".join(c if c.isalnum() else "_" for c in script_data["title"].lower()).strip("_")[:30]
+        # 6. SceneDirector & QualityAuditor Stages (Remotion Render & 5-Stage Audit Loop)
         output_filename = f"reel_{idx:02d}_{safe_title}.mp4"
 
         max_attempts = 2
@@ -502,17 +635,6 @@ def run_morning_batch(
                 dst_kf = thumbs_dir / Path(kf["path"]).name
                 if os.path.realpath(str(src_kf)) != os.path.realpath(str(dst_kf)):
                     shutil.copy2(src_kf, dst_kf)
-
-        # 6. SEOMaster Stage (Instagram Discovery, Pinned Debate Bait, Anti-Throttle Auto-DM)
-        print("🔍 [SEOMaster] Generating SEO headline, pinned comment bait, and 3-reply Auto-DM config...")
-        file_prefix = f"reel_{idx:02d}_{safe_title}"
-        seo_assets = seo_master.generate_seo_assets(
-            script_data=script_data,
-            batch_dir=batch_dir,
-            file_prefix=file_prefix,
-        )
-        caption_file = seo_assets["caption_path"]
-        autodm_file = seo_assets["autodm_path"]
 
         # Optional Cloud Drive Sync
         drive_status = "SKIPPED"

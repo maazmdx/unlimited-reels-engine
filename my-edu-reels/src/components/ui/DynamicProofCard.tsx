@@ -39,7 +39,7 @@ export interface DynamicProofCardProps {
   proofImagePath?: string;
 }
 
-function cleanTitleTruncation(text: string, maxChars: number = 32): string {
+function cleanTitleTruncation(text: string, maxChars: number = 34): string {
   if (!text) return "";
   const trimmed = text.trim();
   if (trimmed.length <= maxChars) return trimmed;
@@ -67,6 +67,20 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   const { fps } = useVideoConfig();
 
   if (!cardData) return null;
+
+  // Reel #2 (Dad Clash): Completely disable DynamicProofCard on screen (no SPECS box, full-screen 3D comedy stage)
+  if (
+    cardData.badge === "DAD TECH AUDIT" ||
+    cardData.badge === "COMEDY" ||
+    cardData.badge === "FACT CHECK" ||
+    /dad/i.test(cardData.title || "") ||
+    /dad/i.test(cardData.subtitle || "") ||
+    /wifi/i.test(cardData.title || "") ||
+    Boolean((cardData as any)?.isDadClash) ||
+    (cardData as any)?.format_type === "dad_clash"
+  ) {
+    return null;
+  }
 
   const effectiveLogo = logoPath || topicLogoPath || cardData.logoPath || cardData.topicLogoPath;
   const effectiveProofImage = proofImagePath || cardData.proofImagePath;

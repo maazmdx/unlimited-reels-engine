@@ -88,7 +88,7 @@ DAD_CLASH_PREMISES = [
         "premise": "phone storage cleaner / RAM booster apps",
         "title": "Dad Installed 4 'RAM Booster' Apps on His Phone",
         "myth": "Dad thinks downloading 4 different phone cleaner apps speeds up his Android, but they actually drain 80% battery showing full-screen ads.",
-        "hook": "Dad, why did you install 4 'RAM Booster' apps?",
+        "hook": "Look how fast this rocket cleaner makes my phone fly!",
         "conflict": "Dev explaining modern Android RAM management vs Dad proud of the turbo rocket cleaning animation",
     },
     {
@@ -96,7 +96,7 @@ DAD_CLASH_PREMISES = [
         "premise": "WhatsApp lottery / scam link forwards",
         "title": "Dad Believes He Won an iPhone 17 on WhatsApp",
         "myth": "Dad gets a forward claiming he won a free car or phone and is about to forward it to 20 family groups.",
-        "hook": "Dad is about to send his bank details to a WhatsApp bot.",
+        "hook": "Beta, I just won a brand new phone on WhatsApp!",
         "conflict": "Dev warning about phishing scams vs Dad insisting 'It has the official logo!'",
     },
     {
@@ -104,7 +104,7 @@ DAD_CLASH_PREMISES = [
         "premise": "battery 100% charging and overnight myths",
         "title": "Dad Sets an Alarm to Unplug His Phone at Exactly 80%",
         "myth": "Dad watched a WhatsApp video claiming charging past 80% explodes the battery and now charges in 10-minute intervals.",
-        "hook": "Dad sets an alarm every night just to unplug his phone at 80%.",
+        "hook": "Beta, unplug it at eighty percent or the battery explodes!",
         "conflict": "Dev explaining modern battery BMS chips vs Dad citing WhatsApp University",
     },
     {
@@ -112,7 +112,7 @@ DAD_CLASH_PREMISES = [
         "premise": "printer ink cartridge extortion",
         "title": "Dad vs The Color Ink Cartridge Extortion",
         "myth": "Dad trying to print a black-and-white government form, but the printer refuses because 'Cyan is empty'.",
-        "hook": "The printer won't print black text because Cyan is empty.",
+        "hook": "Why does this printer demand cyan to print black text?!",
         "conflict": "Dad threatening the printer with a screwdriver vs Dev explaining printer DRM chips",
     },
     {
@@ -120,7 +120,7 @@ DAD_CLASH_PREMISES = [
         "premise": "shady APK downloads / modded WhatsApp",
         "title": "Dad Downloaded 'Gold WhatsApp' from a Sketchy Website",
         "myth": "Dad downloaded a sketchy APK because a video promised it can read deleted messages from 2018.",
-        "hook": "Dad downloaded a sketchy APK from a random website.",
+        "hook": "Look at my gold WhatsApp theme! It reads deleted messages!",
         "conflict": "Dev discovering 15 malware popups vs Dad bragging about his secret gold theme",
     },
     {
@@ -128,7 +128,7 @@ DAD_CLASH_PREMISES = [
         "premise": "smart TV spying & mic listening myths",
         "title": "Dad Covers the Smart TV with a Towel",
         "myth": "Dad saw shoe ads on his phone after talking about shoes and now covers the TV sensor with tape and a towel.",
-        "hook": "Dad covered the Smart TV because he thinks it's listening to him.",
+        "hook": "I covered the Smart TV with a towel so it stops spying!",
         "conflict": "Dev explaining cross-app ad tracking vs Dad whispering in the living room",
     },
 ]

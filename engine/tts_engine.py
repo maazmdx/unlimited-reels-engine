@@ -82,12 +82,22 @@ CHARACTER_VOICE_REF_SPECS = {
         "voice": "am_michael",
         "text": "Wait, did you really think I was going to pay for that? Look at this tool right now!",
     },
-    "claude": {
+    "senior_dev": {
         "engine": "kokoro",
-        "voice": "am_fenrir",
-        "text": "You spent three hours doing that by hand? Stop embarrassing yourself and look at the real data.",
+        "voice": "am_adam",
+        "text": "Before you install another bloated enterprise package, check what this lightweight script actually does.",
     },
-    "ai_roaster": {
+    "friend_riya": {
+        "engine": "kokoro",
+        "voice": "af_sarah",
+        "text": "Wait, you were paying twenty bucks a month for that? I thought everyone knew this was open source.",
+    },
+    "dad": {
+        "engine": "kokoro",
+        "voice": "bm_lewis",
+        "text": "Beta, why are you paying fifty dollars for this? Unplug it right now or the battery will explode!",
+    },
+    "claude": {
         "engine": "kokoro",
         "voice": "am_fenrir",
         "text": "You spent three hours doing that by hand? Stop embarrassing yourself and look at the real data.",
@@ -95,17 +105,22 @@ CHARACTER_VOICE_REF_SPECS = {
     "gemini": {
         "engine": "kokoro",
         "voice": "af_bella",
-        "text": "Here is the exact technical breakdown! It runs locally in seconds with zero configuration.",
+        "text": "Here is the exact technical breakdown. It runs locally in seconds with zero configuration.",
+    },
+    "gpt": {
+        "engine": "kokoro",
+        "voice": "bm_onyx",
+        "text": "I could have automated your entire workflow ten minutes ago, but watching you pay for that was entertaining.",
+    },
+    "ai_roaster": {
+        "engine": "kokoro",
+        "voice": "am_fenrir",
+        "text": "You spent three hours doing that by hand? Stop embarrassing yourself and look at the real data.",
     },
     "grok": {
         "engine": "kokoro",
         "voice": "am_fenrir",
-        "text": "Look at the numbers! The data proves this runs faster and smoother than corporate paywalls.",
-    },
-    "dad": {
-        "engine": "kokoro",
-        "voice": "bm_lewis",
-        "text": "Why are you paying fifty dollars for this? Check this carefully and stop wasting our money right now!",
+        "text": "Look at the numbers. The data proves this runs faster and smoother than corporate paywalls.",
     },
 }
 
@@ -263,12 +278,18 @@ def canonicalize_character_id(speaker_str: str) -> str:
     s = (speaker_str or "").lower().strip()
     if s in ["junior", "dev", "junior_dev", "human_male", "junior developer"]:
         return "junior_dev"
+    if s in ["senior", "senior_dev", "senior developer", "tech_lead"]:
+        return "senior_dev"
+    if s in ["riya", "friend", "friend_riya", "peer"]:
+        return "friend_riya"
     if s in ["dad", "father", "indian_dad", "boomer_dad", "parent"]:
         return "dad"
     if s in ["claude", "claude_ai", "anthropic", "ai_roaster"]:
         return "claude"
     if s in ["gemini", "gemini_ai", "google_gemini"]:
         return "gemini"
+    if s in ["gpt", "chatgpt", "gpt4", "gpt-4o", "openai"]:
+        return "gpt"
     if s in ["grok", "grok_ai", "xai"]:
         return "grok"
     if s in ["bot", "antigravity", "antigravity_bot", "ai"]:
@@ -306,12 +327,41 @@ def convert_years_to_words(text: str) -> str:
     return re.sub(r'\b(19\d{2}|20\d{2})\b', _rep, text)
 
 
+def clean_display_text(text: str) -> str:
+    """
+    Cleans text for visual display (on-screen subtitles and .srt captions):
+    - Preserves contractions ('you're', 'I'm', 'doesn't') and domains ('bleachbit.org', 'GitHub').
+    - Strips bracketed cues ([chuckle], [sigh], etc.).
+    - Replaces em-dash / en-dash with comma pause (, ).
+    - Strips bullet symbols (•, |, —).
+    - Strips leading and trailing underscores and Markdown markers.
+    """
+    text = str(text or "").strip()
+    text = text.replace("’", "'").replace("‘", "'")
+    text = text.replace("—", ", ").replace("–", ", ")
+    text = re.sub(r'[•|]', ' ', text)
+    # Strip bracketed tokens
+    text = re.sub(r'\[.*?\]', '', text)
+    # Strip emojis
+    text = re.sub(r'[\U00010000-\U0010ffff]', '', text)
+    # Strip markdown emphasis tags at word boundaries
+    text = re.sub(r'(^|\s)[*_~`]+', r'\1', text)
+    text = re.sub(r'[*_~`]+(\s|$)', r'\1', text)
+    # Clean up whitespace
+    text = re.sub(r'\s+,', ',', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
 def normalize_tts_pronunciation(text: str) -> str:
     """
-    Normalizes technical acronyms and tool names for clean speech synthesis
+    Normalizes technical acronyms, domain names, bullets, and years for clean speech synthesis
     while keeping the written subtitle text completely untouched.
     """
+    text = re.sub(r'[•|]', ' ', text)
     replacements = [
+        (r'\bbleachbit\.org\b', 'bleachbit dot org'),
+        (r'\b([a-zA-Z0-9_-]+)\.(org|com|net|io|dev|ai|app)\b', r'\1 dot \2'),
         (r'\byt-dlp\b', 'Y T D L P'),
         (r'\bffmpeg\b', 'F F mpeg'),
         (r'\bCLI\b', 'C L I'),
@@ -325,23 +375,27 @@ def normalize_tts_pronunciation(text: str) -> str:
     res = text
     for pat, rep in replacements:
         res = re.sub(pat, rep, res)
+    res = convert_years_to_words(res)
+    res = re.sub(r'\s+', ' ', res).strip()
     return res
 
 
 def clean_text_for_speech(text: str, is_chatterbox: bool = False) -> str:
     """
     Cleans text of Markdown formatting, asterisks, brackets for clean TTS synthesis.
+    - Strips bullet symbols (•, |, —).
     - Replaces em-dash / en-dash (— / –) with a natural pause comma (, ).
     - Converts 4-digit years (1993 -> nineteen ninety-three) in TTS text only.
-    - Normalizes acronyms (yt-dlp, ffmpeg, CLI, GUI, API, 5G, GitHub, OLED) for TTS.
-    - Strips ALL bracketed cues ([chuckle], [sigh], [laugh], [gasp], [groan], etc.)
-      BEFORE passing text to Chatterbox, Kokoro, or Edge-TTS so it NEVER speaks
-      the word "chuckle" or "sigh" aloud!
+    - Normalizes acronyms and domains (yt-dlp, bleachbit.org, GitHub) for TTS.
+    - Strips ALL bracketed cues ([chuckle], [sigh], [laugh], etc.).
     """
+    text = str(text or "")
+    text = text.replace("’", "'").replace("‘", "'")
     # Replace em-dash and en-dash with comma pause
     text = text.replace("—", ", ").replace("–", ", ")
+    text = re.sub(r'[•|]', ' ', text)
 
-    # Normalize technical acronyms for clear speech pronunciation only
+    # Normalize technical acronyms and domains for clear speech pronunciation only
     text = normalize_tts_pronunciation(text)
 
     # Convert 4-digit years into spoken words
@@ -830,18 +884,9 @@ def extract_character_mouth_envelopes(
     """
     registry = load_character_profiles()
     all_chars = list(registry.keys())
-    if "junior_dev" not in all_chars:
-        all_chars.append("junior_dev")
-    if "dad" not in all_chars:
-        all_chars.append("dad")
-    if "claude" not in all_chars:
-        all_chars.append("claude")
-    if "gemini" not in all_chars:
-        all_chars.append("gemini")
-    if "grok" not in all_chars:
-        all_chars.append("grok")
-    if "antigravity_bot" not in all_chars:
-        all_chars.append("antigravity_bot")
+    for c_id in ["junior_dev", "senior_dev", "friend_riya", "dad", "claude", "gemini", "gpt", "grok", "antigravity_bot"]:
+        if c_id not in all_chars:
+            all_chars.append(c_id)
 
     envelopes = {char_id: [0.0] * total_frames for char_id in all_chars}
 
@@ -934,8 +979,10 @@ def generate_dialogue_speech(
             char_config = registry.get(canonical_char, {})
             voice_prof = char_config.get("voice_profile", {})
 
-            text = clean_text_for_speech(turn.get("text", ""))
-            if not text:
+            raw_text = str(turn.get("text", "")).strip()
+            disp_text = clean_display_text(raw_text)
+            tts_text = clean_text_for_speech(disp_text)
+            if not tts_text or not disp_text:
                 continue
 
             engine_type = voice_prof.get("engine", "kokoro").lower()
@@ -955,7 +1002,7 @@ def generate_dialogue_speech(
             if is_cuda_available():
                 try:
                     ref_audio = ensure_voice_reference(canonical_char)
-                    c_text = clean_text_for_speech(turn.get("text", ""), is_chatterbox=True)
+                    c_text = clean_text_for_speech(disp_text, is_chatterbox=True)
                     word_timings, turn_dur = _synthesize_chatterbox(
                         text=c_text,
                         voice_id=chatterbox_voice,
@@ -976,7 +1023,7 @@ def generate_dialogue_speech(
             # 2. Primary Engine (CPU Fallback): Kokoro-82M High-Energy ONNX
             if not synthesis_success and engine_type == "kokoro":
                 try:
-                    k_text = clean_text_for_speech(turn.get("text", ""), is_chatterbox=False)
+                    k_text = clean_text_for_speech(disp_text, is_chatterbox=False)
                     k_voice = "bm_lewis" if canonical_char == "dad" else (voice_prof.get("fallback_kokoro_voice") or voice_id)
                     word_timings, turn_dur = _synthesize_kokoro(
                         text=k_text,
@@ -999,28 +1046,13 @@ def generate_dialogue_speech(
                 turn_mp3 = os.path.join(tmpdir, f"turn_{idx:03d}_edge.mp3")
 
                 try:
-                    sentences = asyncio.run(_synthesize_edge_tts(text, fallback_voice, rate=edge_rate, out_audio=turn_mp3, pitch="+0Hz"))
+                    sentences = asyncio.run(_synthesize_edge_tts(tts_text, fallback_voice, rate=edge_rate, out_audio=turn_mp3, pitch="+0Hz"))
                     trim_silence(turn_mp3, turn_wav_trimmed)
                     turn_dur = get_audio_duration(turn_wav_trimmed)
-
-                    # Build timings
-                    words = text.split()
-                    weights = [max(len(w), 2) for w in words]
-                    total_w = sum(weights) or 1.0
-                    cur_w_t = 0.0
-                    for i, w in enumerate(words):
-                        w_dur = (weights[i] / total_w) * turn_dur
-                        word_timings.append({
-                            "word": re.sub(r'[^\w]', '', w) or w,
-                            "raw": w,
-                            "start": round(cur_w_t, 3),
-                            "end": round(cur_w_t + w_dur, 3)
-                        })
-                        cur_w_t += w_dur
                 except Exception as e_edge:
                     print(f"⚠️ Edge-TTS error for turn {idx}: {e_edge}")
                     # gTTS absolute safety fallback
-                    _synthesize_gtts(text, turn_wav_trimmed, lang=lang)
+                    _synthesize_gtts(tts_text, turn_wav_trimmed, lang=lang)
                     turn_dur = get_audio_duration(turn_wav_trimmed)
 
             turn_start = round(current_timeline, 3)
@@ -1033,24 +1065,37 @@ def generate_dialogue_speech(
             if os.path.realpath(str(turn_wav_trimmed)) != os.path.realpath(str(persistent_turn_audio)):
                 shutil.copy2(turn_wav_trimmed, persistent_turn_audio)
 
-            # Global word timestamps
+            # Build clean word timestamps from disp_text (preserves 'bleachbit.org', 'GitHub', 'you're')
+            disp_words = disp_text.split()
+            weights = [max(len(w), 2) for w in disp_words]
+            total_w = sum(weights) or 1.0
+            cur_w_t = 0.0
             turn_words_obj = []
-            for w in word_timings:
-                w_start = round(turn_start + w["start"], 3)
-                w_end = round(turn_start + w["end"], 3)
+
+            for i, w in enumerate(disp_words):
+                w_dur = (weights[i] / total_w) * turn_dur
+                # Strip leading/trailing underscores and non-alphanumeric except apostrophe and dots inside domains
+                w_clean = re.sub(r"^[^a-zA-Z0-9']+|[^a-zA-Z0-9']+$", "", w)
+                if not w_clean:
+                    cur_w_t += w_dur
+                    continue
+                w_start = round(turn_start + cur_w_t, 3)
+                w_end = round(turn_start + cur_w_t + w_dur, 3)
                 w_data = {
-                    "word": w["word"],
+                    "word": w_clean,
+                    "raw": w,
                     "start_sec": w_start,
                     "end_sec": w_end
                 }
                 turn_words_obj.append(w_data)
                 all_words.append({
-                    "word": w["word"],
-                    "raw": w.get("raw", w["word"]),
+                    "word": w_clean,
+                    "raw": w,
                     "start": w_start,
                     "end": w_end,
                     "character_id": canonical_char
                 })
+                cur_w_t += w_dur
 
             # Subtitle chunking (2-3 words per pill)
             for i in range(0, len(turn_words_obj), 3):
@@ -1066,7 +1111,8 @@ def generate_dialogue_speech(
             turns_summary.append({
                 "turn_index": idx,
                 "character_id": canonical_char,
-                "text": text,
+                "text": disp_text,
+                "tts_text": tts_text,
                 "emotion": emotion,
                 "start_sec": turn_start,
                 "end_sec": turn_end,

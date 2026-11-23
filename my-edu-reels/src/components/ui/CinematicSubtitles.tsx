@@ -37,6 +37,8 @@ const stripEmojis = (str: string): string => {
   return (str || "")
     .replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}]/gu, "")
     .replace(/[’‘]/g, "'")
+    .replace(/^[^\w']+|[^\w']+$/gu, "")
+    .replace(/^_+|_+$/g, "")
     .trim();
 };
 
@@ -108,7 +110,7 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
     zIndex: 99,
   };
 
-  const activeWordColor = "#FDE047"; // Electric yellow
+  const activeWordColor = speakerAccentColor || "#F59E0B"; // Warm amber
   const inactiveWordColor = "#FFFFFF"; // Pure white
 
   return (
@@ -124,19 +126,21 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
         textAlign: "center",
       }}
     >
-      {/* Floating editorial typography - Zero black pill box, zero badge */}
+      {/* Floating editorial typography with subtle frosted backdrop and crisp soft drop shadow */}
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
           alignItems: "center",
-          gap: "8px 16px",
+          gap: "8px 14px",
           maxWidth: 960,
-          background: "transparent",
-          padding: 0,
-          border: "none",
-          boxShadow: "none",
+          backgroundColor: "rgba(10, 10, 12, 0.72)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 20,
+          padding: "14px 28px",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          boxShadow: "0 12px 32px rgba(0, 0, 0, 0.8)",
         }}
       >
         {activeChunkWords.length > 0 ? (
@@ -150,19 +154,20 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
                 key={`${w.word}-${idx}`}
                 style={{
                   fontFamily:
-                    "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                  fontSize: 58,
-                  fontWeight: 900,
-                  letterSpacing: "-0.5px",
+                    "'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                  fontSize: 54,
+                  fontWeight: 800,
+                  letterSpacing: "-1px",
                   lineHeight: 1.25,
                   color: isActive ? activeWordColor : inactiveWordColor,
-                  WebkitTextStroke: "6px #000000",
+                  WebkitTextStroke: "1px rgba(0, 0, 0, 0.8)",
                   paintOrder: "stroke fill",
-                  textShadow:
-                    "0 6px 20px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 1.0)",
-                  transform: isActive ? "scale(1.08)" : "scale(1.0)",
+                  textShadow: isActive
+                    ? "0 4px 16px rgba(245, 158, 11, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9)"
+                    : "0 4px 12px rgba(0, 0, 0, 0.9)",
+                  transform: isActive ? "scale(1.05)" : "scale(1.0)",
                   display: "inline-block",
-                  marginRight: 14,
+                  marginRight: 10,
                 }}
               >
                 {displayWord}
@@ -173,16 +178,16 @@ export const CinematicSubtitles: React.FC<CinematicSubtitlesProps> = ({
           <span
             style={{
               fontFamily:
-                "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-              fontSize: 58,
-              fontWeight: 900,
-              letterSpacing: "-0.5px",
+                "'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+              fontSize: 54,
+              fontWeight: 800,
+              letterSpacing: "-1px",
               lineHeight: 1.25,
               color: activeWordColor,
-              WebkitTextStroke: "6px #000000",
+              WebkitTextStroke: "1px rgba(0, 0, 0, 0.8)",
               paintOrder: "stroke fill",
               textShadow:
-                "0 6px 20px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 1.0)",
+                "0 4px 16px rgba(245, 158, 11, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9)",
             }}
           >
             {stripEmojis(activeTurn.text)}

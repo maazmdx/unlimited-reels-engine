@@ -66,11 +66,12 @@ export interface MasterAutonomousReelProps {
   audioSrc?: string;
   characters?: Array<CharacterItemConfig | string>;
   cast?: {
-    left?: "junior_dev" | "dad";
-    right?: "claude" | "gemini" | "grok" | "antigravity_bot";
+    left?: "junior_dev" | "dad" | "senior_dev" | "friend_riya" | string;
+    right?: "claude" | "gemini" | "grok" | "gpt" | "antigravity_bot" | string;
+    cameo?: string;
   };
-  leftCharacterId?: "junior_dev" | "dad";
-  rightCharacterId?: "claude" | "gemini" | "grok" | "antigravity_bot";
+  leftCharacterId?: "junior_dev" | "dad" | "senior_dev" | "friend_riya" | string;
+  rightCharacterId?: "claude" | "gemini" | "grok" | "gpt" | "antigravity_bot" | string;
   cardData?: DynamicCardData | null;
   cardStartFrame?: number;
   cardEndFrame?: number;
@@ -161,9 +162,9 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
   );
 
   // 2. Resolve Cast (Left Human + Right AI Orb)
-  let leftCharId: "junior_dev" | "dad" =
+  let leftCharId: string =
     leftCharacterId || cast?.left || "junior_dev";
-  let rightCharId: "claude" | "gemini" | "grok" | "antigravity_bot" =
+  let rightCharId: string =
     rightCharacterId || cast?.right || "claude";
 
   // Auto-detect from characters array or turns if not explicitly set in cast
@@ -583,8 +584,8 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
         />
       </ThreeCanvas>
 
-      {/* 4. Upper-Third Dynamic Proof Card (Act 3: Turns 5-7, step-by-step row highlighting) */}
-      {cardData && isProofCardActive && (
+      {/* 4. Upper-Third Dynamic Proof Card (Act 3: Turns 5-7, step-by-step row highlighting; Reel #1 only, disabled on Dad Clash) */}
+      {cardData && isProofCardActive && leftCharacterId !== "dad" && cast?.left !== "dad" && (
         <DynamicProofCard
           cardData={cardData}
           startFrame={effectiveCardStart}
@@ -701,7 +702,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           style={{
             position: "absolute",
             inset: 0,
-            backgroundColor: "#030712",
+            backgroundColor: "#0A0A0C",
             opacity: endCardFade,
             zIndex: 120,
             display: "flex",
@@ -717,14 +718,14 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
           {/* Top Debate Question */}
           <div
             style={{
-              fontSize: 42,
+              fontSize: 44,
               fontWeight: 800,
-              color: "#F8FAFC",
+              color: "#FFFFFF",
               lineHeight: 1.35,
               maxWidth: 900,
-              marginBottom: 48,
+              marginBottom: 44,
               letterSpacing: "-0.5px",
-              textShadow: "0 4px 20px rgba(0, 0, 0, 0.95)",
+              textShadow: "0 4px 24px rgba(0, 0, 0, 0.95)",
             }}
           >
             {stripEmojis(resolvedEndCardQuestion)}
@@ -739,11 +740,11 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                 gap: 16,
                 padding: "20px 48px",
                 borderRadius: 9999,
-                backgroundColor: "rgba(15, 23, 42, 0.96)",
-                border: "2px solid #38BDF8",
+                backgroundColor: "#111827",
+                border: "2px solid #10B981",
                 boxShadow:
-                  "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 36px rgba(56, 189, 248, 0.45)",
-                marginBottom: 36,
+                  "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 32px rgba(16, 185, 129, 0.35)",
+                marginBottom: 32,
               }}
             >
               <div
@@ -751,13 +752,13 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                   width: 36,
                   height: 36,
                   borderRadius: "50%",
-                  backgroundColor: "#38BDF8",
+                  backgroundColor: "#10B981",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 16,
                   fontWeight: 900,
-                  color: "#030712",
+                  color: "#0A0A0C",
                   letterSpacing: "-0.5px",
                 }}
               >
@@ -779,10 +780,10 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                   style={{
                     fontSize: 36,
                     fontWeight: 900,
-                    color: "#38BDF8",
+                    color: "#10B981",
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
-                    textShadow: "0 0 20px rgba(56, 189, 248, 0.7)",
+                    textShadow: "0 0 20px rgba(16, 185, 129, 0.6)",
                   }}
                 >
                   {resolvedKeyword}
@@ -808,11 +809,11 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                 gap: 16,
                 padding: "20px 48px",
                 borderRadius: 9999,
-                backgroundColor: "rgba(15, 23, 42, 0.96)",
+                backgroundColor: "#111827",
                 border: "2px solid #F59E0B",
                 boxShadow:
-                  "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 36px rgba(245, 158, 11, 0.45)",
-                marginBottom: 36,
+                  "0 16px 48px rgba(0, 0, 0, 0.85), 0 0 32px rgba(245, 158, 11, 0.35)",
+                marginBottom: 32,
               }}
             >
               <div
@@ -826,17 +827,17 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                   justifyContent: "center",
                   fontSize: 18,
                   fontWeight: 900,
-                  color: "#030712",
+                  color: "#0A0A0C",
                 }}
               >
-                🔥
+                *
               </div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
                 <span
                   style={{
                     fontSize: 32,
                     fontWeight: 900,
-                    color: "#FCD34D",
+                    color: "#F59E0B",
                     textTransform: "uppercase",
                     letterSpacing: "0.04em",
                     textShadow: "0 0 20px rgba(245, 158, 11, 0.6)",
@@ -848,11 +849,27 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
             </div>
           )}
 
-          {/* Bottom Subtle Follow Prompt */}
+          {/* Studio Brand Handle */}
           <div
             style={{
-              fontSize: 24,
-              fontWeight: 700,
+              fontSize: 28,
+              fontWeight: 800,
+              color: "#FFFFFF",
+              letterSpacing: "0.5px",
+              marginBottom: 16,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span style={{ color: "#F59E0B" }}>@</span>canidoai
+          </div>
+
+          {/* Bottom Follow Prompt */}
+          <div
+            style={{
+              fontSize: 22,
+              fontWeight: 600,
               color: "#94A3B8",
               letterSpacing: "0.8px",
               textTransform: "uppercase",
@@ -861,7 +878,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
             {endCard?.subtext ||
               (episodeNumber
                 ? `Follow for Ep. ${episodeNumber + 1 < 10 ? "0" : ""}${episodeNumber + 1}`
-                : "Follow for Ep. 02")}
+                : "Follow for daily zero-dollar tech")}
           </div>
         </div>
       )}

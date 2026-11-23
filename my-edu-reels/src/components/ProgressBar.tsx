@@ -31,8 +31,8 @@ export const ProgressBar: React.FC<{ color?: string; height?: number }> = ({
         style={{
           width: `${progress}%`,
           height: "100%",
-          background: `linear-gradient(90deg, #6366F1, ${color}, #FFE600)`,
-          boxShadow: `0 0 12px ${color}`,
+          background: `linear-gradient(90deg, #38BDF8, ${color || "#10B981"}, #F59E0B)`,
+          boxShadow: `0 0 12px ${color || "#38BDF8"}`,
           borderRadius: 3,
         }}
       />

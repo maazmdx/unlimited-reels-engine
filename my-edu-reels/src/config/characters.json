@@ -40,13 +40,56 @@
     },
     "default_position": [0.0, -0.7, 0.2],
     "voice_profile": {
-      "engine": "edge_tts",
-      "voice_id": "en-IN-PrabhatNeural",
-      "speed": 1.04,
-      "pitch": "+0Hz",
-      "rate": "+4%",
-      "fallback_kokoro_voice": "bm_lewis",
-      "fallback_edge_voice": "en-IN-PrabhatNeural"
+      "engine": "kokoro",
+      "voice_id": "bm_lewis",
+      "speed": 1.02,
+      "pitch": "+0Hz"
+    }
+  },
+  "senior_dev": {
+    "id": "senior_dev",
+    "display_name": "Senior Developer",
+    "badge_label": "Senior Dev",
+    "role": "Calm Experienced 5-Year Engineer",
+    "type": "human",
+    "rig_component": "LowPolyHumanRig",
+    "palette": {
+      "primary": "#334155",
+      "secondary": "#1E293B",
+      "accent": "#F59E0B",
+      "skin": "#D4A373",
+      "shell": "#334155",
+      "eyeGlow": "#FFFFFF"
+    },
+    "default_position": [-1.4, -0.7, 0.1],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "am_adam",
+      "speed": 1.0,
+      "pitch": "+0Hz"
+    }
+  },
+  "friend_riya": {
+    "id": "friend_riya",
+    "display_name": "Riya",
+    "badge_label": "Riya",
+    "role": "Sharp Relatable Peer Engineer",
+    "type": "human",
+    "rig_component": "LowPolyHumanRig",
+    "palette": {
+      "primary": "#0D9488",
+      "secondary": "#115E59",
+      "accent": "#14B8A6",
+      "skin": "#E0A97A",
+      "shell": "#0D9488",
+      "eyeGlow": "#FFFFFF"
+    },
+    "default_position": [-1.4, -0.7, 0.1],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "af_sarah",
+      "speed": 1.02,
+      "pitch": "+0Hz"
     }
   },
   "claude": {
@@ -67,10 +110,32 @@
     "default_position": [0.0, -0.35, 0.2],
     "voice_profile": {
       "engine": "kokoro",
-      "voice_id": "bm_george",
-      "speed": 0.98,
-      "pitch": "+0Hz",
-      "fallback_edge_voice": "en-GB-RyanNeural"
+      "voice_id": "am_fenrir",
+      "speed": 1.02,
+      "pitch": "+0Hz"
+    }
+  },
+  "gpt": {
+    "id": "gpt",
+    "display_name": "ChatGPT",
+    "badge_label": "GPT-4o",
+    "role": "Deadpan Sarcastic AI",
+    "type": "ai_orb",
+    "rig_component": "LowPolyAIOrbRig",
+    "palette": {
+      "primary": "#10A37F",
+      "secondary": "#0E7490",
+      "accent": "#10A37F",
+      "skin": "#10A37F",
+      "shell": "#10A37F",
+      "eyeGlow": "#10A37F"
+    },
+    "default_position": [0.0, -0.35, 0.2],
+    "voice_profile": {
+      "engine": "kokoro",
+      "voice_id": "bm_onyx",
+      "speed": 1.02,
+      "pitch": "+0Hz"
     }
   },
   "gemini": {
@@ -93,8 +158,7 @@
       "engine": "kokoro",
       "voice_id": "af_bella",
       "speed": 1.04,
-      "pitch": "+0Hz",
-      "fallback_edge_voice": "en-US-AriaNeural"
+      "pitch": "+0Hz"
     }
   },
   "grok": {

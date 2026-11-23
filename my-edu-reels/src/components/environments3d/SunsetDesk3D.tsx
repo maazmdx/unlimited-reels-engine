@@ -21,20 +21,20 @@ export const SunsetDesk3D: React.FC<SunsetDesk3DProps> = ({ children }) => {
   const bokehOrbs = [
     { x: -1.8, y: 0.8, z: -2.0, r: 0.12, speed: 0.022, phase: 0.0, color: "#FDE047" },
     { x: -1.1, y: 1.4, z: -2.2, r: 0.18, speed: 0.018, phase: 1.2, color: "#FDA4AF" },
-    { x: -0.4, y: 0.6, z: -1.8, r: 0.09, speed: 0.025, phase: 2.1, color: "#C084FC" },
+    { x: -0.4, y: 0.6, z: -1.8, r: 0.09, speed: 0.025, phase: 2.1, color: "#F59E0B" },
     { x: 0.3, y: 1.6, z: -2.4, r: 0.15, speed: 0.016, phase: 3.4, color: "#FDE047" },
-    { x: 1.0, y: 0.9, z: -2.1, r: 0.11, speed: 0.021, phase: 4.2, color: "#F472B6" },
-    { x: 1.7, y: 1.3, z: -2.3, r: 0.16, speed: 0.019, phase: 5.1, color: "#E879F9" },
+    { x: 1.0, y: 0.9, z: -2.1, r: 0.11, speed: 0.021, phase: 4.2, color: "#94A3B8" },
+    { x: 1.7, y: 1.3, z: -2.3, r: 0.16, speed: 0.019, phase: 5.1, color: "#FEF08A" },
     { x: -1.4, y: 0.2, z: -1.7, r: 0.08, speed: 0.028, phase: 0.8, color: "#FEF08A" },
-    { x: 1.4, y: 0.3, z: -1.9, r: 0.10, speed: 0.024, phase: 2.7, color: "#A78BFA" },
+    { x: 1.4, y: 0.3, z: -1.9, r: 0.10, speed: 0.024, phase: 2.7, color: "#CBD5E1" },
   ];
 
   return (
     <group name="SunsetDesk3D">
-      {/* 1. SCENE LIGHTING: WARM SUNSET & TWILIGHT */}
-      <ambientLight intensity={0.52} color="#DDD6FE" />
-      <directionalLight position={[3, 4, 3]} intensity={0.75} color="#FDE047" />
-      <directionalLight position={[-3, 2, -1]} intensity={0.45} color="#C084FC" />
+      {/* 1. SCENE LIGHTING: WARM STUDIO KEY & RIM */}
+      <ambientLight intensity={0.52} color="#F1F5F9" />
+      <directionalLight position={[3, 4, 3]} intensity={0.75} color="#FEF08A" />
+      <directionalLight position={[-3, 2, -1]} intensity={0.45} color="#94A3B8" />
 
       {/* 2. WARM WOODEN DESK */}
       <group position={[0, -0.55, 0]}>
@@ -71,13 +71,13 @@ export const SunsetDesk3D: React.FC<SunsetDesk3DProps> = ({ children }) => {
         <group position={[0.82, -0.45, 0]}>
           <mesh>
             <boxGeometry args={[0.56, 0.78, 1.15]} />
-            <meshStandardMaterial color="#5B21B6" flatShading roughness={0.8} />
+            <meshStandardMaterial color="#292524" flatShading roughness={0.8} />
           </mesh>
           {/* Drawer faces */}
           {[-0.22, 0.02, 0.24].map((dy, didx) => (
             <mesh key={`drawer-${didx}`} position={[0, dy, 0.59]}>
               <boxGeometry args={[0.5, 0.18, 0.02]} />
-              <meshStandardMaterial color="#4C1D95" flatShading roughness={0.7} />
+              <meshStandardMaterial color="#1C1917" flatShading roughness={0.7} />
             </mesh>
           ))}
           {/* Brass drawer handles */}
@@ -258,25 +258,25 @@ export const SunsetDesk3D: React.FC<SunsetDesk3DProps> = ({ children }) => {
 
       {/* 3. TWILIGHT BACKDROP & WINDOW (z = -3.0) */}
       <group position={[0, 0.7, -3.0]}>
-        {/* Large Twilight Sky Plane (Deep violet into coral-sunset) */}
+        {/* Large Twilight Sky Plane (Deep studio slate backdrop) */}
         <mesh position={[0, 0.2, -0.3]}>
           <planeGeometry args={[6.0, 4.0]} />
-          <meshBasicMaterial color="#31103F" />
+          <meshBasicMaterial color="#0F172A" />
         </mesh>
         {/* Soft sunset horizon band */}
         <mesh position={[0, -0.6, -0.2]}>
           <planeGeometry args={[6.0, 1.4]} />
-          <meshBasicMaterial color="#7E22CE" transparent opacity={0.65} />
+          <meshBasicMaterial color="#1E293B" transparent opacity={0.65} />
         </mesh>
         <mesh position={[0, -1.0, -0.1]}>
           <planeGeometry args={[6.0, 0.8]} />
-          <meshBasicMaterial color="#FB7185" transparent opacity={0.45} />
+          <meshBasicMaterial color="#334155" transparent opacity={0.45} />
         </mesh>
 
         {/* Window frame surround */}
         <mesh position={[0, 0, 0.05]}>
           <boxGeometry args={[3.4, 2.4, 0.1]} />
-          <meshStandardMaterial color="#1E1B4B" flatShading roughness={0.8} />
+          <meshStandardMaterial color="#1E293B" flatShading roughness={0.8} />
         </mesh>
         {/* Window glass pane */}
         <mesh position={[0, 0, 0.08]}>
@@ -292,7 +292,7 @@ export const SunsetDesk3D: React.FC<SunsetDesk3DProps> = ({ children }) => {
         {/* Window vertical mullion */}
         <mesh position={[0, 0, 0.1]}>
           <boxGeometry args={[0.06, 2.2, 0.06]} />
-          <meshStandardMaterial color="#2E1065" flatShading />
+          <meshStandardMaterial color="#0F172A" flatShading />
         </mesh>
 
         {/* Deterministic Floating Bokeh Orbs */}

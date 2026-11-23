@@ -227,14 +227,14 @@ def fetch_topic_logo(
 def is_blank_or_invalid_image(file_path: Path) -> bool:
     """
     Checks if saved image is blank, uniform, or corrupted:
-    - Size < 8192 bytes (< 8 KB).
+    - Size < 1200 bytes (< 1.2 KB).
     - If PIL/numpy available, checks if > 92% of pixels are uniform / white / black.
     """
     if not file_path.exists():
         return True
     try:
         size = file_path.stat().st_size
-        if size < 8192:
+        if size < 1200:
             return True
         if not HAS_PIL:
             return False
