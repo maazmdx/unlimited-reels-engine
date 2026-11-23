@@ -1074,8 +1074,8 @@ def generate_dialogue_speech(
 
             for i, w in enumerate(disp_words):
                 w_dur = (weights[i] / total_w) * turn_dur
-                # Strip leading/trailing underscores and non-alphanumeric except apostrophe and dots inside domains
-                w_clean = re.sub(r"^[^a-zA-Z0-9']+|[^a-zA-Z0-9']+$", "", w)
+                # Strip leading/trailing punctuation except currency/percent, preserving internal apostrophes ('you're') and domain dots ('bleachbit.org')
+                w_clean = re.sub(r"^[^a-zA-Z0-9$]+|[^a-zA-Z0-9%]+$", "", w)
                 if not w_clean:
                     cur_w_t += w_dur
                     continue

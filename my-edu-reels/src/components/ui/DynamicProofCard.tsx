@@ -85,14 +85,14 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   const effectiveLogo = logoPath || topicLogoPath || cardData.logoPath || cardData.topicLogoPath;
   const effectiveProofImage = proofImagePath || cardData.proofImagePath;
 
-  // Enforce 2.5s – 4.0s duration (75 to 120 frames @ 30fps)
+  // Act 3 Proof Card duration: respects durationFrames passed from timeline (Turns 5-7, 8-12s)
   const effectiveStart = cardData.startFrame ?? startFrame;
   const rawDuration =
     durationFrames ??
     (cardData.durationSeconds
       ? Math.round(cardData.durationSeconds * fps)
-      : cardData.durationFrames ?? 105);
-  const cutawayDuration = Math.min(Math.max(rawDuration, 75), 120);
+      : cardData.durationFrames ?? 240);
+  const cutawayDuration = durationFrames ?? Math.min(Math.max(rawDuration, 75), 450);
   const effectiveEnd = effectiveStart + cutawayDuration;
 
   // Visibility window check

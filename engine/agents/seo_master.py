@@ -84,6 +84,38 @@ def sanitize_auto_dm_keyword(raw_kw: str, category: str = "", title: str = "") -
     return cleaned
 
 
+def extract_clean_tool_name(tool_name: str, title: str, github_repo: str = "", brand_domain: str = "") -> str:
+    """Extracts clean brand/tool name, stripping screaming marketing prefixes like 'FREE PC Cleaner:'."""
+    raw = (tool_name or "").strip()
+    generic_words = ["free pc cleaner", "free tool", "free alternative", "best tool", "pc cleaner", "open source"]
+    if raw and not any(g == raw.lower() or raw.lower().startswith(g) for g in generic_words):
+        return raw
+
+    if github_repo and "/" in github_repo:
+        repo_name = github_repo.split("/")[-1].strip()
+        if repo_name and len(repo_name) > 2 and "search" not in repo_name.lower():
+            return repo_name.capitalize() if repo_name.islower() else repo_name
+
+    if brand_domain and "." in brand_domain:
+        domain_name = brand_domain.split(".")[0].strip()
+        if domain_name and len(domain_name) > 2:
+            return domain_name.capitalize() if domain_name.islower() else domain_name
+
+    clean_t = str(title or "").strip()
+    if ":" in clean_t:
+        p0, p1 = [p.strip() for p in clean_t.split(":", 1)]
+        is_p0_generic = any(g in p0.lower() for g in ["free", "best", "top", "open source", "cleaner", "tool", "hack", "secret"])
+        if is_p0_generic and p1:
+            words = p1.split()
+            if words:
+                return words[0].strip(":,.-")
+        if not is_p0_generic and p0:
+            return p0
+
+    words = clean_t.split()
+    return words[0].strip(":,.-") if words else "Verified Tool"
+
+
 def clean_headline_truncation(text: str, max_chars: int = 40) -> str:
     """Truncates text at a word boundary without cutting off mid-word."""
     text = (text or "").strip()
@@ -306,7 +338,18 @@ class SEOMasterAgent:
 
         tool_name = str(script_data.get("tool_name") or script_data.get("toolName") or "").strip()
         brand_domain = str(script_data.get("brand_domain") or script_data.get("brandDomain") or "").strip()
+        tool_name = extract_clean_tool_name(tool_name, title, github_repo=script_data.get("github_repo", ""), brand_domain=brand_domain)
         real_steps = script_data.get("real_steps") or script_data.get("realSteps") or []
+        if not real_steps:
+            turns = script_data.get("dialogue") or script_data.get("turns") or []
+            extracted_steps = []
+            for t in turns:
+                txt = str(t.get("text", "")).strip() if isinstance(t, dict) else str(t).strip()
+                m = re.search(r'step\s*([123])\s*[:.-]?\s*(.*)', txt, flags=re.IGNORECASE)
+                if m:
+                    extracted_steps.append(m.group(2).strip())
+            if len(extracted_steps) >= 3:
+                real_steps = extracted_steps
         format_type = str(script_data.get("format_type") or script_data.get("format") or "").lower()
         is_dad_clash = (format_type == "dad_clash") or ("dad" in title.lower()) or (kw in ["NO-DM", "NODM", "NONE", ""])
 
@@ -613,8 +656,8 @@ class SEOMasterAgent:
         Designed for instant mobile readability when opened from an Instagram DM.
         """
         clean_title = sanitize_simple_spoken_english(title)
-        if not tool_name:
-            tool_name = clean_title.split(":")[0].strip()
+        domain_hint = official_url.replace("https://", "").replace("http://", "").split("/")[0] if official_url else ""
+        tool_name = extract_clean_tool_name(tool_name or "", clean_title, brand_domain=domain_hint)
 
         if real_steps and len(real_steps) >= 3:
             card_rows = [
@@ -636,9 +679,9 @@ class SEOMasterAgent:
 
             if not has_tool_specific_rows:
                 card_rows = [
-                    {"label": "Step 1: Official Access", "value": f"Open {official_url} directly in your browser or terminal", "status": "VERIFIED"},
-                    {"label": "Step 2: Instant Launch", "value": f"Run {tool_name} locally with zero subscription traps or credit card requirements", "status": "VERIFIED"},
-                    {"label": "Step 3: Unlimited Use", "value": f"Enjoy 100% free verified execution on your own machine powered by {tool_name}", "status": "VERIFIED"},
+                    {"label": "Step 1: Official Access", "value": f"Get {tool_name} directly from {official_url}", "status": "VERIFIED"},
+                    {"label": "Step 2: Instant Launch", "value": f"Run {tool_name} locally with zero subscription fees or credit card requirements", "status": "VERIFIED"},
+                    {"label": "Step 3: Unlimited Free Use", "value": f"Enjoy 100% free verified execution on your own machine powered by {tool_name}", "status": "VERIFIED"},
                 ]
 
         rows_html = ""
@@ -842,7 +885,7 @@ class SEOMasterAgent:
         </ul>
 
         <div class="footer">
-            Delivered by @canidoai • Comment <strong>{kw}</strong> for daily verified zero-dollar workflows.
+            Delivered by @canidoai • Comment <strong>{kw}</strong> for daily verified free open-source tools.
         </div>
     </div>
 </body>

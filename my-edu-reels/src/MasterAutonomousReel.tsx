@@ -455,6 +455,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                 0,
               ]}
               scale={0.65}
+              hideSeat={true}
             />
 
             {/* Right Side: AI Orb hovering by TV console */}
@@ -484,6 +485,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                 0,
               ]}
               scale={0.65}
+              seatColor="#1E293B"
             />
 
             {/* Right Side: AI Orb hovering over Night Skyline */}
@@ -513,6 +515,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                 0,
               ]}
               scale={0.65}
+              seatColor="#1C1917"
             />
 
             {/* Right Side: AI Orb hovering by Desk */}
@@ -542,6 +545,7 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
                 0,
               ]}
               scale={0.65}
+              seatColor="#B91C1C"
             />
 
             {/* Right Side: AI Orb Floating Across Diner Table */}

@@ -12,6 +12,8 @@ export interface LowPolyHumanRigProps {
   rotation?: [number, number, number];
   scale?: number;
   flipHorizontal?: boolean;
+  seatColor?: string; // Optional seat cushion color override
+  hideSeat?: boolean; // Hide cushion (e.g. when sitting on scene couch)
 }
 
 /**
@@ -36,6 +38,8 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   rotation = [0, 0, 0],
   scale = 1.0,
   flipHorizontal = false,
+  seatColor,
+  hideSeat = false,
 }) => {
   const frame = useCurrentFrame();
   const isDad = characterId === "dad";
@@ -199,12 +203,12 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   const boothSeatMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#B91C1C",
+        color: seatColor || (characterId === "dad" ? "#B45309" : "#1C1917"),
         roughness: 0.6,
         metalness: 0.05,
         flatShading: true,
       }),
-    []
+    [seatColor, characterId]
   );
 
   // =========================================================================
@@ -402,10 +406,12 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
           <boxGeometry args={[0.17, 0.03, 0.30]} />
         </mesh>
 
-        {/* Red Booth Seat Cushion directly under character hips */}
-        <mesh position={[0, -0.42, 0.24]} material={boothSeatMat}>
-          <boxGeometry args={[1.15, 0.22, 1.15]} />
-        </mesh>
+        {/* Seat Cushion directly under character hips (hidden if scene furniture provides seating) */}
+        {!hideSeat && (
+          <mesh position={[0, -0.42, 0.24]} material={boothSeatMat}>
+            <boxGeometry args={[1.15, 0.22, 1.15]} />
+          </mesh>
+        )}
       </group>
 
       {/* =================================================================== */}
@@ -518,10 +524,10 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
             </mesh>
           </group>
         ) : (
-          // Junior Dev 8-Puff Dodecahedron Curly / Messy Low-Poly Hair
+          // Junior Dev 8-Puff Dodecahedron Curly / Messy Low-Poly Hair (Clean high hairline)
           <group position={[0, 0.16, 0]}>
             <mesh material={hairMat}>
-              <sphereGeometry args={[0.64, 8, 6, 0, Math.PI * 2, 0, Math.PI * 0.58]} />
+              <sphereGeometry args={[0.64, 8, 6, 0, Math.PI * 2, 0, Math.PI * 0.46]} />
             </mesh>
             {/* Cohesive Overlapping Hair Puffs */}
             {juniorHairPuffs.map((p, i) => (
@@ -536,11 +542,11 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
         {/* 5. JAW BEARD (Junior Dev) vs MUSTACHE (Dad)                       */}
         {/* ================================================================= */}
         {!isDad ? (
-          // Junior Dev Clean Low-Poly Sculpted Beard Along Bottom Jaw Edge Only (Zero mouth clipping)
+          // Junior Dev Clean Low-Poly Sculpted Beard Along Bottom Jaw Edge Only (Zero mouth clipping, slim contour)
           <group>
-            {/* Bottom Chin Edge Contour (Well below mouth, zero goatee block) */}
-            <mesh position={[0, -0.39, 0.44]} material={hairMat}>
-              <boxGeometry args={[0.22, 0.08, 0.16]} />
+            {/* Bottom Chin Edge Contour (Well below mouth, slim jawline accent) */}
+            <mesh position={[0, -0.40, 0.42]} material={hairMat}>
+              <boxGeometry args={[0.16, 0.035, 0.12]} />
             </mesh>
             {/* Left Jaw Edge Contour */}
             <mesh position={[-0.22, -0.31, 0.25]} rotation={[0, 0.32, -0.08]} material={hairMat}>
