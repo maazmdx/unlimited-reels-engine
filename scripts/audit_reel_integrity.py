@@ -309,6 +309,41 @@ def test_zero_purple_components():
     print("  ✅ Zero purple hex codes found across all 4 UI and 3D components.")
 
 
+def test_dissected_pipeline_bugfixes():
+    print("🧪 [Test 7] Verifying Dissected Bugfixes (TTS question var, Zero Slop, 3D routing, Root metadata)...")
+    # 1. Verify DynamicProofCard has no banned emojis or slop
+    proof_card_path = PROJECT_ROOT / "my-edu-reels" / "src" / "components" / "ui" / "DynamicProofCard.tsx"
+    content_proof = proof_card_path.read_text(encoding="utf-8")
+    for bad in ["⚡", "🚀", "🤯", "verified zero local installation", "zero-dollar"]:
+        assert bad not in content_proof, f"Found '{bad}' in DynamicProofCard.tsx"
+
+    # 2. Verify seo_master Auto-DM and replies have no banned slop emojis
+    seo_master_path = PROJECT_ROOT / "engine" / "agents" / "seo_master.py"
+    content_seo = seo_master_path.read_text(encoding="utf-8")
+    assert 'f"Sent to your DMs! 🚀' not in content_seo, "Found 🚀 in seo_master comment reply"
+    assert 'f"Hey! 🚀' not in content_seo, "Found 🚀 in seo_master Auto-DM template"
+    assert '⚡ Enjoy.' not in content_seo, "Found ⚡ in seo_master comment reply"
+
+    # 3. Verify tts_engine pause calculation uses disp_text, not undefined text
+    tts_engine_path = PROJECT_ROOT / "engine" / "tts_engine.py"
+    content_tts = tts_engine_path.read_text(encoding="utf-8")
+    assert 'elif "?" in text:' not in content_tts, "Found undefined 'text' in tts_engine pause logic"
+    assert 'elif "?" in disp_text:' in content_tts, "Expected 'disp_text' in tts_engine pause logic"
+
+    # 4. Verify scene_director routes 3D reels to MasterAutonomousReel
+    scene_director_path = PROJECT_ROOT / "engine" / "agents" / "scene_director.py"
+    content_scene = scene_director_path.read_text(encoding="utf-8")
+    assert 'script_data.get("use_3d", False)' not in content_scene, "Found use_3d misrouting in scene_director"
+
+    # 5. Verify Root.tsx calculates metadata using end_sec / end_frame
+    root_path = PROJECT_ROOT / "my-edu-reels" / "src" / "Root.tsx"
+    content_root = root_path.read_text(encoding="utf-8")
+    assert 'audioDurationSec = turns[turns.length - 1].end + 0.6;' not in content_root, "Root.tsx uses undefined .end field"
+    assert 'lastTurn.end_sec' in content_root, "Root.tsx missing end_sec check in calculateMasterMetadata"
+
+    print("  ✅ All 5 dissected bugfixes verified 100%.")
+
+
 if __name__ == "__main__":
     print("\n======================================================================")
     print("🚀 RUNNING FRAME-BY-FRAME ENGINE AUDIT & PRE-RENDER INTEGRITY SUITE")
@@ -319,6 +354,7 @@ if __name__ == "__main__":
     test_reel_02_dad_clash_screenplay()
     test_pre_render_assertion_gate_negative_tests()
     test_zero_purple_components()
+    test_dissected_pipeline_bugfixes()
     print("\n======================================================================")
     print("🏆 ALL INTEGRITY AUDIT TESTS PASSED (100% SUCCESS)!")
     print("======================================================================\n")

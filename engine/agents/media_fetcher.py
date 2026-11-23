@@ -306,7 +306,7 @@ def generate_dark_proof_card(
 
         # Draw 3 step rows
         steps = real_steps or [
-            "1. Open official link in Chrome or Safari",
+            "1. Visit official link or GitHub release",
             "2. Run locally on device with zero tracking",
             "3. 100% free functionality replacing paid traps"
         ]

@@ -61,9 +61,13 @@ const calculateDinerMetadata: CalculateMetadataFunction<DinerAgentReelProps> = a
   const turns = subs?.turns || [];
   let audioDurationSec = 15.0;
   if (turns.length > 0) {
-    audioDurationSec = turns[turns.length - 1].end + 0.6;
+    const lastTurn = turns[turns.length - 1];
+    const endSec = (lastTurn as any).end_sec ?? (lastTurn.end_frame ? lastTurn.end_frame / 30 : (lastTurn as any).end ?? 15.0);
+    audioDurationSec = endSec + 0.6;
   } else if (chunks.length > 0) {
-    audioDurationSec = chunks[chunks.length - 1].end + 0.6;
+    const lastChunk = chunks[chunks.length - 1];
+    const endSec = (lastChunk as any).end_sec ?? lastChunk.end ?? 15.0;
+    audioDurationSec = endSec + 0.6;
   }
   const computedFrames = Math.ceil(audioDurationSec * 30);
 
@@ -84,9 +88,13 @@ const calculateThreeWayMetadata: CalculateMetadataFunction<ThreeWayComparisonRee
   const turns = subs?.turns || [];
   let audioDurationSec = 15.0;
   if (turns.length > 0) {
-    audioDurationSec = turns[turns.length - 1].end + 0.6;
+    const lastTurn = turns[turns.length - 1];
+    const endSec = (lastTurn as any).end_sec ?? (lastTurn.end_frame ? lastTurn.end_frame / 30 : (lastTurn as any).end ?? 15.0);
+    audioDurationSec = endSec + 0.6;
   } else if (chunks.length > 0) {
-    audioDurationSec = chunks[chunks.length - 1].end + 0.6;
+    const lastChunk = chunks[chunks.length - 1];
+    const endSec = (lastChunk as any).end_sec ?? lastChunk.end ?? 15.0;
+    audioDurationSec = endSec + 0.6;
   }
   const computedFrames = Math.ceil(audioDurationSec * 30);
 
@@ -110,9 +118,13 @@ const calculateMasterMetadata: CalculateMetadataFunction<MasterAutonomousReelPro
     const turns = subs?.turns || [];
     let audioDurationSec = 15.0;
     if (turns.length > 0) {
-      audioDurationSec = turns[turns.length - 1].end + 0.6;
+      const lastTurn = turns[turns.length - 1];
+      const endSec = lastTurn.end_sec ?? (lastTurn.end_frame ? lastTurn.end_frame / 30 : (lastTurn as any).end ?? 15.0);
+      audioDurationSec = endSec + 0.6;
     } else if (chunks.length > 0) {
-      audioDurationSec = chunks[chunks.length - 1].end + 0.6;
+      const lastChunk = chunks[chunks.length - 1];
+      const endSec = (lastChunk as any).end_sec ?? lastChunk.end ?? 15.0;
+      audioDurationSec = endSec + 0.6;
     }
     computedFrames = Math.ceil(audioDurationSec * 30);
   }

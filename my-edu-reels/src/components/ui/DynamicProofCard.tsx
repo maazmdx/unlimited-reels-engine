@@ -177,8 +177,8 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
   const highlightText =
     cardData.highlight ||
     (isComedy
-      ? "⚡ Real Relatable Tech Breakdown • Zero Hidden Fees"
-      : "⚡ 100% Free • Verified Zero Local Installation • Instant Access");
+      ? "Real Relatable Tech Breakdown • Zero Hidden Fees"
+      : "100% Free • Open Source • Instant Access");
 
   return (
     <div
@@ -248,9 +248,10 @@ export const DynamicProofCard: React.FC<DynamicProofCardProps> = ({
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 22,
+                  color: "#FFFFFF",
                 }}
               >
-                ⚡
+                ✓
               </div>
             )}
             <div style={{ display: "flex", flexDirection: "column" }}>

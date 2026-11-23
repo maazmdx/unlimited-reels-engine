@@ -314,7 +314,7 @@ class SceneDirectorAgent:
         # Select composition
         composition_id = script_data.get("comp")
         if not composition_id:
-            if script_data.get("style") == "threeway" or script_data.get("use_3d", False):
+            if script_data.get("style") == "threeway":
                 composition_id = "ThreeWayComparisonReel"
             else:
                 composition_id = "MasterAutonomousReel"

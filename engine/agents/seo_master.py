@@ -392,7 +392,7 @@ class SEOMasterAgent:
             elif "ram" in t_low or "cleaner" in t_low or "booster" in t_low:
                 comment_replies = [
                     "Tag your dad before his phone hits 90 degrees from booster apps 😂",
-                    "Does your dad also think rocket animations clean phone RAM? 🚀",
+                    "Does your dad also think cleaning animations actually speed up RAM? 🔌",
                     "Uninstalling my dad's four cleaner apps saved 80% battery 💀",
                 ]
             else:
@@ -403,8 +403,8 @@ class SEOMasterAgent:
                 ]
         else:
             comment_replies = [
-                f"Sent to your DMs! 🚀 Check your message requests if you don't see it.",
-                f"Just sent over the free direct link! ⚡ Enjoy.",
+                f"Sent to your DMs! Check your message requests if you don't see it.",
+                f"Just sent over the free direct link! Enjoy.",
                 f"Check your messages! 📬 Sent the 100% free guide and link.",
             ]
 
@@ -532,7 +532,7 @@ class SEOMasterAgent:
                 print(f"📄 [Resource Guide] Generated 1-page guide: {guide_file.name}")
 
             dm_msg = (
-                f"Hey! 🚀 Here is the 100% free direct link & quick-start guide for {title}:\n\n"
+                f"Hey! Here is the 100% free direct link & quick-start guide for {title}:\n\n"
                 f"🔗 Direct Access: {official_url}\n"
                 f"📖 Complete 1-Page Setup Guide: [DRIVE_GUIDE_LINK]\n\n"
                 f"Enjoy exploring, and drop any questions below!"
@@ -912,7 +912,7 @@ if __name__ == "__main__":
         "hook": {
             "headline": "FREE AIRDROP FOR EVERY DEVICE",
             "subheadline": "Stop paying for cloud subscriptions just to send photos to your PC.",
-            "tag": "⚡ 100% FREE REPO",
+            "tag": "100% FREE REPO",
         },
         "cardData": {
             "rows": [

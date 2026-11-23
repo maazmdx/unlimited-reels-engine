@@ -1133,7 +1133,7 @@ def generate_dialogue_speech(
                     turn_pause = 0.14  # Snappy disbelief reaction
                 elif emotion in ["angry", "sarcastic"]:
                     turn_pause = 0.10  # Rapid, heated cut-in
-                elif "?" in text:
+                elif "?" in disp_text:
                     turn_pause = 0.18  # Prompt question beat
                 else:
                     turn_pause = 0.12  # Fast natural conversational flow
