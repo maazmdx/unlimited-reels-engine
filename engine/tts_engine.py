@@ -21,8 +21,13 @@ import re
 import subprocess
 import shutil
 import tempfile
+import warnings
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
+
+# Suppress noisy PyTorch warnings on GPU / Kaggle
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*sdp_kernel.*")
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*LoRACompatibleLinear.*")
 
 import numpy as np
 import soundfile as sf

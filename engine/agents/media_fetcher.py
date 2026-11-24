@@ -10,12 +10,13 @@ Fetches official crisp logos/icons and visual proof cards from free public sourc
 Caches locally into public/assets/ and updates timeline.json with logoPath & proofImagePath.
 """
 
+import io
 import json
 import os
 import re
 import urllib.parse
 from pathlib import Path
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional, List, Union
 import requests
 
 try:
@@ -68,6 +69,32 @@ KNOWN_ENTITY_MAP = {
 }
 
 
+def _save_verified_png(raw_bytes: bytes, dest_path: Union[Path, str]) -> bool:
+    """Verifies that raw_bytes decodes to a valid raster image (>=16x16), converts to RGBA, and saves as PNG."""
+    if not HAS_PIL or not raw_bytes or len(raw_bytes) < 16:
+        return False
+    try:
+        dest = Path(dest_path)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        with Image.open(io.BytesIO(raw_bytes)) as img:
+            if img.width < 16 or img.height < 16:
+                return False
+            rgba = img.convert("RGBA")
+            rgba.save(dest, format="PNG")
+        return True
+    except Exception:
+        return False
+
+
+def _save_and_mirror_png(raw_bytes: bytes, out_target: Path, remotion_target: Path) -> bool:
+    """Saves verified PNG to out_target and mirrors to remotion_target."""
+    if not _save_verified_png(raw_bytes, out_target):
+        return False
+    if remotion_target.resolve() != out_target.resolve():
+        _save_verified_png(raw_bytes, remotion_target)
+    return True
+
+
 def _clean_domain(domain_str: Optional[str]) -> Optional[str]:
     """Extracts raw hostname e.g. 'emulatorjs.org' from URL or domain string."""
     if not domain_str:
@@ -97,12 +124,13 @@ def fetch_topic_logo(
     entity_name: Optional[str] = None,
     topic_title: Optional[str] = None,
     out_path: Optional[str] = None,
+    github_repo: Optional[str] = None,
 ) -> Optional[str]:
     """
     Fetches official crisp app/game logo or icon from free public sources:
-    1. SimpleIcons CDN: https://cdn.simpleicons.org/<slug>/ffffff
-    2. IconHorse: https://icon.horse/icon/<brand_domain>
-    3. Wikipedia REST API fallback.
+    1. IconHorse: https://icon.horse/icon/<domain>
+    2. Google Favicon: https://www.google.com/s2/favicons?domain=<domain>&sz=128
+    3. GitHub owner avatar: https://github.com/<owner>.png?size=128
     Never uses clickbait title if tool_name, brand_domain, or entity_name is available.
     Returns relative path ('assets/topic_logo.png') on success, or None on failure.
     """
@@ -114,6 +142,13 @@ def fetch_topic_logo(
         query = topic_title.split(":")[0].split(" - ")[0].strip()
 
     if not query:
+        return None
+
+    # For comedy / dad clash topics: skip logo fetch completely
+    query_lower = query.lower()
+    is_comedy = "dad" in query_lower or (topic_title and "dad" in str(topic_title).lower()) or "clash" in query_lower
+    if is_comedy:
+        print(f"ℹ️ [MediaFetcher] Skipping logo fetch for comedy/dad topic '{query}'.")
         return None
 
     project_root = PROJECT_ROOT
@@ -131,8 +166,6 @@ def fetch_topic_logo(
         "Accept": "image/*,application/json;q=0.9",
     }
 
-    query_lower = query.lower()
-
     # 1. Resolve candidates from known mapping
     matched = None
     for k, v in KNOWN_ENTITY_MAP.items():
@@ -148,7 +181,7 @@ def fetch_topic_logo(
     if clean_slug and clean_slug not in slug_candidates:
         slug_candidates.append(clean_slug)
 
-    # Strategy A: SimpleIcons CDN (white SVG /ffffff -> fallback plain)
+    # Optional candidate check: SimpleIcons CDN (SVG XML is safely rejected by _save_verified_png)
     for slug in slug_candidates:
         if not slug:
             continue
@@ -156,71 +189,56 @@ def fetch_topic_logo(
             try:
                 url = f"https://cdn.simpleicons.org/{variant}"
                 r = requests.get(url, headers=headers, timeout=3.5)
-                if r.status_code == 200 and len(r.content) > 150:
-                    out_target.write_bytes(r.content)
-                    if remotion_target.resolve() != out_target.resolve():
-                        remotion_target.write_bytes(r.content)
-                    print(f"✅ [MediaFetcher] Saved SimpleIcons logo '{slug}' ({len(r.content)} bytes) -> {out_target}")
+                if r.status_code == 200 and _save_and_mirror_png(r.content, out_target, remotion_target):
+                    print(f"✅ [MediaFetcher] Saved verified SimpleIcons logo '{slug}' -> {out_target}")
                     return "assets/topic_logo.png"
             except Exception:
                 continue
 
-    # Strategy B: IconHorse Favicon by brand_domain
+    # Resolve brand domain
     domain = _clean_domain(brand_domain) or (matched.get("domain") if matched else None)
+    if not domain and query and "." in query:
+        domain = _clean_domain(query)
+    elif not domain and clean_slug:
+        domain = f"{clean_slug}.com"
+
+    # Guaranteed-PNG Fallback (1): IconHorse
     if domain:
         try:
             url = f"https://icon.horse/icon/{domain}"
             r = requests.get(url, headers=headers, timeout=4.0)
-            if r.status_code == 200 and len(r.content) > 300:
-                out_target.write_bytes(r.content)
-                if remotion_target.resolve() != out_target.resolve():
-                    remotion_target.write_bytes(r.content)
-                print(f"✅ [MediaFetcher] Saved IconHorse logo for domain '{domain}' ({len(r.content)} bytes) -> {out_target}")
+            if r.status_code == 200 and _save_and_mirror_png(r.content, out_target, remotion_target):
+                print(f"✅ [MediaFetcher] Saved IconHorse logo for domain '{domain}' -> {out_target}")
                 return "assets/topic_logo.png"
         except Exception:
             pass
 
-    # Strategy C: Wikipedia REST page summary thumbnail fallback
-    # For comedy / dad clash topics: skip Wikipedia thumbnail scraping completely
-    # (prevents random Wikipedia article images or crests appearing in comedy reels)
-    is_comedy = "dad" in query_lower or (topic_title and "dad" in str(topic_title).lower()) or "clash" in query_lower
-    if is_comedy:
-        print(f"ℹ️ [MediaFetcher] Skipping Wikipedia logo scrape for comedy/dad topic '{query}'.")
-        return None
-
-    wiki_candidates = []
-    if matched and matched.get("wiki"):
-        wiki_candidates.append(matched["wiki"])
-    clean_wiki = query.replace(" ", "_")
-    wiki_candidates.extend([
-        clean_wiki,
-        f"{clean_wiki}_(software)",
-        f"{clean_wiki}_(video_game)",
-        f"{clean_wiki}_(company)",
-    ])
-
-    for wiki_title in wiki_candidates:
-        if not wiki_title:
-            continue
+        # Guaranteed-PNG Fallback (2): Google Favicon
         try:
-            quoted = urllib.parse.quote(wiki_title, safe=":")
-            url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{quoted}"
+            url = f"https://www.google.com/s2/favicons?domain={domain}&sz=128"
             r = requests.get(url, headers=headers, timeout=4.0)
-            if r.status_code == 200:
-                data = r.json()
-                thumb_url = data.get("thumbnail", {}).get("source") or data.get("originalimage", {}).get("source")
-                if thumb_url:
-                    img_r = requests.get(thumb_url, headers=headers, timeout=5.0)
-                    if img_r.status_code == 200 and len(img_r.content) > 600:
-                        out_target.write_bytes(img_r.content)
-                        if remotion_target.resolve() != out_target.resolve():
-                            remotion_target.write_bytes(img_r.content)
-                        print(f"✅ [MediaFetcher] Saved Wikipedia logo for '{wiki_title}' ({len(img_r.content)} bytes) -> {out_target}")
-                        return "assets/topic_logo.png"
+            if r.status_code == 200 and _save_and_mirror_png(r.content, out_target, remotion_target):
+                print(f"✅ [MediaFetcher] Saved Google Favicon logo for domain '{domain}' -> {out_target}")
+                return "assets/topic_logo.png"
         except Exception:
-            continue
+            pass
 
-    print(f"ℹ️ [MediaFetcher] No public logo found for tool '{query}', omitting gracefully.")
+    # Guaranteed-PNG Fallback (3): GitHub owner avatar
+    clean_repo = _clean_github_repo(github_repo)
+    if clean_repo:
+        owner = clean_repo.split("/")[0]
+        if owner:
+            try:
+                url = f"https://github.com/{owner}.png?size=128"
+                r = requests.get(url, headers=headers, timeout=4.0)
+                if r.status_code == 200 and _save_and_mirror_png(r.content, out_target, remotion_target):
+                    print(f"✅ [MediaFetcher] Saved GitHub owner avatar logo for '{owner}' -> {out_target}")
+                    return "assets/topic_logo.png"
+            except Exception:
+                pass
+
+    # Guaranteed-PNG Fallback (4): None if none decode as a valid PNG
+    print(f"ℹ️ [MediaFetcher] No public PNG logo found for tool '{query}', omitting gracefully.")
     return None
 
 
@@ -373,14 +391,12 @@ def fetch_proof_card(
             og_url = f"https://opengraph.githubassets.com/1/{clean_repo}"
             r = requests.get(og_url, headers=headers, timeout=6.0)
             if r.status_code == 200 and len(r.content) > 1200:
-                out_target.write_bytes(r.content)
-                if not is_blank_or_invalid_image(out_target):
-                    if remotion_target.resolve() != out_target.resolve():
-                        remotion_target.write_bytes(r.content)
-                    print(f"✅ [MediaFetcher] Saved GitHub proof card for '{clean_repo}' ({len(r.content)} bytes) -> {out_target}")
-                    return "assets/proof_card.png"
-                else:
-                    print(f"⚠️ [MediaFetcher] GitHub OpenGraph returned blank/invalid image for '{clean_repo}'.")
+                if _save_and_mirror_png(r.content, out_target, remotion_target):
+                    if not is_blank_or_invalid_image(out_target):
+                        print(f"✅ [MediaFetcher] Saved GitHub proof card for '{clean_repo}' -> {out_target}")
+                        return "assets/proof_card.png"
+                    else:
+                        print(f"⚠️ [MediaFetcher] GitHub OpenGraph returned blank/invalid image for '{clean_repo}'.")
         except Exception as e:
             print(f"⚠️ [MediaFetcher] GitHub OpenGraph fetch failed for '{clean_repo}': {e}")
 
@@ -399,14 +415,12 @@ def fetch_proof_card(
             screenshot_url = f"https://image.thum.io/get/width/900/crop/600/noanimate/{clean_url}"
             r = requests.get(screenshot_url, headers=headers, timeout=7.5)
             if r.status_code == 200 and len(r.content) > 1200:
-                out_target.write_bytes(r.content)
-                if not is_blank_or_invalid_image(out_target):
-                    if remotion_target.resolve() != out_target.resolve():
-                        remotion_target.write_bytes(r.content)
-                    print(f"✅ [MediaFetcher] Saved live website screenshot for '{clean_url}' ({len(r.content)} bytes) -> {out_target}")
-                    return "assets/proof_card.png"
-                else:
-                    print(f"⚠️ [MediaFetcher] Thum.io screenshot returned blank/white image for '{clean_url}'.")
+                if _save_and_mirror_png(r.content, out_target, remotion_target):
+                    if not is_blank_or_invalid_image(out_target):
+                        print(f"✅ [MediaFetcher] Saved live website screenshot for '{clean_url}' -> {out_target}")
+                        return "assets/proof_card.png"
+                    else:
+                        print(f"⚠️ [MediaFetcher] Thum.io screenshot returned blank/white image for '{clean_url}'.")
         except Exception as e:
             print(f"⚠️ [MediaFetcher] Thum.io screenshot fetch failed for '{clean_url}': {e}")
 
@@ -500,6 +514,7 @@ def fetch_topic_media_assets(
         tool_name=tool_name,
         brand_domain=brand_domain,
         topic_title=topic_data.get("title"),
+        github_repo=github_repo,
     )
 
     proof_image_path = fetch_proof_card(

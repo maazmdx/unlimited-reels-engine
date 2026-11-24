@@ -151,6 +151,20 @@ def call_groq_api(prompt: str, system_instruction: str, timeout: float = 35.0) -
                 elapsed = time.time() - t0
                 print(f"⚡ [Groq API] Model 'llama-3.3-70b-versatile' succeeded in {elapsed:.2f}s ({len(text)} chars).")
                 return text
+        elif r.status_code == 400 and ("json_validate_failed" in r.text.lower() or "response_format" in r.text.lower()):
+            print(f"⚠️ [Groq API] HTTP 400 (json_validate_failed/response_format); retrying without response_format...")
+            payload_retry = dict(payload)
+            payload_retry.pop("response_format", None)
+            r2 = requests.post(url, json=payload_retry, headers=headers, timeout=timeout)
+            if r2.status_code == 200:
+                res_json = r2.json()
+                choices = res_json.get("choices", [])
+                if choices:
+                    text = choices[0].get("message", {}).get("content", "")
+                    m = re.search(r"\{[\s\S]*\}", text)
+                    return m.group(0) if m else text
+            else:
+                print(f"⚠️ [Groq API] Retry HTTP {r2.status_code}: {r2.text[:140]}")
         else:
             print(f"⚠️ [Groq API] HTTP {r.status_code}: {r.text[:140]}")
     except Exception as e:
@@ -838,6 +852,8 @@ JSON Schema:
         screenplay = None
         current_prompt = prompt
         for attempt in range(4):
+            if attempt > 0:
+                time.sleep(3)
             raw_json = self._call_llm(current_prompt, system_instruction)
             if raw_json:
                 try:

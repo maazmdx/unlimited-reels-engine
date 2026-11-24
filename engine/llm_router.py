@@ -16,6 +16,7 @@ import os
 import sys
 import json
 import time
+import re
 import urllib.request
 import urllib.error
 from typing import Optional, Dict, Any, List
@@ -154,6 +155,32 @@ def _call_gemini_25_flash(
     return None
 
 
+def _extract_json_text(text: str) -> str:
+    """Extracts JSON substring or stripped markdown code block from raw LLM output."""
+    if not text:
+        return text
+    t = text.strip()
+    if t.startswith("```"):
+        t = re.sub(r"^```(?:json)?\s*", "", t)
+        t = re.sub(r"\s*```$", "", t)
+        t = t.strip()
+    try:
+        json.loads(t)
+        return t
+    except Exception:
+        pass
+    first_brace = t.find("{")
+    last_brace = t.rfind("}")
+    if first_brace != -1 and last_brace > first_brace:
+        candidate = t[first_brace:last_brace + 1].strip()
+        try:
+            json.loads(candidate)
+            return candidate
+        except Exception:
+            return candidate
+    return t
+
+
 def _call_openai_compat(
     url: str,
     api_key: str,
@@ -192,14 +219,29 @@ def _call_openai_compat(
             text = choices[0].get("message", {}).get("content", "")
             elapsed = time.time() - t0
             print(f"✨ [LLMRouter] {provider_name}/{model} succeeded in {elapsed:.2f}s ({len(text)} chars)")
-            return text
+            return _extract_json_text(text) if json_mode else text
     except urllib.error.HTTPError as e:
         body = ""
         try:
-            body = e.read().decode("utf-8")[:160]
+            body = e.read().decode("utf-8")
         except Exception:
             pass
-        print(f"⚠️ [LLMRouter] {provider_name}/{model} HTTP {e.code}: {body}")
+        if e.code == 400 and ("json_validate_failed" in body.lower() or "response_format" in body.lower()):
+            print(f"⚠️ [LLMRouter] {provider_name}/{model} HTTP 400 (json_validate_failed/response_format); retrying without response_format...")
+            payload_no_format = dict(payload)
+            payload_no_format.pop("response_format", None)
+            try:
+                res = _post_json(url, payload_no_format, headers, timeout=timeout)
+                choices = res.get("choices", [])
+                if choices:
+                    text = choices[0].get("message", {}).get("content", "")
+                    elapsed = time.time() - t0
+                    print(f"✨ [LLMRouter] {provider_name}/{model} (retry no response_format) succeeded in {elapsed:.2f}s ({len(text)} chars)")
+                    return _extract_json_text(text) if json_mode else text
+            except Exception as retry_err:
+                print(f"⚠️ [LLMRouter] {provider_name}/{model} retry failed: {retry_err}")
+        else:
+            print(f"⚠️ [LLMRouter] {provider_name}/{model} HTTP {e.code}: {body[:160]}")
     except Exception as e:
         print(f"⚠️ [LLMRouter] {provider_name}/{model} failed: {e}")
 
@@ -234,6 +276,54 @@ def _call_groq(
     return None
 
 
+def _call_nvidia(
+    prompt: str,
+    system_prompt: str,
+    json_mode: bool,
+    temperature: float,
+    timeout: float = 30.0
+) -> Optional[str]:
+    api_key = _get_secret("NVIDIA_API_KEY")
+    if not api_key:
+        return None
+    url = "https://integrate.api.nvidia.com/v1/chat/completions"
+    return _call_openai_compat(
+        url=url,
+        api_key=api_key,
+        model="meta/llama-3.3-70b-instruct",
+        prompt=prompt,
+        system_prompt=system_prompt,
+        json_mode=json_mode,
+        temperature=temperature,
+        provider_name="nvidia",
+        timeout=timeout,
+    )
+
+
+def _call_sambanova(
+    prompt: str,
+    system_prompt: str,
+    json_mode: bool,
+    temperature: float,
+    timeout: float = 30.0
+) -> Optional[str]:
+    api_key = _get_secret("SAMBANOVA_API_KEY")
+    if not api_key:
+        return None
+    url = "https://api.sambanova.ai/v1/chat/completions"
+    return _call_openai_compat(
+        url=url,
+        api_key=api_key,
+        model="Meta-Llama-3.3-70B-Instruct",
+        prompt=prompt,
+        system_prompt=system_prompt,
+        json_mode=json_mode,
+        temperature=temperature,
+        provider_name="sambanova",
+        timeout=timeout,
+    )
+
+
 def _call_openrouter(
     prompt: str,
     system_prompt: str,
@@ -245,7 +335,7 @@ def _call_openrouter(
     if not api_key:
         return None
     url = "https://openrouter.ai/api/v1/chat/completions"
-    for model in ["google/gemma-4-31b-it:free", "openrouter/free"]:
+    for model in ["openrouter/free", "google/gemma-4-31b-it:free"]:
         res = _call_openai_compat(
             url=url,
             api_key=api_key,
@@ -260,6 +350,30 @@ def _call_openrouter(
         if res:
             return res
     return None
+
+
+def _call_github_models(
+    prompt: str,
+    system_prompt: str,
+    json_mode: bool,
+    temperature: float,
+    timeout: float = 30.0
+) -> Optional[str]:
+    token = _get_secret("GITHUB_TOKEN")
+    if not token:
+        return None
+    url = "https://models.inference.ai.azure.com/chat/completions"
+    return _call_openai_compat(
+        url=url,
+        api_key=token,
+        model="gpt-4o-mini",
+        prompt=prompt,
+        system_prompt=system_prompt,
+        json_mode=json_mode,
+        temperature=temperature,
+        provider_name="github_models",
+        timeout=timeout,
+    )
 
 
 def _call_mistral(
@@ -336,17 +450,32 @@ def generate_text(
     if res:
         return res
 
-    # 3. OpenRouter (google/gemma-4-31b-it:free -> openrouter/free)
+    # 3. NVIDIA NIM (meta/llama-3.3-70b-instruct)
+    res = _call_nvidia(prompt, system_prompt, json_mode, temperature)
+    if res:
+        return res
+
+    # 4. SambaNova (Meta-Llama-3.3-70B-Instruct)
+    res = _call_sambanova(prompt, system_prompt, json_mode, temperature)
+    if res:
+        return res
+
+    # 5. OpenRouter (openrouter/free -> google/gemma-4-31b-it:free)
     res = _call_openrouter(prompt, system_prompt, json_mode, temperature)
     if res:
         return res
 
-    # 4. Mistral (mistral-large-latest -> mistral-small-latest)
+    # 6. GitHub Models (gpt-4o-mini)
+    res = _call_github_models(prompt, system_prompt, json_mode, temperature)
+    if res:
+        return res
+
+    # 7. Mistral (mistral-large-latest -> mistral-small-latest)
     res = _call_mistral(prompt, system_prompt, json_mode, temperature)
     if res:
         return res
 
-    # 5. LLM7 (keyless fallback)
+    # 8. LLM7.io (keyless fallback)
     res = _call_llm7(prompt, system_prompt, json_mode, temperature)
     if res:
         return res
