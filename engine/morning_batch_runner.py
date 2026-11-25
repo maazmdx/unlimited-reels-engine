@@ -298,7 +298,7 @@ def assert_screenplay_pre_render_integrity(
     title = str(script_data.get("title", "")).lower()
     left_char = str(script_data.get("leftCharacterId") or "junior_dev").lower()
     right_char = str(script_data.get("rightCharacterId") or "claude").lower()
-    is_dad = (left_char == "dad") or ("dad" in title) or (script_data.get("format_type") == "dad_clash")
+    is_dad = (left_char == "dad") or ("dad" in title) or ("dad" in str(script_data.get("format_type") or "").lower())
 
     # 1. Cast validation & locked voices
     active_cast = script_data.get("active_cast")
@@ -352,7 +352,7 @@ def assert_screenplay_pre_render_integrity(
                 d["text"] = d["text"].replace(sym, "").strip()
         card_data = script_data.get("cardData") or {}
         if isinstance(card_data, dict):
-            for r in card_data.get("rows", []):
+            for r in (card_data.get("rows") or []):
                 if isinstance(r, dict):
                     if "label" in r and sym in r["label"]:
                         r["label"] = r["label"].replace(sym, "").strip()
@@ -381,7 +381,7 @@ def assert_screenplay_pre_render_integrity(
     all_blobs = [str(d.get("text", "")) for d in dialogue]
     card_data = script_data.get("cardData") or {}
     if isinstance(card_data, dict):
-        for r in card_data.get("rows", []):
+        for r in (card_data.get("rows") or []):
             if isinstance(r, dict):
                 all_blobs.append(str(r.get("label", "")))
                 all_blobs.append(str(r.get("value", "")))
@@ -611,11 +611,12 @@ def run_morning_batch(
             autodm_file = seo_assets["autodm_path"]
 
             # Strip cardData for dad_clash so LLM-returned extra keys can never trip the gate
+            cast_val = script_data.get("cast")
             is_dad = (
                 str(script_data.get("leftCharacterId") or "").lower() == "dad"
                 or "dad" in str(script_data.get("title", "")).lower()
-                or script_data.get("format_type") == "dad_clash"
-                or script_data.get("cast", {}).get("left") == "dad"
+                or "dad" in str(script_data.get("format_type") or "").lower()
+                or (isinstance(cast_val, dict) and str(cast_val.get("left") or "").lower() == "dad")
             )
             if is_dad:
                 script_data["cardData"] = None

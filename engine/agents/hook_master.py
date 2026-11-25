@@ -218,13 +218,13 @@ def validate_screenplay_quality_gate(screenplay: Dict[str, Any], topic: Dict[str
     format_type = str(topic.get("format_type") or "").lower()
     left_char = str(topic.get("left_character") or screenplay.get("leftCharacterId") or "junior_dev").lower()
     right_char = str(topic.get("right_character") or screenplay.get("rightCharacterId") or "claude").lower()
-    is_dad_skit = (format_type == "dad_clash") or (left_char == "dad") or ("dad" in title)
+    is_dad_skit = ("dad" in format_type) or (left_char == "dad") or ("dad" in title)
 
     # 1. Banned placeholder and AI slop check across all fields
     all_text_blobs = [str(d.get("text", "")) for d in dialogue]
     card_data = screenplay.get("cardData") or {}
     if isinstance(card_data, dict):
-        for r in card_data.get("rows", []):
+        for r in (card_data.get("rows") or []):
             if isinstance(r, dict):
                 all_text_blobs.append(str(r.get("label", "")))
                 all_text_blobs.append(str(r.get("value", "")))
@@ -872,7 +872,13 @@ JSON Schema:
                         cleaned = re.sub(r"\n```$", "", cleaned)
                     parsed = json.loads(cleaned.strip())
                     if "dialogue" in parsed and len(parsed["dialogue"]) >= 11:
-                        if is_dad or parsed.get("cast", {}).get("left") == "dad" or parsed.get("leftCharacterId") == "dad" or format_type == "dad_clash":
+                        cast_val = parsed.get("cast")
+                        if (
+                            is_dad
+                            or "dad" in format_type
+                            or str(parsed.get("leftCharacterId") or "").lower() == "dad"
+                            or (isinstance(cast_val, dict) and str(cast_val.get("left") or "").lower() == "dad")
+                        ):
                             parsed["cardData"] = None
                             parsed["proof_steps"] = []
                             parsed["proofImagePath"] = None
@@ -1012,8 +1018,15 @@ JSON Schema:
         screenplay["real_steps"] = real_steps
         screenplay["realSteps"] = real_steps
         screenplay["comedy_structure"] = comedy_structure
+        screenplay["format_type"] = format_type
 
-        if is_dad or screenplay.get("cast", {}).get("left") == "dad" or screenplay.get("leftCharacterId") == "dad" or format_type == "dad_clash":
+        cast_val = screenplay.get("cast")
+        if (
+            is_dad
+            or "dad" in format_type
+            or str(screenplay.get("leftCharacterId") or "").lower() == "dad"
+            or (isinstance(cast_val, dict) and str(cast_val.get("left") or "").lower() == "dad")
+        ):
             screenplay["cardData"] = None
             screenplay["proof_steps"] = []
             screenplay["proofImagePath"] = None
@@ -1035,7 +1048,7 @@ JSON Schema:
         category = topic.get("category", "")
         cat_lower = (str(category) + " " + str(title)).lower()
         format_type = topic.get("format_type", "")
-        is_dad = (left_char == "dad") or ("dad" in str(title).lower()) or (format_type == "dad_clash")
+        is_dad = (left_char == "dad") or ("dad" in str(title).lower()) or ("dad" in str(format_type).lower())
         has_res = topic.get("has_resource_link", not (format_type in ["discovery_doc", "funny_story"] or "discovery" in cat_lower or is_dad))
         is_gh = any(term in cat_lower for term in ["repo", "github", "open-source", "open source"])
         link_desc = "GitHub repo link" if is_gh else "free link"
@@ -1297,8 +1310,9 @@ JSON Schema:
             "real_steps": real_steps,
             "realSteps": real_steps,
             "comedy_structure": structure,
+            "format_type": format_type,
         }
-        if is_dad or left_char == "dad" or format_type == "dad_clash":
+        if is_dad or left_char == "dad" or "dad" in str(format_type).lower():
             fallback_res["cardData"] = None
             fallback_res["proof_steps"] = []
             fallback_res["proofImagePath"] = None
