@@ -722,10 +722,16 @@ JSON Schema:
             "- Strictly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', 'workflow', 'manual coding', 'leverage', 'unlock', or any corporate buzzwords.\n\n"
             "EXPLICITLY BANNED AI SLOP & PLACEHOLDERS:\n"
             "- Do NOT use: '🚀', '⚡️', '⚡', '🤯', 'Unlock', 'zero-dollar workflows', 'Stop crying human', 'game-changer', 'revolutionize', 'verified zero local installation', 'in 2024', 'insert 1-click', 'what happens live under the hood', 'Wait there is no way', 'There is no way', 'Humans love', 'Look at step one', 'Wait step two says', 'zero dollar cost', 'fixes routers with a shoe'.\n\n"
-            "CHARACTER ROLES & POV LOCK:\n"
+            "- CHARACTER ROLES & POV LOCK:\n"
             f"- Cast Roster: {active_cast}. All dialogue turns MUST come from this roster.\n"
             "- HUMANS (junior_dev, senior_dev, friend_riya, dad) NEVER recite 'Step 1/2/3', install commands, or tutorial lists. They ONLY react, push back, or ask sharp practical questions ('Wait, does it wipe my browser logins?', 'Does that actually run offline?').\n"
             "- AI (claude, gemini, gpt) delivers the factual breakdown, exact paid app replaced, and concise real steps.\n"
+            "- ACT 3 BEAT SHEET (ONLY AI EXPLAINS STEPS - HUMANS NEVER RECITE STEPS):\n"
+            f"  * Turn 5 ({right_char} / AI): Explains how to get/run the tool (part 1).\n"
+            f"  * Turn 6 ({left_char} / Human): Asks a sharp, skeptical follow-up question ('Wait, does that break sites or need admin rights?') — NEVER recite steps.\n"
+            f"  * Turn 7 ({right_char} / AI): Answers the question and finishes the practical payoff.\n"
+            f"  * Turn 8 ({left_char} / Human): Reacts to seeing it actually work.\n"
+            f"  * Turn 9 ({right_char} / AI): In-character reaction to the notification toast (never repeating the toast or title verbatim).\n"
             "- If dad is in cast: Dad MUST speak in FIRST PERSON as the stubborn Indian dad ('Beta, ...', 'My phone...', 'I read on WhatsApp...'). NEVER let Dad say 'Dad just...', 'my dad...', 'Dad thinks...', or 'my boss during meetings'.\n"
             "- If junior_dev is in cast: Human is confused/skeptical because they were paying. AI roasts human and reveals the $0 tool. Human NEVER roasts AI about paying.\n"
             "- STRICT ALTERNATION: Never have 2 consecutive turns from the same speaker.\n"
@@ -751,8 +757,11 @@ Write the complete 5-act Remotion screenplay JSON with 11-12 snappy dialogue tur
 - Turn 0 MUST be {left_char} speaking: "{winning_hook}"
 - Turns 1-4: Fast punchy comedic escalation (5-12 words/turn) following '{comedy_structure}'.
 - By Turn 2 or Turn 3: The exact name '{tool_name}' MUST be spoken naturally.
-- Turns 5, 6, 7: Walk through the 3 concrete verified steps cleanly without repetitive filler.
-- Turn 9: Notification popup alert that strictly matches the topic '{title}'.
+- Turn 5 ({right_char} / AI): Explains how to get/run the tool (part 1).
+- Turn 6 ({left_char} / Human): Asks a sharp, skeptical follow-up question ("Wait, does that break sites or need admin rights?") — NEVER a step.
+- Turn 7 ({right_char} / AI): Answers the question and finishes the practical payoff.
+- Turn 8 ({left_char} / Human): Reacts to seeing it actually work.
+- Turn 9 ({right_char} / AI): In-character reaction to the notification toast (never repeating the toast or title verbatim).
 - Final Turn MUST end with: "{final_turn_cta}"
 
 JSON Schema:
@@ -863,6 +872,11 @@ JSON Schema:
                         cleaned = re.sub(r"\n```$", "", cleaned)
                     parsed = json.loads(cleaned.strip())
                     if "dialogue" in parsed and len(parsed["dialogue"]) >= 11:
+                        if is_dad or parsed.get("cast", {}).get("left") == "dad" or parsed.get("leftCharacterId") == "dad" or format_type == "dad_clash":
+                            parsed["cardData"] = None
+                            parsed["proof_steps"] = []
+                            parsed["proofImagePath"] = None
+                            parsed["logoPath"] = None
                         is_valid, violations = validate_screenplay_quality_gate(parsed, topic)
                         if is_valid:
                             screenplay = parsed
@@ -895,23 +909,29 @@ JSON Schema:
         screenplay["cta_text"] = f"💬 Comment {kw} for the {link_target}" if has_res else f"💬 {cta_phrase}"
         screenplay["ctaText"] = f"💬 Comment {kw} for the {link_target}" if has_res else f"💬 {cta_phrase}"
 
-        # Ensure cardData exists and has multi-step structure in simple English
-        if not screenplay.get("cardData") or not isinstance(screenplay["cardData"], dict):
-            screenplay["cardData"] = {}
-        card_d = screenplay["cardData"]
-        card_d.setdefault("title", f"{clean_headline_truncation(title, 26)} Breakdown")
-        card_d.setdefault("subtitle", "Step-by-step verified specs")
-        card_d.setdefault("badge", "VERIFIED PROOF")
-        card_d.setdefault("startTurn", 5)
-        card_d.setdefault("endTurn", 7)
-        card_d.setdefault("durationSeconds", 12.0)
-        if "rows" not in card_d or not isinstance(card_d["rows"], list) or len(card_d["rows"]) < 3:
-            card_d["rows"] = [
-                {"label": "Step 1: Setup", "value": step1_val, "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 2: Execution", "value": step2_val, "status": "VERIFIED", "isPositive": True},
-                {"label": "Step 3: Payoff", "value": step3_val, "status": "PROVEN", "isPositive": True},
-            ]
-        card_d["items"] = card_d["rows"]
+        # Ensure cardData exists and has multi-step structure in simple English for tools (never dad_clash)
+        if not is_dad and format_type != "dad_clash" and left_char != "dad":
+            if not screenplay.get("cardData") or not isinstance(screenplay["cardData"], dict):
+                screenplay["cardData"] = {}
+            card_d = screenplay["cardData"]
+            card_d.setdefault("title", f"{clean_headline_truncation(title, 26)} Breakdown")
+            card_d.setdefault("subtitle", "Step-by-step verified specs")
+            card_d.setdefault("badge", "VERIFIED PROOF")
+            card_d.setdefault("startTurn", 5)
+            card_d.setdefault("endTurn", 7)
+            card_d.setdefault("durationSeconds", 12.0)
+            if "rows" not in card_d or not isinstance(card_d["rows"], list) or len(card_d["rows"]) < 3:
+                card_d["rows"] = [
+                    {"label": "Step 1: Setup", "value": step1_val, "status": "VERIFIED", "isPositive": True},
+                    {"label": "Step 2: Execution", "value": step2_val, "status": "VERIFIED", "isPositive": True},
+                    {"label": "Step 3: Payoff", "value": step3_val, "status": "PROVEN", "isPositive": True},
+                ]
+            card_d["items"] = card_d["rows"]
+        else:
+            screenplay["cardData"] = None
+            screenplay["proof_steps"] = []
+            screenplay["proofImagePath"] = None
+            screenplay["logoPath"] = None
 
         # Ensure toastData exists and banish old "Slack" templates
         if not screenplay.get("toastData") or not isinstance(screenplay["toastData"], dict):
@@ -955,12 +975,14 @@ JSON Schema:
                 if "text" in d:
                     d["text"] = sanitize_simple_spoken_english(d["text"])
 
-        for row in screenplay["cardData"].get("rows", []):
-            if isinstance(row, dict):
-                if "label" in row:
-                    row["label"] = sanitize_simple_spoken_english(row["label"])
-                if "value" in row:
-                    row["value"] = sanitize_simple_spoken_english(row["value"])
+        card_d = screenplay.get("cardData")
+        if card_d and isinstance(card_d, dict):
+            for row in card_d.get("rows", []):
+                if isinstance(row, dict):
+                    if "label" in row:
+                        row["label"] = sanitize_simple_spoken_english(row["label"])
+                    if "value" in row:
+                        row["value"] = sanitize_simple_spoken_english(row["value"])
 
         if "toastData" in screenplay and isinstance(screenplay["toastData"], dict):
             if "message" in screenplay["toastData"]:
@@ -991,6 +1013,12 @@ JSON Schema:
         screenplay["realSteps"] = real_steps
         screenplay["comedy_structure"] = comedy_structure
 
+        if is_dad or screenplay.get("cast", {}).get("left") == "dad" or screenplay.get("leftCharacterId") == "dad" or format_type == "dad_clash":
+            screenplay["cardData"] = None
+            screenplay["proof_steps"] = []
+            screenplay["proofImagePath"] = None
+            screenplay["logoPath"] = None
+
         return screenplay
 
     def _fallback_screenplay(
@@ -1007,7 +1035,8 @@ JSON Schema:
         category = topic.get("category", "")
         cat_lower = (str(category) + " " + str(title)).lower()
         format_type = topic.get("format_type", "")
-        has_res = topic.get("has_resource_link", not (format_type in ["discovery_doc", "funny_story"] or "discovery" in cat_lower))
+        is_dad = (left_char == "dad") or ("dad" in str(title).lower()) or (format_type == "dad_clash")
+        has_res = topic.get("has_resource_link", not (format_type in ["discovery_doc", "funny_story"] or "discovery" in cat_lower or is_dad))
         is_gh = any(term in cat_lower for term in ["repo", "github", "open-source", "open source"])
         link_desc = "GitHub repo link" if is_gh else "free link"
 
@@ -1234,7 +1263,7 @@ JSON Schema:
 
         headline_text = clean_headline_truncation(title.upper(), 38)
 
-        return {
+        fallback_res = {
             "title": title[:50],
             "style": scene_preset,
             "comp": "MasterAutonomousReel",
@@ -1269,6 +1298,12 @@ JSON Schema:
             "realSteps": real_steps,
             "comedy_structure": structure,
         }
+        if is_dad or left_char == "dad" or format_type == "dad_clash":
+            fallback_res["cardData"] = None
+            fallback_res["proof_steps"] = []
+            fallback_res["proofImagePath"] = None
+            fallback_res["logoPath"] = None
+        return fallback_res
 
     # =========================================================================
     # PUBLIC METHOD: END-TO-END 2-STEP CRAFT PASS

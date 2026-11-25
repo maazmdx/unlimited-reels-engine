@@ -5,9 +5,11 @@ Supports:
 0. Custom Gateway: LLM_GATEWAY_URL / LLM_GATEWAY_KEY / LLM_GATEWAY_MODEL (OmniRoute / FreeLLMAPI)
 1. Google Gemini: gemini-2.5-flash ONLY via GEMINI_API_KEY (zero weak flash-lite fallbacks)
 2. Groq Cloud: openai/gpt-oss-120b -> openai/gpt-oss-20b via GROQ_API_KEY
-3. OpenRouter: google/gemma-4-31b-it:free -> openrouter/free via OPENROUTER_API_KEY
-4. Mistral AI: mistral-large-latest -> mistral-small-latest via MISTRAL_API_KEY
-5. LLM7.io: keyless free fallback with model 'default'
+3. NVIDIA NIM: nemotron-3.5-lightning-30b-a3b -> llama-3.3-nemotron-super-49b-v1.5 via NVIDIA_API_KEY
+4. OpenRouter: openrouter/free -> google/gemma-4-31b-it:free via OPENROUTER_API_KEY
+5. GitHub Models: gpt-4o-mini via GITHUB_TOKEN
+6. Mistral AI: mistral-large-latest -> mistral-small-latest via MISTRAL_API_KEY
+7. LLM7.io: keyless free fallback with model 'default'
 
 Standard library urllib.request ONLY - Zero extra pip dependencies.
 """
@@ -216,10 +218,14 @@ def _call_openai_compat(
         res = _post_json(url, payload, headers, timeout=timeout)
         choices = res.get("choices", [])
         if choices:
-            text = choices[0].get("message", {}).get("content", "")
-            elapsed = time.time() - t0
-            print(f"✨ [LLMRouter] {provider_name}/{model} succeeded in {elapsed:.2f}s ({len(text)} chars)")
-            return _extract_json_text(text) if json_mode else text
+            raw_text = choices[0].get("message", {}).get("content")
+            text = raw_text.strip() if isinstance(raw_text, str) else ""
+            if len(text) >= 20:
+                elapsed = time.time() - t0
+                print(f"✨ [LLMRouter] {provider_name}/{model} succeeded in {elapsed:.2f}s ({len(text)} chars)")
+                return _extract_json_text(text) if json_mode else text
+            else:
+                print(f"⚠️ [LLMRouter] {provider_name}/{model} returned empty or too-short content ({len(text)} chars)")
     except urllib.error.HTTPError as e:
         body = ""
         try:
@@ -234,10 +240,14 @@ def _call_openai_compat(
                 res = _post_json(url, payload_no_format, headers, timeout=timeout)
                 choices = res.get("choices", [])
                 if choices:
-                    text = choices[0].get("message", {}).get("content", "")
-                    elapsed = time.time() - t0
-                    print(f"✨ [LLMRouter] {provider_name}/{model} (retry no response_format) succeeded in {elapsed:.2f}s ({len(text)} chars)")
-                    return _extract_json_text(text) if json_mode else text
+                    raw_text = choices[0].get("message", {}).get("content")
+                    text = raw_text.strip() if isinstance(raw_text, str) else ""
+                    if len(text) >= 20:
+                        elapsed = time.time() - t0
+                        print(f"✨ [LLMRouter] {provider_name}/{model} (retry no response_format) succeeded in {elapsed:.2f}s ({len(text)} chars)")
+                        return _extract_json_text(text) if json_mode else text
+                    else:
+                        print(f"⚠️ [LLMRouter] {provider_name}/{model} retry returned too-short content ({len(text)} chars)")
             except Exception as retry_err:
                 print(f"⚠️ [LLMRouter] {provider_name}/{model} retry failed: {retry_err}")
         else:
@@ -287,41 +297,21 @@ def _call_nvidia(
     if not api_key:
         return None
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
-    return _call_openai_compat(
-        url=url,
-        api_key=api_key,
-        model="meta/llama-3.3-70b-instruct",
-        prompt=prompt,
-        system_prompt=system_prompt,
-        json_mode=json_mode,
-        temperature=temperature,
-        provider_name="nvidia",
-        timeout=timeout,
-    )
-
-
-def _call_sambanova(
-    prompt: str,
-    system_prompt: str,
-    json_mode: bool,
-    temperature: float,
-    timeout: float = 30.0
-) -> Optional[str]:
-    api_key = _get_secret("SAMBANOVA_API_KEY")
-    if not api_key:
-        return None
-    url = "https://api.sambanova.ai/v1/chat/completions"
-    return _call_openai_compat(
-        url=url,
-        api_key=api_key,
-        model="Meta-Llama-3.3-70B-Instruct",
-        prompt=prompt,
-        system_prompt=system_prompt,
-        json_mode=json_mode,
-        temperature=temperature,
-        provider_name="sambanova",
-        timeout=timeout,
-    )
+    for model in ["nvidia/nemotron-3.5-lightning-30b-a3b", "nvidia/llama-3.3-nemotron-super-49b-v1.5"]:
+        res = _call_openai_compat(
+            url=url,
+            api_key=api_key,
+            model=model,
+            prompt=prompt,
+            system_prompt=system_prompt,
+            json_mode=json_mode,
+            temperature=temperature,
+            provider_name="nvidia",
+            timeout=timeout,
+        )
+        if res:
+            return res
+    return None
 
 
 def _call_openrouter(
@@ -329,12 +319,13 @@ def _call_openrouter(
     system_prompt: str,
     json_mode: bool,
     temperature: float,
-    timeout: float = 30.0
+    timeout: float = 35.0
 ) -> Optional[str]:
     api_key = _get_secret("OPENROUTER_API_KEY")
     if not api_key:
         return None
     url = "https://openrouter.ai/api/v1/chat/completions"
+    actual_timeout = min(timeout, 35.0)
     for model in ["openrouter/free", "google/gemma-4-31b-it:free"]:
         res = _call_openai_compat(
             url=url,
@@ -345,7 +336,7 @@ def _call_openrouter(
             json_mode=json_mode,
             temperature=temperature,
             provider_name="openrouter",
-            timeout=timeout,
+            timeout=actual_timeout,
         )
         if res:
             return res
@@ -450,32 +441,27 @@ def generate_text(
     if res:
         return res
 
-    # 3. NVIDIA NIM (meta/llama-3.3-70b-instruct)
+    # 3. NVIDIA NIM (nemotron-3.5-lightning-30b-a3b -> llama-3.3-nemotron-super-49b-v1.5)
     res = _call_nvidia(prompt, system_prompt, json_mode, temperature)
     if res:
         return res
 
-    # 4. SambaNova (Meta-Llama-3.3-70B-Instruct)
-    res = _call_sambanova(prompt, system_prompt, json_mode, temperature)
-    if res:
-        return res
-
-    # 5. OpenRouter (openrouter/free -> google/gemma-4-31b-it:free)
+    # 4. OpenRouter (openrouter/free -> google/gemma-4-31b-it:free)
     res = _call_openrouter(prompt, system_prompt, json_mode, temperature)
     if res:
         return res
 
-    # 6. GitHub Models (gpt-4o-mini)
+    # 5. GitHub Models (gpt-4o-mini)
     res = _call_github_models(prompt, system_prompt, json_mode, temperature)
     if res:
         return res
 
-    # 7. Mistral (mistral-large-latest -> mistral-small-latest)
+    # 6. Mistral (mistral-large-latest -> mistral-small-latest)
     res = _call_mistral(prompt, system_prompt, json_mode, temperature)
     if res:
         return res
 
-    # 8. LLM7.io (keyless fallback)
+    # 7. LLM7.io (keyless fallback)
     res = _call_llm7(prompt, system_prompt, json_mode, temperature)
     if res:
         return res

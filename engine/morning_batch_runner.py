@@ -19,6 +19,7 @@ import json
 import time
 import shutil
 import argparse
+import traceback
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any, Optional
@@ -508,288 +509,307 @@ def run_morning_batch(
 
     # Execute sequential generation chain for each item
     for idx, item in enumerate(items_to_process, 1):
-        ep_num = current_episode_count + idx
-        ep_str = f"Ep. {ep_num:02d}"
-        next_ep_str = f"Ep. {ep_num + 1:02d}"
+        try:
+            ep_num = current_episode_count + idx
+            ep_str = f"Ep. {ep_num:02d}"
+            next_ep_str = f"Ep. {ep_num + 1:02d}"
 
-        # 4 Rotating 3D Sets: diner (rain), living_room (warm), desk (sunset), rooftop (night)
-        # Ensure Reel #1 and Reel #2 in the same batch always pick different sets.
-        topic_raw = item.get("data") if isinstance(item, dict) and isinstance(item.get("data"), dict) else {}
-        is_dad_topic = (
-            topic_raw.get("format_type") == "ai_vs_dad"
-            or "dad" in str(topic_raw.get("left_character", "")).lower()
-            or "dad" in str(topic_raw.get("title", "")).lower()
-            or "dad" in str(topic_raw.get("core_topic", "")).lower()
-        )
-
-        if scene_preset and scene_preset != "auto":
-            selected_scene = scene_preset
-            weather_mood = "rain" if selected_scene == "diner" else "warm" if selected_scene == "living_room" else "sunset" if selected_scene == "desk" else "night"
-        elif is_dad_topic:
-            selected_scene = "living_room"
-            weather_mood = "warm"
-        else:
-            available_moods = [m for m in SCENE_MOODS if m[0] not in used_presets_in_batch]
-            if not available_moods:
-                available_moods = SCENE_MOODS
-            preset_mood, weather_mood = available_moods[(ep_num - 1) % len(available_moods)]
-            selected_scene = preset_mood
-
-        used_presets_in_batch.append(selected_scene)
-
-        print(f"\n" + "=" * 70)
-        print(f"  🎬 PRODUCING MORNING REEL #{idx} OF {len(items_to_process)} [{ep_str}]")
-        print(f"  🎨 Scene Mood Rotation: {selected_scene} ({weather_mood}) | Follow for {next_ep_str}")
-        print("  Sequential Chain: TopicMaster -> HookMaster -> SEOMaster -> Audio -> Scene -> Audit")
-        print("=" * 70)
-
-        # 1. Topic Master / Ingestion Stage
-        if item["type"] == "url":
-            print(f"🔗 [Topic Ingestion] Queued URL -> {item['data']}")
-            analysis = insta_analyzer.analyze_from_url_or_query(item["data"])
-            topic_payload = {
-                "title": analysis.get("title", "Remixed Viral Reel"),
-                "topic_title": analysis.get("title", "Remixed Viral Reel"),
-                "category": analysis.get("category", "Trending Social Remix"),
-                "auto_dm_keyword": analysis.get("cta_keyword", "LINK"),
-                "left_character": analysis.get("left_character", "junior_dev"),
-                "right_character": analysis.get("right_character", "claude"),
-                "scene_preset": selected_scene,
-                "weather": weather_mood,
-                "core_conflict": analysis.get("core_conflict", "Social hype vs engineering facts"),
-                "viral_score": 85,
-                "card_data": analysis.get("card_data") or analysis.get("cardData", {}),
-            }
-        elif item["type"] == "dynamic":
-            topic_payload = item["data"]
-            topic_payload["scene_preset"] = selected_scene
-            topic_payload["weather"] = weather_mood
-            print(f"🔥 [TopicMaster] Curated: {topic_payload.get('title')} | Score: {topic_payload.get('viral_score', 85)}/100 [{topic_payload.get('category')}]")
-        else:
-            pool_data = item["data"]
-            print(f"🎯 [Offline Fallback] Picked: {pool_data.get('title') or pool_data.get('topic')}")
-            topic_payload = {
-                "title": pool_data.get("title", "Offline Tech Breakdown"),
-                "topic_title": pool_data.get("title", "Offline Tech Breakdown"),
-                "category": pool_data.get("pillar_style") or pool_data.get("category", "Retro Tech"),
-                "auto_dm_keyword": pool_data.get("cta_keyword", "TECH"),
-                "left_character": pool_data.get("left_character", "junior_dev"),
-                "right_character": pool_data.get("right_character", "claude"),
-                "scene_preset": selected_scene,
-                "weather": weather_mood,
-                "core_conflict": pool_data.get("core_conflict", "Dev nostalgia vs reality"),
-                "viral_score": 82,
-                "card_data": pool_data.get("card_data", {}),
-            }
-
-        # 2. HookMaster Stage (0-3s Hook Battle + Tight Screenplay)
-        print("⚡ [HookMaster] Conducting 0-3s Hook Battle and writing screenplay...")
-        script_data = hook_master.craft_reel_screenplay(topic_payload)
-        script_data["scenePreset"] = selected_scene
-        script_data["environment"] = selected_scene
-        script_data["weather"] = weather_mood
-        script_data["weatherMode"] = weather_mood
-        script_data["episode_number"] = ep_num
-        script_data["episode_str"] = ep_str
-        if not script_data.get("endCard"):
-            script_data["endCard"] = {}
-        script_data["endCard"]["subtext"] = f"Follow for {next_ep_str}"
-
-        safe_title = "".join(c if c.isalnum() else "_" for c in script_data["title"].lower()).strip("_")[:30]
-        file_prefix = f"reel_{idx:02d}_{safe_title}"
-
-        # 3. SEOMaster Stage (SEO headline, pinned comment bait, clean caption & 1-page guide)
-        print("🔍 [SEOMaster] Generating SEO headline, pinned comment bait, and 3-reply Auto-DM config...")
-        seo_assets = seo_master.generate_seo_assets(
-            script_data=script_data,
-            batch_dir=batch_dir,
-            file_prefix=file_prefix,
-        )
-        caption_file = seo_assets["caption_path"]
-        autodm_file = seo_assets["autodm_path"]
-
-        # 4. HARD PRE-RENDER ASSERTION GATE: Validates screenplay, roles, and visual styling before rendering
-        print("🛡️ [Pre-Render Gate] Validating screenplay integrity, voice roster, and zero-purple styling...")
-        assert_screenplay_pre_render_integrity(script_data, seo_assets)
-
-        # 5. AudioDirector Stage (Neural character voices & DSP mastering)
-        print("🎙️ [AudioDirector] Synthesizing neural character voices & audio mastering...")
-        audio_res = audio_director.synthesize_soundtrack(script_data)
-
-        # 6. SceneDirector & QualityAuditor Stages (Remotion Render & 5-Stage Audit Loop)
-        output_filename = f"reel_{idx:02d}_{safe_title}.mp4"
-
-        max_attempts = 2
-        rendered_mp4 = None
-        audit_res = None
-
-        for attempt in range(1, max_attempts + 1):
-            print(f"\n🔄 [SceneDirector & QualityAuditor] Render & Audit Attempt {attempt}/{max_attempts}...")
-            rendered_mp4 = scene_director.compile_and_render(
-                script_data=script_data,
-                audio_result=audio_res,
-                output_name=output_filename
+            # 4 Rotating 3D Sets: diner (rain), living_room (warm), desk (sunset), rooftop (night)
+            # Ensure Reel #1 and Reel #2 in the same batch always pick different sets.
+            topic_raw = item.get("data") if isinstance(item, dict) and isinstance(item.get("data"), dict) else {}
+            is_dad_topic = (
+                topic_raw.get("format_type") == "ai_vs_dad"
+                or "dad" in str(topic_raw.get("left_character", "")).lower()
+                or "dad" in str(topic_raw.get("title", "")).lower()
+                or "dad" in str(topic_raw.get("core_topic", "")).lower()
             )
 
-            audit_res = quality_auditor.audit_video(rendered_mp4, auto_heal=True)
-            if audit_res["status"] == "PASS":
-                print("🏆 Quality Watchdog: Approved!")
-                break
+            if scene_preset and scene_preset != "auto":
+                selected_scene = scene_preset
+                weather_mood = "rain" if selected_scene == "diner" else "warm" if selected_scene == "living_room" else "sunset" if selected_scene == "desk" else "night"
+            elif is_dad_topic:
+                selected_scene = "living_room"
+                weather_mood = "warm"
             else:
-                print(f"⚠️ Quality check attempt {attempt} issues: {audit_res.get('reasons')}")
+                available_moods = [m for m in SCENE_MOODS if m[0] not in used_presets_in_batch]
+                if not available_moods:
+                    available_moods = SCENE_MOODS
+                preset_mood, weather_mood = available_moods[(ep_num - 1) % len(available_moods)]
+                selected_scene = preset_mood
 
-        # Copy finalized video & thumbnails into morning batch directory
-        final_video_dest = batch_dir / output_filename
-        if Path(rendered_mp4).exists():
-            try:
-                if os.path.realpath(str(rendered_mp4)) != os.path.realpath(str(final_video_dest)):
-                    if not (final_video_dest.exists() and os.path.samefile(rendered_mp4, final_video_dest)):
-                        shutil.copy2(rendered_mp4, final_video_dest)
-            except (shutil.SameFileError, FileExistsError):
-                pass
+            used_presets_in_batch.append(selected_scene)
 
-        # Copy exported 4:5 cover still beside the MP4 in morning batch directory
-        cover_src = Path(rendered_mp4).with_name(f"{Path(rendered_mp4).stem}_cover.png")
-        cover_dest = batch_dir / f"{Path(output_filename).stem}_cover.png"
-        if cover_src.exists():
-            try:
-                if os.path.realpath(str(cover_src)) != os.path.realpath(str(cover_dest)):
-                    if not (cover_dest.exists() and os.path.samefile(cover_src, cover_dest)):
-                        shutil.copy2(cover_src, cover_dest)
-            except (shutil.SameFileError, FileExistsError):
-                pass
-            print(f"🖼️ [Cover Still] Delivered beside MP4: {cover_dest.name}")
+            print(f"\n" + "=" * 70)
+            print(f"  🎬 PRODUCING MORNING REEL #{idx} OF {len(items_to_process)} [{ep_str}]")
+            print(f"  🎨 Scene Mood Rotation: {selected_scene} ({weather_mood}) | Follow for {next_ep_str}")
+            print("  Sequential Chain: TopicMaster -> HookMaster -> SEOMaster -> Audio -> Scene -> Audit")
+            print("=" * 70)
 
-        # Export clean, standard SubRip captions (.srt) beside MP4 in morning batch directory
-        final_srt_dest = batch_dir / f"{Path(output_filename).stem}.srt"
-        srt_source = audio_res.get("chunks") or (PROJECT_ROOT / "public" / "subs.json")
-        try:
-            export_srt_file(srt_source, final_srt_dest)
-            print(f"📝 [SRT Subtitles] Delivered beside MP4: {final_srt_dest.name}")
-        except Exception as e_srt:
-            print(f"⚠️ [SRT Subtitles] Notice: {e_srt}")
+            # 1. Topic Master / Ingestion Stage
+            if item["type"] == "url":
+                print(f"🔗 [Topic Ingestion] Queued URL -> {item['data']}")
+                analysis = insta_analyzer.analyze_from_url_or_query(item["data"])
+                topic_payload = {
+                    "title": analysis.get("title", "Remixed Viral Reel"),
+                    "topic_title": analysis.get("title", "Remixed Viral Reel"),
+                    "category": analysis.get("category", "Trending Social Remix"),
+                    "auto_dm_keyword": analysis.get("cta_keyword", "LINK"),
+                    "left_character": analysis.get("left_character", "junior_dev"),
+                    "right_character": analysis.get("right_character", "claude"),
+                    "scene_preset": selected_scene,
+                    "weather": weather_mood,
+                    "core_conflict": analysis.get("core_conflict", "Social hype vs engineering facts"),
+                    "viral_score": 85,
+                    "card_data": analysis.get("card_data") or analysis.get("cardData", {}),
+                }
+            elif item["type"] == "dynamic":
+                topic_payload = item["data"]
+                topic_payload["scene_preset"] = selected_scene
+                topic_payload["weather"] = weather_mood
+                print(f"🔥 [TopicMaster] Curated: {topic_payload.get('title')} | Score: {topic_payload.get('viral_score', 85)}/100 [{topic_payload.get('category')}]")
+            else:
+                pool_data = item["data"]
+                print(f"🎯 [Offline Fallback] Picked: {pool_data.get('title') or pool_data.get('topic')}")
+                topic_payload = {
+                    "title": pool_data.get("title", "Offline Tech Breakdown"),
+                    "topic_title": pool_data.get("title", "Offline Tech Breakdown"),
+                    "category": pool_data.get("pillar_style") or pool_data.get("category", "Retro Tech"),
+                    "auto_dm_keyword": pool_data.get("cta_keyword", "TECH"),
+                    "left_character": pool_data.get("left_character", "junior_dev"),
+                    "right_character": pool_data.get("right_character", "claude"),
+                    "scene_preset": selected_scene,
+                    "weather": weather_mood,
+                    "core_conflict": pool_data.get("core_conflict", "Dev nostalgia vs reality"),
+                    "viral_score": 82,
+                    "card_data": pool_data.get("card_data", {}),
+                }
 
-        # Copy audit keyframes to thumbs directory
-        for kf in audit_res.get("keyframes", []):
-            if kf.get("path") and Path(kf["path"]).exists():
-                src_kf = kf["path"]
-                dst_kf = thumbs_dir / Path(kf["path"]).name
+            # 2. HookMaster Stage (0-3s Hook Battle + Tight Screenplay)
+            print("⚡ [HookMaster] Conducting 0-3s Hook Battle and writing screenplay...")
+            script_data = hook_master.craft_reel_screenplay(topic_payload)
+            script_data["scenePreset"] = selected_scene
+            script_data["environment"] = selected_scene
+            script_data["weather"] = weather_mood
+            script_data["weatherMode"] = weather_mood
+            script_data["episode_number"] = ep_num
+            script_data["episode_str"] = ep_str
+            if not script_data.get("endCard"):
+                script_data["endCard"] = {}
+            script_data["endCard"]["subtext"] = f"Follow for {next_ep_str}"
+
+            safe_title = "".join(c if c.isalnum() else "_" for c in script_data["title"].lower()).strip("_")[:30]
+            file_prefix = f"reel_{idx:02d}_{safe_title}"
+
+            # 3. SEOMaster Stage (SEO headline, pinned comment bait, clean caption & 1-page guide)
+            print("🔍 [SEOMaster] Generating SEO headline, pinned comment bait, and 3-reply Auto-DM config...")
+            seo_assets = seo_master.generate_seo_assets(
+                script_data=script_data,
+                batch_dir=batch_dir,
+                file_prefix=file_prefix,
+            )
+            caption_file = seo_assets["caption_path"]
+            autodm_file = seo_assets["autodm_path"]
+
+            # Strip cardData for dad_clash so LLM-returned extra keys can never trip the gate
+            is_dad = (
+                str(script_data.get("leftCharacterId") or "").lower() == "dad"
+                or "dad" in str(script_data.get("title", "")).lower()
+                or script_data.get("format_type") == "dad_clash"
+                or script_data.get("cast", {}).get("left") == "dad"
+            )
+            if is_dad:
+                script_data["cardData"] = None
+                script_data["proof_steps"] = []
+                script_data["proofImagePath"] = None
+                script_data["logoPath"] = None
+
+            # 4. HARD PRE-RENDER ASSERTION GATE: Validates screenplay, roles, and visual styling before rendering
+            print("🛡️ [Pre-Render Gate] Validating screenplay integrity, voice roster, and zero-purple styling...")
+            assert_screenplay_pre_render_integrity(script_data, seo_assets)
+
+            # 5. AudioDirector Stage (Neural character voices & DSP mastering)
+            print("🎙️ [AudioDirector] Synthesizing neural character voices & audio mastering...")
+            audio_res = audio_director.synthesize_soundtrack(script_data)
+
+            # 6. SceneDirector & QualityAuditor Stages (Remotion Render & 5-Stage Audit Loop)
+            output_filename = f"reel_{idx:02d}_{safe_title}.mp4"
+
+            max_attempts = 2
+            rendered_mp4 = None
+            audit_res = None
+
+            for attempt in range(1, max_attempts + 1):
+                print(f"\n🔄 [SceneDirector & QualityAuditor] Render & Audit Attempt {attempt}/{max_attempts}...")
+                rendered_mp4 = scene_director.compile_and_render(
+                    script_data=script_data,
+                    audio_result=audio_res,
+                    output_name=output_filename
+                )
+
+                audit_res = quality_auditor.audit_video(rendered_mp4, auto_heal=True)
+                if audit_res["status"] == "PASS":
+                    print("🏆 Quality Watchdog: Approved!")
+                    break
+                else:
+                    print(f"⚠️ Quality check attempt {attempt} issues: {audit_res.get('reasons')}")
+
+            # Copy finalized video & thumbnails into morning batch directory
+            final_video_dest = batch_dir / output_filename
+            if Path(rendered_mp4).exists():
                 try:
-                    if os.path.realpath(str(src_kf)) != os.path.realpath(str(dst_kf)):
-                        if not (dst_kf.exists() and os.path.samefile(src_kf, dst_kf)):
-                            shutil.copy2(src_kf, dst_kf)
+                    if os.path.realpath(str(rendered_mp4)) != os.path.realpath(str(final_video_dest)):
+                        if not (final_video_dest.exists() and os.path.samefile(rendered_mp4, final_video_dest)):
+                            shutil.copy2(rendered_mp4, final_video_dest)
                 except (shutil.SameFileError, FileExistsError):
                     pass
 
-        # Optional Cloud Drive Sync
-        drive_status = "SKIPPED"
-        d_res = None
-        if drive_dispatcher:
+            # Copy exported 4:5 cover still beside the MP4 in morning batch directory
+            cover_src = Path(rendered_mp4).with_name(f"{Path(rendered_mp4).stem}_cover.png")
+            cover_dest = batch_dir / f"{Path(output_filename).stem}_cover.png"
+            if cover_src.exists():
+                try:
+                    if os.path.realpath(str(cover_src)) != os.path.realpath(str(cover_dest)):
+                        if not (cover_dest.exists() and os.path.samefile(cover_src, cover_dest)):
+                            shutil.copy2(cover_src, cover_dest)
+                except (shutil.SameFileError, FileExistsError):
+                    pass
+                print(f"🖼️ [Cover Still] Delivered beside MP4: {cover_dest.name}")
+
+            # Export clean, standard SubRip captions (.srt) beside MP4 in morning batch directory
+            final_srt_dest = batch_dir / f"{Path(output_filename).stem}.srt"
+            srt_source = audio_res.get("chunks") or (PROJECT_ROOT / "public" / "subs.json")
             try:
-                has_creds = (
-                    os.environ.get("GDRIVE_CREDENTIALS")
-                    or os.environ.get("GOOGLE_DRIVE_TOKEN")
-                    or os.environ.get("GDRIVE_ACCESS_TOKEN")
-                )
-                target_folder = drive_folder_id or os.environ.get("GDRIVE_FOLDER_ID")
-                if not has_creds and not target_folder:
-                    print("ℹ️ Google Drive credentials/folder not configured; skipping Drive sync cleanly.")
-                    drive_status = "SKIPPED_NO_SECRETS"
-                else:
-                    vtt_file = str(PROJECT_ROOT / "public" / "subs.vtt")
-                    d_res = drive_dispatcher.upload_reel(
-                        video_path=str(final_video_dest),
-                        vtt_path=vtt_file,
-                        meta_data={
-                            "title": script_data["title"],
-                            "hook": script_data.get("hook", {}).get("headline"),
-                            "batch": today_str,
-                        },
-                        drive_folder_id=target_folder,
+                export_srt_file(srt_source, final_srt_dest)
+                print(f"📝 [SRT Subtitles] Delivered beside MP4: {final_srt_dest.name}")
+            except Exception as e_srt:
+                print(f"⚠️ [SRT Subtitles] Notice: {e_srt}")
+
+            # Copy audit keyframes to thumbs directory
+            for kf in audit_res.get("keyframes", []):
+                if kf.get("path") and Path(kf["path"]).exists():
+                    src_kf = kf["path"]
+                    dst_kf = thumbs_dir / Path(kf["path"]).name
+                    try:
+                        if os.path.realpath(str(src_kf)) != os.path.realpath(str(dst_kf)):
+                            if not (dst_kf.exists() and os.path.samefile(src_kf, dst_kf)):
+                                shutil.copy2(src_kf, dst_kf)
+                    except (shutil.SameFileError, FileExistsError):
+                        pass
+
+            # Optional Cloud Drive Sync
+            drive_status = "SKIPPED"
+            d_res = None
+            if drive_dispatcher:
+                try:
+                    has_creds = (
+                        os.environ.get("GDRIVE_CREDENTIALS")
+                        or os.environ.get("GOOGLE_DRIVE_TOKEN")
+                        or os.environ.get("GDRIVE_ACCESS_TOKEN")
                     )
-                    drive_status = d_res.get("status", "SUCCESS")
-            except Exception as e_drive:
-                print(f"ℹ️ Google Drive sync notice (non-fatal): {e_drive}")
-                drive_status = f"SKIPPED: {e_drive}"
-
-        # 7. Optional Official Meta Graph API Reels Auto-Publish (Default: OFF)
-        ig_publish_status = "SKIPPED_FLAG_OFF"
-        ig_permalink = None
-        if auto_publish:
-            try:
-                publisher = InstagramPublisherAgent()
-                if publisher.is_configured():
-                    public_vid_url = None
-                    if isinstance(drive_status, dict):
-                        public_vid_url = drive_status.get("drive_link")
-                    elif isinstance(d_res, dict):
-                        public_vid_url = d_res.get("drive_link")
-
-                    if public_vid_url:
-                        pub_res = publisher.publish_reel(
-                            video_url=public_vid_url,
-                            caption=seo_assets.get("caption_text", ""),
-                        )
-                        ig_publish_status = pub_res.get("status", "FAILED")
-                        ig_permalink = pub_res.get("permalink")
+                    target_folder = drive_folder_id or os.environ.get("GDRIVE_FOLDER_ID")
+                    if not has_creds and not target_folder:
+                        print("ℹ️ Google Drive credentials/folder not configured; skipping Drive sync cleanly.")
+                        drive_status = "SKIPPED_NO_SECRETS"
                     else:
-                        print("ℹ️ [InstagramPublisher] No public video URL available for upload; skipping auto-publish.")
-                        ig_publish_status = "SKIPPED_NO_PUBLIC_URL"
-                else:
-                    print("ℹ️ [InstagramPublisher] IG_USER_ID or IG_ACCESS_TOKEN not set; skipping auto-publish.")
-                    ig_publish_status = "SKIPPED_NO_SECRETS"
-            except Exception as e_pub:
-                print(f"⚠️ [InstagramPublisher] Publishing notice: {e_pub}")
-                ig_publish_status = f"ERROR: {e_pub}"
+                        vtt_file = str(PROJECT_ROOT / "public" / "subs.vtt")
+                        d_res = drive_dispatcher.upload_reel(
+                            video_path=str(final_video_dest),
+                            vtt_path=vtt_file,
+                            meta_data={
+                                "title": script_data["title"],
+                                "hook": script_data.get("hook", {}).get("headline"),
+                                "batch": today_str,
+                            },
+                            drive_folder_id=target_folder,
+                        )
+                        drive_status = d_res.get("status", "SUCCESS")
+                except Exception as e_drive:
+                    print(f"ℹ️ Google Drive sync notice (non-fatal): {e_drive}")
+                    drive_status = f"SKIPPED: {e_drive}"
 
-        # Resolve autodm_data cleanly from seo_assets or autodm_file or script_data
-        autodm_data = seo_assets.get("autodm_payload") or {}
-        if not autodm_data and autodm_file and Path(autodm_file).exists():
-            try:
-                with open(autodm_file, "r", encoding="utf-8") as f:
-                    autodm_data = json.load(f)
-            except Exception:
-                pass
-        cta_keyword_val = (
-            autodm_data.get("keyword")
-            or script_data.get("auto_dm_keyword")
-            or script_data.get("cta_keyword")
-            or "LINK"
-        )
+            # 7. Optional Official Meta Graph API Reels Auto-Publish (Default: OFF)
+            ig_publish_status = "SKIPPED_FLAG_OFF"
+            ig_permalink = None
+            if auto_publish:
+                try:
+                    publisher = InstagramPublisherAgent()
+                    if publisher.is_configured():
+                        public_vid_url = None
+                        if isinstance(drive_status, dict):
+                            public_vid_url = drive_status.get("drive_link")
+                        elif isinstance(d_res, dict):
+                            public_vid_url = d_res.get("drive_link")
 
-        # Record topic & episode number into inbox/covered_topics.json
-        record_covered_topic(covered_file, {
-            "slug": safe_title,
-            "title": script_data["title"],
-            "date": datetime.now().strftime("%Y-%m-%d"),
-            "episode_number": ep_num,
-            "episode_str": ep_str,
-            "auto_dm_keyword": cta_keyword_val,
-            "pillar_style": topic_payload.get("category", "AI Satire"),
-            "scene_preset": selected_scene,
-            "weather_mood": weather_mood
-        })
+                        if public_vid_url:
+                            pub_res = publisher.publish_reel(
+                                video_url=public_vid_url,
+                                caption=seo_assets.get("caption_text", ""),
+                            )
+                            ig_publish_status = pub_res.get("status", "FAILED")
+                            ig_permalink = pub_res.get("permalink")
+                        else:
+                            print("ℹ️ [InstagramPublisher] No public video URL available for upload; skipping auto-publish.")
+                            ig_publish_status = "SKIPPED_NO_PUBLIC_URL"
+                    else:
+                        print("ℹ️ [InstagramPublisher] IG_USER_ID or IG_ACCESS_TOKEN not set; skipping auto-publish.")
+                        ig_publish_status = "SKIPPED_NO_SECRETS"
+                except Exception as e_pub:
+                    print(f"⚠️ [InstagramPublisher] Publishing notice: {e_pub}")
+                    ig_publish_status = f"ERROR: {e_pub}"
 
-        generated_reels.append({
-            "index": idx,
-            "episode_number": ep_num,
-            "episode_str": ep_str,
-            "title": script_data["title"],
-            "video_path": str(final_video_dest),
-            "cover_path": str(cover_dest) if cover_dest.exists() else None,
-            "srt_path": str(final_srt_dest) if final_srt_dest.exists() else None,
-            "caption_path": str(caption_file),
-            "autodm_path": str(autodm_file),
-            "cta_keyword": cta_keyword_val,
-            "scene_preset": selected_scene,
-            "weather_mood": weather_mood,
-            "duration": audit_res.get("duration", 0),
-            "quality_score": audit_res.get("score", 100),
-            "status": audit_res.get("status", "PASS"),
-            "drive_status": drive_status,
-            "ig_status": ig_publish_status,
-            "ig_permalink": ig_permalink,
-        })
+            # Resolve autodm_data cleanly from seo_assets or autodm_file or script_data
+            autodm_data = seo_assets.get("autodm_payload") or {}
+            if not autodm_data and autodm_file and Path(autodm_file).exists():
+                try:
+                    with open(autodm_file, "r", encoding="utf-8") as f:
+                        autodm_data = json.load(f)
+                except Exception:
+                    pass
+            cta_keyword_val = (
+                autodm_data.get("keyword")
+                or script_data.get("auto_dm_keyword")
+                or script_data.get("cta_keyword")
+                or "LINK"
+            )
+
+            # Record topic & episode number into inbox/covered_topics.json
+            record_covered_topic(covered_file, {
+                "slug": safe_title,
+                "title": script_data["title"],
+                "date": datetime.now().strftime("%Y-%m-%d"),
+                "episode_number": ep_num,
+                "episode_str": ep_str,
+                "auto_dm_keyword": cta_keyword_val,
+                "pillar_style": topic_payload.get("category", "AI Satire"),
+                "scene_preset": selected_scene,
+                "weather_mood": weather_mood
+            })
+
+            generated_reels.append({
+                "index": idx,
+                "episode_number": ep_num,
+                "episode_str": ep_str,
+                "title": script_data["title"],
+                "video_path": str(final_video_dest),
+                "cover_path": str(cover_dest) if cover_dest.exists() else None,
+                "srt_path": str(final_srt_dest) if final_srt_dest.exists() else None,
+                "caption_path": str(caption_file),
+                "autodm_path": str(autodm_file),
+                "cta_keyword": cta_keyword_val,
+                "scene_preset": selected_scene,
+                "weather_mood": weather_mood,
+                "duration": audit_res.get("duration", 0),
+                "quality_score": audit_res.get("score", 100),
+                "status": audit_res.get("status", "PASS"),
+                "drive_status": drive_status,
+                "ig_status": ig_publish_status,
+                "ig_permalink": ig_permalink,
+            })
+        except Exception as e_reel:
+            print(f"❌ [MorningBatchRunner] Reel #{idx} generation failed: {e_reel}")
+            traceback.print_exc()
+            continue
+
 
     # Archive processed URLs
     if processed_urls:
