@@ -88,6 +88,7 @@ DAD_CLASH_PREMISES = [
         "premise": "phone storage cleaner / RAM booster apps",
         "title": "Dad Installed 4 'RAM Booster' Apps on His Phone",
         "myth": "Dad thinks downloading 4 different phone cleaner apps speeds up his Android, but they actually drain 80% battery showing full-screen ads.",
+        "myth_detail": "Installing 4 fake RAM booster apps with turbo rocket animations that kill background apps, show full-screen ads, and overheat the battery.",
         "hook": "Look how fast this rocket cleaner makes my phone fly!",
         "conflict": "Dev explaining modern Android RAM management vs Dad proud of the turbo rocket cleaning animation",
     },
@@ -96,6 +97,7 @@ DAD_CLASH_PREMISES = [
         "premise": "WhatsApp lottery / scam link forwards",
         "title": "Dad Believes He Won an iPhone 17 on WhatsApp",
         "myth": "Dad gets a forward claiming he won a free car or phone and is about to forward it to 20 family groups.",
+        "myth_detail": "Clicking a fake 'congratulations you won an iPhone' WhatsApp forward asking for card details and 10 rupees shipping to steal bank passwords.",
         "hook": "Beta, I just won a brand new phone on WhatsApp!",
         "conflict": "Dev warning about phishing scams vs Dad insisting 'It has the official logo!'",
     },
@@ -104,6 +106,7 @@ DAD_CLASH_PREMISES = [
         "premise": "battery 100% charging and overnight myths",
         "title": "Dad Sets an Alarm to Unplug His Phone at Exactly 80%",
         "myth": "Dad watched a WhatsApp video claiming charging past 80% explodes the battery and now charges in 10-minute intervals.",
+        "myth_detail": "Waking up at 3 AM to unplug the charger at 80% because of a fake WhatsApp video claiming 100% charging explodes the battery.",
         "hook": "Beta, unplug it at eighty percent or the battery explodes!",
         "conflict": "Dev explaining modern battery BMS chips vs Dad citing WhatsApp University",
     },
@@ -112,6 +115,7 @@ DAD_CLASH_PREMISES = [
         "premise": "printer ink cartridge extortion",
         "title": "Dad vs The Color Ink Cartridge Extortion",
         "myth": "Dad trying to print a black-and-white government form, but the printer refuses because 'Cyan is empty'.",
+        "myth_detail": "Trying to print a black-and-white tax form while the printer refuses to print because the cyan ink cartridge is empty.",
         "hook": "Why does this printer demand cyan to print black text?!",
         "conflict": "Dad threatening the printer with a screwdriver vs Dev explaining printer DRM chips",
     },
@@ -120,14 +124,16 @@ DAD_CLASH_PREMISES = [
         "premise": "shady APK downloads / modded WhatsApp",
         "title": "Dad Downloaded 'Gold WhatsApp' from a Sketchy Website",
         "myth": "Dad downloaded a sketchy APK because a video promised it can read deleted messages from 2018.",
-        "hook": "Look at my gold WhatsApp theme! It reads deleted messages!",
-        "conflict": "Dev discovering 15 malware popups vs Dad bragging about his secret gold theme",
+        "myth_detail": "Installing a fake 'Gold WhatsApp' APK from a family forward that asks for SMS/contacts permission, pops up 15 ads, and steals OTPs.",
+        "hook": "Beta, this Gold WhatsApp link gave me free themes!",
+        "conflict": "Dev discovering 15 malware popups and OTP theft vs Dad bragging about his secret gold theme",
     },
     {
         "tag": "dad_tv_mic",
         "premise": "smart TV spying & mic listening myths",
         "title": "Dad Covers the Smart TV with a Towel",
         "myth": "Dad saw shoe ads on his phone after talking about shoes and now covers the TV sensor with tape and a towel.",
+        "myth_detail": "Wrapping the living room Smart TV in a damp bath towel and tape because shoe ads appeared on his phone after dinner.",
         "hook": "I covered the Smart TV with a towel so it stops spying!",
         "conflict": "Dev explaining cross-app ad tracking vs Dad whispering in the living room",
     },
@@ -244,31 +250,86 @@ def check_topic_duplication(
 
 
 def infer_replaces_paid_app(tool_name: Optional[str] = "", category: Optional[str] = "", title: Optional[str] = "") -> str:
-    """Infers the real paid app / subscription cost that a free tool replaces."""
+    """Infers the exact named paid app + price that a free tool replaces (never generic 'paid app')."""
     text = (str(tool_name or "") + " " + str(category or "") + " " + str(title or "")).lower()
     if "pdf" in text or "stirling" in text:
         return "Adobe Acrobat Pro ($20/mo)"
     elif "photo" in text or "psd" in text:
         return "Adobe Photoshop ($22/mo)"
+    elif "upscayl" in text or "upscal" in text:
+        return "Topaz Gigapixel AI ($99)"
     elif "localsend" in text or "airdrop" in text or "transfer" in text:
-        return "WeTransfer / Cloud Storage ($15/mo)"
+        return "WeTransfer Pro & Dropbox Plus ($15/mo)"
     elif "emulator" in text or "retro" in text or "game" in text:
-        return "Paid Consoles & Expensive Retro Cartridges"
+        return "Nintendo Switch Online & Paid Retro Bundles ($50/yr)"
     elif "ublock" in text or "adblock" in text:
-        return "YouTube Premium & Annoying Adware ($14/mo)"
+        return "YouTube Premium ($14/mo)"
     elif "bleachbit" in text or "cleaner" in text:
-        return "Paid Antivirus & PC Optimizer Scams ($30/yr)"
+        return "CCleaner Pro ($30/yr)"
     elif "ollama" in text or "jan" in text or "local ai" in text:
-        return "ChatGPT Plus & Copilot Pro ($20/mo)"
+        return "ChatGPT Plus & Claude Pro ($20/mo)"
     elif "notebook" in text:
-        return "Paid AI Summarizers & Transcription ($20/mo)"
-    elif "rustdesk" in text:
-        return "TeamViewer & AnyDesk Subscriptions ($25/mo)"
-    elif "quicklook" in text:
-        return "Paid Windows Utility Software ($15)"
+        return "Otter.ai & Speechify Pro ($20/mo)"
+    elif "rustdesk" in text or "remote" in text:
+        return "TeamViewer ($25/mo)"
+    elif "quicklook" in text or "spacebar" in text:
+        return "Directory Opus / QuickLook Pro ($15)"
+    elif "webvm" in text or "linux" in text or "vm" in text:
+        return "DigitalOcean / AWS Lightsail VPS ($12/mo)"
     elif "draw" in text or "diagram" in text:
-        return "Lucidchart / Visio Subscriptions ($12/mo)"
-    return "Expensive $20/month SaaS Subscriptions"
+        return "Lucidchart ($12/mo)"
+    return "Notion Plus & Microsoft 365 ($10/mo)"
+
+
+def infer_specific_pain_point(
+    tool_name: Optional[str] = "",
+    category: Optional[str] = "",
+    title: Optional[str] = "",
+    real_desc: Optional[str] = "",
+) -> str:
+    """Returns one vivid everyday frustration a normal viewer instantly recognizes."""
+    text = (str(tool_name or "") + " " + str(category or "") + " " + str(title or "")).lower()
+    if "localsend" in text or "airdrop" in text or "transfer" in text:
+        return "Emailing files to yourself because AirDrop doesn't work between iPhone and Windows"
+    elif "pdf" in text or "stirling" in text:
+        return "Paying $20/mo for Adobe Acrobat just to edit or merge one PDF"
+    elif "rustdesk" in text or "remote" in text:
+        return "TeamViewer disconnecting you every 5 minutes for 'commercial use'"
+    elif "bleachbit" in text or "cleaner" in text:
+        return "Your laptop freezing up because hidden browser cache and temp logs ate 30GB of disk space"
+    elif "photopea" in text or "photo" in text or "psd" in text:
+        return "Paying Adobe Photoshop $22/mo just to open a PSD or crop one graphic"
+    elif "upscayl" in text or "upscal" in text:
+        return "Paying $99 for Topaz Gigapixel just to unblur low-resolution screenshots"
+    elif "emulator" in text or "retro" in text or "game" in text:
+        return "Downloading sketchy 80GB installers just to replay classic retro games on a work laptop"
+    elif "ublock" in text or "adblock" in text:
+        return "Sitting through two unskippable 30-second YouTube ads before every tutorial"
+    elif "ollama" in text or "local ai" in text or "llm" in text:
+        return "Hitting ChatGPT Plus $20/mo message caps and leaking private notes to cloud servers"
+    elif "notebook" in text:
+        return "Spending three hours reading a 200-page PDF by hand before a deadline"
+    elif "draw" in text or "diagram" in text:
+        return "Hitting Lucidchart's 3-diagram paywall right before exporting a team flowchart"
+    elif "quicklook" in text or "spacebar" in text:
+        return "Waiting for heavy desktop apps to boot just to preview one file in Windows Explorer"
+    elif "webvm" in text or "linux" in text or "vm" in text:
+        return "Paying for a monthly cloud VPS just to test a Linux terminal command in Chrome"
+    desc_clean = str(real_desc or "").strip().split(".")[0]
+    if desc_clean and len(desc_clean) > 15:
+        return f"Struggling with pricey subscriptions when you just need to {desc_clean[0].lower() + desc_clean[1:]}"
+    return f"Paying monthly subscription fees for simple tasks that {tool_name or 'a free tool'} handles directly"
+
+
+def infer_dad_myth_detail(title: Optional[str] = "", category: Optional[str] = "") -> str:
+    """Returns a concrete household myth detail matching the Dad clash topic."""
+    text = f"{title or ''} {category or ''}".lower()
+    for p in DAD_CLASH_PREMISES:
+        if any(tok in text for tok in p["tag"].replace("dad_", "").split("_")):
+            return p["myth_detail"]
+    if "5g" in text or "wifi" in text or "wi-fi" in text or "router" in text:
+        return "Wrapping the living room Wi-Fi router in kitchen aluminum foil to block 5G waves, killing the house internet."
+    return "Following a scary forwarded WhatsApp video about phone myths instead of built-in phone settings."
 
 
 KNOWN_VERIFIED_REPOS = {
@@ -1190,6 +1251,8 @@ If count >= 2:
   * has_resource_link: true
   * auto_dm_keyword: Single real English word (e.g. 'PLAY', 'FREE', 'REPO', 'PDF', 'TOOL')
   * tool_name: EXACT app, repository, or game name (e.g. 'LocalSend', 'Stirling-PDF', 'EmulatorJS', 'Photopea'). NEVER a generic placeholder like 'Free Tool' or 'AI App'.
+  * replaces_paid_app: Exact real competitor brand + price (e.g. 'Adobe Acrobat Pro ($20/mo)', 'TeamViewer ($25/mo)', 'CCleaner Pro ($30/yr)') — NEVER generic 'paid app' or 'expensive software'.
+  * specific_pain_point: One vivid everyday frustration a normal viewer instantly recognizes (e.g. 'Emailing files to yourself because AirDrop does not work between iPhone and Windows').
   * brand_domain: Official website domain (e.g. 'localsend.org', 'stirlingpdf.com', 'emulatorjs.org').
   * github_repo: GitHub 'owner/repo' slug if open-source (e.g. 'localsend/localsend' or 'Frooodle/Stirling-PDF'), else empty string.
   * real_steps: Exactly 3 concrete, real, reproducible steps (never generic fluff like 'Download and install').
@@ -1219,6 +1282,8 @@ JSON Schema:
       "has_resource_link": true,
       "category": "Free Open-Source GitHub Repos | Retro & Browser Games | Underrated AI Apps | Wildlife Dev Doc | Indian Dad vs Tech | Developer Survival",
       "tool_name": "Exact app, repo, or game name (e.g. EmulatorJS)",
+      "replaces_paid_app": "Exact competitor brand + price (e.g. Adobe Acrobat Pro ($20/mo))",
+      "specific_pain_point": "Vivid everyday frustration (e.g. Paying $20/mo for Adobe Acrobat just to delete one PDF page)",
       "brand_domain": "Domain name (e.g. emulatorjs.org or github.com)",
       "github_repo": "owner/repo if open-source on GitHub, else empty string",
       "real_steps": [
@@ -1351,7 +1416,13 @@ JSON Schema:
                 cand["resource_link_or_query"] = verified_url
                 cand["real_description"] = verified_info.get("description", "")
                 cand["readme_summary"] = verified_info.get("readme_excerpt", "")
-                cand["replaces_paid_app"] = cand.get("replaces_paid_app") or infer_replaces_paid_app(cand.get("tool_name"), cand.get("category"), cand.get("topic_title"))
+                raw_rep = str(cand.get("replaces_paid_app") or "").strip()
+                if not raw_rep or raw_rep.lower() in {"paid app", "paid apps", "expensive software", "paid software", "paid tool", "paid tools"}:
+                    raw_rep = infer_replaces_paid_app(cand.get("tool_name"), cand.get("category"), cand.get("topic_title"))
+                cand["replaces_paid_app"] = raw_rep
+                cand["specific_pain_point"] = str(cand.get("specific_pain_point") or "").strip() or infer_specific_pain_point(
+                    cand.get("tool_name"), cand.get("category"), cand.get("topic_title"), cand["real_description"]
+                )
                 cand["angle_tag"] = today_niche["id"]
                 selected.append(cand)
                 print(f"✅ [TopicMaster] Live-verified Reel #1 winner: '{cand.get('tool_name')}' ({cand.get('github_repo') or cand.get('canonical_url')})")
@@ -1373,6 +1444,7 @@ JSON Schema:
                 fp["right_character"] = "junior_dev"
                 fp["scene_preset"] = "diner"
                 fp["premise"] = today_dad["premise"]
+                fp["specific_myth_detail"] = today_dad.get("myth_detail") or today_dad["myth"]
                 selected.append(fp)
                 break
 
@@ -1398,6 +1470,7 @@ JSON Schema:
                     "core_conflict": today_dad["conflict"],
                     "angle_tag": today_dad["tag"],
                     "premise": today_dad["premise"],
+                    "specific_myth_detail": today_dad.get("myth_detail") or today_dad["myth"],
                     "github_repo": None,
                     "brand_domain": None,
                 }
@@ -1525,7 +1598,20 @@ JSON Schema:
         canonical_url = item.get("canonical_url") or (f"https://github.com/{github_repo}" if github_repo else (f"https://{brand_domain}" if brand_domain else ""))
         real_desc = item.get("real_description") or item.get("description", "")
         readme_sum = item.get("readme_summary") or item.get("readme_excerpt", "")
-        replaces_paid = item.get("replaces_paid_app") or (infer_replaces_paid_app(tool_name, category, title) if not is_dad_skit else "")
+
+        if is_dad_skit:
+            replaces_paid = ""
+            specific_pain_point = ""
+            specific_myth_detail = str(item.get("specific_myth_detail") or "").strip() or infer_dad_myth_detail(title, category)
+        else:
+            raw_rep = str(item.get("replaces_paid_app") or "").strip()
+            if not raw_rep or raw_rep.lower() in {"paid app", "paid apps", "expensive software", "paid software", "paid tool", "paid tools"}:
+                raw_rep = infer_replaces_paid_app(tool_name, category, title)
+            replaces_paid = raw_rep
+            specific_pain_point = str(item.get("specific_pain_point") or "").strip() or infer_specific_pain_point(
+                tool_name, category, title, real_desc
+            )
+            specific_myth_detail = ""
 
         return {
             "id": slug,
@@ -1568,6 +1654,8 @@ JSON Schema:
             "real_description": real_desc,
             "readme_summary": readme_sum,
             "replaces_paid_app": replaces_paid,
+            "specific_pain_point": specific_pain_point,
+            "specific_myth_detail": specific_myth_detail,
         }
 
     # =========================================================================
@@ -1792,6 +1880,7 @@ JSON Schema:
             "real_steps": selected_fb["steps"],
             "angle_tag": today_niche["id"],
             "replaces_paid_app": selected_fb.get("replaces_paid_app") or infer_replaces_paid_app(selected_fb["tool"], today_niche["name"], selected_fb["title"]),
+            "specific_pain_point": infer_specific_pain_point(selected_fb["tool"], today_niche["name"], selected_fb["title"], selected_fb.get("real_description", "")),
             "real_description": selected_fb.get("real_description", ""),
             "readme_summary": selected_fb.get("readme_summary", ""),
         })
@@ -1819,6 +1908,7 @@ JSON Schema:
                 "core_conflict": today_dad["conflict"],
                 "angle_tag": today_dad["tag"],
                 "premise": today_dad["premise"],
+                "specific_myth_detail": today_dad.get("myth_detail") or today_dad["myth"],
             })
             winners.append(reel2)
 

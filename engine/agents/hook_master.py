@@ -363,6 +363,9 @@ def validate_screenplay_quality_gate(screenplay: Dict[str, Any], topic: Dict[str
         for term in ("free apk", "from its site", "use dad", "grab dad"):
             if re.search(rf"\b{re.escape(term)}\b", full_screenplay_str):
                 violations.append(f"Found forbidden software-template phrase '{term}' in Dad clash script.")
+        for phrase in ("wild tech rumor", "modern devices already protect themselves", "happened to my cousin"):
+            if phrase in full_screenplay_str:
+                violations.append(f"Found generic off-topic filler '{phrase}' in Dad clash script.")
 
         # Dad 1st-person POV lock: Dad must NEVER speak about himself as 'Dad' in 3rd person!
         dad_turns = [d.get("text", "") for d in dialogue if str(d.get("speaker") or d.get("character_id")).lower() == "dad"]
@@ -370,6 +373,10 @@ def validate_screenplay_quality_gate(screenplay: Dict[str, Any], topic: Dict[str
             if _DAD_THIRD_PERSON_RE.search(dt):
                 violations.append(f"Dad spoke in 3rd person in turn: '{dt[:45]}...'")
     else:
+        for phrase in ("that paid app", "automates tasks"):
+            if phrase in full_screenplay_str:
+                violations.append(f"Found vague placeholder phrase '{phrase}' in Reel #1 script.")
+
         tool_name = str(topic.get("tool_name") or topic.get("toolName") or "").strip().lower()
         if tool_name and tool_name not in {"opentool", "ai", "app", "tool", "freetool"}:
             early_turns = " ".join(str(dialogue[i].get("text", "")) for i in range(min(4, len(dialogue)))).lower()
@@ -381,9 +388,25 @@ def validate_screenplay_quality_gate(screenplay: Dict[str, Any], topic: Dict[str
         if not any(ci in turns_0_2 for ci in cost_indicators):
             violations.append("No paid alternative, cost ($/dollars), or fee contrast in Turns 0-2.")
 
-        turns_0_4 = " ".join(str(dialogue[i].get("text", "")) for i in range(min(5, len(dialogue)))).lower()
+        turns_0_3 = " ".join(str(dialogue[i].get("text", "")) for i in range(min(4, len(dialogue)))).lower()
         replaces_paid = str(topic.get("replaces_paid_app") or "").strip().lower()
-        replaces_tokens = [w for w in re.findall(r"[a-z0-9]+", replaces_paid) if len(w) >= 4]
+        generic_rep_words = {
+            "paid", "pro", "subscriptions", "subscription", "apps", "app", "monthly",
+            "yearly", "scams", "scam", "plus", "year", "utility", "software",
+            "expensive", "free", "tool", "tools", "saas", "hardware", "bundles", "online",
+        }
+        replaces_tokens = [w for w in re.findall(r"[a-z0-9]+", replaces_paid) if len(w) >= 4 and w not in generic_rep_words]
+        concrete_problem_words = (
+            "emailing", "airdrop", "adobe", "acrobat", "teamviewer", "ccleaner",
+            "photoshop", "youtube", "wetransfer", "dropbox", "chatgpt", "lucidchart",
+            "topaz", "froze", "freeze", "slow", "bloat", "cache", "junk", "ads",
+            "watermark", "paywall", "disconnect", "200-page", "blurry", "limit",
+            "twenty", "$",
+        )
+        if not (any(tok in turns_0_3 for tok in replaces_tokens) or any(pw in turns_0_3 for pw in concrete_problem_words)):
+            violations.append("Turns 0-3 must state the named paid competitor or concrete problem in plain English.")
+
+        turns_0_4 = " ".join(str(dialogue[i].get("text", "")) for i in range(min(5, len(dialogue)))).lower()
         has_annoyance_or_paid = any(tok in turns_0_4 for tok in replaces_tokens) or any(w in turns_0_4 for w in _ANNOYANCE_OR_PAID_WORDS)
         if not has_annoyance_or_paid:
             violations.append("Turns 0-4 must clearly name the everyday annoyance or paid app being replaced.")
@@ -722,6 +745,10 @@ JSON Schema:
 
         real_steps = topic.get("real_steps") or topic.get("realSteps") or []
         replaces_paid = str(topic.get("replaces_paid_app") or "").strip()
+        specific_pain_point = str(topic.get("specific_pain_point") or "").strip()
+        specific_myth_detail = str(
+            topic.get("specific_myth_detail") or topic.get("why_viral") or topic.get("core_conflict") or ""
+        ).strip()
         what_it_does = str(topic.get("real_description") or topic.get("description") or topic.get("readme_summary") or topic.get("core_conflict") or "").strip()
 
         if is_dad:
@@ -820,12 +847,12 @@ JSON Schema:
             "STRICT VOCABULARY BAN (SIMPLE SPOKEN ENGLISH ONLY - 6th to 8th GRADE LEVEL):\n"
             "- Strictly FORBIDDEN words: 'framework', 'paradigm', 'optimize', 'biometric', 'infrastructure', 'synergy', 'utilize', 'collaboration', 'delivers', 'latency', 'ecosystem', 'workflow', 'manual coding', 'leverage', 'unlock', or any corporate buzzwords.\n\n"
             "EXPLICITLY BANNED AI SLOP, CRYPTIC FRAGMENTS & PLACEHOLDERS:\n"
-            "- Do NOT use: '🚀', '⚡️', '⚡', '🤯', 'Unlock', 'zero-dollar workflows', 'Stop crying human', 'game-changer', 'revolutionize', 'verified zero local installation', 'verified locally', 'tether gimmick', 'Skeptical hype', 'in 2024', 'insert 1-click', 'what happens live under the hood', 'Wait there is no way', 'There is no way', 'Humans love', 'Look at step one', 'Wait step two says', 'zero dollar cost', 'fixes routers with a shoe'.\n\n"
+            "- Do NOT use: '🚀', '⚡️', '⚡', '🤯', 'Unlock', 'zero-dollar workflows', 'Stop crying human', 'game-changer', 'revolutionize', 'verified zero local installation', 'verified locally', 'tether gimmick', 'Skeptical hype', 'that paid app', 'automates tasks', 'wild tech rumor', 'modern devices already protect themselves', 'happened to my cousin', 'in 2024', 'insert 1-click', 'what happens live under the hood', 'Wait there is no way', 'There is no way', 'Humans love', 'Look at step one', 'Wait step two says', 'zero dollar cost', 'fixes routers with a shoe'.\n\n"
             "- CHARACTER ROLES & POV LOCK:\n"
             f"- Cast Roster: {active_cast}. All dialogue turns MUST come from this roster.\n"
             "- HUMANS (junior_dev, senior_dev, friend_riya, dad) NEVER recite 'Step 1/2/3', install commands, or tutorial lists. They ONLY react, push back, or ask sharp practical questions ('Wait, does it wipe my browser logins?', 'Does that actually run offline?').\n"
-            "- REEL #1 (Software/Tool) RULE FOR TURNS 0-4: Clearly state in plain conversational English (1) the exact everyday annoyance or paid app being replaced, and (2) what the free tool actually does (e.g., sends files between iPhone, Android, and Windows over local Wi-Fi).\n"
-            "- DAD CLASH RULE: Pure funny Dad-vs-AI banter matched strictly to the topic title. Dad MUST speak in FIRST PERSON ('Beta, ...', 'My phone...', 'I read on WhatsApp...'). NEVER mention 'free apk', 'from its site', 'use dad', 'grab dad', GitHub, or software install instructions.\n"
+            "- REEL #1 TURNS 0-3 (PROBLEM FIRST, SOLUTION SECOND): Human (Turn 0 & Turn 2) MUST state the exact specific_pain_point and named replaces_paid_app in plain English before asking for the fix. AI (Turn 1 & Turn 3) roasts paying for that named app and introduces the exact free tool + one concrete real-world example of what it does.\n"
+            "- DAD CLASH RULE (TURNS 0-13 LOCKED ON MYTH): Pure funny Dad-vs-AI banter staying 100% on specific_myth_detail all the way through. Dad MUST speak in FIRST PERSON ('Beta, ...', 'My phone...', 'I read on WhatsApp...'). NEVER mention 'free apk', 'from its site', 'use dad', 'grab dad', GitHub, or software install instructions.\n"
             "- ACT 3 BEAT SHEET (Turns 5-9):\n"
             f"  * Turn 5 ({right_char} / AI): Explains how it works / real facts (part 1).\n"
             f"  * Turn 6 ({left_char} / Human): Pushes back or asks a sharp, skeptical follow-up question — NEVER recite steps.\n"
@@ -840,48 +867,50 @@ JSON Schema:
         if is_dad:
             topic_context_block = (
                 f"Topic: {title}\nCategory: {category}\nFormat Type: {format_type}\n"
+                f"Specific Myth Detail (STAY 100% ON THIS): {specific_myth_detail}\n"
                 f"Comedy Structure: {comedy_structure}\nWinning Hook (Turn 0 line): \"{winning_hook}\"\n"
                 f"Cast: {active_cast}\nScene Preset: {scene_preset}"
             )
             task_rules_block = (
                 f"Write the complete 5-act Remotion screenplay JSON with 14 natural dialogue turns (10-15 words/turn, 165-195 total words).\n"
                 f"- Turn 0 MUST be {left_char} speaking: \"{winning_hook}\"\n"
-                f"- Turns 1-12: Pure funny Dad-vs-AI household tech banter strictly about '{title}', Dad in 1st person.\n"
-                f"- Zero APK, install, GitHub, 'from its site', or 'use dad' talk.\n"
+                f"- Turns 1-12: Pure funny Dad-vs-AI household banter 100% locked onto '{specific_myth_detail or title}', Dad in 1st person.\n"
+                f"- ZERO generic filler ('wild tech rumor', 'modern devices already protect themselves', 'happened to my cousin') and ZERO APK/install/GitHub/'from its site'/'use dad' talk.\n"
                 f"- Turn 9 ({right_char}): In-character reaction to the notification toast (never repeating toast or title verbatim).\n"
                 f"- Turn 13 ({right_char}): Final punchline ending with: \"{final_turn_cta}\""
             )
             card_schema_block = '"cardData": null,'
-            toast_msg_example = "Household Alert: Dad's WhatsApp myth has been officially debunked"
+            toast_msg_example = "Phone Shield: Suspicious Gold theme app blocked from reading SMS OTPs"
             dialogue_schema_lines = (
                 f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "{winning_hook}", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Dad, please stop believing every wild tech rumor people forward on WhatsApp.", "emotion": "smug", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "The video had a doctor and three warning sirens so it must be true!", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Anyone can add fake sirens to a clip just to get clicks.", "emotion": "smug", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Then explain why the exact thing happened to my cousin last week!", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "That happened for a completely normal reason, not the scary myth online.", "emotion": "smug", "pause_after": 0.30}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, so I have been panicking in the living room for nothing?", "emotion": "shocked", "pause_after": 0.30}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Yes, modern devices already protect themselves without any weird household tricks.", "emotion": "smug", "pause_after": 0.30}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Fine, let me check this notification that just popped up right now.", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Even your own phone is telling you to relax and leave it alone.", "emotion": "smug", "pause_after": 0.30}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Okay, I admit you were right this one time, do not tell mom.", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Deal, just promise you will ask me before trying the next viral hack.", "emotion": "smug", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Fine, I am deleting that family forward before anyone else copies me.", "emotion": "shocked", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Dad, where did you even get that shady golden chat theme link from?", "emotion": "smug", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Gupta ji forwarded it in our morning group, it unlocks gold chat themes!", "emotion": "shocked", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "That fake APK asked for your SMS and contacts permission just to steal OTPs.", "emotion": "smug", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Why are you panicking? It already showed me deleted messages from last week!", "emotion": "shocked", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Look at your home screen, fifteen popup ads started blinking right after you opened it.", "emotion": "smug", "pause_after": 0.30}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, so the fifteen random ad popups came from my gold theme?", "emotion": "shocked", "pause_after": 0.30}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Yes, fake chat mods bundle adware that watches every bank code you receive.", "emotion": "smug", "pause_after": 0.30}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Hold on, why is a red shield alert flashing on my phone right now?", "emotion": "shocked", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Your security alert just caught that gold app sneaking into your text codes.", "emotion": "smug", "pause_after": 0.30}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Delete that golden rubbish right now, I do not care about deleted chats!", "emotion": "shocked", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Already removed, stick to the normal green app from the official store only.", "emotion": "smug", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "I am calling Gupta ji right now to warn the morning walk group.", "emotion": "shocked", "pause_after": 0.25}},\n'
                 f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "{final_turn_cta}", "emotion": "smug", "pause_after": 0.40}}'
             )
         else:
             topic_context_block = (
                 f"Topic: {title}\nCategory: {category}\nFormat Type: {format_type}\n"
                 f"Tool Name: {tool_name}\nBrand Domain: {brand_domain}\nGitHub Repo: {github_repo}\n"
-                f"Replaces Paid App / Annoyance: {replaces_paid}\nWhat It Does: {what_it_does}\n"
+                f"Specific Pain Point: {specific_pain_point}\n"
+                f"Replaces Named Paid App: {replaces_paid}\nWhat It Does: {what_it_does}\n"
                 f"Comedy Structure: {comedy_structure}\nWinning Hook (Turn 0 line): \"{winning_hook}\"\n"
                 f"Cast: {active_cast}\nScene Preset: {scene_preset}\nAuto-DM Keyword: {kw}"
             )
             task_rules_block = (
                 f"Write the complete 5-act Remotion screenplay JSON with 14 natural dialogue turns (10-15 words/turn, 165-195 total words).\n"
                 f"- Turn 0 MUST be {left_char} speaking: \"{winning_hook}\"\n"
-                f"- Turns 0-4: Clearly state in plain conversational English (1) the exact everyday annoyance or paid app being replaced, and (2) what '{tool_name}' actually does.\n"
-                f"- By Turn 2 or Turn 3: The exact name '{tool_name}' MUST be spoken naturally.\n"
+                f"- Turns 0-3 (PROBLEM FIRST, SOLUTION SECOND): Human (Turn 0 & Turn 2) states the exact pain point ('{specific_pain_point}') and named paid competitor ('{replaces_paid}') before asking for the fix. AI (Turn 1 & Turn 3) roasts paying for '{replaces_paid}' and introduces '{tool_name}' + a concrete real-world example of what it does.\n"
+                f"- NEVER say vague filler like 'that paid app' or 'automates tasks'.\n"
                 f"- Turn 5 ({right_char} / AI): Explains how to get and run {tool_name} (part 1).\n"
                 f"- Turn 6 ({left_char} / Human): Asks a sharp, skeptical follow-up question — NEVER a step.\n"
                 f"- Turn 7 ({right_char} / AI): Answers the question and finishes the practical payoff.\n"
@@ -921,13 +950,13 @@ JSON Schema:
             toast_msg_example = f"Task complete with {tool_name}: $0 spent on your own device"
             dialogue_schema_lines = (
                 f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "{winning_hook}", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Why are you still paying twenty dollars a month when {tool_name} is free?", "emotion": "smug", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, what does {tool_name} actually do instead of that paid app?", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "It handles the whole job right on your own computer without monthly fees.", "emotion": "smug", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Okay, show me how it works before my card gets charged again.", "emotion": "shocked", "pause_after": 0.25}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "First, open {brand_domain or tool_name} and run it directly with zero bloat.", "emotion": "smug", "pause_after": 0.30}},\n'
-                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, does that wipe my saved files or require any paid account?", "emotion": "shocked", "pause_after": 0.30}},\n'
-                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Not at all, everything stays completely private on your device for zero dollars.", "emotion": "smug", "pause_after": 0.30}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "You are still paying for {replaces_paid or "Adobe Acrobat Pro ($20/mo)"} when {tool_name} is completely free?", "emotion": "smug", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Look, {specific_pain_point or "I just needed to merge two files without hitting a monthly paywall!"} How does {tool_name} fix that?", "emotion": "shocked", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "{tool_name} replaces {replaces_paid or "Adobe Acrobat"} by running the entire job on your own laptop in seconds.", "emotion": "smug", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, it actually finishes that without forcing an account signup or credit card?", "emotion": "shocked", "pause_after": 0.25}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "First, open {brand_domain or tool_name} and drop your file straight into the main workspace.", "emotion": "smug", "pause_after": 0.30}},\n'
+                f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Wait, does that upload my private files or wipe my saved browser logins?", "emotion": "shocked", "pause_after": 0.30}},\n'
+                f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "Not at all, everything stays completely private on your own computer for zero dollars.", "emotion": "smug", "pause_after": 0.30}},\n'
                 f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "Whoa, it just finished in two seconds without freezing my whole screen.", "emotion": "shocked", "pause_after": 0.25}},\n'
                 f'    {{"speaker": "{right_char}", "character_id": "{right_char}", "text": "And your card app just saved you two hundred dollars this year.", "emotion": "smug", "pause_after": 0.30}},\n'
                 f'    {{"speaker": "{left_char}", "character_id": "{left_char}", "text": "I cannot believe I paid every single month for something this simple.", "emotion": "shocked", "pause_after": 0.25}},\n'
@@ -1019,9 +1048,9 @@ JSON Schema:
                         else:
                             print(f"⚠️ [HookMaster] LLM screenplay attempt {attempt + 1} failed quality gate: {violations}")
                             extra_rule = (
-                                "keep Dad in 1st person with zero APK/install/software-site talk"
+                                f"stay 100% on '{specific_myth_detail or title}', keep Dad in 1st person, and zero generic filler or APK/install/software-site talk"
                                 if is_dad
-                                else f"ensure tool_name '{tool_name}' is spoken by Turn 2-3, paid app/annoyance AND what the tool does are clear in plain English in Turns 0-4"
+                                else f"ensure tool_name '{tool_name}' is spoken by Turn 2-3, state '{specific_pain_point or replaces_paid}' and named competitor '{replaces_paid}' in Turns 0-3, and never use 'that paid app' or 'automates tasks'"
                             )
                             current_prompt = prompt + f"\n\nCRITICAL FIXES REQUIRED (Previous attempt failed with: {violations}):\nWrite 14 natural turns (10-15 words/turn, >=135 total words), strict alternation between {left_char} and {right_char}, {extra_rule}, Turn 9 reacts in character without bullets, and strictly avoid any banned fragments or placeholder phrases."
                 except Exception as e:
@@ -1175,43 +1204,59 @@ JSON Schema:
         title: str,
         cat_lower: str,
         real_steps: List[str],
-    ) -> Tuple[str, str]:
-        """Returns plain-English (annoyance_or_paid_app, what_tool_does) for Reel #1 Turns 0-4."""
-        replaces_paid = str(topic.get("replaces_paid_app") or "").strip()
+    ) -> Tuple[str, str, str]:
+        """Returns plain-English (named_paid_app, specific_pain_point, concrete_capability) for Reel #1 Turns 0-3."""
+        raw_rep = str(topic.get("replaces_paid_app") or "").strip()
+        if raw_rep.lower() in {"", "paid app", "paid apps", "expensive software", "paid software", "paid tool", "paid tools"}:
+            raw_rep = ""
+        raw_pain = sanitize_simple_spoken_english(str(topic.get("specific_pain_point") or "").strip())
         real_desc = sanitize_simple_spoken_english(
             str(topic.get("real_description") or topic.get("description") or topic.get("readme_summary") or "").strip()
         )
         t_low = f"{cat_lower} {tool_name.lower()}"
 
         if any(k in t_low for k in ["localsend", "airdrop", "transfer", "file share"]):
-            annoyance = replaces_paid or "emailing yourself files or fighting AirDrop across Android and Windows"
-            does = f"{tool_name} sends full-size files between iPhone, Android, and Windows over local Wi-Fi"
+            named_paid = raw_rep or "WeTransfer Pro ($15/mo)"
+            pain = raw_pain or "emailing files to myself because AirDrop fails between iPhone and Windows"
+            does = f"{tool_name} sends full-size videos straight between iPhone, Android, and Windows over local Wi-Fi"
         elif any(k in t_low for k in ["bleachbit", "cleaner", "bloat", "ccleaner"]):
-            annoyance = replaces_paid or "CCleaner Pro subscriptions and a freezing, bloated laptop"
-            does = f"{tool_name} wipes hidden junk files, browser cache, and old system logs fast"
+            named_paid = raw_rep or "CCleaner Pro ($30/yr)"
+            pain = raw_pain or "my laptop freezing because hidden cache and logs ate 30GB of space"
+            does = f"{tool_name} wipes hidden junk files, browser cache, and old logs in ten seconds"
         elif any(k in t_low for k in ["pdf", "stirling"]):
-            annoyance = replaces_paid or "paying Adobe twenty dollars every month just to edit files"
+            named_paid = raw_rep or "Adobe Acrobat Pro ($20/mo)"
+            pain = raw_pain or "paying $20 a month just to delete one page or merge a PDF"
             does = f"{tool_name} merges, splits, signs, and converts huge PDF files right on your machine"
+        elif any(k in t_low for k in ["rustdesk", "remote"]):
+            named_paid = raw_rep or "TeamViewer ($25/mo)"
+            pain = raw_pain or "TeamViewer disconnecting my remote session every five minutes for commercial use"
+            does = f"{tool_name} gives you encrypted remote desktop access across devices with zero time limits"
         elif any(k in t_low for k in ["vice", "gta", "emulator", "retro", "game"]):
-            annoyance = replaces_paid or "downloading eighty gigabytes of bloated game installers"
+            named_paid = raw_rep or "paid console subscriptions ($50/yr)"
+            pain = raw_pain or "downloading sketchy 80GB installers just to replay one classic retro game"
             does = f"{tool_name} lets you play classic retro console games smoothly inside your browser"
         elif any(k in t_low for k in ["notebook", "podcast", "summary"]):
-            annoyance = replaces_paid or "spending hours reading two-hundred-page documents by hand"
+            named_paid = raw_rep or "Otter.ai Pro ($20/mo)"
+            pain = raw_pain or "reading a 200-page PDF by hand at midnight before an exam"
             does = f"{tool_name} turns messy documents into clear audio briefings and grounded answers"
         elif any(k in t_low for k in ["ollama", "local ai", "llm"]):
-            annoyance = replaces_paid or "paying twenty-dollar monthly AI subscriptions"
+            named_paid = raw_rep or "ChatGPT Plus ($20/mo)"
+            pain = raw_pain or "hitting $20 monthly AI message limits and leaking private code to clouds"
             does = f"{tool_name} lets you chat with fast open-weight AI models privately on your laptop"
         else:
-            annoyance = replaces_paid or "paying twenty dollars every month for bloated cloud apps"
+            named_paid = raw_rep or "Notion Plus ($10/mo)"
+            pain = raw_pain or f"paying monthly fees just to handle {clean_headline_truncation(title, 34).lower()}"
             if real_desc:
                 snippet = clean_headline_truncation(real_desc.split(".")[0], 68).rstrip(".")
-                does = f"{tool_name} {snippet[0].lower() + snippet[1:]}" if len(snippet) > 3 else f"{tool_name} automates the whole job on your device"
+                does = f"{tool_name} {snippet[0].lower() + snippet[1:]}" if len(snippet) > 3 else f"{tool_name} runs the whole job right on your device"
             elif real_steps:
                 step_clean = re.sub(r"^\d+\.\s*", "", str(real_steps[0])).strip()
-                does = f"{tool_name} lets you {step_clean[0].lower() + step_clean[1:]}" if step_clean else f"{tool_name} automates the task cleanly in seconds"
+                does = f"{tool_name} lets you {step_clean[0].lower() + step_clean[1:]}" if step_clean else f"{tool_name} handles the task directly on your machine"
             else:
-                does = f"{tool_name} automates {clean_headline_truncation(title, 34).lower()} without monthly fees"
-        return annoyance, does
+                does = f"{tool_name} runs {clean_headline_truncation(title, 34).lower()} cleanly on your own device"
+
+        pain_short = clean_headline_truncation(pain, 72).rstrip(".")
+        return named_paid, pain_short[0].lower() + pain_short[1:] if len(pain_short) > 2 else pain_short, does
 
     def _fallback_screenplay(
         self,
@@ -1463,11 +1508,11 @@ JSON Schema:
                 {"label": "Step 3: Payoff", "value": step3_text, "status": "PROVEN", "isPositive": True},
             ]
 
-            annoyance_line, does_line = self._describe_tool_for_dialogue(topic, tool_name, title, cat_lower, real_steps)
+            named_paid, pain_line, does_line = self._describe_tool_for_dialogue(topic, tool_name, title, cat_lower, real_steps)
             final_turn_cta = f"Comment {kw} and I will send you the {link_desc} right now." if has_res else "Tag that dev in your group who needs this!"
             cta_phrase = f"Comment {kw} and I'll DM you the {link_desc}." if has_res else "Tag that dev in your group who needs to see this!"
             end_card_cta = f"Comment {kw} for the {link_desc}" if has_res else "Tag that dev in your group who needs to see this!"
-            end_question = f"Still paying subscriptions when {tool_name} exists? Be honest"
+            end_question = f"Still paying for {named_paid} when {tool_name} exists? Be honest"
 
             if structure == "speedrun_expose":
                 badge = "SPEEDRUN EXPOSE"
@@ -1481,18 +1526,18 @@ JSON Schema:
                 }
                 dialogue = [
                     {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                    {"speaker": right_char, "character_id": right_char, "text": f"Stop wasting time on {annoyance_line} when {tool_name} is completely free.", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": f"Wait, what does {tool_name} actually do instead of charging twenty bucks monthly?", "emotion": "shocked", "pause_after": 0.25},
-                    {"speaker": right_char, "character_id": right_char, "text": f"{does_line} without any paywall.", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": "No way it handles all of that without forcing an enterprise license upgrade.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": f"Stop throwing money at {named_paid} when {tool_name} is completely free.", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"I am stuck {pain_line}, how does {tool_name} fix that?", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": f"{does_line} with zero subscription.", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"No way it replaces {named_paid} without forcing an enterprise license upgrade.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": f"Open {brand_domain or tool_name}, launch the main tool, and run it right on your machine.", "emotion": "smug", "pause_after": 0.30},
                     {"speaker": left_char, "character_id": left_char, "text": "Hold on, does that upload my private files to some sketchy random cloud server?", "emotion": "shocked", "pause_after": 0.30},
                     {"speaker": right_char, "character_id": right_char, "text": "Not at all, everything stays directly on your own computer with zero server fees.", "emotion": "smug", "pause_after": 0.30},
                     {"speaker": left_char, "character_id": left_char, "text": "Wait, I just tested it and the whole task finished in two seconds flat!", "emotion": "shocked", "pause_after": 0.25},
-                    {"speaker": right_char, "character_id": right_char, "text": "And your screen just proved you never needed that paid monthly software again.", "emotion": "smug", "pause_after": 0.30},
+                    {"speaker": right_char, "character_id": right_char, "text": f"And your screen just proved you never needed {named_paid} again.", "emotion": "smug", "pause_after": 0.30},
                     {"speaker": left_char, "character_id": left_char, "text": "Our team literally spent hundreds of dollars on tools that were slower than this.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": "That is why smart engineers check open-source projects before pulling out a credit card.", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": f"I am cancelling our paid plan tonight and moving everyone onto {tool_name}.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"I am cancelling {named_paid} tonight and moving everyone onto {tool_name}.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
                 ]
             elif structure == "friend_betrayal":
@@ -1507,9 +1552,9 @@ JSON Schema:
                 }
                 dialogue = [
                     {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                    {"speaker": right_char, "character_id": right_char, "text": f"You are still dealing with {annoyance_line} while {tool_name} is free?", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": f"Wait, how does {tool_name} replace a twenty-dollar app with zero subscription?", "emotion": "shocked", "pause_after": 0.25},
-                    {"speaker": right_char, "character_id": right_char, "text": f"{does_line} cleanly in seconds.", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": f"You are still paying {named_paid} when {tool_name} handles this for free?", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"Look, I was stuck {pain_line}, can {tool_name} really replace {named_paid}?", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": f"Yes, {does_line} cleanly in seconds.", "emotion": "smug", "pause_after": 0.25},
                     {"speaker": left_char, "character_id": left_char, "text": "Hold up, why did nobody on my engineering team tell me this existed?", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": f"Grab it from {brand_domain or tool_name} and run the built-in tool without signing up.", "emotion": "smug", "pause_after": 0.30},
                     {"speaker": left_char, "character_id": left_char, "text": "Wait, will it lock my best features behind a sneaky seven-day trial paywall?", "emotion": "shocked", "pause_after": 0.30},
@@ -1518,7 +1563,7 @@ JSON Schema:
                     {"speaker": right_char, "character_id": right_char, "text": "Look at his message, he cannot believe you wrapped up before lunch break.", "emotion": "smug", "pause_after": 0.30},
                     {"speaker": left_char, "character_id": left_char, "text": "I used to burn three hours every Friday fighting crashes and annoying file limits.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": "Now you get your whole afternoon back and keep two hundred bucks a year.", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": f"I am bookmarking {tool_name} right now and never paying for bloatware again.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"I am bookmarking {tool_name} right now and cancelling {named_paid} forever.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
                 ]
             else:  # brutal_roast
@@ -1533,10 +1578,10 @@ JSON Schema:
                 }
                 dialogue = [
                     {"speaker": left_char, "character_id": left_char, "text": hook, "emotion": "shocked", "pause_after": 0.25},
-                    {"speaker": right_char, "character_id": right_char, "text": f"You really tolerated {annoyance_line} when {tool_name} costs zero dollars?", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": f"Wait, what can {tool_name} even do compared to my twenty-dollar paid app?", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": right_char, "character_id": right_char, "text": f"You really paid {named_paid} when {tool_name} solves this for zero dollars?", "emotion": "smug", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"Bro, I was dealing with {pain_line}, what does {tool_name} do?", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": f"{does_line} right on your own screen.", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": "Seriously? I have been paying monthly fees for years just to avoid slowdowns.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"Seriously? I paid {named_paid} for years just to avoid slowdowns.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": f"Just open {brand_domain or tool_name}, pick what you need, and let it run cleanly.", "emotion": "smug", "pause_after": 0.30},
                     {"speaker": left_char, "character_id": left_char, "text": "Wait, is it going to slow down my laptop or break my saved logins?", "emotion": "shocked", "pause_after": 0.30},
                     {"speaker": right_char, "character_id": right_char, "text": "No, it keeps everything safe and skips all the heavy background junk completely.", "emotion": "smug", "pause_after": 0.30},
@@ -1544,7 +1589,7 @@ JSON Schema:
                     {"speaker": right_char, "character_id": right_char, "text": "Even your bank app is celebrating because that annoying recurring charge is finally dead.", "emotion": "smug", "pause_after": 0.30},
                     {"speaker": left_char, "character_id": left_char, "text": "They literally wanted to charge me a sneaky cancellation fee just to leave.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": "Classic subscription trap, which is why free open-source tools always win in the end.", "emotion": "smug", "pause_after": 0.25},
-                    {"speaker": left_char, "character_id": left_char, "text": f"I deleted my paid account and saved two hundred dollars using {tool_name}.", "emotion": "shocked", "pause_after": 0.25},
+                    {"speaker": left_char, "character_id": left_char, "text": f"I deleted {named_paid} and saved two hundred dollars using {tool_name}.", "emotion": "shocked", "pause_after": 0.25},
                     {"speaker": right_char, "character_id": right_char, "text": final_turn_cta, "emotion": "smug", "pause_after": 0.40},
                 ]
 
