@@ -7,6 +7,8 @@ export interface LowPolyAIOrbRigProps {
   isSpeaking?: boolean;
   mouthOpen?: number; // 0.0 to 1.0
   emotion?: "neutral" | "deadpan" | "tired" | "shocked" | "angry" | "smug" | "sarcastic" | string;
+  turnFrame?: number; // Frames since active turn started
+  isRoasting?: boolean; // Explicit roast flag for swoop & mock tilt
   position?: [number, number, number];
   rotation?: [number, number, number];
   scale?: number;
@@ -27,6 +29,8 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
   isSpeaking = false,
   mouthOpen = 0.0,
   emotion = "neutral",
+  turnFrame,
+  isRoasting = false,
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   scale = 1.0,
@@ -39,14 +43,38 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
   const isGrok = rawId.includes("grok");
   const isGemini = rawId.includes("gemini");
   const isAntigravity = rawId.includes("antigravity") || rawId.includes("bot");
+  const emoLower = (emotion || "neutral").toLowerCase();
+  const speechAmp = isSpeaking ? Math.min(1.0, Math.max(0, mouthOpen) * 1.65) : 0;
 
   // =========================================================================
-  // 1. DETERMINISTIC HOVER BOB & HALO ROTATION (Zero Modulo Spring Resets)
+  // 1. DETERMINISTIC HOVER BOB, ROAST SWOOP (10-15% CLOSER), MOCK TILT & HALO
   // =========================================================================
+  const roastActive =
+    isRoasting ||
+    (isSpeaking &&
+      (emoLower.includes("smug") ||
+        emoLower.includes("sarcas") ||
+        emoLower.includes("roast") ||
+        emoLower.includes("angr")));
+  const effectiveTurnFrame = turnFrame !== undefined ? turnFrame : 10;
+  const swoopEase = roastActive
+    ? Math.min(1.0, Math.max(0.0, effectiveTurnFrame / 10))
+    : 0;
+  // Swoop 12% closer toward camera & human on roast lines
+  const swoopScale = scale * (1 + swoopEase * 0.12);
+  const swoopX = -0.15 * swoopEase;
+  const swoopZ = 0.42 * swoopEase;
+
   const hoverY = Math.sin(frame * 0.08) * 0.055;
-  const hoverTiltZ = Math.sin(frame * 0.048) * 0.028;
-  const hoverTiltX = Math.sin(frame * 0.062) * 0.018;
-  const haloRotY = frame * 0.022;
+  const mockTiltZ = roastActive ? Math.sin(frame * 0.16) * 0.12 : 0;
+  const mockTiltY = roastActive ? Math.sin(frame * 0.12) * 0.09 : 0;
+  const hoverTiltZ = Math.sin(frame * 0.048) * 0.028 + mockTiltZ;
+  const hoverTiltX = Math.sin(frame * 0.062) * 0.018 + (roastActive ? 0.06 * swoopEase : 0);
+
+  // Orbital ring spin & pulse synced cleanly to speech amplitude (zero frame-multiplier jitter)
+  const haloRotY = frame * 0.024 + speechAmp * 0.32 + Math.sin(frame * 0.25) * 0.14 * speechAmp;
+  const haloScale = 1.0 + speechAmp * 0.08;
+  const haloOpacity = Math.min(0.95, 0.42 + speechAmp * 0.50);
 
   // =========================================================================
   // 2. DETERMINISTIC EYE BLINK (Every 110 frames ~3.6s, lasts 4 frames)
@@ -117,10 +145,10 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
       new THREE.MeshStandardMaterial({
         color: accentColor,
         emissive: eyeGlowColor,
-        emissiveIntensity: isSpeaking ? 3.0 : 1.8,
+        emissiveIntensity: isSpeaking ? 2.6 + speechAmp * 1.4 : 1.8,
         roughness: 0.20,
       }),
-    [accentColor, eyeGlowColor, isSpeaking]
+    [accentColor, eyeGlowColor, isSpeaking, speechAmp]
   );
 
   const haloMat = useMemo(
@@ -128,9 +156,9 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
       new THREE.MeshBasicMaterial({
         color: accentColor,
         transparent: true,
-        opacity: 0.42,
+        opacity: haloOpacity,
       }),
-    [accentColor]
+    [accentColor, haloOpacity]
   );
 
   const goldOrbMat = useMemo(
@@ -145,32 +173,38 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
   );
 
   // =========================================================================
-  // 4. EMOTIVE EYE SHAPES (LED Pills on Visor)
+  // 4. EMOTIVE EYE EXPRESSIONS ("normal" | "smug_squint" | "wide_shock")
   // =========================================================================
+  type OrbEyeExpression = "normal" | "smug_squint" | "wide_shock";
+  const eyeExpression: OrbEyeExpression =
+    emoLower.includes("shock") || emoLower.includes("surpris")
+      ? "wide_shock"
+      : emoLower.includes("smug") ||
+        emoLower.includes("sarcas") ||
+        emoLower.includes("roast") ||
+        emoLower.includes("angr")
+      ? "smug_squint"
+      : "normal";
+
   let eyeScaleY = 1.0;
   let eyeScaleX = 1.0;
   let eyeRotZ_L = 0.0;
   let eyeRotZ_R = 0.0;
   let eyePosY = 0.06;
 
-  if (emotion === "deadpan" || emotion === "tired") {
-    eyeScaleY = 0.42; // Half-lidded deadpan glance
-    eyePosY = 0.04;
-  } else if (emotion === "shocked") {
-    eyeScaleY = 1.50;
-    eyeScaleX = 1.35;
+  if (eyeExpression === "wide_shock") {
+    eyeScaleY = 1.55;
+    eyeScaleX = 1.38;
     eyePosY = 0.08;
-  } else if (emotion === "angry") {
-    eyeScaleY = 0.70;
-    eyeRotZ_L = -0.32;
-    eyeRotZ_R = 0.32;
-    eyePosY = 0.04;
-  } else if (emotion === "smug" || emotion === "sarcastic") {
-    eyeScaleY = 0.52; // Smug/sarcastic eyelid squint
-    eyeScaleX = 1.20;
-    eyeRotZ_L = 0.28;
-    eyeRotZ_R = -0.10;
+  } else if (eyeExpression === "smug_squint") {
+    eyeScaleY = emoLower.includes("angr") ? 0.65 : 0.48;
+    eyeScaleX = 1.24;
+    eyeRotZ_L = emoLower.includes("angr") ? -0.30 : 0.28;
+    eyeRotZ_R = emoLower.includes("angr") ? 0.30 : -0.10;
     eyePosY = 0.05;
+  } else if (emoLower === "deadpan" || emoLower === "tired") {
+    eyeScaleY = 0.44;
+    eyePosY = 0.04;
   }
 
   // Blink collapses eyes to a thin horizontal slit
@@ -186,9 +220,9 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
 
   return (
     <group
-      position={[position[0], position[1] + hoverY, position[2]]}
-      rotation={[rotation[0] + hoverTiltX, rotation[1], rotation[2] + hoverTiltZ]}
-      scale={[scale, scale, scale]}
+      position={[position[0] + swoopX, position[1] + hoverY, position[2] + swoopZ]}
+      rotation={[rotation[0] + hoverTiltX, rotation[1] + mockTiltY, rotation[2] + hoverTiltZ]}
+      scale={[swoopScale, swoopScale, swoopScale]}
     >
       {/* =================================================================== */}
       {/* 1. FACETED LOW-POLY ORB CHASSIS (Z-Squashed to max Z = 0.84)        */}
@@ -310,9 +344,9 @@ export const LowPolyAIOrbRig: React.FC<LowPolyAIOrbRigProps> = ({
       )}
 
       {/* =================================================================== */}
-      {/* 6. TRANSLUCENT ORBITING HALO RING (Thin Horizontal-Tilted Ring)     */}
+      {/* 6. TRANSLUCENT ORBITING HALO RING (Pulses scale & glow with speech) */}
       {/* =================================================================== */}
-      <group rotation={[Math.PI * 0.45, 0, 0.14]}>
+      <group rotation={[Math.PI * 0.45, 0, 0.14]} scale={[haloScale, haloScale, haloScale]}>
         <mesh rotation={[0, 0, haloRotY]} material={haloMat}>
           <torusGeometry args={[1.22, 0.015, 6, 32]} />
         </mesh>

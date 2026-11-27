@@ -6,7 +6,8 @@ export interface LowPolyHumanRigProps {
   characterId: "junior_dev" | "dad" | string;
   isSpeaking?: boolean;
   mouthOpen?: number; // 0.0 to 1.0
-  emotion?: "neutral" | "tired" | "shocked" | "angry" | "smug" | string;
+  emotion?: "neutral" | "tired" | "shocked" | "angry" | "smug" | "frustrated" | string;
+  isQuestion?: boolean; // Raises eyebrows naturally on question turns
   turnFrame?: number; // Frames since active turn started
   position?: [number, number, number];
   rotation?: [number, number, number];
@@ -33,6 +34,7 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   isSpeaking = false,
   mouthOpen = 0.0,
   emotion = "neutral",
+  isQuestion = false,
   turnFrame,
   position = [0, 0, 0],
   rotation = [0, 0, 0],
@@ -45,18 +47,28 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   const isDad = characterId === "dad";
 
   // =========================================================================
-  // 1. DETERMINISTIC BREATHING & SPEAKING NOD (Zero Modulo Spring Resets)
+  // 1. DETERMINISTIC BREATHING, SPEAKING NOD & LISTENER NOD
   // =========================================================================
   const breathY = Math.sin(frame * 0.055) * 0.025;
   const breathRotX = Math.sin(frame * 0.055) * 0.012;
-  const speakNodX = isSpeaking ? Math.sin(frame * 0.38) * 0.028 : 0;
-  const speakHeadTiltZ = isSpeaking ? Math.sin(frame * 0.22) * 0.018 : 0;
+  const speakNodX = isSpeaking ? Math.sin(frame * 0.38) * 0.032 : 0;
+  // Subtle listener nod when listening to AI
+  const listenerNodCycle = frame % 72;
+  const listenerNodX =
+    !isSpeaking && listenerNodCycle < 24
+      ? Math.sin((listenerNodCycle / 24) * Math.PI * 2) * 0.055
+      : !isSpeaking
+      ? Math.sin(frame * 0.07) * 0.015
+      : 0;
+  const speakHeadTiltZ = isSpeaking
+    ? Math.sin(frame * 0.22) * 0.022
+    : Math.sin(frame * 0.06) * 0.025;
 
   // =========================================================================
   // 1B. 15-FRAME DISBELIEF HEAD-SHAKE ON SHOCKED OR ANGRY ROAST REACTION
   // =========================================================================
   let headShakeY = 0;
-  const isRoastReaction = emotion === "shocked" || emotion === "angry";
+  const isRoastReaction = emotion === "shocked" || emotion === "angry" || emotion === "frustrated";
   const effectiveTurnFrame = turnFrame !== undefined ? turnFrame : (frame % 30);
   if (isRoastReaction && effectiveTurnFrame >= 0 && effectiveTurnFrame <= 15) {
     const decay = 1.0 - effectiveTurnFrame / 15;
@@ -64,10 +76,10 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   }
 
   // =========================================================================
-  // 2. DETERMINISTIC EYE BLINK (Every 110 frames ~3.6s, lasts 4 frames)
+  // 2. DETERMINISTIC EYE BLINK (Faster natural blink cadence while listening)
   // =========================================================================
-  const blinkCycle = frame % 110;
-  const isBlinking = blinkCycle >= 104 && blinkCycle <= 108;
+  const blinkCycle = frame % (isSpeaking ? 110 : 85);
+  const isBlinking = blinkCycle >= (isSpeaking ? 104 : 79) && blinkCycle <= (isSpeaking ? 108 : 83);
 
   // =========================================================================
   // 3. COLOR PALETTE DEFINITION & FLAT-SHADED MATERIALS
@@ -226,28 +238,30 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
   if (emotion === "tired" || emotion === "sad") {
     browL_Y = 0.12;
     browR_Y = 0.12;
+    browL_RotZ = 0.14;
+    browR_RotZ = -0.14;
     topEyelidDrop = 0.55; // Cozy half-lidded sleepy expression
     emotionSlumpRotX = 0.12; // Slight forward slump
     gazeRotX = 0.08; // Downward gaze
   } else if (emotion === "shocked" || emotion === "shock") {
-    browL_Y = 0.28;
-    browR_Y = 0.28;
-    browL_RotZ = 0.28;
-    browR_RotZ = -0.28;
+    browL_Y = 0.30;
+    browR_Y = 0.30;
+    browL_RotZ = 0.30;
+    browR_RotZ = -0.30;
     topEyelidDrop = 0.0; // Wide open eyes
     emotionSlumpRotX = 0.24; // Stronger torso lean-forward on shock turns
-  } else if (emotion === "angry") {
-    browL_Y = 0.08;
-    browR_Y = 0.08;
-    browL_RotZ = -0.40;
-    browR_RotZ = 0.40;
-    topEyelidDrop = 0.35;
-    emotionSlumpRotX = 0.14; // Torso forward on angry turns
+  } else if (emotion === "angry" || emotion === "frustrated") {
+    browL_Y = 0.06;
+    browR_Y = 0.06;
+    browL_RotZ = -0.44;
+    browR_RotZ = 0.44;
+    topEyelidDrop = 0.38;
+    emotionSlumpRotX = 0.16; // Torso forward on frustration/angry turns
   } else if (emotion === "smug") {
-    browL_Y = 0.23;
-    browR_Y = 0.13;
-    browL_RotZ = 0.18;
-    browR_RotZ = -0.05;
+    browL_Y = 0.24;
+    browR_Y = 0.12;
+    browL_RotZ = 0.20;
+    browR_RotZ = -0.06;
     topEyelidDrop = 0.38;
     emotionSlumpRotX = -0.05;
   } else if (emotion === "deadpan") {
@@ -259,9 +273,17 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     emotionSlumpRotX = 0.0;
   }
 
-  // Listening posture: when not speaking, angle head toward the AI orb (+0.28 rad)
+  // Expressive eyebrow shift: raise eyebrows naturally when asking a question
+  if (isQuestion && emotion !== "angry" && emotion !== "frustrated") {
+    browL_Y = Math.max(browL_Y, 0.26);
+    browR_Y = Math.max(browR_Y, 0.25);
+    browL_RotZ = Math.max(browL_RotZ, 0.22);
+    browR_RotZ = Math.min(browR_RotZ, -0.18);
+  }
+
+  // Listening posture: when not speaking, angle head slightly toward the AI orb
   if (!isSpeaking) {
-    headOrientRotY = 0.28;
+    headOrientRotY = 0.30;
   }
 
   // Blink overrides eyelid position
@@ -291,16 +313,18 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
     { pos: [-0.04, 0.62, -0.16] as [number, number, number], scale: [0.23, 0.20, 0.20] as [number, number, number] },
   ];
 
-  // Dynamic arm & hand gestures driven from mouth_envelopes (mouthOpen) while speaking
-  // Arms angle forward/inward so hands rest naturally on desk/couch and right arm never clips backward into desk lamp
-  const speechEnergy = isSpeaking ? Math.min(1.0, mouthOpen * 1.8) : 0;
-  const leftArmRotX = (isDad ? 0.58 : 0.45) + (isSpeaking ? Math.sin(frame * 0.18) * 0.10 + speechEnergy * 0.16 : 0);
-  const leftForearmRotX = (isDad ? -0.85 : -0.75) - (isSpeaking ? Math.cos(frame * 0.22) * 0.12 + speechEnergy * 0.20 : 0);
+  // Stronger upper-body lean-in and hand/forearm gestures synced to mouthOpen energy while speaking
+  const speechEnergy = isSpeaking ? Math.min(1.0, mouthOpen * 1.9) : 0;
+  const speakLeanX = isSpeaking ? 0.07 + speechEnergy * 0.09 : 0;
+  const speakTorsoTwistY = isSpeaking ? Math.sin(frame * 0.16) * 0.045 * (0.4 + speechEnergy) : 0;
 
-  const rightArmRotX = (isDad ? 0.58 : 0.42) + (isSpeaking ? Math.sin(frame * 0.24) * 0.12 + speechEnergy * 0.22 : 0);
-  const rightArmRotY = (isDad ? 0.14 : 0.08) + (isSpeaking ? Math.cos(frame * 0.20) * 0.06 : 0);
-  const rightArmRotZ = (isDad ? -0.08 : -0.04) + (isSpeaking ? Math.sin(frame * 0.26) * 0.06 : 0);
-  const rightForearmRotX = (isDad ? -0.85 : -0.78) - (isSpeaking ? Math.sin(frame * 0.28) * 0.14 + speechEnergy * 0.24 : 0);
+  const leftArmRotX = (isDad ? 0.58 : 0.45) + (isSpeaking ? Math.sin(frame * 0.20) * 0.14 + speechEnergy * 0.24 : 0);
+  const leftForearmRotX = (isDad ? -0.85 : -0.75) - (isSpeaking ? Math.cos(frame * 0.24) * 0.16 + speechEnergy * 0.28 : 0);
+
+  const rightArmRotX = (isDad ? 0.58 : 0.42) + (isSpeaking ? Math.sin(frame * 0.25) * 0.16 + speechEnergy * 0.30 : 0);
+  const rightArmRotY = (isDad ? 0.14 : 0.08) + (isSpeaking ? Math.cos(frame * 0.22) * 0.09 : 0);
+  const rightArmRotZ = (isDad ? -0.08 : -0.04) + (isSpeaking ? Math.sin(frame * 0.28) * 0.09 : 0);
+  const rightForearmRotX = (isDad ? -0.85 : -0.78) - (isSpeaking ? Math.sin(frame * 0.30) * 0.18 + speechEnergy * 0.32 : 0);
 
   return (
     <group
@@ -311,7 +335,7 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
       {/* =================================================================== */}
       {/* 1. SLIMMER, TAPERED NATURAL TORSO & COLLAR                          */}
       {/* =================================================================== */}
-      <group position={[0, -1.25, 0]} rotation={[emotionSlumpRotX, 0, 0]}>
+      <group position={[0, -1.25, 0]} rotation={[emotionSlumpRotX + speakLeanX, speakTorsoTwistY, 0]}>
         {/* Tapered Beveled Low-Poly Torso (Narrower shoulders, beveled chest) */}
         <mesh scale={[1.18, 1.0, 0.72]} material={clothPrimaryMat}>
           <cylinderGeometry args={[0.50, 0.44, 1.15, 8]} />
@@ -468,7 +492,7 @@ export const LowPolyHumanRig: React.FC<LowPolyHumanRigProps> = ({
       {/* =================================================================== */}
       {/* 3. HEAD & NECK ASSEMBLY (Articulated Nodding & Disbelief Shaking)   */}
       {/* =================================================================== */}
-      <group position={[0, -0.05, 0.05]} rotation={[speakNodX + gazeRotX, headShakeY + headOrientRotY, speakHeadTiltZ]}>
+      <group position={[0, -0.05, 0.05]} rotation={[speakNodX + listenerNodX + gazeRotX, headShakeY + headOrientRotY, speakHeadTiltZ]}>
         {/* Proper Low-Poly Connecting Neck */}
         <mesh position={[0, -0.42, 0.0]} material={skinMat}>
           <cylinderGeometry args={[0.24, 0.28, 0.35, 7]} />

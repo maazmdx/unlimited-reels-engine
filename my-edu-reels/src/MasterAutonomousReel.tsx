@@ -263,6 +263,16 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
     : "neutral";
 
   const turnFrame = activeTurn ? Math.max(0, frame - activeTurn.start_frame) : 0;
+  const isLeftQuestion = isLeftSpeaking && Boolean(activeTurn?.text?.includes("?"));
+
+  // 3-frame micro scale punch (1.04 -> 1.0) on speaker cuts for snappy editing energy
+  const cutPunchScale =
+    activeTurn && activeTurn.turn_index > 0 && turnFrame <= 3
+      ? interpolate(turnFrame, [0, 3], [1.04, 1.0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        })
+      : 1.0;
 
   // Resolve Weather Mode for Diner scene rotation ("rain" | "sunny" | "sunset")
   const resolvedWeather: "rain" | "sunny" | "sunset" =
@@ -364,6 +374,51 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
       })
     : 0;
 
+  // Climax Twist Lighting Window (Turns 9-11): subtly warmer, higher-contrast rim before end-card
+  const rawClimaxEnd =
+    turns && turns.length > 11
+      ? turns[11].end_frame
+      : Math.max(turn9StartFrame + 90, endCardStartFrame - 15);
+  const climaxStartFrame = turn9StartFrame;
+  const climaxEndFrame = Math.max(climaxStartFrame + 24, Math.min(rawClimaxEnd, endCardStartFrame));
+  const climaxWeight =
+    !isEndCardActive && frame >= climaxStartFrame && frame <= climaxEndFrame
+      ? interpolate(
+          frame,
+          [climaxStartFrame, climaxStartFrame + 10, climaxEndFrame - 8, climaxEndFrame],
+          [0, 1, 1, 0],
+          { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+        )
+      : 0;
+
+  const sharedHumanProps = {
+    characterId: leftCharId,
+    isSpeaking: isLeftSpeaking,
+    mouthOpen: mouthOpenLeft,
+    emotion: leftEmotion,
+    isQuestion: isLeftQuestion,
+    turnFrame,
+    position: [-1.15, 0.22, 0.0] as [number, number, number],
+    rotation: [
+      0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
+      isLeftSpeaking ? 0.20 : 0.28,
+      0,
+    ] as [number, number, number],
+    scale: 0.65,
+  };
+
+  const sharedOrbProps = {
+    characterId: rightCharId,
+    isSpeaking: isRightSpeaking,
+    mouthOpen: mouthOpenRight,
+    emotion: rightEmotion,
+    turnFrame,
+    isRoasting: isAIRoasting,
+    position: [1.05, 0.45, 0.05] as [number, number, number],
+    rotation: [0.02, isRightSpeaking ? -0.16 : -0.25, 0] as [number, number, number],
+    scale: 0.46,
+  };
+
   // Auto-detect CTA keyword from last turn if not explicitly passed
   const resolvedKeyword = (
     ctaKeyword ||
@@ -408,185 +463,110 @@ export const MasterAutonomousReel: React.FC<MasterAutonomousReelProps> = ({
       {/* 2. Top Progress Bar */}
       <ProgressBar color="#38BDF8" height={8} />
 
-      {/* 3. Single Persistent Three.js Canvas (Never Remounted, Native DPR 1 for Max Quality) */}
-      <ThreeCanvas
-        dpr={1}
-        width={1080}
-        height={1920}
-        camera={{
-          position: cameraParams.position,
-          fov: cameraParams.fov,
-          near: 0.1,
-          far: 100,
-        }}
+      {/* 3. Single Persistent Three.js Canvas with 3-frame micro scale punch on speaker cuts */}
+      <div
         style={{
           width: 1080,
           height: 1920,
           position: "absolute",
           top: 0,
           left: 0,
+          transform: `scale(${cutPunchScale})`,
+          transformOrigin: "50% 45%",
         }}
       >
-        {/* Dynamic 3-Camera Cutting Controller */}
-        <CameraRig3D
-          activeTurn={activeTurn}
-          turns={turns}
-          isProofCardActive={isProofCardActive}
-          leftCharId={leftCharId}
-          rightCharId={rightCharId}
-          forcedShot={forcedCameraShot}
-          isToastActive={isToastActive}
-        />
+        <ThreeCanvas
+          dpr={1}
+          width={1080}
+          height={1920}
+          camera={{
+            position: cameraParams.position,
+            fov: cameraParams.fov,
+            near: 0.1,
+            far: 100,
+          }}
+          style={{
+            width: 1080,
+            height: 1920,
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+        >
+          {/* Dynamic 5-Angle Camera Controller */}
+          <CameraRig3D
+            activeTurn={activeTurn}
+            turns={turns}
+            isProofCardActive={isProofCardActive}
+            leftCharId={leftCharId}
+            rightCharId={rightCharId}
+            forcedShot={forcedCameraShot}
+            isToastActive={isToastActive}
+          />
 
-        {/* 3D Environment: 4 Rotating Sets (diner, desk, living_room, rooftop) */}
-        {activePreset === "living_room" ? (
-          <IndianLivingRoom3D>
-            {/* Left Seat: Human Dev or Dad on L-Shaped Sofa */}
-            <LowPolyHumanRig
-              characterId={leftCharId}
-              isSpeaking={isLeftSpeaking}
-              mouthOpen={mouthOpenLeft}
-              emotion={leftEmotion}
-              turnFrame={turnFrame}
-              position={[-1.15, 0.22, 0.0]}
-              rotation={[
-                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
-                isLeftSpeaking ? 0.20 : 0.28,
-                0,
-              ]}
-              scale={0.65}
-              hideSeat={true}
-            />
+          {/* 3D Environment: 4 Rotating Sets (diner, desk, living_room, rooftop) */}
+          {activePreset === "living_room" ? (
+            <IndianLivingRoom3D>
+              <LowPolyHumanRig {...sharedHumanProps} hideSeat={true} />
+              <LowPolyAIOrbRig {...sharedOrbProps} />
+            </IndianLivingRoom3D>
+          ) : activePreset === "rooftop" ? (
+            <RooftopNight3D>
+              <LowPolyHumanRig {...sharedHumanProps} seatColor="#1E293B" />
+              <LowPolyAIOrbRig {...sharedOrbProps} />
+            </RooftopNight3D>
+          ) : activePreset === "desk" ? (
+            <SunsetDesk3D>
+              <LowPolyHumanRig {...sharedHumanProps} seatColor="#1C1917" />
+              <LowPolyAIOrbRig {...sharedOrbProps} />
+            </SunsetDesk3D>
+          ) : (
+            <CozyDiner3D weatherMode={resolvedWeather}>
+              <LowPolyHumanRig {...sharedHumanProps} seatColor="#B91C1C" />
+              <LowPolyAIOrbRig {...sharedOrbProps} />
+            </CozyDiner3D>
+          )}
 
-            {/* Right Side: AI Orb hovering by TV console */}
-            <LowPolyAIOrbRig
-              characterId={rightCharId}
-              isSpeaking={isRightSpeaking}
-              mouthOpen={mouthOpenRight}
-              emotion={rightEmotion}
-              position={[1.05, 0.45, 0.05]}
-              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
-              scale={0.46}
-            />
-          </IndianLivingRoom3D>
-        ) : activePreset === "rooftop" ? (
-          <RooftopNight3D>
-            {/* Left Seat: Human Dev on Rooftop Bar Stool */}
-            <LowPolyHumanRig
-              characterId={leftCharId}
-              isSpeaking={isLeftSpeaking}
-              mouthOpen={mouthOpenLeft}
-              emotion={leftEmotion}
-              turnFrame={turnFrame}
-              position={[-1.15, 0.22, 0.0]}
-              rotation={[
-                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
-                isLeftSpeaking ? 0.20 : 0.28,
-                0,
-              ]}
-              scale={0.65}
-              seatColor="#1E293B"
-            />
+          {/* Dedicated Back Rim Light (shifts subtly warmer & higher-contrast on Turns 9-11 climax) */}
+          <pointLight
+            position={[1.3, 0.8, -1.2]}
+            intensity={2.4 + climaxWeight * 1.15}
+            color={
+              climaxWeight > 0.35
+                ? "#F97316"
+                : rightCharId === "grok"
+                ? "#38BDF8"
+                : rightCharId === "gemini"
+                ? "#60A5FA"
+                : rightCharId === "claude"
+                ? "#F59E0B"
+                : "#38BDF8"
+            }
+            distance={5.0}
+            decay={1.8}
+          />
 
-            {/* Right Side: AI Orb hovering over Night Skyline */}
-            <LowPolyAIOrbRig
-              characterId={rightCharId}
-              isSpeaking={isRightSpeaking}
-              mouthOpen={mouthOpenRight}
-              emotion={rightEmotion}
-              position={[1.05, 0.45, 0.05]}
-              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
-              scale={0.46}
+          {/* Warm Left Rim Accent during Climax Twist (Turns 9-11) */}
+          {climaxWeight > 0 && (
+            <pointLight
+              position={[-1.4, 0.9, -1.1]}
+              intensity={climaxWeight * 1.4}
+              color="#FB923C"
+              distance={5.0}
+              decay={1.8}
             />
-          </RooftopNight3D>
-        ) : activePreset === "desk" ? (
-          <SunsetDesk3D>
-            {/* Left Seat: Human Dev at Wooden Desk */}
-            <LowPolyHumanRig
-              characterId={leftCharId}
-              isSpeaking={isLeftSpeaking}
-              mouthOpen={mouthOpenLeft}
-              emotion={leftEmotion}
-              turnFrame={turnFrame}
-              position={[-1.15, 0.22, 0.0]}
-              rotation={[
-                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
-                isLeftSpeaking ? 0.20 : 0.28,
-                0,
-              ]}
-              scale={0.65}
-              seatColor="#1C1917"
-            />
+          )}
 
-            {/* Right Side: AI Orb hovering by Desk */}
-            <LowPolyAIOrbRig
-              characterId={rightCharId}
-              isSpeaking={isRightSpeaking}
-              mouthOpen={mouthOpenRight}
-              emotion={rightEmotion}
-              position={[1.05, 0.45, 0.05]}
-              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
-              scale={0.46}
-            />
-          </SunsetDesk3D>
-        ) : (
-          <CozyDiner3D weatherMode={resolvedWeather}>
-            {/* Left Seat: Human Dev in Diner Booth */}
-            <LowPolyHumanRig
-              characterId={leftCharId}
-              isSpeaking={isLeftSpeaking}
-              mouthOpen={mouthOpenLeft}
-              emotion={leftEmotion}
-              turnFrame={turnFrame}
-              position={[-1.15, 0.22, 0.0]}
-              rotation={[
-                0.04 + (isLeftSpeaking ? Math.sin(frame * 0.25) * 0.015 : 0),
-                isLeftSpeaking ? 0.20 : 0.28,
-                0,
-              ]}
-              scale={0.65}
-              seatColor="#B91C1C"
-            />
-
-            {/* Right Side: AI Orb Floating Across Diner Table */}
-            <LowPolyAIOrbRig
-              characterId={rightCharId}
-              isSpeaking={isRightSpeaking}
-              mouthOpen={mouthOpenRight}
-              emotion={rightEmotion}
-              position={[1.05, 0.45, 0.05]}
-              rotation={[0.02, isRightSpeaking ? -0.16 : -0.25, 0]}
-              scale={0.46}
-            />
-          </CozyDiner3D>
-        )}
-
-        {/* Dedicated Back Rim Light for Right Character (Crisp glowing silhouette for dark bots like Grok) */}
-        <pointLight
-          position={[1.3, 0.8, -1.2]}
-          intensity={2.4}
-          color={
-            rightCharId === "grok"
-              ? "#38BDF8"
-              : rightCharId === "gemini"
-              ? "#60A5FA"
-              : rightCharId === "claude"
-              ? "#F59E0B"
-              : "#38BDF8"
-          }
-          distance={5.0}
-          decay={1.8}
-        />
-
-        {/* Dedicated Front-Right Fill Light for Right Character (Reveals facets against night window) */}
-        <pointLight
-          position={[1.2, 0.6, 1.6]}
-          intensity={1.6}
-          color="#F1F5F9"
-          distance={5.0}
-          decay={1.6}
-        />
-      </ThreeCanvas>
+          {/* Dedicated Front-Right Fill Light (dips slightly in climax for crisper contrast) */}
+          <pointLight
+            position={[1.2, 0.6, 1.6]}
+            intensity={1.6 - climaxWeight * 0.45}
+            color="#F1F5F9"
+            distance={5.0}
+            decay={1.6}
+          />
+        </ThreeCanvas>
+      </div>
 
       {/* 4. Upper-Third Dynamic Proof Card (Act 3: Turns 5-7, step-by-step row highlighting; Reel #1 only, disabled on Dad Clash) */}
       {cardData && isProofCardActive && leftCharacterId !== "dad" && cast?.left !== "dad" && (

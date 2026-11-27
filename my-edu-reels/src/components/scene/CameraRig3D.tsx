@@ -4,7 +4,14 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { TimelineTurn } from "../ui/CinematicSubtitles";
 
-export type CameraShotType = "wide" | "closeup_left" | "closeup_right";
+export type CameraShotType =
+  | "wide"
+  | "closeup_left"
+  | "closeup_right"
+  | "ots_left"
+  | "ots_right"
+  | "dutch_roast"
+  | "climax_zoom";
 
 export interface CameraRig3DProps {
   activeTurn?: TimelineTurn | null;
@@ -20,6 +27,7 @@ export interface CameraShotCoords {
   position: [number, number, number];
   target: [number, number, number];
   fov: number;
+  roll?: number; // Dutch tilt roll in radians
 }
 
 export const SHOT_COORDINATES: Record<CameraShotType, CameraShotCoords> = {
@@ -27,28 +35,54 @@ export const SHOT_COORDINATES: Record<CameraShotType, CameraShotCoords> = {
     position: [1.65, 0.95, 7.2],
     target: [-0.15, 0.15, 0.0],
     fov: 44,
+    roll: 0,
   },
   closeup_left: {
     position: [-0.55, 0.52, 3.8],
     target: [-1.20, 0.38, 0.0],
     fov: 39,
+    roll: 0,
   },
   closeup_right: {
     position: [0.75, 0.56, 3.5],
     target: [1.10, 0.46, 0.05],
     fov: 39,
+    roll: 0,
+  },
+  ots_left: {
+    position: [1.85, 0.72, 3.25],
+    target: [-0.45, 0.36, 0.02],
+    fov: 42,
+    roll: 0,
+  },
+  ots_right: {
+    position: [-1.95, 0.68, 3.35],
+    target: [0.40, 0.42, 0.04],
+    fov: 42,
+    roll: 0,
+  },
+  dutch_roast: {
+    position: [0.68, 0.58, 3.35],
+    target: [1.05, 0.45, 0.05],
+    fov: 38,
+    roll: 0.061, // ~3.5 degree Dutch tilt on savage AI roast turns
+  },
+  climax_zoom: {
+    position: [0.22, 0.50, 3.65],
+    target: [0.35, 0.36, 0.04],
+    fov: 37,
+    roll: 0,
   },
 };
 
 /**
  * Calculates deterministic camera parameters for the current frame.
  * Features:
- * 1. Smooth 10-frame cubic ease-out transitions (Easing.out(Easing.cubic)) between shots
- *    (wide, closeup_left, closeup_right) instead of hard teleports.
- * 2. Turn 0 opening slow push-in from z = 8.4 -> 7.6.
- * 3. Continuous volumetric micro-orbit drift (Math.sin on X, Math.cos on Y).
- * 4. Notification reaction tilt on Turn 9 for balanced rule-of-thirds composition.
- * 5. Zero flicker, zero Math.random(), zero modulo spring resets.
+ * 1. 5 rotating shot types by turn mood: Wide Establishing, Tight Close-Up (14% faster punch-in on
+ *    shock/question), Over-the-Shoulder (OTS), Dutch-Tilt Roast (3.5 deg roll + 5-frame whip-pan),
+ *    and Climax Zoom (Turn 9 notification + 4-frame camera shake).
+ * 2. Continuous subtle dolly push-in, slow orbital drift, and handheld breathing micro-motion on every turn.
+ * 3. Zero flicker, zero Math.random(), zero modulo spring resets.
  */
 export function getCameraRigParams(
   frame: number,
@@ -64,16 +98,39 @@ export function getCameraRigParams(
   position: [number, number, number];
   target: [number, number, number];
   fov: number;
+  roll: number;
 } {
-  // Helper to resolve shot for a given turn
+  // Helper to resolve 5 dynamic shot types rotated by turn mood
   const resolveShotForTurn = (turn: TimelineTurn, isCardActive: boolean): CameraShotType => {
     if (turn.turn_index === 0 || isCardActive) {
       return "wide";
     }
-    if (turn.character_id === leftCharId) {
+    if (turn.turn_index === 9) {
+      return "climax_zoom";
+    }
+    const emo = (turn.emotion || "").toLowerCase();
+    const isLeft = turn.character_id === leftCharId;
+    const isRight = turn.character_id === rightCharId;
+    const isSavageRoast =
+      isRight &&
+      (emo.includes("smug") ||
+        emo.includes("sarcas") ||
+        emo.includes("roast") ||
+        emo.includes("angr") ||
+        turn.turn_index === 1 ||
+        turn.turn_index === 11);
+
+    // Mid-skit back-and-forth OTS alternation so both characters stay in frame with depth
+    if (turn.turn_index === 3 || turn.turn_index === 4 || turn.turn_index === 7 || turn.turn_index === 10) {
+      return isLeft ? "ots_left" : "ots_right";
+    }
+    if (isSavageRoast) {
+      return "dutch_roast";
+    }
+    if (isLeft) {
       return "closeup_left";
     }
-    if (turn.character_id === rightCharId) {
+    if (isRight) {
       return "closeup_right";
     }
     return "wide";
@@ -83,7 +140,6 @@ export function getCameraRigParams(
   let currentShot: CameraShotType = "wide";
   let prevShot: CameraShotType = "wide";
   let transitionStartFrame = 0;
-  const transitionDuration = 6; // 6-frame cubic ease-out whip-pan transition
 
   if (forcedShot) {
     currentShot = forcedShot;
@@ -91,6 +147,8 @@ export function getCameraRigParams(
   } else if (!turns || turns.length === 0) {
     if (isProofCardActive) {
       currentShot = "wide";
+    } else if (isToastActive) {
+      currentShot = "climax_zoom";
     } else if (activeTurn) {
       currentShot = resolveShotForTurn(activeTurn, false);
     } else {
@@ -98,13 +156,11 @@ export function getCameraRigParams(
     }
     prevShot = currentShot;
   } else {
-    // Deterministic evaluation across full turn timeline
     const firstTurn = turns[0];
     if (frame < firstTurn.start_frame) {
       currentShot = "wide";
       prevShot = "wide";
     } else {
-      // Find the turn currently active or the most recent completed turn
       let turnIdx = 0;
       for (let i = 0; i < turns.length; i++) {
         if (turns[i].start_frame <= frame) {
@@ -116,23 +172,25 @@ export function getCameraRigParams(
 
       const currentTurn = turns[turnIdx];
       const isCardAtCurrentTurn =
-        isProofCardActive || (currentTurn.turn_index >= 5 && currentTurn.turn_index <= 7);
+        isProofCardActive || (currentTurn.turn_index >= 5 && currentTurn.turn_index <= 7 && isProofCardActive);
       currentShot = resolveShotForTurn(currentTurn, isCardAtCurrentTurn);
       transitionStartFrame = currentTurn.start_frame;
 
-      // Find the previous distinct shot
       if (turnIdx === 0) {
         prevShot = "wide";
       } else {
         const prevTurn = turns[turnIdx - 1];
         const isCardAtPrevTurn =
-          prevTurn.turn_index >= 5 && prevTurn.turn_index <= 7;
+          prevTurn.turn_index >= 5 && prevTurn.turn_index <= 7 && isProofCardActive;
         prevShot = resolveShotForTurn(prevTurn, isCardAtPrevTurn);
       }
     }
   }
 
-  // 2. Compute 10-frame cubic ease-out transition progress
+  // Quick 5-frame whip-pan on Dutch-tilt roast turns; 6-frame cubic ease-out otherwise
+  const transitionDuration = currentShot === "dutch_roast" ? 5 : 6;
+
+  // 2. Compute cubic ease-out transition progress
   let transitionT = 1.0;
   if (currentShot !== prevShot && frame >= transitionStartFrame) {
     transitionT = interpolate(
@@ -150,7 +208,7 @@ export function getCameraRigParams(
   const prevBase = SHOT_COORDINATES[prevShot];
   const targetBase = SHOT_COORDINATES[currentShot];
 
-  // Turn 0 opening slow push-in from z = 8.4 -> 7.6
+  // Turn 0 opening slow push-in from z = 7.9 -> 7.2
   const turn0 = turns && turns[0] ? turns[0] : null;
   const turn0End = turn0 ? turn0.end_frame : 120;
   const isTurn0 =
@@ -174,7 +232,6 @@ export function getCameraRigParams(
   const prevZ = getBaseZ(prevShot, true);
   const targetZ = getBaseZ(currentShot, false);
 
-  // Interpolate base coordinates over the transition
   const baseX = interpolate(transitionT, [0, 1], [prevBase.position[0], targetBase.position[0]]);
   const baseY = interpolate(transitionT, [0, 1], [prevBase.position[1], targetBase.position[1]]);
   let baseZ = interpolate(transitionT, [0, 1], [prevZ, targetZ]);
@@ -184,44 +241,45 @@ export function getCameraRigParams(
   const targetLookZ = interpolate(transitionT, [0, 1], [prevBase.target[2], targetBase.target[2]]);
 
   let fov = interpolate(transitionT, [0, 1], [prevBase.fov, targetBase.fov]);
+  const roll = interpolate(transitionT, [0, 1], [prevBase.roll ?? 0, targetBase.roll ?? 0]);
 
-  // Crash zoom (12-18% punch-in snap -7.0 FOV + 12-frame cubic ease) on hook (Turn 0) and roast/twist turns (Turns 3, 8, 9)
+  const activeEmotion = (activeTurn?.emotion || "").toLowerCase();
+  const isQuestionTurn = Boolean(activeTurn?.text && activeTurn.text.includes("?"));
+  const isShockOrQuestion =
+    isQuestionTurn || activeEmotion.includes("shock") || activeEmotion.includes("angr");
   const isHookTurn = !!activeTurn && activeTurn.turn_index === 0;
   const isTwistTurn =
     !!activeTurn &&
     (activeTurn.turn_index === 3 ||
       activeTurn.turn_index === 8 ||
       activeTurn.turn_index === 9);
-
-  const activeEmotion = (activeTurn?.emotion || "").toLowerCase();
-  const isSmugRoast =
-    !!activeTurn &&
-    activeTurn.character_id === rightCharId &&
-    (activeEmotion === "smug" || activeEmotion === "sarcastic");
-
   const isHighEmotionRoast =
     !!activeTurn &&
     (activeEmotion.includes("roast") ||
-      activeEmotion.includes("shock") ||
-      activeEmotion.includes("angr") ||
-      isSmugRoast);
+      activeEmotion.includes("smug") ||
+      activeEmotion.includes("sarcas") ||
+      isShockOrQuestion);
 
+  // Punch-in snap: 14% faster on Tight Close-Up shock/question turns (10 frames vs 12 frames)
   if ((isHookTurn || isTwistTurn || isHighEmotionRoast) && activeTurn) {
+    const punchFrames =
+      (currentShot === "closeup_left" || currentShot === "closeup_right") && isShockOrQuestion
+        ? 10
+        : 12;
     const roastAge = Math.max(0, frame - activeTurn.start_frame);
-    if (roastAge <= 12) {
-      const ease12 = interpolate(roastAge, [0, 12], [0, 1], {
+    if (roastAge <= punchFrames) {
+      const easePunch = interpolate(roastAge, [0, punchFrames], [0, 1], {
         easing: Easing.out(Easing.cubic),
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp",
       });
-      // Snap in by -7 FOV (~16% crash zoom) and ease back
-      const fovSnap = interpolate(ease12, [0, 1], [-7.0, 0]);
-      fov += fovSnap;
+      fov += interpolate(easePunch, [0, 1], [-7.0, 0]);
     }
   }
 
-  // 3. Subtle camera push-in during active speaking turns (for turns > 0)
+  // 3. Continuous subtle dolly push-in on EVERY turn > 0 (14% faster on shock/question close-ups)
   if (!isTurn0) {
+    const pushDepth = isShockOrQuestion ? 0.16 * 1.14 : 0.16;
     let pushInZ = 0;
     if (activeTurn && activeTurn.end_frame > activeTurn.start_frame && activeTurn.turn_index > 0) {
       const turnProgress = interpolate(
@@ -230,21 +288,22 @@ export function getCameraRigParams(
         [0, 1],
         { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
       );
-      pushInZ = turnProgress * 0.12;
+      pushInZ = turnProgress * pushDepth;
     } else if (!activeTurn && turns && turns.length > 0) {
       const lastActiveTurn = [...turns].filter((t) => t.end_frame <= frame).pop();
       if (lastActiveTurn && lastActiveTurn.turn_index > 0) {
-        pushInZ = 0.12;
+        pushInZ = pushDepth;
       }
     }
     baseZ -= pushInZ;
   }
 
-  // 4. Subtle Orbital Drift & Handheld Breathing (Blender-grade continuous parallax)
-  const orbitX = Math.sin(frame * 0.025) * 0.12;
-  const orbitY = Math.cos(frame * 0.02) * 0.03;
+  // 4. Continuous Orbital Drift + Organic Handheld Breathing Micro-Motion (never frozen tripod)
+  const orbitX = Math.sin(frame * 0.025) * 0.12 + Math.sin(frame * 0.053) * 0.022;
+  const orbitY = Math.cos(frame * 0.02) * 0.032 + Math.cos(frame * 0.047) * 0.014;
+  const breathZ = Math.sin(frame * 0.037) * 0.024;
 
-  // 5. Notification Reaction Tilt on Turn 9
+  // 5. Notification Reaction Tilt & 4-Frame Climax Shake on Turn 9
   let toastTiltY = 0;
   let toastTiltX = 0;
   let toastTargetShiftY = 0;
@@ -252,7 +311,7 @@ export function getCameraRigParams(
   const turn9 = turns?.find((t) => t.turn_index === 9);
   if (turn9) {
     const toastStart = turn9.start_frame;
-    const toastDuration = 105; // 3.5s @ 30fps
+    const toastDuration = 105;
     const toastEnd = toastStart + toastDuration;
 
     if (frame >= toastStart - 6 && frame <= toastEnd + 15) {
@@ -267,48 +326,47 @@ export function getCameraRigParams(
         }
       );
 
-      // Downward tilt & subtle rule-of-thirds horizontal framing shift
-      toastTiltY = toastWeight * -0.10;
-      toastTargetShiftY = toastWeight * -0.06;
+      toastTiltY = toastWeight * -0.09;
+      toastTargetShiftY = toastWeight * -0.05;
       const isLeftSpeaker = turn9.character_id === leftCharId;
-      toastTiltX = toastWeight * (isLeftSpeaker ? 0.07 : -0.07);
+      toastTiltX = toastWeight * (isLeftSpeaker ? 0.06 : -0.06);
     }
   } else if (isToastActive) {
-    toastTiltY = -0.10;
-    toastTargetShiftY = -0.06;
-    toastTiltX = currentShot === "closeup_left" ? 0.07 : -0.07;
+    toastTiltY = -0.09;
+    toastTargetShiftY = -0.05;
+    toastTiltX = currentShot === "closeup_left" ? 0.06 : -0.06;
   }
 
-  // Subtle 6-frame camera shake on bass-thud beats / turn start
-  let shakeX = 0;
-  let shakeY = 0;
-  if (activeTurn) {
-    const turnAge = Math.max(0, frame - activeTurn.start_frame);
-    if (turnAge <= 6) {
-      const shakeDecay = (6 - turnAge) / 6;
-      shakeX = Math.sin(turnAge * 3.5) * 0.025 * shakeDecay;
-      shakeY = Math.cos(turnAge * 4.2) * 0.018 * shakeDecay;
-    }
-  }
-
-  // 6-frame notification pop-in screen shake on Turn 9 / Toast alert
+  // Subtle 4-frame camera shake on Turn 9 Climax Zoom / notification pop-in
   let toastShakeX = 0;
   let toastShakeY = 0;
   if (turn9) {
     const toastAge = frame - turn9.start_frame;
-    if (toastAge >= 0 && toastAge <= 8) {
-      const decay = (8 - toastAge) / 8;
-      toastShakeX = Math.sin(toastAge * 4.5) * 0.035 * decay;
-      toastShakeY = Math.cos(toastAge * 5.0) * 0.025 * decay;
+    if (toastAge >= 0 && toastAge <= 4) {
+      const decay = (4 - toastAge) / 4;
+      toastShakeX = Math.sin(toastAge * 4.5) * 0.04 * decay;
+      toastShakeY = Math.cos(toastAge * 5.0) * 0.03 * decay;
     }
   } else if (isToastActive) {
     toastShakeX = Math.sin(frame * 0.8) * 0.01;
   }
 
+  // Subtle 4-frame impact tremor on non-Turn-9 speaker cuts
+  let shakeX = 0;
+  let shakeY = 0;
+  if (activeTurn && activeTurn.turn_index !== 9) {
+    const turnAge = Math.max(0, frame - activeTurn.start_frame);
+    if (turnAge <= 4) {
+      const shakeDecay = (4 - turnAge) / 4;
+      shakeX = Math.sin(turnAge * 3.5) * 0.022 * shakeDecay;
+      shakeY = Math.cos(turnAge * 4.2) * 0.015 * shakeDecay;
+    }
+  }
+
   const position: [number, number, number] = [
     baseX + orbitX + toastTiltX + shakeX + toastShakeX,
     baseY + orbitY + toastTiltY + shakeY + toastShakeY,
-    baseZ,
+    baseZ + breathZ,
   ];
 
   const target: [number, number, number] = [
@@ -322,17 +380,15 @@ export function getCameraRigParams(
     position,
     target,
     fov,
+    roll,
   };
 }
 
 /**
  * CameraRig3D:
  * - Mounted inside <ThreeCanvas> to control the active perspective camera.
- * - Smooth 10-frame cubic ease-out transitions between shots (zero teleport snaps).
- * - Continuous organic micro-orbital drift & breathing.
- * - Responsive reaction tilt for Notification Toast on Turn 9.
- * - Holds speaker close-up during brief inter-turn pauses (0 flash-cuts).
- * - Deterministic push-in over turn duration with zero jitter.
+ * - Supports 5 dynamic shot types with smooth cubic/whip-pan transitions, Dutch roll, and Climax Zoom.
+ * - Continuous orbital drift, dolly push-in, and handheld breathing micro-motion.
  */
 export const CameraRig3D: React.FC<CameraRig3DProps> = ({
   activeTurn,
@@ -361,6 +417,9 @@ export const CameraRig3D: React.FC<CameraRig3DProps> = ({
     if (camera) {
       camera.position.set(params.position[0], params.position[1], params.position[2]);
       camera.lookAt(new THREE.Vector3(params.target[0], params.target[1], params.target[2]));
+      if (params.roll !== 0) {
+        camera.rotateZ(params.roll);
+      }
       if ((camera as THREE.PerspectiveCamera).fov !== params.fov) {
         (camera as THREE.PerspectiveCamera).fov = params.fov;
         camera.updateProjectionMatrix();
