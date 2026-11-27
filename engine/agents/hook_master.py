@@ -208,6 +208,12 @@ _ANNOYANCE_OR_PAID_WORDS = (
 )
 
 
+_DAD_THIRD_PERSON_RE = re.compile(
+    r"\b(dad'?s|dad just|my dad|dad thinks|dad sets|dad installed|dad downloaded|dad covers|dad believes|dad is|dad got|dad won|dad wrapped|your dad|my boss)\b|^dad\b",
+    re.IGNORECASE,
+)
+
+
 def _dad_topic_opener(title: str, category: str = "") -> str:
     """Returns a 1st-person Dad opener strictly matching the topic title/category."""
     text = f"{title} {category}".lower()
@@ -218,7 +224,7 @@ def _dad_topic_opener(title: str, category: str = "") -> str:
     if any(k in text for k in ["5g", "wifi", "wi-fi", "router", "tower", "signal"]):
         return "I wrapped our Wi-Fi router in foil so 5G waves stay out!"
     if any(k in text for k in ["gold", "mod", "deleted message", "shady", "apk"]):
-        return "Look at my golden WhatsApp theme, it reads deleted messages from years ago!"
+        return "Beta, this Gold WhatsApp link gave me free themes and deleted chats!"
     if any(k in text for k in ["scam", "whatsapp", "lottery", "prize", "iphone", "bank"]):
         return "Beta, I just won a brand new phone in this WhatsApp group!"
     if any(k in text for k in ["printer", "ink", "cyan", "cartridge"]):
@@ -361,8 +367,7 @@ def validate_screenplay_quality_gate(screenplay: Dict[str, Any], topic: Dict[str
         # Dad 1st-person POV lock: Dad must NEVER speak about himself as 'Dad' in 3rd person!
         dad_turns = [d.get("text", "") for d in dialogue if str(d.get("speaker") or d.get("character_id")).lower() == "dad"]
         for dt in dad_turns:
-            dt_low = dt.lower()
-            if re.search(r"\b(dad just|my dad|dad thinks|dad sets|dad installed|dad downloaded|dad covers|my boss)\b", dt_low):
+            if _DAD_THIRD_PERSON_RE.search(dt):
                 violations.append(f"Dad spoke in 3rd person in turn: '{dt[:45]}...'")
     else:
         tool_name = str(topic.get("tool_name") or topic.get("toolName") or "").strip().lower()
@@ -515,6 +520,20 @@ class HookMasterAgent:
         category = topic.get("category", "Tech")
         conflict = topic.get("core_conflict", "Curiosity vs reality")
         kw = topic.get("auto_dm_keyword", "LINK")
+        format_type = str(topic.get("format_type") or "").lower()
+        is_dad_topic = (
+            "dad" in format_type
+            or str(topic.get("left_character") or "").lower() == "dad"
+            or "dad" in str(title or "").lower()
+        )
+
+        dad_hook_rule = (
+            "\nDAD CLASH 1ST-PERSON POV LOCK (CRITICAL):\n"
+            "- Turn 0 is spoken BY Dad himself. Write ALL 3 hooks in Dad's 1st-person voice ('Beta, this Gold WhatsApp link gave me free themes!', 'I covered the TV with a towel!').\n"
+            "- STRICTLY FORBIDDEN: Never start with 'Dad', 'Dad's', or 'My dad' in 3rd person.\n"
+            if is_dad_topic
+            else ""
+        )
 
         system_instruction = (
             "You are HookMaster: The World's Foremost 0-3s Short-Form Video Retention Scientist.\n"
@@ -524,9 +543,10 @@ class HookMasterAgent:
             "- Write in short, punchy, everyday spoken English that anyone on Instagram understands instantly.\n\n"
             "STORY-FIRST DRAMATIC PATTERN-INTERRUPT HOOK (ZERO GENERIC / AD OPENERS):\n"
             "- STRICTLY BANNED OPENERS: 'Bro your slow workflow...', 'Humans love doing...', 'Humans love...', 'Wait there is no way...', 'There is no way...', 'Look at this tool right now...', 'Stop doing X by hand...', 'Why is nobody talking about...', 'Check this tool out'.\n"
-            "- MANDATORY: Start with a concrete 0-3s pattern-interrupt contrast or shock (e.g. 'Still paying twenty dollars a month to edit PDFs?', 'Dad, why did you install 4 RAM booster apps?', 'My laptop literally froze opening a two-megabyte file.').\n"
+            "- MANDATORY: Start with a concrete 0-3s pattern-interrupt contrast or shock (e.g. 'Still paying twenty dollars a month to edit PDFs?', 'Beta, this Gold WhatsApp link gave me free themes!', 'My laptop literally froze opening a two-megabyte file.').\n"
             "- MAXIMUM 10 WORDS. Zero exceptions.\n"
-            "- ZERO FILLER: Never start with 'Hey guys', 'Did you know', 'So today'.\n\n"
+            "- ZERO FILLER: Never start with 'Hey guys', 'Did you know', 'So today'."
+            f"{dad_hook_rule}\n\n"
             "You must write and score 3 distinct hooks:\n"
             "1. 'curiosity_gap': Mid-conversation human shock uncovering a ridiculous zero-dollar trick.\n"
             "2. 'contrarian_callout': Human complaining about an expensive tool, slow laptop, or wasted bill.\n"
@@ -540,7 +560,7 @@ Core Conflict: {conflict}
 Auto-DM Keyword: {kw}
 
 TASK:
-Write 3 competing opening hooks (each <= 10 words, simple spoken English only, story-first human shock mid-conversation).
+Write 3 competing opening hooks (each <= 10 words, simple spoken English only, {"1st-person Dad voice speaking Turn 0 ('Beta, ...' or 'I ...', NEVER 'Dad...')" if is_dad_topic else "story-first human shock mid-conversation"}).
 Score each hook from 0 to 100 on thumb-stopping power, and explain why one won.
 
 JSON Schema:
@@ -591,14 +611,19 @@ JSON Schema:
                     if any(win_h.lower().startswith(bp) for bp in banned_prefixes) or len(win_h.split()) < 3:
                         if "pdf" in (str(category) + " " + str(title)).lower():
                             win_h = "Still paying twenty dollars a month to edit PDFs?"
-                        elif "dad" in (str(category) + " " + str(title)).lower() or "dad" in str(topic.get("format_type", "")).lower():
+                        elif is_dad_topic:
                             win_h = _dad_topic_opener(title or "", category)
                         else:
                             win_h = f"Wait... why am I paying monthly fees for this?"
+                    if is_dad_topic and _DAD_THIRD_PERSON_RE.search(win_h):
+                        win_h = _dad_topic_opener(title or "", category)
                     parsed["winning_hook"] = win_h
                     for h in parsed.get("hooks", []):
                         if "hook" in h:
-                            h["hook"] = sanitize_simple_spoken_english(h["hook"])
+                            cleaned_h = sanitize_simple_spoken_english(h["hook"])
+                            if is_dad_topic and _DAD_THIRD_PERSON_RE.search(cleaned_h):
+                                cleaned_h = _dad_topic_opener(title or "", category)
+                            h["hook"] = cleaned_h
                     return parsed
             except Exception as e:
                 print(f"⚠️ HookMaster: Hook battle parse error: {e}")
@@ -775,7 +800,7 @@ JSON Schema:
             # Ensure winning hook for Dad is strictly 1st-person and matches the actual topic
             if (
                 not winning_hook
-                or re.search(r"\b(dad just|my dad|dad sets|dad thinks|dad installed|dad downloaded|dad covers)\b", winning_hook.lower())
+                or _DAD_THIRD_PERSON_RE.search(winning_hook)
                 or ("unplug" in winning_hook.lower() and not any(k in str(title).lower() for k in ["battery", "alarm", "unplug", "80"]))
             ):
                 winning_hook = _dad_topic_opener(title or "", category)

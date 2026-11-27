@@ -375,8 +375,8 @@ def verify_github_repo_live(repo_or_name: Optional[str], timeout: float = 4.0) -
     """
     Live verifier for GitHub repos:
     Queries https://api.github.com/repos/{owner}/{repo} (or GitHub search API fallback).
-    Requires HTTP 200 and >= 500 stars.
-    Extracts real full_name, html_url, description, stars, and top README excerpt (up to 800 chars).
+    Requires HTTP 200 and stargazers_count >= 500 on BOTH direct lookups and search results.
+    Extracts real full_name, html_url, canonical_url, description, stars, and README excerpt.
     """
     if not repo_or_name:
         return None
@@ -395,8 +395,11 @@ def verify_github_repo_live(repo_or_name: Optional[str], timeout: float = 4.0) -
             r = requests.get(url, headers=headers, timeout=timeout)
             if r.status_code == 200:
                 data = r.json()
-                stars = data.get("stargazers_count", 0)
-                if stars >= 500:
+                stars = int(data.get("stargazers_count") or 0)
+                if stars < 500:
+                    print(f"⚠️ [TopicMaster] Rejecting GitHub repo '{clean_repo}' ({stars} stars < 500 minimum).")
+                    return None
+                if not data.get("archived"):
                     full_name = data.get("full_name", clean_repo)
                     html_url = data.get("html_url", f"https://github.com/{full_name}")
                     description = data.get("description") or ""
@@ -416,6 +419,7 @@ def verify_github_repo_live(repo_or_name: Optional[str], timeout: float = 4.0) -
                     return {
                         "full_name": full_name,
                         "html_url": html_url,
+                        "canonical_url": html_url,
                         "stars": stars,
                         "description": description,
                         "readme_excerpt": readme_excerpt or description,
@@ -423,32 +427,48 @@ def verify_github_repo_live(repo_or_name: Optional[str], timeout: float = 4.0) -
         except Exception as e:
             print(f"⚠️ [TopicMaster] Live GitHub verification error for '{clean_repo}': {e}")
 
-    # Fallback to GitHub Search API if exact owner/repo wasn't matched
+    # Fallback to GitHub Search API if exact owner/repo wasn't found
     query = clean_repo.split("/")[-1] if clean_repo else str(repo_or_name).strip()
-    if query and len(query) >= 3:
+    q_norm = re.sub(r"[^a-z0-9]", "", query.lower())
+    if query and len(q_norm) >= 3:
         try:
-            search_url = f"https://api.github.com/search/repositories?q={urllib.parse.quote(query)}+stars:%3E=500&sort=stars&order=desc"
-            r = requests.get(search_url, headers=headers, timeout=timeout)
+            r = requests.get(
+                "https://api.github.com/search/repositories",
+                params={"q": f"{query} stars:>=500", "sort": "stars", "order": "desc", "per_page": 5},
+                headers=headers,
+                timeout=timeout,
+            )
             if r.status_code == 200:
-                items = r.json().get("items", [])
-                if items:
-                    top = items[0]
-                    stars = top.get("stargazers_count", 0)
-                    if stars >= 500:
-                        return {
-                            "full_name": top.get("full_name"),
-                            "html_url": top.get("html_url"),
-                            "stars": stars,
-                            "description": top.get("description") or "",
-                            "readme_excerpt": (top.get("description") or "")[:800],
-                        }
+                for item in r.json().get("items", []):
+                    stars = int(item.get("stargazers_count") or 0)
+                    if stars < 500 or item.get("fork") or item.get("archived"):
+                        continue
+                    item_name_norm = re.sub(r"[^a-z0-9]", "", str(item.get("name") or "").lower())
+                    item_full_norm = re.sub(r"[^a-z0-9]", "", str(item.get("full_name") or "").lower())
+                    if q_norm not in item_full_norm and item_name_norm not in q_norm:
+                        continue
+                    full_name = item.get("full_name")
+                    if not full_name:
+                        continue
+                    html_url = item.get("html_url") or f"https://github.com/{full_name}"
+                    return {
+                        "full_name": full_name,
+                        "html_url": html_url,
+                        "canonical_url": html_url,
+                        "stars": stars,
+                        "description": item.get("description") or "",
+                        "readme_excerpt": (item.get("description") or "")[:800],
+                    }
         except Exception as e:
             print(f"⚠️ [TopicMaster] GitHub search fallback error for '{query}': {e}")
 
     # Fallback to curated verified catalog when network / GitHub API is unreachable or times out
     if clean_repo and clean_repo.lower() in KNOWN_VERIFIED_REPOS:
-        print(f"ℹ️ [TopicMaster] Used curated verified GitHub metadata for '{clean_repo}'.")
-        return dict(KNOWN_VERIFIED_REPOS[clean_repo.lower()])
+        entry = dict(KNOWN_VERIFIED_REPOS[clean_repo.lower()])
+        if int(entry.get("stars") or 0) >= 500:
+            entry.setdefault("canonical_url", entry.get("html_url", ""))
+            print(f"ℹ️ [TopicMaster] Used curated verified GitHub metadata for '{clean_repo}'.")
+            return entry
 
     return None
 
@@ -1317,8 +1337,18 @@ JSON Schema:
                     print(f"⚠️ [TopicMaster] Live verification failed for '{cand.get('topic_title')}' (repo='{repo_cand}', tool='{tool_cand}', domain='{domain_cand}'). Retrying...")
                     continue
 
-                cand["github_repo"] = verified_info.get("full_name") or cand.get("github_repo", "")
-                cand["canonical_url"] = verified_info.get("html_url") or verified_info.get("canonical_url", "")
+                if verified_info.get("full_name") and int(verified_info.get("stars") or 0) >= 500:
+                    verified_full_name = verified_info["full_name"]
+                    verified_url = verified_info.get("html_url") or f"https://github.com/{verified_full_name}"
+                    cand["github_repo"] = verified_full_name
+                else:
+                    # Only website verified; clear any rejected/low-star github_repo so card & Auto-DM match
+                    cand["github_repo"] = ""
+                    verified_url = verified_info.get("canonical_url") or verified_info.get("html_url", "")
+
+                cand["canonical_url"] = verified_url
+                cand["official_url"] = verified_url
+                cand["resource_link_or_query"] = verified_url
                 cand["real_description"] = verified_info.get("description", "")
                 cand["readme_summary"] = verified_info.get("readme_excerpt", "")
                 cand["replaces_paid_app"] = cand.get("replaces_paid_app") or infer_replaces_paid_app(cand.get("tool_name"), cand.get("category"), cand.get("topic_title"))

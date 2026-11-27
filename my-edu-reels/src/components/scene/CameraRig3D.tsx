@@ -50,15 +50,15 @@ export const SHOT_COORDINATES: Record<CameraShotType, CameraShotCoords> = {
     roll: 0,
   },
   ots_left: {
-    position: [1.85, 0.72, 3.25],
-    target: [-0.45, 0.36, 0.02],
-    fov: 42,
+    position: [0.85, 0.68, 4.75],
+    target: [-0.95, 0.36, 0.02],
+    fov: 44,
     roll: 0,
   },
   ots_right: {
-    position: [-1.95, 0.68, 3.35],
-    target: [0.40, 0.42, 0.04],
-    fov: 42,
+    position: [-0.85, 0.68, 4.75],
+    target: [0.88, 0.42, 0.04],
+    fov: 44,
     roll: 0,
   },
   dutch_roast: {
@@ -68,9 +68,9 @@ export const SHOT_COORDINATES: Record<CameraShotType, CameraShotCoords> = {
     roll: 0.061, // ~3.5 degree Dutch tilt on savage AI roast turns
   },
   climax_zoom: {
-    position: [0.22, 0.50, 3.65],
-    target: [0.35, 0.36, 0.04],
-    fov: 37,
+    position: [0.45, 0.55, 4.45],
+    target: [0.85, 0.40, 0.04],
+    fov: 41,
     roll: 0,
   },
 };
